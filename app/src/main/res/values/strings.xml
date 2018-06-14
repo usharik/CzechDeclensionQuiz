@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Application name</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <array name="caseName">
+        <item>Nominativ</item>
+        <item>Genitiv</item>
+        <item>Dativ</item>
+        <item>Akuzative</item>
+        <item>Vokative</item>
+        <item>Lokál</item>
+        <item>Instrumentál</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item></item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item></item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item></item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>

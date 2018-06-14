@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="viewModel" type="com.usharik.app.MainViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.usharik.app.MainActivity">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="target"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.usharik.app.widget.FlowLayout
+            android:id="@+id/flow"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/case1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/message">
+
+            <TextView
+                android:id="@+id/word1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="0"
+                android:visibility="@{viewModel.wordTextModels[0].visible}"
+                android:text="@{viewModel.wordTextModels[0].word}"
+                tools:text="bbbbbb" />
+
+            <TextView
+                android:id="@+id/word2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="1"
+                android:visibility="@{viewModel.wordTextModels[1].visible}"
+                android:text="@{viewModel.wordTextModels[1].word}"
+                tools:text="jjjjjjjjjjj" />
+
+            <TextView
+                android:id="@+id/word3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="2"
+                android:visibility="@{viewModel.wordTextModels[2].visible}"
+                android:text="@{viewModel.wordTextModels[2].word}"
+                tools:text="text text text 3" />
+
+            <TextView
+                android:id="@+id/word4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="3"
+                android:visibility="@{viewModel.wordTextModels[3].visible}"
+                android:text="@{viewModel.wordTextModels[3].word}"
+                tools:text="aaaaa" />
+
+            <TextView
+                android:id="@+id/word5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="4"
+                android:visibility="@{viewModel.wordTextModels[4].visible}"
+                android:text="@{viewModel.wordTextModels[4].word}"
+                tools:text="jjjjjj" />
+
+            <TextView
+                android:id="@+id/word6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="5"
+                android:visibility="@{viewModel.wordTextModels[5].visible}"
+                android:text="@{viewModel.wordTextModels[5].word}"
+                tools:text="text text text 3" />
+
+            <TextView
+                android:id="@+id/word7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="6"
+                android:visibility="@{viewModel.wordTextModels[6].visible}"
+                android:text="@{viewModel.wordTextModels[6].word}"
+                tools:text="text text text 3" />
+
+            <TextView
+                android:id="@+id/word8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="7"
+                android:visibility="@{viewModel.wordTextModels[7].visible}"
+                android:text="@{viewModel.wordTextModels[7].word}"
+                tools:text="bbbbbb" />
+
+            <TextView
+                android:id="@+id/word9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="8"
+                android:visibility="@{viewModel.wordTextModels[8].visible}"
+                android:text="@{viewModel.wordTextModels[8].word}"
+                tools:text="jjjjjjjjjjj" />
+
+            <TextView
+                android:id="@+id/word10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="9"
+                android:visibility="@{viewModel.wordTextModels[9].visible}"
+                android:text="@{viewModel.wordTextModels[9].word}"
+                tools:text="text text text 3" />
+
+            <TextView
+                android:id="@+id/word11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="10"
+                android:visibility="@{viewModel.wordTextModels[10].visible}"
+                android:text="@{viewModel.wordTextModels[10].word}"
+                tools:text="aaaaa" />
+
+            <TextView
+                android:id="@+id/word12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="11"
+                android:visibility="@{viewModel.wordTextModels[11].visible}"
+                android:text="@{viewModel.wordTextModels[11].word}"
+                tools:text="jjjjjj" />
+
+            <TextView
+                android:id="@+id/word13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="12"
+                android:visibility="@{viewModel.wordTextModels[12].visible}"
+                android:text="@{viewModel.wordTextModels[12].word}"
+                tools:text="text text text 3" />
+
+            <TextView
+                android:id="@+id/word14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@drawable/rect"
+                android:tag="13"
+                android:visibility="@{viewModel.wordTextModels[13].visible}"
+                android:text="@{viewModel.wordTextModels[13].word}"
+                tools:text="text text text 3" />
+
+        </com.usharik.app.widget.FlowLayout>
+
+        <include
+            android:id="@+id/case1"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flow"
+            android:tag="0"
+            app:num="@{0}"
+            app:singular="@{viewModel.caseModels[0].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[0].actualAnswerPlural}" />
+
+        <include
+            android:id="@+id/case2"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="1"
+            app:num="@{1}"
+            app:singular="@{viewModel.caseModels[1].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[1].actualAnswerPlural}" />
+
+        <include
+            android:id="@+id/case3"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="2"
+            app:num="@{2}"
+            app:singular="@{viewModel.caseModels[2].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[2].actualAnswerPlural}" />
+
+        <include
+            android:id="@+id/case4"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="3"
+            app:num="@{3}"
+            app:singular="@{viewModel.caseModels[3].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[3].actualAnswerPlural}" />
+
+        <include
+            android:id="@+id/case5"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case4"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="4"
+            app:num="@{4}"
+            app:singular="@{viewModel.caseModels[4].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[4].actualAnswerPlural}" />
+
+        <include
+            android:id="@+id/case6"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="5"
+            app:num="@{5}"
+            app:singular="@{viewModel.caseModels[5].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[5].actualAnswerPlural}"/>
+
+        <include
+            android:id="@+id/case7"
+            layout="@layout/row_case"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/case6"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:tag="6"
+            app:num="@{6}"
+            app:singular="@{viewModel.caseModels[6].actualAnswerSingular}"
+            app:plural="@{viewModel.caseModels[6].actualAnswerPlural}" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintTop_toBottomOf="@id/case7"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>
