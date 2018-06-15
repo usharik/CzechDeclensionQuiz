@@ -20,12 +20,17 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class MainViewModel extends ViewModelObservable {
+    public static final int SINGULAR = 0;
+    public static final int PLURAL = 1;
+
     private final AppState appState;
     private DatabaseManager databaseManager;
     private String text;
 
     private WordTextModel[] wordTextModels = new WordTextModel[14];
-    private CaseModel[] caseModels = new CaseModel[7];
+
+    private String[][] correctAnswers = new String[2][7];
+    private int[][] actualAnswers = new int[2][7];
 
     @Inject
     public MainViewModel(final AppState appState,
@@ -56,9 +61,10 @@ public class MainViewModel extends ViewModelObservable {
         for (int i=0; i<7; i++) {
             wordTextModels[i] = new WordTextModel(singular.get(i).getWord(), View.VISIBLE);
             wordTextModels[i+7] = new WordTextModel(plural.get(i).getWord(), View.VISIBLE);
-            caseModels[i] = new CaseModel();
-            caseModels[i].correctAnswerSingular = singular.get(i).getWord();
-            caseModels[i].correctAnswerPlural = plural.get(i).getWord();
+            correctAnswers[SINGULAR][i] = singular.get(i).getWord();
+            correctAnswers[PLURAL][i] = plural.get(i).getWord();
+            actualAnswers[SINGULAR][i] = -1;
+            actualAnswers[PLURAL][i] = -1;
         }
     }
 
@@ -73,8 +79,15 @@ public class MainViewModel extends ViewModelObservable {
     }
 
     @Bindable
-    public CaseModel[] getCaseModels() {
-        return caseModels;
+    public int[][] getCaseModels() {
+        return actualAnswers;
+    }
+
+    public String getWordByIndex(int ix) {
+        if (ix == -1) {
+            return "";
+        }
+        return wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {
@@ -82,13 +95,15 @@ public class MainViewModel extends ViewModelObservable {
         notifyPropertyChanged(BR.wordTextModels);
     }
 
-    public void updateCaseModelSingular(int num, int wordIx) {
-        caseModels[num].singularIx = wordIx;
+    public void updateCaseModel(int caseNum, int number, int wordIx) {
+        actualAnswers[number][caseNum] = wordIx;
         notifyPropertyChanged(BR.caseModels);
     }
 
-    public void updateCaseModelPlural(int num, int wordIx) {
-        caseModels[num].pluralIx = wordIx;
+    public void swapCaseModels(int caseNum1, int number1, int caseNum2, int number2) {
+        int tmp = actualAnswers[number1][caseNum1];
+        actualAnswers[number1][caseNum1] = actualAnswers[number2][caseNum2];
+        actualAnswers[number2][caseNum2] = tmp;
         notifyPropertyChanged(BR.caseModels);
     }
 
@@ -107,35 +122,6 @@ public class MainViewModel extends ViewModelObservable {
 
         public int getVisible() {
             return visible;
-        }
-    }
-
-    public class CaseModel {
-        String correctAnswerSingular;
-        int singularIx = -1;
-        String correctAnswerPlural;
-        int pluralIx = -1;
-
-        public String getActualAnswerSingular() {
-            if (singularIx == -1) {
-                return "";
-            }
-            return wordTextModels[singularIx].getWord();
-        }
-
-        public String getActualAnswerPlural() {
-            if (pluralIx == -1) {
-                return "";
-            }
-            return wordTextModels[pluralIx].getWord();
-        }
-
-        boolean isCorrectAnswerSingular() {
-            return correctAnswerSingular.equals(wordTextModels[singularIx].getWord());
-        }
-
-        boolean isCorrectAnswerPlural() {
-            return correctAnswerPlural.equals(wordTextModels[pluralIx].getWord());
         }
     }
 }
