@@ -3,6 +3,7 @@ package com.usharik.app.di;
 import android.app.Application;
 
 import com.usharik.app.AppState;
+import com.usharik.app.service.WordService;
 import com.usharik.app.dao.DatabaseManager;
 
 import javax.inject.Singleton;
@@ -26,5 +27,11 @@ class ServiceModule {
     @Singleton
     DatabaseManager provideDatabaseManager(Application application) {
         return new DatabaseManager(application);
+    }
+
+    @Provides
+    @Singleton
+    WordService provideWordService(DatabaseManager databaseManager) {
+        return new WordService(databaseManager);
     }
 }

@@ -3,17 +3,15 @@ package com.usharik.app;
 import android.databinding.Bindable;
 import android.view.View;
 
-import com.usharik.app.dao.DatabaseManager;
-import com.usharik.app.dao.TranslationStorageDao;
-import com.usharik.app.dao.entity.CasesOfNoun;
 import com.usharik.app.framework.ViewModelObservable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.schedulers.Schedulers;
+import com.usharik.app.service.WordService;
 
 /**
  * Created by macbook on 07/03/2018.
@@ -24,7 +22,7 @@ public class MainViewModel extends ViewModelObservable {
     public static final int PLURAL = 1;
 
     private final AppState appState;
-    private DatabaseManager databaseManager;
+    private WordService wordService;
     private String text;
 
     private WordTextModel[] wordTextModels = new WordTextModel[14];
@@ -34,9 +32,9 @@ public class MainViewModel extends ViewModelObservable {
 
     @Inject
     public MainViewModel(final AppState appState,
-                         final DatabaseManager databaseManager) {
+                         final WordService wordService) {
         this.appState = appState;
-        this.databaseManager = databaseManager;
+        this.wordService = wordService;
     }
 
     @Bindable
@@ -50,26 +48,42 @@ public class MainViewModel extends ViewModelObservable {
     }
 
     public void getWordDeclension() {
-        TranslationStorageDao dao = databaseManager.getActiveDbInstance().translationStorageDao();
+        WordService.WordInfo nextWord = wordService.getNextWord();
 
-        List<CasesOfNoun> singular = dao.getCasesOfNoun("dům", "nS")
-                .subscribeOn(Schedulers.io())
-                .blockingGet(Collections.EMPTY_LIST);
-        List<CasesOfNoun> plural = dao.getCasesOfNoun("dům", "nP")
-                .subscribeOn(Schedulers.io())
-                .blockingGet(Collections.EMPTY_LIST);
+        List<WordTextModel> words = new ArrayList<>();
         for (int i=0; i<7; i++) {
-            wordTextModels[i] = new WordTextModel(singular.get(i).getWord(), View.VISIBLE);
-            wordTextModels[i+7] = new WordTextModel(plural.get(i).getWord(), View.VISIBLE);
-            correctAnswers[SINGULAR][i] = singular.get(i).getWord();
-            correctAnswers[PLURAL][i] = plural.get(i).getWord();
+            words.add(new WordTextModel(nextWord.cases[SINGULAR][i], View.VISIBLE));
+            words.add(new WordTextModel(nextWord.cases[PLURAL][i], View.VISIBLE));
+
+            correctAnswers[SINGULAR][i] = nextWord.cases[SINGULAR][i];
+            correctAnswers[PLURAL][i] = nextWord.cases[PLURAL][i];
+
             actualAnswers[SINGULAR][i] = -1;
             actualAnswers[PLURAL][i] = -1;
         }
+        Collections.shuffle(words);
+        wordTextModels = words.toArray(new WordTextModel[words.size()]);
     }
 
     public boolean checkAnswers() {
         boolean res=true;
+        for (int i=0; i<7; i++) {
+            int actualAnswerSingularIx = actualAnswers[SINGULAR][i];
+            if (!correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
+                res = false;
+                wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
+                actualAnswers[SINGULAR][i] = -1;
+            }
+
+            int actualAnswerPluralIx = actualAnswers[PLURAL][i];
+            if (!correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
+                res = false;
+                wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
+                actualAnswers[PLURAL][i] = -1;
+            }
+        }
+        notifyPropertyChanged(BR.wordTextModels);
+        notifyPropertyChanged(BR.caseModels);
         return res;
     }
 
@@ -96,6 +110,10 @@ public class MainViewModel extends ViewModelObservable {
     }
 
     public void updateCaseModel(int caseNum, int number, int wordIx) {
+        if (actualAnswers[number][caseNum] != -1) {
+            wordTextModels[actualAnswers[number][caseNum]].visible = View.VISIBLE;
+            notifyPropertyChanged(BR.wordTextModels);
+        }
         actualAnswers[number][caseNum] = wordIx;
         notifyPropertyChanged(BR.caseModels);
     }

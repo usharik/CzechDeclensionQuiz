@@ -3,7 +3,6 @@ package com.usharik.app;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.DragEvent;
@@ -21,6 +20,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 public class MainActivity extends ViewActivity<MainViewModel> {
@@ -58,34 +60,29 @@ public class MainActivity extends ViewActivity<MainViewModel> {
     @Inject
     DatabaseManager databaseManager;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = item -> {
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        getViewModel().setText(getResources().getString(R.string.title_home));
-                        return true;
-                    case R.id.navigation_dashboard:
-                        getViewModel().setText(getResources().getString(R.string.title_dashboard));
-                        return true;
-                    case R.id.navigation_notifications:
-                        getViewModel().setText(getResources().getString(R.string.title_notifications));
-                        return true;
-                }
-                return false;
-            };
-
     @Override
     protected void onResume() {
         super.onResume();
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setViewModel(getViewModel());
-        binding.flow.setOnDragListener(this::onFlowDrag);
-        binding.button.setOnClickListener(this::onButtonClick);
-
-        //checkPermissionAndExecute(databaseManager::restore);
-
-        loadNewWord();
+        databaseManager
+                .getActiveDbInstance()
+                .translationStorageDao()
+                .getWordCount()
+                .flatMapCompletable(cnt -> {
+                    if (cnt == 0) {
+                        return checkPermissionAndExecute(databaseManager::restore);
+                    }
+                    return Completable.complete();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+                    binding.setViewModel(getViewModel());
+                    binding.flow.setOnDragListener(this::onFlowDrag);
+                    binding.button.setOnClickListener(this::onButtonClick);
+                    loadNewWord();
+                }, this::onError);
     }
 
     private void loadNewWord() {
@@ -129,7 +126,9 @@ public class MainActivity extends ViewActivity<MainViewModel> {
     }
 
     private void onButtonClick(View view) {
-        getViewModel().checkAnswers();
+        if (getViewModel().checkAnswers()) {
+            loadNewWord();
+        }
     }
 
     private boolean onFlowDrag(View v, DragEvent event) {
@@ -150,8 +149,7 @@ public class MainActivity extends ViewActivity<MainViewModel> {
     }
 
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction()==MotionEvent.ACTION_DOWN)
-        {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
             v.startDrag(null, shadowBuilder, v, 0);
             return true;
@@ -185,25 +183,26 @@ public class MainActivity extends ViewActivity<MainViewModel> {
         return true;
     }
 
-    private void checkPermissionAndExecute(io.reactivex.functions.Action action) {
+    private Completable checkPermissionAndExecute(io.reactivex.functions.Action action) {
         if (isExternalStoragePermitted()) {
             try {
                 action.run();
-                return;
+                return Completable.complete();
             } catch (Exception ex) {
-                onError(ex);
-                return;
+                return Completable.error(ex);
             }
         }
         permissionRequestSubject = PublishSubject.create();
-        permissionRequestSubject.subscribe(
-                allowed -> {
-                    if (allowed) {
-                        action.run();
-                    }
-                },
-                this::onError);
+        Completable completable = permissionRequestSubject.
+                flatMapCompletable(
+                        allowed -> {
+                            if (allowed) {
+                                action.run();
+                            }
+                            return Completable.complete();
+                        });
         requestStoragePermissions();
+        return completable;
     }
 
     @Override
