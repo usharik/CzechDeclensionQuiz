@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.usharik.app.dao.DatabaseManager;
 import com.usharik.app.framework.ViewActivity;
 import com.usharik.app.databinding.ActivityMainBinding;
+import com.usharik.app.widget.CustomDragShadowBuilder;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -60,10 +61,12 @@ public class MainActivity extends ViewActivity<MainViewModel> {
     @Inject
     DatabaseManager databaseManager;
 
+    @Inject
+    AppState appState;
+
     @Override
     protected void onResume() {
         super.onResume();
-
         databaseManager
                 .getActiveDbInstance()
                 .translationStorageDao()
@@ -81,12 +84,15 @@ public class MainActivity extends ViewActivity<MainViewModel> {
                     binding.setViewModel(getViewModel());
                     binding.flow.setOnDragListener(this::onFlowDrag);
                     binding.button.setOnClickListener(this::onButtonClick);
-                    loadNewWord();
+                    if (appState.wordInfo == null) {
+                        getViewModel().nextWord();
+                    }
+                    setListeners();
                 }, this::onError);
     }
 
-    private void loadNewWord() {
-        getViewModel().getWordDeclension();
+    private void setListeners() {
+        getViewModel().update();
 
         binding.case1.caseSingular.setOnDragListener(this::onDrag);
         binding.case1.casePlural.setOnDragListener(this::onDrag);
@@ -127,7 +133,8 @@ public class MainActivity extends ViewActivity<MainViewModel> {
 
     private void onButtonClick(View view) {
         if (getViewModel().checkAnswers()) {
-            loadNewWord();
+            getViewModel().nextWord();
+            setListeners();
         }
     }
 
@@ -150,7 +157,7 @@ public class MainActivity extends ViewActivity<MainViewModel> {
 
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+            CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder(v, 2f);
             v.startDrag(null, shadowBuilder, v, 0);
             return true;
         }

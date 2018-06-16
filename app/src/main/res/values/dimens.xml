@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="activity_half_horizontal_margin">5dp</dimen>
     <dimen name="activity_half_vertical_margin">5dp</dimen>
+    <dimen name="draggable_font_size">17sp</dimen>
+    <dimen name="static_font_size">13sp</dimen>
 </resources>

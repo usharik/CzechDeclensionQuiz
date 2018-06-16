@@ -23,12 +23,6 @@ public class MainViewModel extends ViewModelObservable {
 
     private final AppState appState;
     private WordService wordService;
-    private String text;
-
-    private WordTextModel[] wordTextModels = new WordTextModel[14];
-
-    private String[][] correctAnswers = new String[2][7];
-    private int[][] actualAnswers = new int[2][7];
 
     @Inject
     public MainViewModel(final AppState appState,
@@ -38,48 +32,63 @@ public class MainViewModel extends ViewModelObservable {
     }
 
     @Bindable
-    public String getText() {
-        return text;
+    public String getWord() {
+        return appState.wordInfo.word;
     }
 
-    public void setText(String text) {
-        this.text = text;
-        notifyPropertyChanged(BR.text);
+    @Bindable
+    public String getGender() {
+        return appState.wordInfo.gender;
     }
 
-    public void getWordDeclension() {
-        WordService.WordInfo nextWord = wordService.getNextWord();
+    @Bindable
+    public String getTranslation() {
+        return appState.wordInfo.translation;
+    }
 
+    public void nextWord() {
+        appState.wordInfo = wordService.getNextWord();
         List<WordTextModel> words = new ArrayList<>();
         for (int i=0; i<7; i++) {
-            words.add(new WordTextModel(nextWord.cases[SINGULAR][i], View.VISIBLE));
-            words.add(new WordTextModel(nextWord.cases[PLURAL][i], View.VISIBLE));
-
-            correctAnswers[SINGULAR][i] = nextWord.cases[SINGULAR][i];
-            correctAnswers[PLURAL][i] = nextWord.cases[PLURAL][i];
-
-            actualAnswers[SINGULAR][i] = -1;
-            actualAnswers[PLURAL][i] = -1;
+            String singular = appState.wordInfo.cases[SINGULAR][i].replaceAll("[0-9]", "");
+            String plural = appState.wordInfo.cases[PLURAL][i].replaceAll("[0-9]", "");
+            words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
+            words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
+            appState.correctAnswers[SINGULAR][i] = singular;
+            appState.correctAnswers[PLURAL][i] = plural;
+            appState.actualAnswers[SINGULAR][i] = -1;
+            appState.actualAnswers[PLURAL][i] = -1;
         }
         Collections.shuffle(words);
-        wordTextModels = words.toArray(new WordTextModel[words.size()]);
+        appState.wordTextModels = words.toArray(new WordTextModel[words.size()]);
+        update();
+    }
+
+    public void update() {
+        notifyPropertyChanged(BR.word);
+        notifyPropertyChanged(BR.gender);
+        notifyPropertyChanged(BR.translation);
     }
 
     public boolean checkAnswers() {
         boolean res=true;
         for (int i=0; i<7; i++) {
-            int actualAnswerSingularIx = actualAnswers[SINGULAR][i];
-            if (!correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
+            int actualAnswerSingularIx = appState.actualAnswers[SINGULAR][i];
+            if (actualAnswerSingularIx == -1) {
+                res = appState.correctAnswers[SINGULAR][i].isEmpty();
+            } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
                 res = false;
-                wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
-                actualAnswers[SINGULAR][i] = -1;
+                appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
+                appState.actualAnswers[SINGULAR][i] = -1;
             }
 
-            int actualAnswerPluralIx = actualAnswers[PLURAL][i];
-            if (!correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
+            int actualAnswerPluralIx = appState.actualAnswers[PLURAL][i];
+            if (actualAnswerPluralIx == -1) {
+                res = appState.correctAnswers[PLURAL][i].isEmpty();
+            } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
                 res = false;
-                wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
-                actualAnswers[PLURAL][i] = -1;
+                appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
+                appState.actualAnswers[PLURAL][i] = -1;
             }
         }
         notifyPropertyChanged(BR.wordTextModels);
@@ -89,39 +98,39 @@ public class MainViewModel extends ViewModelObservable {
 
     @Bindable
     public WordTextModel[] getWordTextModels() {
-        return wordTextModels;
+        return appState.wordTextModels;
     }
 
     @Bindable
     public int[][] getCaseModels() {
-        return actualAnswers;
+        return appState.actualAnswers;
     }
 
     public String getWordByIndex(int ix) {
         if (ix == -1) {
             return "";
         }
-        return wordTextModels[ix].getWord();
+        return appState.wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {
-        wordTextModels[num].visible = visible;
+        appState.wordTextModels[num].visible = visible;
         notifyPropertyChanged(BR.wordTextModels);
     }
 
     public void updateCaseModel(int caseNum, int number, int wordIx) {
-        if (actualAnswers[number][caseNum] != -1) {
-            wordTextModels[actualAnswers[number][caseNum]].visible = View.VISIBLE;
+        if (appState.actualAnswers[number][caseNum] != -1) {
+            appState.wordTextModels[appState.actualAnswers[number][caseNum]].visible = View.VISIBLE;
             notifyPropertyChanged(BR.wordTextModels);
         }
-        actualAnswers[number][caseNum] = wordIx;
+        appState.actualAnswers[number][caseNum] = wordIx;
         notifyPropertyChanged(BR.caseModels);
     }
 
     public void swapCaseModels(int caseNum1, int number1, int caseNum2, int number2) {
-        int tmp = actualAnswers[number1][caseNum1];
-        actualAnswers[number1][caseNum1] = actualAnswers[number2][caseNum2];
-        actualAnswers[number2][caseNum2] = tmp;
+        int tmp = appState.actualAnswers[number1][caseNum1];
+        appState.actualAnswers[number1][caseNum1] = appState.actualAnswers[number2][caseNum2];
+        appState.actualAnswers[number2][caseNum2] = tmp;
         notifyPropertyChanged(BR.caseModels);
     }
 

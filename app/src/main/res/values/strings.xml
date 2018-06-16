@@ -1,8 +1,5 @@
 <resources>
-    <string name="app_name">Application name</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">Czech declension quiz</string>
 
     <array name="caseName">
         <item>Nominativ</item>
