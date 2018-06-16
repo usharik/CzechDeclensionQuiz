@@ -21,6 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="@{viewModel.word}"
             android:textStyle="bold"
             android:textSize="@dimen/static_font_size"
@@ -33,6 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="@{viewModel.gender}"
             android:textSize="@dimen/static_font_size"
             app:layout_constraintRight_toRightOf="parent"
@@ -41,9 +45,11 @@
 
         <TextView
             android:id="@+id/translation"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
+            android:paddingStart="3dp"
+            android:paddingEnd="3dp"
             android:text="@{viewModel.translation}"
             android:textSize="@dimen/static_font_size"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -334,17 +340,26 @@
             android:tag="6"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/button"
+            app:layout_constraintBottom_toTopOf="@id/checkAnswers"
             app:num="@{6}"
             app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][6])}"
             app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][6])}" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/checkAnswers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:text="@string/check"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/nextWord"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <Button
+            android:id="@+id/nextWord"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/next"
+            app:layout_constraintLeft_toRightOf="@id/checkAnswers"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 

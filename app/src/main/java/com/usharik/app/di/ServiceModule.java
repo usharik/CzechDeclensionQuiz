@@ -2,9 +2,9 @@ package com.usharik.app.di;
 
 import android.app.Application;
 
+import com.example.database.dao.DatabaseManager;
 import com.usharik.app.AppState;
 import com.usharik.app.service.WordService;
-import com.usharik.app.dao.DatabaseManager;
 
 import javax.inject.Singleton;
 

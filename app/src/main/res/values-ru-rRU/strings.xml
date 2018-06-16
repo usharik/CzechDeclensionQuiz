@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Склонения в чешском</string>
+    <string name="check">Проверить</string>
+    <string name="next">Дальше</string>
 </resources>

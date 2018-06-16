@@ -1,4 +1,4 @@
-package com.usharik.app.dao;
+package com.example.database.dao;
 
 import android.arch.persistence.room.TypeConverter;
 

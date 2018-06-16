@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Czech declension quiz</string>
+    <string name="check">Check</string>
+    <string name="next">Next</string>
 
     <array name="caseName">
         <item>Nominativ</item>

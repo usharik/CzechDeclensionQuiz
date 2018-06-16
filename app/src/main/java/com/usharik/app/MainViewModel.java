@@ -68,6 +68,8 @@ public class MainViewModel extends ViewModelObservable {
         notifyPropertyChanged(BR.word);
         notifyPropertyChanged(BR.gender);
         notifyPropertyChanged(BR.translation);
+        notifyPropertyChanged(BR.wordTextModels);
+        notifyPropertyChanged(BR.caseModels);
     }
 
     public boolean checkAnswers() {

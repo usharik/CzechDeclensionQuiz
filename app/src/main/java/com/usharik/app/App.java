@@ -2,18 +2,17 @@ package com.usharik.app;
 
 import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 
-import com.couchbase.lite.Database;
-import com.couchbase.lite.DatabaseConfiguration;
-import com.couchbase.lite.MutableDocument;
-import com.usharik.app.dao.DatabaseManager;
+import com.example.database.dao.DatabaseManager;
+import com.example.database.dao.DocumentDatabase;
 import com.usharik.app.di.DaggerAppComponent;
 
 import javax.inject.Inject;
 
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import io.reactivex.Completable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by macbook on 08.02.18.
@@ -24,26 +23,23 @@ public class App extends Application implements HasActivityInjector {
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
-//    @Inject
-//    DatabaseManager databaseManager;
+    @Inject
+    DatabaseManager databaseManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         DaggerAppComponent.builder().create(this).inject(this);
 
-//        try {
-//            DatabaseConfiguration config = new DatabaseConfiguration(getApplicationContext());
-//            Database database = new Database("mydb", config);
-//
-//            MutableDocument mutableDoc = new MutableDocument()
-//                    .setFloat("version", 2.0F)
-//                    .setString("type", "SDK");
-//
-//            database.save(mutableDoc);
-//        } catch (Exception ex) {
-//            Log.e(getClass().getName(), "Exception", ex);
-//        }
+        databaseManager.getDocumentDb().getCount()
+                .flatMapCompletable(cnt -> {
+                    if (cnt == 0) {
+                        databaseManager.restore(getAssets().open(DocumentDatabase.DB_NAME));
+                    }
+                    return Completable.complete();
+                })
+                .subscribeOn(Schedulers.io())
+                .blockingAwait();
     }
 
     @Override

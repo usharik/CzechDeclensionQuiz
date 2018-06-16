@@ -1,16 +1,12 @@
 package com.usharik.app;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.usharik.app.dao.DatabaseManager;
+import com.example.database.dao.DatabaseManager;
 import com.usharik.app.framework.ViewActivity;
 import com.usharik.app.databinding.ActivityMainBinding;
 import com.usharik.app.widget.CustomDragShadowBuilder;
@@ -20,11 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
-
-import io.reactivex.Completable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 
 public class MainActivity extends ViewActivity<MainViewModel> {
 
@@ -49,13 +40,6 @@ public class MainActivity extends ViewActivity<MainViewModel> {
         return Collections.unmodifiableSet(res);
     }
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-    private PublishSubject<Boolean> permissionRequestSubject;
-
     private ActivityMainBinding binding;
 
     @Inject
@@ -67,28 +51,15 @@ public class MainActivity extends ViewActivity<MainViewModel> {
     @Override
     protected void onResume() {
         super.onResume();
-        databaseManager
-                .getActiveDbInstance()
-                .translationStorageDao()
-                .getWordCount()
-                .flatMapCompletable(cnt -> {
-                    if (cnt == 0) {
-                        return checkPermissionAndExecute(databaseManager::restore);
-                    }
-                    return Completable.complete();
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-                    binding.setViewModel(getViewModel());
-                    binding.flow.setOnDragListener(this::onFlowDrag);
-                    binding.button.setOnClickListener(this::onButtonClick);
-                    if (appState.wordInfo == null) {
-                        getViewModel().nextWord();
-                    }
-                    setListeners();
-                }, this::onError);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setViewModel(getViewModel());
+        binding.flow.setOnDragListener(this::onFlowDrag);
+        binding.checkAnswers.setOnClickListener(this::onCheckAnswerButtonClick);
+        binding.nextWord.setOnClickListener(this::onNextWordButtonClicke);
+        if (appState.wordInfo == null) {
+            getViewModel().nextWord();
+        }
+        setListeners();
     }
 
     private void setListeners() {
@@ -131,11 +102,13 @@ public class MainActivity extends ViewActivity<MainViewModel> {
         binding.word14.setOnTouchListener(this::onTouch);
     }
 
-    private void onButtonClick(View view) {
-        if (getViewModel().checkAnswers()) {
-            getViewModel().nextWord();
-            setListeners();
-        }
+    private void onCheckAnswerButtonClick(View view) {
+        getViewModel().checkAnswers();
+    }
+
+    private void onNextWordButtonClicke(View view) {
+        getViewModel().nextWord();
+        setListeners();
     }
 
     private boolean onFlowDrag(View v, DragEvent event) {
@@ -188,60 +161,6 @@ public class MainActivity extends ViewActivity<MainViewModel> {
             }
         }
         return true;
-    }
-
-    private Completable checkPermissionAndExecute(io.reactivex.functions.Action action) {
-        if (isExternalStoragePermitted()) {
-            try {
-                action.run();
-                return Completable.complete();
-            } catch (Exception ex) {
-                return Completable.error(ex);
-            }
-        }
-        permissionRequestSubject = PublishSubject.create();
-        Completable completable = permissionRequestSubject.
-                flatMapCompletable(
-                        allowed -> {
-                            if (allowed) {
-                                action.run();
-                            }
-                            return Completable.complete();
-                        });
-        requestStoragePermissions();
-        return completable;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grants) {
-        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
-            for (int permission : grants) {
-                if (permission != PackageManager.PERMISSION_GRANTED) {
-                    permissionRequestSubject.onNext(false);
-                    permissionRequestSubject.onComplete();
-                    return;
-                }
-            }
-            permissionRequestSubject.onNext(true);
-            permissionRequestSubject.onComplete();
-        }
-    }
-
-    private boolean isExternalStoragePermitted() {
-        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        return permission == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestStoragePermissions() {
-        ActivityCompat.requestPermissions(
-                this,
-                PERMISSIONS_STORAGE,
-                REQUEST_EXTERNAL_STORAGE
-        );
-    }
-
-    public void onError(Throwable thr) {
-        Log.e(getClass().getName(), thr.getLocalizedMessage(), thr);
     }
 
     @Override

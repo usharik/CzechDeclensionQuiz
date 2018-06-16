@@ -1,11 +1,13 @@
-package com.usharik.app.dao;
+package com.example.database.dao;
 
 import android.content.Context;
 import android.os.Environment;
 
-import com.usharik.app.BuildConfig;
-import com.usharik.app.UrlRepository;
+import com.example.database.DocumentDb;
+import com.example.database.WordInfo;
+import com.google.gson.Gson;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,26 +18,35 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
+import io.reactivex.Maybe;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by macbook on 14/03/2018.
  */
 
 public class DatabaseManager {
 
-    private static final String BACKUP_FOLDER = "/Seznam-Slovnik/";
+    private static final String BACKUP_FOLDER = "/Declination-Quiz/";
 
     private Context context;
-    private AppDatabase instance;
+    private DocumentDatabase instance;
+    private Gson gson = new Gson();
+    private DocumentDb documentDb = new DocumentDbImpl();
 
     public DatabaseManager(Context context) {
         this.context = context;
     }
 
-    public synchronized AppDatabase getActiveDbInstance() {
+    private synchronized DocumentDatabase getActiveDbInstance() {
         if (instance == null || !instance.isOpen()) {
-            instance = AppDatabase.getAppDatabase(context);
+            instance = DocumentDatabase.getDocumentDatabase(context);
         }
         return instance;
+    }
+
+    public synchronized DocumentDb getDocumentDb() {
+        return documentDb;
     }
 
     public void close() {
@@ -61,14 +72,30 @@ public class DatabaseManager {
         }
         String sourcePath = getDatabasePath();
         String destPath = Environment.getExternalStorageDirectory() + BACKUP_FOLDER;
-        copyFile(sourcePath, AppDatabase.DB_NAME, destPath, AppDatabase.DB_NAME);
+        copyFile(sourcePath, DocumentDatabase.DB_NAME, destPath, DocumentDatabase.DB_NAME);
     }
 
     public void restore() throws IOException {
         close();
         String sourcePath = Environment.getExternalStorageDirectory() + BACKUP_FOLDER;
         String destPath = getDatabasePath();
-        copyFile(sourcePath, AppDatabase.DB_NAME, destPath, AppDatabase.DB_NAME);
+        copyFile(sourcePath, DocumentDatabase.DB_NAME, destPath, DocumentDatabase.DB_NAME);
+    }
+
+    public void restore(InputStream stream) throws IOException {
+        close();
+        OutputStream output = new BufferedOutputStream(new FileOutputStream(getDatabasePath() + DocumentDatabase.DB_NAME));
+
+        byte data[] = new byte[1024];
+        int count;
+
+        while ((count = stream.read(data)) != -1) {
+            output.write(data, 0, count);
+        }
+
+        output.flush();
+        output.close();
+        stream.close();
     }
 
     private HttpURLConnection getHttpURLConnection(String link) throws IOException {
@@ -82,10 +109,10 @@ public class DatabaseManager {
         return conn;
     }
 
-    public void restoreFromUrl() throws IOException {
+    public void restoreFromUrl(String link) throws IOException {
         close();
-        HttpURLConnection conn = getHttpURLConnection(getDictionaryUrl());
-        String fileName = BACKUP_FOLDER + AppDatabase.DB_NAME;
+        HttpURLConnection conn = getHttpURLConnection(link);
+        String fileName = BACKUP_FOLDER + DocumentDatabase.DB_NAME;
         String destFileName = Environment.getExternalStorageDirectory() + fileName;
         File destFile = new File(Environment.getExternalStorageDirectory(), fileName);
         if (!createBackupFolderIfNotExists()) {
@@ -97,8 +124,8 @@ public class DatabaseManager {
         destFile.createNewFile();
         int loadedCount = 0;
         int fileLength;
-        try(InputStream input = conn.getInputStream();
-            OutputStream output = new FileOutputStream(destFileName)) {
+        try (InputStream input = conn.getInputStream();
+             OutputStream output = new FileOutputStream(destFileName)) {
             fileLength = conn.getContentLength();
             byte buffer[] = new byte[16384];
             int count;
@@ -106,8 +133,7 @@ public class DatabaseManager {
                 output.write(buffer, 0, count);
                 loadedCount += count;
             }
-        }
-        finally {
+        } finally {
             if (conn != null) {
                 conn.disconnect();
             }
@@ -120,10 +146,6 @@ public class DatabaseManager {
 
     private String getDatabasePath() {
         return Environment.getDataDirectory() + "/data/" + context.getPackageName() + "/databases/";
-    }
-
-    private String getDictionaryUrl() {
-        return UrlRepository.APPLICATION_HOME + "/releases/download/" + BuildConfig.VERSION_NAME + "/" + AppDatabase.DB_NAME;
     }
 
     private void copyFile(String sourcePath,
@@ -140,5 +162,26 @@ public class DatabaseManager {
         destination.transferFrom(source, 0, source.size());
         source.close();
         destination.close();
+    }
+
+    private class DocumentDbImpl implements DocumentDb {
+
+        @Override
+        public Maybe<Long> getCount() {
+            return getActiveDbInstance().documentDao().getCount()
+                    .subscribeOn(Schedulers.io());
+        }
+
+        @Override
+        public Maybe<WordInfo> getWordInfoById(long id) {
+            return getActiveDbInstance().documentDao().getJsonString(id)
+                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .subscribeOn(Schedulers.io());
+        }
+
+        @Override
+        public long addWordInfo(WordInfo wordInfo) {
+            return getActiveDbInstance().documentDao().insertDocument(new DocumentEntity(wordInfo.wordId, gson.toJson(wordInfo)));
+        }
     }
 }
