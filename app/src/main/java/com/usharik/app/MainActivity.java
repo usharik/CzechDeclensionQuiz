@@ -1,7 +1,10 @@
 package com.usharik.app;
 
 import android.databinding.DataBindingUtil;
+import android.support.v7.app.AlertDialog;
 import android.view.DragEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -54,8 +57,6 @@ public class MainActivity extends ViewActivity<MainViewModel> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setViewModel(getViewModel());
         binding.flow.setOnDragListener(this::onFlowDrag);
-        binding.checkAnswers.setOnClickListener(this::onCheckAnswerButtonClick);
-        binding.nextWord.setOnClickListener(this::onNextWordButtonClicke);
         if (appState.wordInfo == null) {
             getViewModel().nextWord();
         }
@@ -102,11 +103,35 @@ public class MainActivity extends ViewActivity<MainViewModel> {
         binding.word14.setOnTouchListener(this::onTouch);
     }
 
-    private void onCheckAnswerButtonClick(View view) {
-        getViewModel().checkAnswers();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
-    private void onNextWordButtonClicke(View view) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_check:
+                if (getViewModel().checkAnswers()) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.correct_answer)
+                            .setPositiveButton(R.string.Yes, (d, w) -> nextWord())
+                            .setNegativeButton(R.string.No, (d, w) -> { })
+                            .setCancelable(false)
+                            .show();
+                }
+                return true;
+            case R.id.action_next:
+                nextWord();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void nextWord() {
         getViewModel().nextWord();
         setListeners();
     }

@@ -2,6 +2,10 @@
     <string name="app_name">Czech declension quiz</string>
     <string name="check">Check</string>
     <string name="next">Next</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="correct_answer">All is correct! Would you like to go to the next word?</string>
 
     <array name="caseName">
         <item>Nominativ</item>
@@ -18,17 +22,17 @@
         <item>koho? čeho?</item>
         <item>komu? čemu?</item>
         <item>koho? co?</item>
-        <item></item>
+        <item>-</item>
         <item>(o) kom? (o) čem?</item>
         <item>kým? čím?</item>
     </array>
 
     <array name="caseHint">
-        <item></item>
+        <item>-</item>
         <item>bez</item>
         <item>ke</item>
         <item>vidim</item>
-        <item></item>
+        <item>-</item>
         <item>o</item>
         <item>s</item>
     </array>
