@@ -1,13 +1,17 @@
 package com.usharik.app;
 
 import android.databinding.Bindable;
+import android.databinding.BindingAdapter;
 import android.view.View;
+import android.widget.TextView;
 
 import com.usharik.app.framework.ViewModelObservable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -23,6 +27,7 @@ public class MainViewModel extends ViewModelObservable {
 
     private final AppState appState;
     private WordService wordService;
+    private static Map<TextView, String> textView2value = new HashMap<>();
 
     @Inject
     public MainViewModel(final AppState appState,
@@ -134,6 +139,19 @@ public class MainViewModel extends ViewModelObservable {
         appState.actualAnswers[number1][caseNum1] = appState.actualAnswers[number2][caseNum2];
         appState.actualAnswers[number2][caseNum2] = tmp;
         notifyPropertyChanged(BR.caseModels);
+    }
+
+    @BindingAdapter("animateView")
+    public static void setAnimateView(TextView textView, boolean animateView) {
+        String prevText = textView2value.get(textView);
+        if (!textView.getText().toString().equals(prevText)) {
+            textView2value.put(textView, textView.getText().toString());
+            textView.setRotationX(0);
+            textView.animate()
+                    .rotationX(360)
+                    .setDuration(500)
+                    .start();
+        }
     }
 
     public class WordTextModel {
