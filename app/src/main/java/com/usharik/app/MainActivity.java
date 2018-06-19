@@ -1,6 +1,9 @@
 package com.usharik.app;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -116,9 +119,8 @@ public class MainActivity extends ViewActivity<MainViewModel> {
             case R.id.action_check:
                 if (getViewModel().checkAnswers()) {
                     new AlertDialog.Builder(this)
-                            .setMessage(R.string.correct_answer)
-                            .setPositiveButton(R.string.Yes, (d, w) -> nextWord())
-                            .setNegativeButton(R.string.No, (d, w) -> { })
+                            .setTitle(R.string.correct_answer)
+                            .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
                             .setCancelable(false)
                             .show();
                 } else {
@@ -131,6 +133,19 @@ public class MainActivity extends ViewActivity<MainViewModel> {
             default:
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
+        switch (i) {
+            case 0:
+                nextWord();
+                return;
+            case 1:
+                return;
+            case 2:
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=" + this.getPackageName())));
         }
     }
 

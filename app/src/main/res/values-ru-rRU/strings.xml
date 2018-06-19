@@ -5,6 +5,12 @@
     <string name="next">Дальше</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
-    <string name="correct_answer">Все правильно! Перейти к следующему слову?</string>
+    <string name="correct_answer">Все правильно!</string>
     <string name="toast_some_errors">Допущено несколько ошибок.</string>
+
+    <string-array name="next_word_dialog">
+        <item>Следующее слово</item>
+        <item>Остаться</item>
+        <item>Оценить приложение</item>
+    </string-array>
 </resources>

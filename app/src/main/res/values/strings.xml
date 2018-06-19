@@ -5,8 +5,14 @@
     <string name="OK" translatable="false">OK</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="correct_answer">All is correct! Would you like to go to the next word?</string>
+    <string name="correct_answer">All is correct!</string>
     <string name="toast_some_errors">There\'re some errors.</string>
+
+    <string-array name="next_word_dialog">
+        <item>Next word</item>
+        <item>Stay here</item>
+        <item>Rate application</item>
+    </string-array>
 
     <array name="caseName">
         <item>Nominativ</item>
