@@ -144,13 +144,16 @@ public class MainViewModel extends ViewModelObservable {
     @BindingAdapter("animateView")
     public static void setAnimateView(TextView textView, boolean animateView) {
         String prevText = textView2value.get(textView);
-        if (!textView.getText().toString().equals(prevText)) {
-            textView2value.put(textView, textView.getText().toString());
+        String text = textView.getText().toString();
+        if ((prevText != null && !prevText.isEmpty()) && text.isEmpty()) {
             textView.setRotationX(0);
             textView.animate()
                     .rotationX(360)
                     .setDuration(500)
                     .start();
+        }
+        if (!textView.getText().toString().equals(prevText)) {
+            textView2value.put(textView, text);
         }
     }
 

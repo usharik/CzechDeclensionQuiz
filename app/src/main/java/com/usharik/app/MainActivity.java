@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.example.database.dao.DatabaseManager;
 import com.usharik.app.framework.ViewActivity;
 import com.usharik.app.databinding.ActivityMainBinding;
@@ -120,6 +121,8 @@ public class MainActivity extends ViewActivity<MainViewModel> {
                             .setNegativeButton(R.string.No, (d, w) -> { })
                             .setCancelable(false)
                             .show();
+                } else {
+                    Toast.makeText(this, R.string.toast_some_errors, Toast.LENGTH_LONG).show();
                 }
                 return true;
             case R.id.action_next:

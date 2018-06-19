@@ -6,4 +6,5 @@
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="correct_answer">Все правильно! Перейти к следующему слову?</string>
+    <string name="toast_some_errors">Допущено несколько ошибок.</string>
 </resources>
