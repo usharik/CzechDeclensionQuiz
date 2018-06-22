@@ -1,7 +1,6 @@
 package com.usharik.app.di;
 
-import com.usharik.app.MainActivity;
-
+import com.usharik.app.fragment.DeclensionQuizFragment;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
@@ -12,5 +11,5 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivityModule {
     @ContributesAndroidInjector
-    abstract MainActivity contributeMainActivity();
+    abstract DeclensionQuizFragment contributeDeclensionQuizFragment();
 }
