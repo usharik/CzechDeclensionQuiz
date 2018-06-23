@@ -7,6 +7,7 @@
     <string name="No">Нет</string>
     <string name="correct_answer">Все правильно!</string>
     <string name="toast_some_errors">Допущено несколько ошибок.</string>
+    <string name="version">Версия %s %s</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>

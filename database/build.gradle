@@ -6,7 +6,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 101
-        versionName "1.0!-RC"
+        versionName "1.01-RC"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

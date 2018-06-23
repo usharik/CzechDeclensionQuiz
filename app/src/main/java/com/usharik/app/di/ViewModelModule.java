@@ -3,7 +3,8 @@ package com.usharik.app.di;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.usharik.app.MainViewModel;
+import com.usharik.app.fragment.DeclensionQuizViewModel;
+import com.usharik.app.fragment.HandbookViewModel;
 
 import dagger.Binds;
 import dagger.Module;
@@ -17,8 +18,13 @@ import dagger.multibindings.IntoMap;
 abstract class ViewModelModule {
     @Binds
     @IntoMap
-    @ViewModelKey(MainViewModel.class)
-    abstract ViewModel bindMainViewModel(MainViewModel userViewModel);
+    @ViewModelKey(DeclensionQuizViewModel.class)
+    abstract ViewModel bindDeclensionQuizViewModel(DeclensionQuizViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HandbookViewModel.class)
+    abstract ViewModel bindHandbookViewModel(HandbookViewModel userViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(AppViewModelFactory factory);

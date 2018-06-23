@@ -11,7 +11,6 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.usharik.app.AppState;
-import com.usharik.app.MainViewModel;
 import com.usharik.app.R;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
@@ -22,7 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DeclensionQuizFragment extends ViewFragment<MainViewModel> {
+public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel> {
 
     private static final Set<Integer> wordEditViewSet = buildWordEditViewSet();
 
@@ -199,7 +198,7 @@ public class DeclensionQuizFragment extends ViewFragment<MainViewModel> {
     }
 
     @Override
-    protected Class<MainViewModel> getViewModelClass() {
-        return MainViewModel.class;
+    protected Class<DeclensionQuizViewModel> getViewModelClass() {
+        return DeclensionQuizViewModel.class;
     }
 }

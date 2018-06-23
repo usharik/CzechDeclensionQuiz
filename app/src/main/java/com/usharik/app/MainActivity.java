@@ -1,8 +1,10 @@
 package com.usharik.app;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
+import com.usharik.app.fragment.HandbookFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        replaceFragment(R.id.fragmentContainer, new DeclensionQuizFragment(), null);
     }
 
     private boolean onNavigatorItemSelected(MenuItem item) {
@@ -38,23 +42,25 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
         switch (item.getItemId()) {
             case R.id.nav_quiz: {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentContainer, new DeclensionQuizFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
+                replaceFragment(R.id.fragmentContainer, new DeclensionQuizFragment(), null);
                 return true;
             }
             case R.id.nav_handbook:
+                replaceFragment(R.id.fragmentContainer, new HandbookFragment(), null);
                 return true;
             case R.id.nav_about: {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragmentContainer, new AboutFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
+                replaceFragment(R.id.fragmentContainer, new AboutFragment(), null);
                 return true;
             }
         }
         return true;
+    }
+
+    private void replaceFragment(@IdRes int containerId, Fragment fragment, String name) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(containerId, fragment);
+        transaction.addToBackStack(name);
+        transaction.commit();
     }
 
     @Override

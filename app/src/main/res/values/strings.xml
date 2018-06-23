@@ -7,6 +7,7 @@
     <string name="No">No</string>
     <string name="correct_answer">All is correct!</string>
     <string name="toast_some_errors">There\'re some errors.</string>
+    <string name="version">Version %s %s</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>
