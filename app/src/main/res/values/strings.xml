@@ -8,6 +8,15 @@
     <string name="correct_answer">All is correct!</string>
     <string name="toast_some_errors">There\'re some errors.</string>
     <string name="version">Version %s %s</string>
+    <string name="gender_of_noun">Gender of noun</string>
+    <string name="type_of_declension">Type of declension</string>
+    <string name="masculine">Masculine</string>
+    <string name="neuter">Neuter</string>
+    <string name="feminine">Feminine</string>
+    <string name="declension_quiz_1">Declension quiz</string>
+    <string name="handbook">Handbook</string>
+    <string name="about">About</string>
+    <string name="other_nouns">Other nouns:</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>

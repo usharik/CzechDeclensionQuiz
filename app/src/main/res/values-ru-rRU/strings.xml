@@ -8,6 +8,15 @@
     <string name="correct_answer">Все правильно!</string>
     <string name="toast_some_errors">Допущено несколько ошибок.</string>
     <string name="version">Версия %s %s</string>
+    <string name="gender_of_noun">Род существительного</string>
+    <string name="type_of_declension">Тип склонения</string>
+    <string name="masculine">Мужской</string>
+    <string name="neuter">Средний</string>
+    <string name="feminine">Женский</string>
+    <string name="declension_quiz_1">Упражнение на сконения</string>
+    <string name="handbook">Справочник</string>
+    <string name="about">О программе</string>
+    <string name="other_nouns">Другие существительные:</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>

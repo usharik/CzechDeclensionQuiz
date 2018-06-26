@@ -6,8 +6,8 @@ package com.usharik.app;
         for (DocumentEntity de : allDocuments) {
             WordInfo wordInfo = gson.fromJson(de.getJson(), WordInfo.class);
             wordInfo.word = wordInfo.word.replaceAll("[0-9]", "");
-            if (wordInfo.translation.matches(".*\\,\\s")) {
-                wordInfo.translation = wordInfo.translation.substring(0, wordInfo.translation.length() - 2);
+            if (wordInfo.translation_ru.matches(".*\\,\\s")) {
+                wordInfo.translation_ru = wordInfo.translation_ru.substring(0, wordInfo.translation_ru.length() - 2);
             }
             for (int i=0; i<7; i++) {
                 if (wordInfo.cases[0].length > i) {

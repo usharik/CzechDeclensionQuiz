@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 
 import android.support.v4.app.Fragment;
-import com.example.database.dao.DatabaseManager;
-import com.example.database.dao.DocumentDatabase;
+import android.widget.Toast;
+
+import com.usharik.database.dao.DatabaseManager;
+import com.usharik.database.dao.DocumentDatabase;
 import com.usharik.app.di.DaggerAppComponent;
 
 import javax.inject.Inject;
@@ -15,6 +17,8 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -40,7 +44,7 @@ public class App extends Application implements HasActivityInjector, HasSupportF
         databaseManager.getDocumentDb().getCount()
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {
-                        databaseManager.restore(getAssets().open(DocumentDatabase.DB_NAME));
+                        databaseManager.populateFromJsonStream(getAssets().open("data.json"));
                     }
                     return Completable.complete();
                 })

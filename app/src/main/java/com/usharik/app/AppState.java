@@ -1,6 +1,6 @@
 package com.usharik.app;
 
-import com.example.database.WordInfo;
+import com.usharik.database.WordInfo;
 import com.usharik.app.fragment.DeclensionQuizViewModel;
 
 /**
@@ -12,4 +12,8 @@ public class AppState {
     public DeclensionQuizViewModel.WordTextModel[] wordTextModels = new DeclensionQuizViewModel.WordTextModel[14];
     public String[][] correctAnswers = new String[2][7];
     public int[][] actualAnswers = new int[2][7];
+
+    public String selectedWord;
+    public int selectedWordId;
+    public int selectedGender;
 }
