@@ -84,7 +84,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         for (int i=0; i<7; i++) {
             int actualAnswerSingularIx = appState.actualAnswers[SINGULAR][i];
             if (actualAnswerSingularIx == -1) {
-                res = appState.correctAnswers[SINGULAR][i].isEmpty();
+                res &= appState.correctAnswers[SINGULAR][i].isEmpty();
             } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
                 res = false;
                 appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
@@ -93,7 +93,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
             int actualAnswerPluralIx = appState.actualAnswers[PLURAL][i];
             if (actualAnswerPluralIx == -1) {
-                res = appState.correctAnswers[PLURAL][i].isEmpty();
+                res &= appState.correctAnswers[PLURAL][i].isEmpty();
             } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
                 res = false;
                 appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;

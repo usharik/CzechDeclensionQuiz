@@ -32,21 +32,32 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.handbook_fragment, container, false);
         binding.setViewModel(getViewModel());
-        binding.wordGroup.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
-        binding.genderGroup.check(getViewModel().getSelectedGender());
-        binding.wordGroup.check(getViewModel().getSelectedWordId());
+        binding.wordGroupMasculine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
+        binding.wordGroupFeminine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
+        binding.wordGroupNeuter.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
+        getViewModel().setSelectedGender(getViewModel().getSelectedGender() != -1 ? getViewModel().getSelectedGender() : R.id.radioMasculine);
+        getViewModel().setSelectedWordId(getViewModel().getSelectedWordId() != -1 ? getViewModel().getSelectedWordId() : R.id.pan);
+        switch (getViewModel().getSelectedGender()) {
+            case R.id.radioMasculine:
+                binding.wordGroupMasculine.check(getViewModel().getSelectedWordId());
+                break;
+            case R.id.radioFeminine:
+                binding.wordGroupFeminine.check(getViewModel().getSelectedWordId());
+                break;
+            case R.id.radioNeuter:
+                binding.wordGroupNeuter.check(getViewModel().getSelectedWordId());
+                break;
+        }
         return binding.getRoot();
     }
 
-    private void onWordCheckedChangeListener(RadioGroup group, int checkedId)
-    {
+    private void onWordCheckedChangeListener(RadioGroup group, int checkedId) {
         RadioButton checkedRadioButton = group.findViewById(checkedId);
         if (checkedRadioButton == null) {
             return;
         }
         boolean isChecked = checkedRadioButton.isChecked();
-        if (isChecked)
-        {
+        if (isChecked) {
             getViewModel().setSelectedWord(checkedRadioButton.getText().toString());
             getViewModel().setSelectedWordId(checkedId);
         }

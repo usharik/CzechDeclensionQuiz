@@ -16,7 +16,7 @@
     <string name="declension_quiz_1">Упражнение на сконения</string>
     <string name="handbook">Справочник</string>
     <string name="about">О программе</string>
-    <string name="other_nouns">Другие существительные:</string>
+    <string name="other_nouns">Аналогично:</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>

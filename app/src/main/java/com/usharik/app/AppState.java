@@ -14,6 +14,6 @@ public class AppState {
     public int[][] actualAnswers = new int[2][7];
 
     public String selectedWord;
-    public int selectedWordId;
-    public int selectedGender;
+    public int selectedWordId = -1;
+    public int selectedGender = -1;
 }

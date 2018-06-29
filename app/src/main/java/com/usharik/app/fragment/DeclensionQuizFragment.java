@@ -164,6 +164,15 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!wordEditViewSet.contains(v.getId())) {
+                TextView tv = (TextView) v;
+                String[] info1 = ((String) tv.getTag()).split("_");
+                int numberCode = Integer.valueOf(info1[0]);
+                int caseNum = Integer.valueOf(info1[1]);
+                if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
+                    return false;
+                }
+            }
             CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder(v, 2f);
             v.startDrag(null, shadowBuilder, v, 0);
             return true;
@@ -187,9 +196,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 String[] info1 = ((String) dropped.getTag()).split("_");
                 int numberCode1 = Integer.valueOf(info1[0]);
                 int caseNum1 = Integer.valueOf(info1[1]);
-                if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
-                    dropped.setOnTouchListener(null);
-                }
                 getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                 dropTarget.setOnTouchListener(this::onTouch);
             }

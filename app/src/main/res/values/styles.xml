@@ -29,4 +29,11 @@
         <item name="android:paddingStart">3dp</item>
     </style>
 
+    <style name="WordRadioButton">
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/radio_button_background</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
 </resources>
