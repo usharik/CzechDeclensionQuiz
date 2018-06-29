@@ -5,7 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "DOCUMENT", indices = {@Index(value = "word")})
+@Entity(tableName = "DOCUMENT",
+        indices = {@Index(value = "word"), @Index(value = "gender")})
 public class DocumentEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;
@@ -16,12 +17,16 @@ public class DocumentEntity {
     @ColumnInfo(name = "word")
     private String word;
 
+    @ColumnInfo(name = "gender")
+    private String gender;
+
     @ColumnInfo(name = "json")
     private String json;
 
-    public DocumentEntity(Long wordId, String word, String json) {
+    public DocumentEntity(Long wordId, String word, String gender, String json) {
         this.wordId = wordId;
         this.word = word;
+        this.gender = gender;
         this.json = json;
     }
 
@@ -55,5 +60,13 @@ public class DocumentEntity {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

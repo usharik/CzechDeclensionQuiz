@@ -44,7 +44,9 @@ public abstract class DocumentDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("DELETE FROM `DOCUMENT`;");
             database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `word` TEXT");
+            database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `gender` TEXT");
             database.execSQL("CREATE  INDEX `index_DOCUMENT_word` ON `DOCUMENT` (`word`)");
+            database.execSQL("CREATE  INDEX `index_DOCUMENT_gender` ON `DOCUMENT` (`gender`)");
             Gson gson = new Gson();
             InputStream inputStream;
             try {
@@ -53,8 +55,8 @@ public abstract class DocumentDatabase extends RoomDatabase {
                     String json;
                     while ((json = reader.readLine()) != null) {
                         WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
-                        database.execSQL("insert into DOCUMENT(word_id, word, json) values(?, ?, ?);",
-                                new Object[] {wordInfo.wordId, wordInfo.word, json});
+                        database.execSQL("insert into DOCUMENT(word_id, word, gender, json) values(?, ?, ?, ?);",
+                                new Object[] {wordInfo.wordId, wordInfo.word, wordInfo.gender, json});
                     }
                 }
             } catch (IOException e) {

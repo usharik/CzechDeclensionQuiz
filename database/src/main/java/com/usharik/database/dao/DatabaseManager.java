@@ -106,8 +106,8 @@ public class DatabaseManager {
             while ((json = reader.readLine()) != null) {
                 WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
                 getActiveDbInstance()
-                        .compileStatement(String.format("insert into DOCUMENT(word_id, word, json) values(%d, '%s', '%s');",
-                        wordInfo.wordId, wordInfo.word, json)).executeInsert();
+                        .compileStatement(String.format("insert into DOCUMENT(word_id, word, gender, json) values(%d, '%s', '%s', '%s');",
+                        wordInfo.wordId, wordInfo.word, wordInfo.gender, json)).executeInsert();
             }
         }
     }
@@ -202,7 +202,9 @@ public class DatabaseManager {
 
         @Override
         public long addWordInfo(WordInfo wordInfo) {
-            return getActiveDbInstance().documentDao().insertDocument(new DocumentEntity(wordInfo.wordId, wordInfo.word, gson.toJson(wordInfo)));
+            return getActiveDbInstance()
+                    .documentDao()
+                    .insertDocument(new DocumentEntity(wordInfo.wordId, wordInfo.word, wordInfo.gender, gson.toJson(wordInfo)));
         }
     }
 }
