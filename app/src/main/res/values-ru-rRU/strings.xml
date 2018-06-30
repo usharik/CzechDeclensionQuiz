@@ -17,6 +17,7 @@
     <string name="handbook">Справочник</string>
     <string name="about">О программе</string>
     <string name="other_nouns">Аналогично:</string>
+    <string name="rate_app">Оценить приложение</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>
