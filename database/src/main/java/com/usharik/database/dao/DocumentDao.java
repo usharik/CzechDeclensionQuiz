@@ -1,4 +1,4 @@
-package com.example.database.dao;
+package com.usharik.database.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -17,6 +17,9 @@ public interface DocumentDao {
 
     @Query("select json from DOCUMENT where id = :id")
     Maybe<String> getJsonString(long id);
+
+    @Query("select json from DOCUMENT where word = :word")
+    Maybe<String> getJsonStringByWord(String word);
 
     @Query("select * from DOCUMENT")
     List<DocumentEntity> getAllDocuments();

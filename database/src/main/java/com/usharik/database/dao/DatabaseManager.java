@@ -1,18 +1,20 @@
-package com.example.database.dao;
+package com.usharik.database.dao;
 
 import android.content.Context;
 import android.os.Environment;
 
-import com.example.database.DocumentDb;
-import com.example.database.WordInfo;
+import com.usharik.database.DocumentDb;
+import com.usharik.database.WordInfo;
 import com.google.gson.Gson;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -98,6 +100,18 @@ public class DatabaseManager {
         stream.close();
     }
 
+    public void populateFromJsonStream(InputStream stream) throws IOException {
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            String json;
+            while ((json = reader.readLine()) != null) {
+                WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
+                getActiveDbInstance()
+                        .compileStatement(String.format("insert into DOCUMENT(word_id, word, gender, json) values(%d, '%s', '%s', '%s');",
+                        wordInfo.wordId, wordInfo.word, wordInfo.gender, json)).executeInsert();
+            }
+        }
+    }
+
     private HttpURLConnection getHttpURLConnection(String link) throws IOException {
         URL url = new URL(link);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -180,8 +194,17 @@ public class DatabaseManager {
         }
 
         @Override
+        public Maybe<WordInfo> getWordInfoByWord(String word) {
+            return getActiveDbInstance().documentDao().getJsonStringByWord(word)
+                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .subscribeOn(Schedulers.io());
+        }
+
+        @Override
         public long addWordInfo(WordInfo wordInfo) {
-            return getActiveDbInstance().documentDao().insertDocument(new DocumentEntity(wordInfo.wordId, gson.toJson(wordInfo)));
+            return getActiveDbInstance()
+                    .documentDao()
+                    .insertDocument(new DocumentEntity(wordInfo.wordId, wordInfo.word, wordInfo.gender, gson.toJson(wordInfo)));
         }
     }
 }

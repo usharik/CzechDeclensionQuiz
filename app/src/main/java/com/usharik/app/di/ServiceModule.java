@@ -2,7 +2,7 @@ package com.usharik.app.di;
 
 import android.app.Application;
 
-import com.example.database.dao.DatabaseManager;
+import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.AppState;
 import com.usharik.app.service.WordService;
 

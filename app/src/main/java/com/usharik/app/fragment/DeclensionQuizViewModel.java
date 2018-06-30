@@ -1,10 +1,12 @@
-package com.usharik.app;
+package com.usharik.app.fragment;
 
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.view.View;
 import android.widget.TextView;
 
+import com.usharik.app.AppState;
+import com.usharik.app.BR;
 import com.usharik.app.framework.ViewModelObservable;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import com.usharik.app.service.WordService;
  * Created by macbook on 07/03/2018.
  */
 
-public class MainViewModel extends ViewModelObservable {
+public class DeclensionQuizViewModel extends ViewModelObservable {
     public static final int SINGULAR = 0;
     public static final int PLURAL = 1;
 
@@ -30,8 +32,8 @@ public class MainViewModel extends ViewModelObservable {
     private static Map<TextView, String> textView2value = new HashMap<>();
 
     @Inject
-    public MainViewModel(final AppState appState,
-                         final WordService wordService) {
+    public DeclensionQuizViewModel(final AppState appState,
+                                   final WordService wordService) {
         this.appState = appState;
         this.wordService = wordService;
     }
@@ -48,15 +50,15 @@ public class MainViewModel extends ViewModelObservable {
 
     @Bindable
     public String getTranslation() {
-        return appState.wordInfo.translation;
+        return appState.wordInfo.translation_ru;
     }
 
     public void nextWord() {
         appState.wordInfo = wordService.getNextWord();
         List<WordTextModel> words = new ArrayList<>();
         for (int i=0; i<7; i++) {
-            String singular = appState.wordInfo.cases[SINGULAR][i].replaceAll("[0-9]", "");
-            String plural = appState.wordInfo.cases[PLURAL][i].replaceAll("[0-9]", "");
+            String singular = appState.wordInfo.cases[SINGULAR][i];
+            String plural = appState.wordInfo.cases[PLURAL][i];
             words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
             words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
             appState.correctAnswers[SINGULAR][i] = singular;
@@ -82,7 +84,7 @@ public class MainViewModel extends ViewModelObservable {
         for (int i=0; i<7; i++) {
             int actualAnswerSingularIx = appState.actualAnswers[SINGULAR][i];
             if (actualAnswerSingularIx == -1) {
-                res = appState.correctAnswers[SINGULAR][i].isEmpty();
+                res &= appState.correctAnswers[SINGULAR][i].isEmpty();
             } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
                 res = false;
                 appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
@@ -91,7 +93,7 @@ public class MainViewModel extends ViewModelObservable {
 
             int actualAnswerPluralIx = appState.actualAnswers[PLURAL][i];
             if (actualAnswerPluralIx == -1) {
-                res = appState.correctAnswers[PLURAL][i].isEmpty();
+                res &= appState.correctAnswers[PLURAL][i].isEmpty();
             } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
                 res = false;
                 appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;

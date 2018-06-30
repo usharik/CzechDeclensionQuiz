@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.usharik.app.R"/>
+        <import type="android.view.View"/>
+
+        <variable
+                name="viewModel"
+                type="com.usharik.app.fragment.HandbookViewModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:id="@+id/genderHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender_of_noun"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Gender of noun"/>
+
+        <RadioGroup
+                android:id="@+id/genderGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:checkedButton="@={viewModel.selectedGender}"
+                app:layout_constraintTop_toBottomOf="@+id/genderHeader"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+            <RadioButton
+                    android:id="@+id/radioMasculine"
+                    style="@style/WordRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/masculine"
+                    tools:checked="true"/>
+
+            <RadioButton
+                    android:id="@+id/radioNeuter"
+                    style="@style/WordRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/neuter"/>
+
+            <RadioButton
+                    android:id="@+id/radioFeminine"
+                    style="@style/WordRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/feminine"/>
+
+        </RadioGroup>
+
+        <TextView
+                android:id="@+id/typeHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/type_of_declension"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/genderGroup"
+                tools:text="Type of declension"/>
+
+        <RadioGroup
+                android:id="@+id/wordGroupMasculine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:visibility="@{viewModel.selectedGender == R.id.radioMasculine ? View.VISIBLE : View.GONE}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/typeHeader">
+
+            <RadioButton
+                    android:id="@+id/pan"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="pán"/>
+
+            <RadioButton
+                    android:id="@+id/hrad"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="hrad"/>
+
+            <RadioButton
+                    android:id="@+id/muz"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="muž"/>
+
+            <RadioButton
+                    android:id="@+id/stroj"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="stroj"/>
+
+            <RadioButton
+                    android:id="@+id/predseda"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="předseda"/>
+
+            <RadioButton
+                    android:id="@+id/soudce"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="soudce"/>
+
+        </RadioGroup>
+
+        <RadioGroup
+                android:id="@+id/wordGroupNeuter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:visibility="@{viewModel.selectedGender == R.id.radioNeuter ? View.VISIBLE : View.GONE}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/typeHeader"
+                tools:visibility="gone">
+
+            <RadioButton
+                    android:id="@+id/mesto"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="město"/>
+
+            <RadioButton
+                    android:id="@+id/more"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="moře"/>
+
+            <RadioButton
+                    android:id="@+id/kure"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="kuře"/>
+
+            <RadioButton
+                    android:id="@+id/staveni"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="stavení"/>
+
+        </RadioGroup>
+
+        <RadioGroup
+                android:id="@+id/wordGroupFeminine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:visibility="@{viewModel.selectedGender == R.id.radioFeminine ? View.VISIBLE : View.GONE}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/typeHeader"
+                tools:visibility="gone">
+
+            <RadioButton
+                    android:id="@+id/zena"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="žena"/>
+
+            <RadioButton
+                    android:id="@+id/ruze"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="růže"/>
+
+            <RadioButton
+                    android:id="@+id/pisen"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="píseň"/>
+
+            <RadioButton
+                    android:id="@+id/kost"
+                    style="@style/WordRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="kost"/>
+
+        </RadioGroup>
+
+        <android.support.constraint.Guideline
+                android:id="@+id/guideLine"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="110dp"/>
+
+        <TextView
+                android:id="@+id/otherNounsHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/other_nouns"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/guideLine"
+                tools:text="Other nouns: "/>
+
+        <TextView
+                android:id="@+id/otherNouns"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:text="@{viewModel.otherNouns}"
+                app:layout_constraintLeft_toRightOf="@id/otherNounsHeader"
+                app:layout_constraintTop_toTopOf="@id/guideLine"
+                tools:text="dum, pes"/>
+
+        <include
+                android:id="@+id/case1"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:tag="0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case2"
+                app:num="@{0}"
+                app:plural="@{viewModel.cases[1][0]}"
+                app:singular="@{viewModel.cases[0][0]}"/>
+
+        <include
+                android:id="@+id/case2"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case3"
+                app:num="@{1}"
+                app:plural="@{viewModel.cases[1][1]}"
+                app:singular="@{viewModel.cases[0][1]}"/>
+
+        <include
+                android:id="@+id/case3"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="2"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case4"
+                app:num="@{2}"
+                app:plural="@{viewModel.cases[1][2]}"
+                app:singular="@{viewModel.cases[0][2]}"/>
+
+        <include
+                android:id="@+id/case4"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="3"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case5"
+                app:num="@{3}"
+                app:plural="@{viewModel.cases[1][3]}"
+                app:singular="@{viewModel.cases[0][3]}"/>
+
+        <include
+                android:id="@+id/case5"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case6"
+                app:num="@{4}"
+                app:plural="@{viewModel.cases[1][4]}"
+                app:singular="@{viewModel.cases[0][4]}"/>
+
+        <include
+                android:id="@+id/case6"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/case7"
+                app:num="@{5}"
+                app:plural="@{viewModel.cases[1][5]}"
+                app:singular="@{viewModel.cases[0][5]}"/>
+
+        <include
+                android:id="@+id/case7"
+                layout="@layout/row_case"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="6"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:num="@{6}"
+                app:plural="@{viewModel.cases[1][6]}"
+                app:singular="@{viewModel.cases[0][6]}"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

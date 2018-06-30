@@ -1,7 +1,7 @@
 package com.usharik.app.service;
 
-import com.example.database.WordInfo;
-import com.example.database.dao.DatabaseManager;
+import com.usharik.database.WordInfo;
+import com.usharik.database.dao.DatabaseManager;
 
 import java.util.Random;
 
