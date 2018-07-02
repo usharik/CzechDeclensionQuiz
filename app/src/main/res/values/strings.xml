@@ -17,6 +17,7 @@
     <string name="handbook">Handbook</string>
     <string name="about">About</string>
     <string name="other_nouns">Other nouns:</string>
+    <string name="rate_app">Rate application</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>
