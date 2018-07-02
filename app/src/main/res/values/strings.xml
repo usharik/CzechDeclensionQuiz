@@ -18,6 +18,13 @@
     <string name="about">About</string>
     <string name="other_nouns">Other nouns:</string>
     <string name="rate_app">Rate application</string>
+    <string name="word_filter">Word filter by gender</string>
+    <string name="all_words">All words</string>
+    <string name="animate_masculine">Animate masculine</string>
+    <string name="inanimate_masculine">Inanimate masculine</string>
+    <string name="additional_settings">Additional settings</string>
+    <string name="turn_off_animation">Turn off animation</string>
+    <string name="settings">Settings</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>

@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.usharik.app.fragment.DeclensionQuizViewModel;
 import com.usharik.app.fragment.HandbookViewModel;
 
+import com.usharik.app.fragment.SettingsViewModel;
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -25,6 +26,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HandbookViewModel.class)
     abstract ViewModel bindHandbookViewModel(HandbookViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingsViewModel.class)
+    abstract ViewModel bindOptionsViewModel(SettingsViewModel userViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(AppViewModelFactory factory);

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
+import com.usharik.app.fragment.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,17 +43,18 @@ public class MainActivity extends AppCompatActivity {
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         switch (item.getItemId()) {
-            case R.id.nav_quiz: {
+            case R.id.nav_quiz:
                 replaceFragment(R.id.fragmentContainer, new DeclensionQuizFragment(), null);
                 return true;
-            }
             case R.id.nav_handbook:
                 replaceFragment(R.id.fragmentContainer, new HandbookFragment(), null);
                 return true;
-            case R.id.nav_about: {
+            case R.id.nav_settings:
+                replaceFragment(R.id.fragmentContainer, new SettingsFragment(), null);
+                return true;
+            case R.id.nav_about:
                 replaceFragment(R.id.fragmentContainer, new AboutFragment(), null);
                 return true;
-            }
         }
         return true;
     }

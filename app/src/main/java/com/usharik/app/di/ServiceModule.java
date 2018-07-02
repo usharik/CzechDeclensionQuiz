@@ -31,7 +31,7 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    WordService provideWordService(DatabaseManager databaseManager) {
-        return new WordService(databaseManager);
+    WordService provideWordService(DatabaseManager databaseManager, AppState appState) {
+        return new WordService(databaseManager, appState);
     }
 }

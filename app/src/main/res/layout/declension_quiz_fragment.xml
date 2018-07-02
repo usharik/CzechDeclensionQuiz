@@ -249,6 +249,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case2"
                         app:num="@{0}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][0])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][0])}"/>
 
@@ -262,6 +263,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case3"
                         app:num="@{1}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][1])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][1])}"/>
 
@@ -275,6 +277,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case4"
                         app:num="@{2}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][2])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][2])}"/>
 
@@ -288,6 +291,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case5"
                         app:num="@{3}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][3])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][3])}"/>
 
@@ -301,6 +305,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case6"
                         app:num="@{4}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][4])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][4])}"/>
 
@@ -314,6 +319,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case7"
                         app:num="@{5}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][5])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][5])}"/>
 
@@ -328,8 +334,10 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:num="@{6}"
+                        app:switchOffAnimation="@{viewModel.switchOffAnimation}"
                         app:plural="@{viewModel.getWordByIndex(viewModel.caseModels[1][6])}"
                         app:singular="@{viewModel.getWordByIndex(viewModel.caseModels[0][6])}"/>
+
             </android.support.constraint.ConstraintLayout>
         </ScrollView>
 

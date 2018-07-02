@@ -18,6 +18,13 @@
     <string name="about">О программе</string>
     <string name="other_nouns">Аналогично:</string>
     <string name="rate_app">Оценить приложение</string>
+    <string name="word_filter">Фильтр по роду существительного</string>
+    <string name="all_words">Все слова</string>
+    <string name="animate_masculine">Одушевленный мужской</string>
+    <string name="inanimate_masculine">Неодушевленный мужской</string>
+    <string name="additional_settings">Дополнительные настройки</string>
+    <string name="turn_off_animation">Выключить анимацию</string>
+    <string name="settings">Настройки</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>

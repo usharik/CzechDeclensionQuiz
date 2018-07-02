@@ -16,4 +16,26 @@ public class AppState {
     public String selectedWord;
     public int selectedWordId = -1;
     public int selectedGender = -1;
+
+    public String genderFilterStr = Gender.ALL;
+    public int genderFilterId = -1;
+    public boolean switchOffAnimation = false;
+
+    public void setGenderFilterStr(String genderFilterStr) {
+        this.genderFilterStr = genderFilterStr;
+        switch (genderFilterStr) {
+            case Gender.ANIMATE_MASCULINE:
+                this.genderFilterId = R.id.radioAnimateMasculine;
+                break;
+            case Gender.INANIMATE_MASCULINE:
+                this.genderFilterId = R.id.radioInanimateMasculine;
+                break;
+            case Gender.FEMININE:
+                this.genderFilterId = R.id.radioFeminine;
+                break;
+            case Gender.NEUTER:
+                this.genderFilterId = R.id.radioNeuter;
+                break;
+        }
+    }
 }

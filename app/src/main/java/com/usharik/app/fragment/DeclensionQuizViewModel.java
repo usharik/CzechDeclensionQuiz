@@ -143,11 +143,15 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         notifyPropertyChanged(BR.caseModels);
     }
 
+    public boolean getSwitchOffAnimation() {
+        return appState.switchOffAnimation;
+    }
+
     @BindingAdapter("animateView")
     public static void setAnimateView(TextView textView, boolean animateView) {
         String prevText = textView2value.get(textView);
         String text = textView.getText().toString();
-        if ((prevText != null && !prevText.isEmpty()) && text.isEmpty()) {
+        if (animateView && (prevText != null && !prevText.isEmpty()) && text.isEmpty()) {
             textView.setRotationX(0);
             textView.animate()
                     .rotationX(360)
