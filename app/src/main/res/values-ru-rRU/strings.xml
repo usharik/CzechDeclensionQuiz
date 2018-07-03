@@ -29,6 +29,7 @@
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>
         <item>Остаться</item>
+        <item>Повторить</item>
         <item>Оценить приложение</item>
     </string-array>
 </resources>

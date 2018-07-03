@@ -53,8 +53,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         return appState.wordInfo.translation_ru;
     }
 
-    public void nextWord() {
-        appState.wordInfo = wordService.getNextWord();
+    public void nextWord(boolean tryAgain) {
+        if (!tryAgain) {
+            appState.wordInfo = wordService.getNextWord();
+        }
         List<WordTextModel> words = new ArrayList<>();
         for (int i=0; i<7; i++) {
             String singular = appState.wordInfo.cases[SINGULAR][i];

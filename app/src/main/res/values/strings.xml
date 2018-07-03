@@ -29,6 +29,7 @@
     <string-array name="next_word_dialog">
         <item>Next word</item>
         <item>Stay here</item>
+        <item>Try again</item>
         <item>Rate application</item>
     </string-array>
 

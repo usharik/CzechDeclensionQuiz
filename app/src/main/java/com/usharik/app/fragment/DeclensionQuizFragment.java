@@ -57,7 +57,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.setViewModel(getViewModel());
         binding.flow.setOnDragListener(this::onFlowDrag);
         if (appState.wordInfo == null) {
-            getViewModel().nextWord();
+            getViewModel().nextWord(false);
         }
         setListeners();
         setHasOptionsMenu(true);
@@ -119,7 +119,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 }
                 return true;
             case R.id.action_next:
-                nextWord();
+                nextWord(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -130,18 +130,21 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
         switch (i) {
             case 0:
-                nextWord();
+                nextWord(false);
                 return;
             case 1:
                 return;
             case 2:
+                nextWord(true);
+                return;
+            case 3:
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
         }
     }
 
-    private void nextWord() {
-        getViewModel().nextWord();
+    private void nextWord(boolean tryAgain) {
+        getViewModel().nextWord(tryAgain);
         setListeners();
     }
 
