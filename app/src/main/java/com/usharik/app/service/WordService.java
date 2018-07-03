@@ -1,5 +1,6 @@
 package com.usharik.app.service;
 
+import android.util.Log;
 import com.usharik.app.AppState;
 import com.usharik.app.Gender;
 import com.usharik.database.WordInfo;
@@ -20,6 +21,7 @@ public class WordService {
     }
 
     public WordInfo getNextWord() {
+        Log.i(getClass().getName(), "New word generation");
         WordInfo doc = null;
         int id;
         long wordCount = databaseManager.getDocumentDb().getCount().blockingGet();
@@ -35,6 +37,7 @@ public class WordService {
                 doc = prevGender.equals(doc.gender) ? null : doc;
             }
         }
+        Log.i(getClass().getName(), "New word is " + doc.word);
         return doc;
     }
 }

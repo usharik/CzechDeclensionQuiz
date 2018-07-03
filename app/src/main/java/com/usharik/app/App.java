@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 
+import android.util.Log;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.di.DaggerAppComponent;
 
@@ -45,9 +46,11 @@ public class App extends Application implements HasActivityInjector, HasSupportF
         super.onCreate();
         DaggerAppComponent.builder().create(this).inject(this);
 
+        Log.i(getClass().getName(), "Application start!!!");
         databaseManager.getDocumentDb().getCount()
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {
+                        Log.i(getClass().getName(), "Populating empty database!!!");
                         databaseManager.populateFromJsonStream(getAssets().open("data.json"));
                     }
                     return Completable.complete();
@@ -55,6 +58,7 @@ public class App extends Application implements HasActivityInjector, HasSupportF
                 .subscribeOn(Schedulers.io())
                 .blockingAwait();
 
+        Log.i(getClass().getName(), "Loading preferences!!!");
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         appState.setGenderFilterStr(prefs.getString(GENDER_FILTER_KEY, Gender.ALL));
         appState.switchOffAnimation = prefs.getBoolean(SWITCH_OFF_ANIMATION, false);

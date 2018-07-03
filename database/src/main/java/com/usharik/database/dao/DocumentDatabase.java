@@ -42,16 +42,18 @@ public abstract class DocumentDatabase extends RoomDatabase {
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
+            Log.i("Migration1_2", "Database structure altering");
             database.execSQL("DELETE FROM `DOCUMENT`;");
+            database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
             database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `word` TEXT");
             database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `gender` TEXT");
             database.execSQL("CREATE  INDEX `index_DOCUMENT_word` ON `DOCUMENT` (`word`)");
             database.execSQL("CREATE  INDEX `index_DOCUMENT_gender` ON `DOCUMENT` (`gender`)");
+            Log.i("Migration1_2", "Insert new data");
             Gson gson = new Gson();
-            InputStream inputStream;
             try {
-                inputStream = mContext.getAssets().open("data.json");
-                try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                try(InputStream inputStream = mContext.getAssets().open("data.json");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String json;
                     while ((json = reader.readLine()) != null) {
                         WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
@@ -62,6 +64,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             } catch (IOException e) {
                 Log.e("Exception", e.getClass().getName(), e);
             }
+            Log.i("Migration1_2", "Migration completed");
         }
     };
 
