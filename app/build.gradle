@@ -6,8 +6,8 @@ android {
         applicationId "com.usharik.app"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 101
-        versionName "1.01-RC"
+        versionCode 200
+        versionName "2.00"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
