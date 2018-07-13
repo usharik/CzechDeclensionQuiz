@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
 import com.usharik.app.databinding.HandbookFragmentBinding;
@@ -21,6 +22,9 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
     @Inject
     AppState appState;
+
+    @Inject
+    FirebaseAnalytics firebaseAnalytics;
 
     private HandbookFragmentBinding binding;
 
@@ -48,6 +52,11 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
                 binding.wordGroupNeuter.check(getViewModel().getSelectedWordId());
                 break;
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("HANDBOOK_FRAGMENT", "OPEN");
+        firebaseAnalytics.logEvent("HANDBOOK_FRAGMENT", bundle);
+
         return binding.getRoot();
     }
 

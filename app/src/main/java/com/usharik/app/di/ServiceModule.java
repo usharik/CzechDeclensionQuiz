@@ -2,6 +2,8 @@ package com.usharik.app.di;
 
 import android.app.Application;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.usharik.app.App;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.AppState;
 import com.usharik.app.service.WordService;
@@ -31,7 +33,15 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    WordService provideWordService(DatabaseManager databaseManager, AppState appState) {
-        return new WordService(databaseManager, appState);
+    WordService provideWordService(DatabaseManager databaseManager,
+                                   AppState appState,
+                                   FirebaseAnalytics firebaseAnalytics) {
+        return new WordService(databaseManager, appState, firebaseAnalytics);
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAnalytics provideFirebaseAnalytics(App app) {
+        return FirebaseAnalytics.getInstance(app);
     }
 }

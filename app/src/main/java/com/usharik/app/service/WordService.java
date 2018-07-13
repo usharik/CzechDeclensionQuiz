@@ -1,6 +1,9 @@
 package com.usharik.app.service;
 
+import android.os.Bundle;
 import android.util.Log;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.Gender;
 import com.usharik.database.WordInfo;
@@ -12,12 +15,15 @@ public class WordService {
 
     private final DatabaseManager databaseManager;
     private final AppState appState;
+    private final FirebaseAnalytics firebaseAnalytics;
     private final Random random = new Random();
 
     public WordService(final DatabaseManager databaseManager,
-                       final AppState appState) {
+                       final AppState appState,
+                       final FirebaseAnalytics firebaseAnalytics) {
         this.databaseManager = databaseManager;
         this.appState = appState;
+        this.firebaseAnalytics = firebaseAnalytics;
     }
 
     public WordInfo getNextWord() {
@@ -38,6 +44,9 @@ public class WordService {
             }
         }
         Log.i(getClass().getName(), "New word is " + doc.word);
+        Bundle bundle = new Bundle();
+        bundle.putString("WORD", doc.word);
+        firebaseAnalytics.logEvent("NEXT_WORD", bundle);
         return doc;
     }
 }

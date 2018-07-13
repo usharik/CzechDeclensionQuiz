@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.usharik.app.AppState;
-import com.usharik.app.Gender;
 import com.usharik.app.R;
 import com.usharik.app.databinding.SettingsFragmentBinding;
 import com.usharik.app.framework.ViewFragment;

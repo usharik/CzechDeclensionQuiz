@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
@@ -48,6 +50,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     @Inject
     AppState appState;
+
+    @Inject
+    FirebaseAnalytics firebaseAnalytics;
 
     @Nullable
     @Override
@@ -131,11 +136,14 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         switch (i) {
             case 0:
                 nextWord(false);
+                logAction("NEXT");
                 return;
             case 1:
+                logAction("STAY");
                 return;
             case 2:
                 nextWord(true);
+                logAction("TRY_AGAIN");
                 return;
             case 3:
                 startActivity(new Intent(Intent.ACTION_VIEW,
@@ -146,6 +154,12 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void nextWord(boolean tryAgain) {
         getViewModel().nextWord(tryAgain);
         setListeners();
+    }
+
+    private void logAction(String actionName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("NEXT_WORD_ACTION", actionName);
+        firebaseAnalytics.logEvent("NEXT_WORD_ACTION", bundle);
     }
 
     private boolean onFlowDrag(View v, DragEvent event) {
