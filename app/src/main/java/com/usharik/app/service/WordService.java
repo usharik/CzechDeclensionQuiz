@@ -9,6 +9,8 @@ import com.usharik.app.Gender;
 import com.usharik.database.WordInfo;
 import com.usharik.database.dao.DatabaseManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WordService {
@@ -32,15 +34,29 @@ public class WordService {
         int id;
         long wordCount = databaseManager.getDocumentDb().getCount().blockingGet();
 
-        String prevGender = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.gender;
-        while (doc == null) {
-            id = random.nextInt((int) wordCount);
-            doc = databaseManager.getDocumentDb().getWordInfoById(id).blockingGet();
-            String gender = appState.genderFilterStr;
-            if (gender != null && !gender.equals(Gender.ALL) && doc != null) {
-                doc = doc.gender == null || doc.gender.equals(gender) ? doc : null;
-            } else if (doc != null) {
-                doc = prevGender.equals(doc.gender) ? null : doc;
+        int size = appState.wordsWithErrors.size();
+        String prevWord = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.word;
+        if (random.nextBoolean() && size > 0) {
+            List<String> keys = new ArrayList<>(appState.wordsWithErrors.keySet());
+            String wordKey = keys.get(random.nextInt(size));
+            doc = databaseManager.getDocumentDb().getWordInfoByWord(wordKey).blockingGet();
+            if (doc == null) {
+                appState.removeWordFromErrorMap();
+            } else if (prevWord.equals(doc.word)) {
+                doc = null;
+            }
+        }
+        if (doc == null) {
+            String prevGender = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.gender;
+            while (doc == null) {
+                id = random.nextInt((int) wordCount);
+                doc = databaseManager.getDocumentDb().getWordInfoById(id).blockingGet();
+                String gender = appState.genderFilterStr;
+                if (gender != null && !gender.equals(Gender.ALL) && doc != null) {
+                    doc = doc.gender == null || doc.gender.equals(gender) ? doc : null;
+                } else if (doc != null) {
+                    doc = prevGender.equals(doc.gender) ? null : doc;
+                }
             }
         }
         Log.i(getClass().getName(), "New word is " + doc.word);

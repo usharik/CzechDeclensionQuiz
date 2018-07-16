@@ -74,6 +74,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxHeader"
                 app:layout_constraintStart_toStartOf="parent"/>
 
+        <TextView
+            android:id="@+id/wordsWithErrorsHeader"
+            android:text="Words with errors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/checkBox"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
+
+        <TextView
+            android:id="@+id/wordsWithErrors"
+            android:text="@{viewModel.wordsWithErrors}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/wordsWithErrorsHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </layout>

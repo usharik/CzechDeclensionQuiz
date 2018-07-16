@@ -201,6 +201,13 @@ public class DatabaseManager {
         }
 
         @Override
+        public Maybe<WordInfo> getWordInfoByWordId(long wordId) {
+            return getActiveDbInstance().documentDao().getJsonStringByWordId(wordId)
+                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .subscribeOn(Schedulers.io());
+        }
+
+        @Override
         public long addWordInfo(WordInfo wordInfo) {
             return getActiveDbInstance()
                     .documentDao()

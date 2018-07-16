@@ -21,6 +21,9 @@ public interface DocumentDao {
     @Query("select json from DOCUMENT where word = :word")
     Maybe<String> getJsonStringByWord(String word);
 
+    @Query("select json from DOCUMENT where word_id = :wordId")
+    Maybe<String> getJsonStringByWordId(long wordId);
+
     @Query("select * from DOCUMENT")
     List<DocumentEntity> getAllDocuments();
 

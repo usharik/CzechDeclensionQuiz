@@ -2,6 +2,7 @@ package com.usharik.app.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
@@ -19,11 +22,19 @@ import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.widget.CustomDragShadowBuilder;
 
 import javax.inject.Inject;
+
+import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
+
 public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel> {
+
+    public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
 
     private static final Set<Integer> wordEditViewSet = buildWordEditViewSet();
 
@@ -53,6 +64,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     @Inject
     FirebaseAnalytics firebaseAnalytics;
+
+    @Inject
+    Gson gson;
 
     @Nullable
     @Override
@@ -133,6 +147,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     }
 
     private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
+        saveErrorsInfo();
         switch (i) {
             case 0:
                 nextWord(false);
@@ -160,6 +175,16 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         Bundle bundle = new Bundle();
         bundle.putString("NEXT_WORD_ACTION", actionName);
         firebaseAnalytics.logEvent("NEXT_WORD_ACTION", bundle);
+    }
+
+    private void saveErrorsInfo() {
+        int errorCount = getViewModel().getErrorCount();
+        if (errorCount == 0) {
+            appState.removeWordFromErrorMap();
+        }
+        if (errorCount > 2) {
+            appState.putWordToErrorMap(errorCount);
+        }
     }
 
     private boolean onFlowDrag(View v, DragEvent event) {
@@ -218,6 +243,15 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
         }
         return true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
+        Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
+        editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.wordsWithErrors, type));
+        editor.apply();
     }
 
     @Override

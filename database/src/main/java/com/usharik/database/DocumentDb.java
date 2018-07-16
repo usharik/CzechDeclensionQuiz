@@ -9,5 +9,7 @@ public interface DocumentDb {
 
     Maybe<WordInfo> getWordInfoByWord(String word);
 
+    Maybe<WordInfo> getWordInfoByWordId(long wordId);
+
     long addWordInfo(WordInfo wordInfo);
 }

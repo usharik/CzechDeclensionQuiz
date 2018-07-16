@@ -7,8 +7,14 @@ import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.di.DaggerAppComponent;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -19,6 +25,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.usharik.app.fragment.DeclensionQuizFragment.WORDS_WITH_ERRORS;
 import static com.usharik.app.fragment.SettingsFragment.GENDER_FILTER_KEY;
 import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
 import static com.usharik.app.fragment.SettingsFragment.SWITCH_OFF_ANIMATION;
@@ -41,6 +48,9 @@ public class App extends Application implements HasActivityInjector, HasSupportF
     @Inject
     AppState appState;
 
+    @Inject
+    Gson gson;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,6 +72,14 @@ public class App extends Application implements HasActivityInjector, HasSupportF
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         appState.setGenderFilterStr(prefs.getString(GENDER_FILTER_KEY, Gender.ALL));
         appState.switchOffAnimation = prefs.getBoolean(SWITCH_OFF_ANIMATION, false);
+        String str = prefs.getString(WORDS_WITH_ERRORS, "{}");
+        try {
+            Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
+            appState.wordsWithErrors = gson.fromJson(str, type);
+        } catch (Exception ex) {
+            Log.e(getClass().getName(), "Exception", ex);
+            appState.wordsWithErrors = new HashMap<>();
+        }
     }
 
     @Override

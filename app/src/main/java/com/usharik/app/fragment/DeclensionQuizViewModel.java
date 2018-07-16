@@ -27,9 +27,12 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public static final int SINGULAR = 0;
     public static final int PLURAL = 1;
 
-    private final AppState appState;
-    private WordService wordService;
     private static Map<TextView, String> textView2value = new HashMap<>();
+
+    private final AppState appState;
+
+    private WordService wordService;
+    private int errorCount;
 
     @Inject
     public DeclensionQuizViewModel(final AppState appState,
@@ -70,6 +73,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         }
         Collections.shuffle(words);
         appState.wordTextModels = words.toArray(new WordTextModel[words.size()]);
+        errorCount = 0;
         update();
     }
 
@@ -89,6 +93,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                 res &= appState.correctAnswers[SINGULAR][i].isEmpty();
             } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
                 res = false;
+                errorCount++;
                 appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
                 appState.actualAnswers[SINGULAR][i] = -1;
             }
@@ -98,6 +103,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                 res &= appState.correctAnswers[PLURAL][i].isEmpty();
             } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
                 res = false;
+                errorCount++;
                 appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
                 appState.actualAnswers[PLURAL][i] = -1;
             }
@@ -163,6 +169,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         if (!textView.getText().toString().equals(prevText)) {
             textView2value.put(textView, text);
         }
+    }
+
+    public int getErrorCount() {
+        return errorCount;
     }
 
     public class WordTextModel {

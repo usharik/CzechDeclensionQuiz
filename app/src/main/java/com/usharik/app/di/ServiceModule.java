@@ -3,6 +3,7 @@ package com.usharik.app.di;
 import android.app.Application;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
 import com.usharik.app.App;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.AppState;
@@ -43,5 +44,11 @@ class ServiceModule {
     @Singleton
     FirebaseAnalytics provideFirebaseAnalytics(App app) {
         return FirebaseAnalytics.getInstance(app);
+    }
+
+    @Provides
+    @Singleton
+    Gson provideGson() {
+        return new Gson();
     }
 }
