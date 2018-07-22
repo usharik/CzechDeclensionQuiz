@@ -60,14 +60,6 @@ public class SettingsViewModel extends ViewModelObservable {
         logAction(switchOffAnimation);
     }
 
-    public String getWordsWithErrors() {
-        StringBuilder sb = new StringBuilder();
-        for (String word : appState.wordsWithErrors.keySet()) {
-            sb.append(word).append(", ");
-        }
-        return sb.toString();
-    }
-
     private void logAction(boolean value) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("SWITCH_OFF_ANIMATION", value);

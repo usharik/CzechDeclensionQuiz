@@ -18,6 +18,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.usharik.app.service.WordService;
+import com.usharik.database.WordInfo;
+
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by macbook on 07/03/2018.
@@ -57,24 +61,32 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     public void nextWord(boolean tryAgain) {
-        if (!tryAgain) {
-            appState.wordInfo = wordService.getNextWord();
+        Single<WordInfo> wordInfoSingle;
+        if (appState.wordInfo == null || !tryAgain) {
+            wordInfoSingle = wordService.getNextWord();
+        } else {
+            wordInfoSingle = Single.just(appState.wordInfo);
         }
-        List<WordTextModel> words = new ArrayList<>();
-        for (int i=0; i<7; i++) {
-            String singular = appState.wordInfo.cases[SINGULAR][i];
-            String plural = appState.wordInfo.cases[PLURAL][i];
-            words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
-            words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
-            appState.correctAnswers[SINGULAR][i] = singular;
-            appState.correctAnswers[PLURAL][i] = plural;
-            appState.actualAnswers[SINGULAR][i] = -1;
-            appState.actualAnswers[PLURAL][i] = -1;
-        }
-        Collections.shuffle(words);
-        appState.wordTextModels = words.toArray(new WordTextModel[words.size()]);
-        errorCount = 0;
-        update();
+        wordInfoSingle
+                .subscribeOn(Schedulers.io())
+                .subscribe(wordInfo -> {
+            appState.wordInfo = wordInfo;
+            List<WordTextModel> words = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                String singular = appState.wordInfo.cases[SINGULAR][i];
+                String plural = appState.wordInfo.cases[PLURAL][i];
+                words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
+                words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
+                appState.correctAnswers[SINGULAR][i] = singular;
+                appState.correctAnswers[PLURAL][i] = plural;
+                appState.actualAnswers[SINGULAR][i] = -1;
+                appState.actualAnswers[PLURAL][i] = -1;
+            }
+            Collections.shuffle(words);
+            appState.wordTextModels = words.toArray(new WordTextModel[words.size()]);
+            errorCount = 0;
+            update();
+        });
     }
 
     public void update() {

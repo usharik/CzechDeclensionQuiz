@@ -7,6 +7,8 @@ import com.usharik.app.fragment.DeclensionQuizViewModel;
 import com.usharik.app.fragment.HandbookViewModel;
 
 import com.usharik.app.fragment.SettingsViewModel;
+import com.usharik.app.fragment.WordsWithErrorsViewModel;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
@@ -31,6 +33,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel.class)
     abstract ViewModel bindOptionsViewModel(SettingsViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(WordsWithErrorsViewModel.class)
+    abstract ViewModel bindWordsWithErrorsViewModel(WordsWithErrorsViewModel userViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(AppViewModelFactory factory);

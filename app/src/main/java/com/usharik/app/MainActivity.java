@@ -17,10 +17,16 @@ import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
 import com.usharik.app.fragment.SettingsFragment;
+import com.usharik.app.fragment.WordsWithErrorsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     DrawerLayout mDrawerLayout;
+    DeclensionQuizFragment declensionQuizFragment;
+    WordsWithErrorsFragment wordsWithErrorsFragment;
+    HandbookFragment handbookFragment;
+    SettingsFragment settingsFragment;
+    AboutFragment aboutFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         replaceFragment(R.id.fragmentContainer, new DeclensionQuizFragment(), null);
+
+        declensionQuizFragment = new DeclensionQuizFragment();
+        wordsWithErrorsFragment = new WordsWithErrorsFragment();
+        handbookFragment = new HandbookFragment();
+        settingsFragment = new SettingsFragment();
+        aboutFragment = new AboutFragment();
     }
 
     private boolean onNavigatorItemSelected(MenuItem item) {
@@ -46,16 +58,19 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
         switch (item.getItemId()) {
             case R.id.nav_quiz:
-                replaceFragment(R.id.fragmentContainer, new DeclensionQuizFragment(), null);
+                replaceFragment(R.id.fragmentContainer, declensionQuizFragment, null);
+                return true;
+            case R.id.nav_words_with_errors:
+                replaceFragment(R.id.fragmentContainer, wordsWithErrorsFragment, null);
                 return true;
             case R.id.nav_handbook:
-                replaceFragment(R.id.fragmentContainer, new HandbookFragment(), null);
+                replaceFragment(R.id.fragmentContainer, handbookFragment, null);
                 return true;
             case R.id.nav_settings:
-                replaceFragment(R.id.fragmentContainer, new SettingsFragment(), null);
+                replaceFragment(R.id.fragmentContainer, settingsFragment, null);
                 return true;
             case R.id.nav_about:
-                replaceFragment(R.id.fragmentContainer, new AboutFragment(), null);
+                replaceFragment(R.id.fragmentContainer, aboutFragment, null);
                 return true;
         }
         return true;

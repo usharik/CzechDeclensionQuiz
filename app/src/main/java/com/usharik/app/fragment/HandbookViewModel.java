@@ -46,7 +46,7 @@ public class HandbookViewModel extends ViewModelObservable {
                              final AppState appState) {
         this.databaseManager = databaseManager;
         this.appState = appState;
-        cases = new String[2][7];
+        this.cases = new String[2][7];
     }
 
     @Bindable

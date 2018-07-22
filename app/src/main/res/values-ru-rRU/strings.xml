@@ -25,6 +25,7 @@
     <string name="additional_settings">Дополнительные настройки</string>
     <string name="turn_off_animation">Выключить анимацию</string>
     <string name="settings">Настройки</string>
+    <string name="words_with_errors">Слова с ошибками</string>
 
     <string-array name="next_word_dialog">
         <item>Следующее слово</item>

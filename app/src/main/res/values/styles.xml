@@ -36,4 +36,12 @@
         <item name="android:layout_margin">2dp</item>
     </style>
 
+    <style name="WordRadioButtonWithPadding" parent="WordRadioButton">
+        <item name="android:textSize">@dimen/draggable_font_size</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+
 </resources>
