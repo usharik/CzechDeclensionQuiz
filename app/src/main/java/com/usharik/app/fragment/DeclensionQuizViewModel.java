@@ -2,9 +2,11 @@ package com.usharik.app.fragment;
 
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
 import com.usharik.app.framework.ViewModelObservable;
@@ -31,18 +33,21 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public static final int SINGULAR = 0;
     public static final int PLURAL = 1;
 
-    private static Map<TextView, String> textView2value = new HashMap<>();
+    private static final Map<TextView, String> textView2value = new HashMap<>();
 
     private final AppState appState;
+    private final WordService wordService;
+    private final FirebaseAnalytics firebaseAnalytics;
 
-    private WordService wordService;
     private int errorCount;
 
     @Inject
     public DeclensionQuizViewModel(final AppState appState,
-                                   final WordService wordService) {
+                                   final WordService wordService,
+                                   final FirebaseAnalytics firebaseAnalytics) {
         this.appState = appState;
         this.wordService = wordService;
+        this.firebaseAnalytics = firebaseAnalytics;
     }
 
     @Bindable
@@ -98,12 +103,14 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     public boolean checkAnswers() {
+        Bundle bundle = new Bundle();
         boolean res=true;
         for (int i=0; i<7; i++) {
             int actualAnswerSingularIx = appState.actualAnswers[SINGULAR][i];
             if (actualAnswerSingularIx == -1) {
                 res &= appState.correctAnswers[SINGULAR][i].isEmpty();
             } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
+                bundle.putStringArray("SINGULAR_" + i, new String[] {appState.correctAnswers[SINGULAR][i], getWordByIndex(actualAnswerSingularIx)});
                 res = false;
                 errorCount++;
                 appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
@@ -114,6 +121,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
             if (actualAnswerPluralIx == -1) {
                 res &= appState.correctAnswers[PLURAL][i].isEmpty();
             } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
+                bundle.putStringArray("PLURAL_" + i, new String[] {appState.correctAnswers[PLURAL][i], getWordByIndex(actualAnswerPluralIx)});
                 res = false;
                 errorCount++;
                 appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
@@ -122,6 +130,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         }
         notifyPropertyChanged(BR.wordTextModels);
         notifyPropertyChanged(BR.caseModels);
+        if (!bundle.isEmpty()) {
+            bundle.putString("WORD", getWord());
+            firebaseAnalytics.logEvent("MISTAKE", bundle);
+        }
         return res;
     }
 

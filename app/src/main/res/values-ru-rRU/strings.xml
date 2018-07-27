@@ -8,6 +8,7 @@
     <string name="correct_answer">Все правильно!</string>
     <string name="toast_some_errors">Допущено несколько ошибок.</string>
     <string name="version">Версия %s %s</string>
+    <string name="date_of_build">Дата сборки %s</string>
     <string name="gender_of_noun">Род существительного</string>
     <string name="type_of_declension">Тип склонения</string>
     <string name="masculine">Мужской</string>

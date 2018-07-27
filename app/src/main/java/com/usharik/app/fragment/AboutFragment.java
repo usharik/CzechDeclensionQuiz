@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class AboutFragment extends Fragment {
 
     @Nullable
@@ -27,8 +30,13 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView textView = getView().findViewById(R.id.appVersion);
-        textView.setText(getResources().getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.BUILD_TYPE));
+        TextView tvVersion = getView().findViewById(R.id.appVersion);
+        TextView tvDateOfBuild = getView().findViewById(R.id.appDateOfBuild);
+        tvVersion.setText(getResources().getString(R.string.version,
+                BuildConfig.VERSION_NAME,
+                BuildConfig.BUILD_TYPE));
+        String buildDateStr = DateFormat.getInstance().format(new Date(BuildConfig.TIMESTAMP));
+        tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
         getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
     }
 

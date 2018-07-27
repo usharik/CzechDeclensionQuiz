@@ -9,6 +9,7 @@ android {
         versionCode 201
         versionName "2.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
         release {

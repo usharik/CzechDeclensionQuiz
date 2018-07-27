@@ -45,12 +45,23 @@
         app:layout_constraintTop_toBottomOf="@id/appLogo"
         tools:text="Version 1.01-RC Debug" />
 
+    <TextView
+            android:id="@+id/appDateOfBuild"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appVersion"
+            tools:text="Date of build: 27.07.2018 15:07" />
+
     <Button
         android:id="@+id/rateApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_background"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="50dp"
         android:text="@string/rate_app"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
