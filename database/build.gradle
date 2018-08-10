@@ -5,8 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 201
-        versionName "2.01"
+        versionCode 205
+        versionName "2.05"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     implementation 'android.arch.persistence.room:rxjava2:1.1.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.17'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
     testImplementation 'junit:junit:4.12'

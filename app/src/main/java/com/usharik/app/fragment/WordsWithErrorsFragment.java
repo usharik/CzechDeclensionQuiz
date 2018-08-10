@@ -19,6 +19,11 @@ import javax.inject.Inject;
 
 public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewModel> {
 
+    private final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+    );
+
     @Inject
     AppState appState;
 
@@ -32,21 +37,22 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.words_with_errors_fragment, container, false);
         binding.setViewModel(getViewModel());
+        return binding.getRoot();
+    }
 
-        ViewGroup.LayoutParams param = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.wordsWithErrorsFlow.removeAllViews();
         for (String word : appState.wordsWithErrors.keySet()) {
             RadioButton radioButton = new RadioButton(new ContextThemeWrapper(getContext(), R.style.WordRadioButtonWithPadding), null, -1);
             radioButton.setText(word);
-            radioButton.setLayoutParams(param);
+            radioButton.setLayoutParams(layoutParams);
             radioButton.setChecked(word.equals(getViewModel().getSelectedWord()));
             radioButton.setId(RadioButton.generateViewId());
             radioButton.setOnClickListener(this::onRadioButtonClick);
             binding.wordsWithErrorsFlow.addView(radioButton);
         }
-        return binding.getRoot();
     }
 
     private void onRadioButtonClick(View view) {

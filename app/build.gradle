@@ -6,8 +6,8 @@ android {
         applicationId "com.usharik.app"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 201
-        versionName "2.01"
+        versionCode 205
+        versionName "2.05"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation "android.arch.lifecycle:runtime:1.1.1"
     implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.17'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.google.dagger:dagger-android:2.16'
     implementation 'com.google.dagger:dagger-android-support:2.16'
