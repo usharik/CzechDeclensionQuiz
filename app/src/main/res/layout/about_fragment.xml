@@ -58,16 +58,36 @@
 
     <Button
         android:id="@+id/rateApp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_background"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="50dp"
-        android:text="@string/rate_app"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/button_background"
+        android:drawableStart="@drawable/ic_star"
+        android:drawablePadding="5dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:drawableStart="@drawable/ic_star"
+        android:text="@string/rate_app"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appVersion" />
+
+    <Button
+        android:id="@+id/privacyPolicy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/button_background"
+        android:drawableStart="@drawable/ic_privacy_black_24dp"
+        android:drawablePadding="5dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/privacy_policy"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rateApp" />
 
 </android.support.constraint.ConstraintLayout>

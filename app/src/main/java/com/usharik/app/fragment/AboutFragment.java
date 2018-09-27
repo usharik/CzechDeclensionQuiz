@@ -38,10 +38,16 @@ public class AboutFragment extends Fragment {
         String buildDateStr = DateFormat.getInstance().format(new Date(BuildConfig.TIMESTAMP));
         tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
         getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
+        getView().findViewById(R.id.privacyPolicy).setOnClickListener(this::onPrivacyPolicyClick);
     }
 
     public void onRateAppClick(View view) {
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
+    }
+
+    private void onPrivacyPolicyClick(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/usharik/CzechDeclensionQuiz/blob/master/privacy_policy.md")));
     }
 }
