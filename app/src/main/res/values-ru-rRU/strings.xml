@@ -34,4 +34,5 @@
         <item>Повторить</item>
         <item>Оценить приложение</item>
     </string-array>
+    <string name="privacy_policy">Политика конфиденциальности</string>
 </resources>
