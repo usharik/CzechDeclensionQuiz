@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
         entities = {
             DocumentEntity.class
         },
-        version = 2
+        version = 3
 )
 @TypeConverters({Converters.class})
 public abstract class DocumentDatabase extends RoomDatabase {
@@ -36,6 +36,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
         return Room.databaseBuilder(context.getApplicationContext(), DocumentDatabase.class, DB_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .build();
     }
 
@@ -65,6 +66,18 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 Log.e("Exception", e.getClass().getName(), e);
             }
             Log.i("Migration1_2", "Migration completed");
+        }
+    };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            Log.i("Migration2_3", "Removing all data");
+
+            database.execSQL("DELETE FROM `DOCUMENT`;");
+            database.execSQL("VACUUM;");
+
+            Log.i("Migration2_3", "Migration completed");
         }
     };
 

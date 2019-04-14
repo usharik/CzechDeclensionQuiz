@@ -14,7 +14,7 @@ import java.util.List;
  * */
 public class DictionaryDbConverter {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     public static List<WordInfo> getWords(Connection conn) throws Exception {
         List<WordInfo> res = new ArrayList<>();
@@ -34,22 +34,31 @@ public class DictionaryDbConverter {
 
     public static void fillTranslations(Connection conn, List<WordInfo> wordInfos) throws Exception {
         PreparedStatement preparedStatement = conn.prepareStatement(
-                "select B.translation \n" +
+                "select B.translation, B.lang \n" +
                         "  from WORD_TO_TRANSLATION A\n" +
                         " inner join TRANSLATION B on A.translation_id = B.id\n" +
-                        " where A.word_id = ? and B.lang = ?");
+                        " where A.word_id = ? and B.lang in ('ru', 'en')");
         for (WordInfo wordInfo : wordInfos) {
             preparedStatement.setLong(1, wordInfo.wordId);
-            preparedStatement.setString(2, "ru");
             ResultSet resultSet = preparedStatement.executeQuery();
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb_ru = new StringBuilder();
+            StringBuilder sb_en = new StringBuilder();
             while (resultSet.next()) {
-                sb.append(resultSet.getString(1)).append(", ");
+                if (resultSet.getString(2).equals("ru")) {
+                    sb_ru.append(resultSet.getString(1)).append(", ");
+                } else {
+                    sb_en.append(resultSet.getString(1)).append(", ");
+                }
             }
-            if (sb.length() > 2) {
-                wordInfo.translation_ru = sb.substring(0,sb.length() - 2);
+            if (sb_ru.length() > 2) {
+                wordInfo.translation_ru = sb_ru.substring(0,sb_ru.length() - 2);
             } else {
                 wordInfo.translation_ru = "";
+            }
+            if (sb_en.length() > 2) {
+                wordInfo.translation_en = sb_en.substring(0,sb_en.length() - 2);
+            } else {
+                wordInfo.translation_en = "";
             }
         }
     }
@@ -90,7 +99,7 @@ public class DictionaryDbConverter {
 
     public static void main(String[] args) throws Exception {
         Class.forName("org.sqlite.JDBC");
-        String pathToDatabase = "";
+        String pathToDatabase = "./utils/slovnik-database";
         String url = "jdbc:sqlite:" + pathToDatabase;
         Connection conn = DriverManager.getConnection(url);
         List<WordInfo> words = getWords(conn);
@@ -98,7 +107,8 @@ public class DictionaryDbConverter {
         fillGender(conn, words);
         fillCases(conn, words);
         words.stream()
-                .map(wi -> gson.toJson(wi))
+                .filter(w -> w.translation_en.equals(""))
+                .map(gson::toJson)
                 .forEach(System.out::println);
     }
 
@@ -107,6 +117,7 @@ public class DictionaryDbConverter {
         public String word;
         public String gender;
         public String translation_ru;
-        public String cases[][];
+        public String translation_en;
+        public String[][] cases;
     }
 }
