@@ -1,4 +1,4 @@
-package com.usharik.app;
+package com.usharik.utils;
 
 /*
         Gson gson = new Gson();

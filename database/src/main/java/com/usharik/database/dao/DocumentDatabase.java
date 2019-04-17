@@ -75,6 +75,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             Log.i("Migration2_3", "Removing all data");
 
             database.execSQL("DELETE FROM `DOCUMENT`;");
+            database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
             database.execSQL("VACUUM;");
 
             Log.i("Migration2_3", "Migration completed");

@@ -1,0 +1,74 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "dfc2bc98043e14179621f3a40adaa491",
+    "entities": [
+      {
+        "tableName": "DOCUMENT",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `word_id` INTEGER, `word` TEXT, `gender` TEXT, `json` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "wordId",
+            "columnName": "word_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "word",
+            "columnName": "word",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "json",
+            "columnName": "json",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_DOCUMENT_word",
+            "unique": false,
+            "columnNames": [
+              "word"
+            ],
+            "createSql": "CREATE  INDEX `index_DOCUMENT_word` ON `${TABLE_NAME}` (`word`)"
+          },
+          {
+            "name": "index_DOCUMENT_gender",
+            "unique": false,
+            "columnNames": [
+              "gender"
+            ],
+            "createSql": "CREATE  INDEX `index_DOCUMENT_gender` ON `${TABLE_NAME}` (`gender`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"dfc2bc98043e14179621f3a40adaa491\")"
+    ]
+  }
+}
