@@ -6,6 +6,7 @@ plugins {
 sourceCompatibility = 1.8
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -14,7 +15,7 @@ dependencies {
     compile 'junit:junit:4.12'
     compile 'io.appium:java-client:7.2.0'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
-    compile 'org.apache.httpcomponents:httpclient:4.5.9'
+    compile 'org.apache.httpcomponents:httpclient:4.5.10'
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.google.code.gson:gson:2.8.5'
     compile 'com.google.http-client:google-http-client:1.22.0'
