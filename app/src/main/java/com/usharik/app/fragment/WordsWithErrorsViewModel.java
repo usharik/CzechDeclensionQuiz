@@ -1,7 +1,6 @@
 package com.usharik.app.fragment;
 
-import android.databinding.Bindable;
-
+import androidx.databinding.Bindable;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
 import com.usharik.app.framework.ViewModelObservable;

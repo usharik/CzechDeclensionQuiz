@@ -13,7 +13,7 @@
                 type="com.usharik.app.fragment.HandbookViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -227,7 +227,7 @@
 
         </RadioGroup>
 
-        <android.support.constraint.Guideline
+        <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideLine"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -346,5 +346,5 @@
                 app:plural="@{viewModel.cases[1][6]}"
                 app:singular="@{viewModel.cases[0][6]}"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

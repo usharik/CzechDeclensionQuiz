@@ -1,10 +1,8 @@
 package com.usharik.app;
 
-import android.app.Activity;
 import android.app.Application;
 
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
 
 import android.util.Log;
 
@@ -20,8 +18,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
+import dagger.android.HasAndroidInjector;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -34,13 +31,10 @@ import static com.usharik.app.fragment.SettingsFragment.SWITCH_OFF_ANIMATION;
  * Created by macbook on 08.02.18.
  */
 
-public class App extends Application implements HasActivityInjector, HasSupportFragmentInjector {
+public class App extends Application implements HasAndroidInjector {
 
     @Inject
-    DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
-
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingAndroidFragmentInjector;
+    DispatchingAndroidInjector<Object> dispatchingAndroidInjector;
 
     @Inject
     DatabaseManager databaseManager;
@@ -74,7 +68,8 @@ public class App extends Application implements HasActivityInjector, HasSupportF
         appState.switchOffAnimation = prefs.getBoolean(SWITCH_OFF_ANIMATION, false);
         String str = prefs.getString(WORDS_WITH_ERRORS, "{}");
         try {
-            Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
+            Type type = new TypeToken<HashMap<String, Integer>>() {
+            }.getType();
             appState.wordsWithErrors = gson.fromJson(str, type);
         } catch (Exception ex) {
             Log.e(getClass().getName(), "Exception", ex);
@@ -83,12 +78,7 @@ public class App extends Application implements HasActivityInjector, HasSupportF
     }
 
     @Override
-    public DispatchingAndroidInjector<Activity> activityInjector() {
-        return dispatchingAndroidActivityInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingAndroidFragmentInjector;
+    public AndroidInjector<Object> androidInjector() {
+        return dispatchingAndroidInjector;
     }
 }

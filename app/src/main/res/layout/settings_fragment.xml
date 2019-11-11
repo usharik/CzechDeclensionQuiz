@@ -8,7 +8,7 @@
                 type="com.usharik.app.fragment.SettingsViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                  android:layout_height="match_parent">
         <TextView
                 android:id="@+id/radioGroupHeader"
@@ -74,6 +74,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxHeader"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -1,7 +1,6 @@
 package com.usharik.app.fragment;
 
-import android.databinding.Bindable;
-
+import androidx.databinding.Bindable;
 import com.usharik.app.AppState;
 import com.usharik.database.WordInfo;
 import com.usharik.database.dao.DatabaseManager;

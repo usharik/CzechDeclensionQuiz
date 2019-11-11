@@ -1,11 +1,11 @@
 package com.usharik.database.dao;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import android.content.Context;
 import android.util.Log;
 
@@ -76,7 +76,6 @@ public abstract class DocumentDatabase extends RoomDatabase {
 
             database.execSQL("DELETE FROM `DOCUMENT`;");
             database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
-            database.execSQL("VACUUM;");
 
             Log.i("Migration2_3", "Migration completed");
         }

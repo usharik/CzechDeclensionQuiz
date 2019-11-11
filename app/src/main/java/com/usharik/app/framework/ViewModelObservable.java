@@ -1,9 +1,9 @@
 package com.usharik.app.framework;
 
-import android.arch.lifecycle.ViewModel;
-import android.databinding.Bindable;
-import android.databinding.Observable;
-import android.databinding.PropertyChangeRegistry;
+
+import androidx.databinding.Observable;
+import androidx.databinding.PropertyChangeRegistry;
+import androidx.lifecycle.ViewModel;
 
 /**
  * Created by macbook on 11.02.18.
