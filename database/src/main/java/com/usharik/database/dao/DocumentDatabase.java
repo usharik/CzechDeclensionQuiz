@@ -1,11 +1,11 @@
 package com.usharik.database.dao;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
 import android.content.Context;
 import android.util.Log;
 
@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
         entities = {
             DocumentEntity.class
         },
-        version = 2
+        version = 3
 )
 @TypeConverters({Converters.class})
 public abstract class DocumentDatabase extends RoomDatabase {
@@ -36,6 +36,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
         return Room.databaseBuilder(context.getApplicationContext(), DocumentDatabase.class, DB_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .build();
     }
 
@@ -65,6 +66,18 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 Log.e("Exception", e.getClass().getName(), e);
             }
             Log.i("Migration1_2", "Migration completed");
+        }
+    };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            Log.i("Migration2_3", "Removing all data");
+
+            database.execSQL("DELETE FROM `DOCUMENT`;");
+            database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
+
+            Log.i("Migration2_3", "Migration completed");
         }
     };
 

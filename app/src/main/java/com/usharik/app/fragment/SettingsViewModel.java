@@ -1,8 +1,8 @@
 package com.usharik.app.fragment;
 
-import android.databinding.Bindable;
 import android.os.Bundle;
 
+import androidx.databinding.Bindable;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;

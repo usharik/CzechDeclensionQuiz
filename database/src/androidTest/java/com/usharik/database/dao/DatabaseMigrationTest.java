@@ -30,4 +30,11 @@ public class DatabaseMigrationTest {
         DocumentDatabase.setContext(InstrumentationRegistry.getTargetContext());
         db = helper.runMigrationsAndValidate(TEST_DB, 2, true, DocumentDatabase.MIGRATION_1_2);
     }
+
+    @Test
+    public void migrate2To3() throws Exception {
+        SupportSQLiteDatabase db = helper.createDatabase(TEST_DB, 2);
+        DocumentDatabase.setContext(InstrumentationRegistry.getTargetContext());
+        db = helper.runMigrationsAndValidate(TEST_DB, 3, true, DocumentDatabase.MIGRATION_2_3);
+    }
 }

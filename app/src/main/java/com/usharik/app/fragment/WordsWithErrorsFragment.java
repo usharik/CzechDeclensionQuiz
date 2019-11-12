@@ -1,15 +1,15 @@
 package com.usharik.app.fragment;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.databinding.DataBindingUtil;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
 import com.usharik.app.databinding.WordsWithErrorsFragmentBinding;

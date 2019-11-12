@@ -2,6 +2,7 @@ package com.usharik.app.di;
 
 import android.app.Application;
 
+import android.os.Build;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.usharik.app.App;
@@ -14,12 +15,15 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+import java.util.Locale;
+
 /**
  * Created by macbook on 09.02.18.
  */
 
 @Module(includes = {AppModule.class})
 class ServiceModule {
+
     @Provides
     @Singleton
     AppState provideAppState() {
@@ -50,5 +54,15 @@ class ServiceModule {
     @Singleton
     Gson provideGson() {
         return new Gson();
+    }
+
+    @Provides
+    @Singleton
+    Locale provideLocale(Application application) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return application.getResources().getConfiguration().getLocales().get(0);
+        } else {
+            return application.getResources().getConfiguration().locale;
+        }
     }
 }
