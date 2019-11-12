@@ -25,6 +25,8 @@ public class AppState {
     public int genderFilterId = -1;
     public boolean switchOffAnimation = false;
 
+    public Integer currentNavigationItem;
+
     public void setGenderFilterStr(String genderFilterStr) {
         this.genderFilterStr = genderFilterStr;
         switch (genderFilterStr) {

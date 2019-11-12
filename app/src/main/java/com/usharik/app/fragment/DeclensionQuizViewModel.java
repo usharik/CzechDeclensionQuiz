@@ -1,6 +1,6 @@
 package com.usharik.app.fragment;
 
-
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -81,6 +81,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         }
     }
 
+    @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
         Single<WordInfo> wordInfoSingle;
         if (appState.wordInfo == null || !tryAgain) {
@@ -104,7 +105,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                         appState.actualAnswers[PLURAL][i] = -1;
                     }
                     Collections.shuffle(words);
-                    appState.wordTextModels = words.toArray(new WordTextModel[words.size()]);
+                    appState.wordTextModels = words.toArray(new WordTextModel[0]);
                     errorCount = 0;
                     update();
                 });
@@ -164,10 +165,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     public String getWordByIndex(int ix) {
-        if (ix == -1) {
-            return "";
-        }
-        return appState.wordTextModels[ix].getWord();
+        return (ix == -1) ? "" : appState.wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {
@@ -216,7 +214,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         return errorCount;
     }
 
-    public class WordTextModel {
+    public static class WordTextModel {
         String word;
         int visible;
 

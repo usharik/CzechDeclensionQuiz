@@ -101,7 +101,7 @@ public class DatabaseManager {
     }
 
     public void populateFromJsonStream(InputStream stream) throws IOException {
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String json;
             while ((json = reader.readLine()) != null) {
                 WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
