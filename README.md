@@ -10,3 +10,7 @@ Android quiz application to study declension of nouns in Czech language
 <img width="249" alt="2018-06-16 20 25 17" src="https://user-images.githubusercontent.com/15856751/41592267-4c107f64-73bc-11e8-89ce-f618351bb28d.png">
 
 [Privacy Policy](privacy_policy.md)
+
+If you like my applications, you can support me here
+
+[![ko-fi](https://www.ko-fi.com/img/donate_sm.png)](https://ko-fi.com/X8X8NI26)
