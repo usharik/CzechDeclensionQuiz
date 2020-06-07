@@ -14,7 +14,7 @@
     <string name="masculine">Мужской</string>
     <string name="neuter">Средний</string>
     <string name="feminine">Женский</string>
-    <string name="declension_quiz_1">Упражнение на сконения</string>
+    <string name="declension_quiz_1">Упражнение на склонения</string>
     <string name="handbook">Справочник</string>
     <string name="about">О программе</string>
     <string name="other_nouns">Аналогично:</string>
@@ -33,6 +33,17 @@
         <item>Остаться</item>
         <item>Повторить</item>
         <item>Оценить приложение</item>
+        <item>Поддержать разработчика</item>
     </string-array>
+
+    <string-array name="report_word_dialog">
+        <item>Ошибка в падежах</item>
+        <item>Неприличное слово</item>
+    </string-array>
+
     <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="donate">Поддержать автора</string>
+    <string name="report">Сообщить</string>
+    <string name="thanks">Спасибо!</string>
+    <string name="what_is_wrong">Что не так?</string>
 </resources>

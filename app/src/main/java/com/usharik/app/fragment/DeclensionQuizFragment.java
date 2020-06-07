@@ -140,6 +140,11 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             case R.id.action_next:
                 nextWord(false);
                 return true;
+            case R.id.action_report:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.what_is_wrong)
+                        .setItems(R.array.report_word_dialog, this::reportDialogHandler)
+                        .show();
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -151,19 +156,38 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         switch (i) {
             case 0:
                 nextWord(false);
-                logAction("NEXT");
+                logNextWordAction("NEXT");
                 return;
             case 1:
-                logAction("STAY");
+                logNextWordAction("STAY");
                 return;
             case 2:
                 nextWord(true);
-                logAction("TRY_AGAIN");
+                logNextWordAction("TRY_AGAIN");
                 return;
             case 3:
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
+                return;
+            case 4:
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://www.paypal.me/usharik")));
         }
+    }
+
+    private void reportDialogHandler(DialogInterface dialogInterface, int i) {
+        if (appState.wordInfo == null || appState.wordInfo.word == null) {
+            return;
+        }
+        switch (i) {
+            case 0:
+                logSwearWordAction(appState.wordInfo.word);
+                break;
+            case 1:
+                logErrorInCasesAction(appState.wordInfo.word);
+                break;
+        }
+        Toast.makeText(getActivity(), R.string.thanks, Toast.LENGTH_LONG).show();
     }
 
     private void nextWord(boolean tryAgain) {
@@ -171,10 +195,22 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         setListeners();
     }
 
-    private void logAction(String actionName) {
+    private void logNextWordAction(String actionName) {
         Bundle bundle = new Bundle();
         bundle.putString("NEXT_WORD_ACTION", actionName);
         firebaseAnalytics.logEvent("NEXT_WORD_ACTION", bundle);
+    }
+
+    private void logSwearWordAction(String word) {
+        Bundle bundle = new Bundle();
+        bundle.putString("WORD", word);
+        firebaseAnalytics.logEvent("SWEAR_WORD_ACTION", bundle);
+    }
+
+    private void logErrorInCasesAction(String word) {
+        Bundle bundle = new Bundle();
+        bundle.putString("WORD", word);
+        firebaseAnalytics.logEvent("ERROR_IN_CASES_ACTION", bundle);
     }
 
     private void saveErrorsInfo() {

@@ -39,6 +39,12 @@ public class AboutFragment extends Fragment {
         tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
         getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
         getView().findViewById(R.id.privacyPolicy).setOnClickListener(this::onPrivacyPolicyClick);
+        getView().findViewById(R.id.donate).setOnClickListener(this::onDonateClick);
+    }
+
+    private void onDonateClick(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.paypal.me/usharik")));
     }
 
     public void onRateAppClick(View view) {

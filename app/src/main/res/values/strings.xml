@@ -28,12 +28,22 @@
     <string name="settings">Settings</string>
     <string name="words_with_errors">Words with errors</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="donate">Donate</string>
+    <string name="report">Report</string>
+    <string name="thanks">Thank you!</string>
+    <string name="what_is_wrong">What is wrong?</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>
         <item>Stay here</item>
         <item>Try again</item>
         <item>Rate application</item>
+        <item>Donate</item>
+    </string-array>
+
+    <string-array name="report_word_dialog">
+        <item>Error in cases</item>
+        <item>Swear word</item>
     </string-array>
 
     <array name="caseName">
