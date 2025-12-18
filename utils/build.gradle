@@ -4,15 +4,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-
 repositories {
     mavenCentral()
 }
 
 jar {
-    baseName = "gs-gradle"
     version = "0.1.0"
     manifest {
         attributes 'Main-Class': 'DictionaryDbConverter'
@@ -21,7 +17,7 @@ jar {
 
 dependencies {
     sourceSets.main.java.srcDirs = ['src']
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
     implementation 'org.xerial:sqlite-jdbc:3.28.0'
     implementation 'com.google.code.gson:gson:2.8.6'
 }

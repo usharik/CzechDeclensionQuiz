@@ -58,22 +58,22 @@ public class MainActivity extends AppCompatActivity {
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         appState.currentNavigationItem = item.getItemId();
-        switch (item.getItemId()) {
-            case R.id.nav_quiz:
-                replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);
-                return true;
-            case R.id.nav_words_with_errors:
-                replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
-                return true;
-            case R.id.nav_handbook:
-                replaceFragment(R.id.fragmentContainer, HandbookFragment.class);
-                return true;
-            case R.id.nav_settings:
-                replaceFragment(R.id.fragmentContainer, SettingsFragment.class);
-                return true;
-            case R.id.nav_about:
-                replaceFragment(R.id.fragmentContainer, AboutFragment.class);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_quiz) {
+            replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_words_with_errors) {
+            replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_handbook) {
+            replaceFragment(R.id.fragmentContainer, HandbookFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_settings) {
+            replaceFragment(R.id.fragmentContainer, SettingsFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_about) {
+            replaceFragment(R.id.fragmentContainer, AboutFragment.class);
+            return true;
         }
         return true;
     }

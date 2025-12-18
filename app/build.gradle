@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    namespace "com.usharik.app"
+    compileSdkVersion 36
     defaultConfig {
         applicationId "com.usharik.app"
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion 33
+        targetSdkVersion 36
         versionCode 210
         versionName "2.10"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
+    }
+    buildFeatures {
+        buildConfig true
     }
     buildTypes {
         release {

@@ -125,25 +125,23 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_check:
-                if (getViewModel().checkAnswers()) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.correct_answer)
-                            .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
-                            .setCancelable(false)
-                            .show();
-                } else {
-                    Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
-                }
-                return true;
-            case R.id.action_next:
-                nextWord(false);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_check) {
+            if (getViewModel().checkAnswers()) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.correct_answer)
+                        .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
+                        .setCancelable(false)
+                        .show();
+            } else {
+                Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
+            }
+            return true;
+        } else if (itemId == R.id.action_next) {
+            nextWord(false);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {

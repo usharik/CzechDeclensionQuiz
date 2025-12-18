@@ -41,16 +41,13 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         binding.wordGroupNeuter.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
         getViewModel().setSelectedGender(getViewModel().getSelectedGender() != -1 ? getViewModel().getSelectedGender() : R.id.radioMasculine);
         getViewModel().setSelectedWordId(getViewModel().getSelectedWordId() != -1 ? getViewModel().getSelectedWordId() : R.id.pan);
-        switch (getViewModel().getSelectedGender()) {
-            case R.id.radioMasculine:
-                binding.wordGroupMasculine.check(getViewModel().getSelectedWordId());
-                break;
-            case R.id.radioFeminine:
-                binding.wordGroupFeminine.check(getViewModel().getSelectedWordId());
-                break;
-            case R.id.radioNeuter:
-                binding.wordGroupNeuter.check(getViewModel().getSelectedWordId());
-                break;
+        int selectedGender = getViewModel().getSelectedGender();
+        if (selectedGender == R.id.radioMasculine) {
+            binding.wordGroupMasculine.check(getViewModel().getSelectedWordId());
+        } else if (selectedGender == R.id.radioFeminine) {
+            binding.wordGroupFeminine.check(getViewModel().getSelectedWordId());
+        } else if (selectedGender == R.id.radioNeuter) {
+            binding.wordGroupNeuter.check(getViewModel().getSelectedWordId());
         }
 
         Bundle bundle = new Bundle();

@@ -31,19 +31,14 @@ public class SettingsViewModel extends ViewModelObservable {
 
     public void setGenderFilterId(int genderFilterId) {
         String str = "all";
-        switch (genderFilterId) {
-            case R.id.radioAnimateMasculine:
-                str = Gender.ANIMATE_MASCULINE;
-                break;
-            case R.id.radioInanimateMasculine:
-                str = Gender.INANIMATE_MASCULINE;
-                break;
-            case R.id.radioFeminine:
-                str = Gender.FEMININE;
-                break;
-            case R.id.radioNeuter:
-                str = Gender.NEUTER;
-                break;
+        if (genderFilterId == R.id.radioAnimateMasculine) {
+            str = Gender.ANIMATE_MASCULINE;
+        } else if (genderFilterId == R.id.radioInanimateMasculine) {
+            str = Gender.INANIMATE_MASCULINE;
+        } else if (genderFilterId == R.id.radioFeminine) {
+            str = Gender.FEMININE;
+        } else if (genderFilterId == R.id.radioNeuter) {
+            str = Gender.NEUTER;
         }
         appState.genderFilterId = genderFilterId;
         appState.genderFilterStr = str;
