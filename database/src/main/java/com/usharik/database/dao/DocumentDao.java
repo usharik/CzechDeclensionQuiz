@@ -7,13 +7,14 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface DocumentDao {
 
     @Query("select count(*) from DOCUMENT")
-    Maybe<Long> getCount();
+    Single<Integer> getCount();
 
     @Query("select json from DOCUMENT where id = :id")
     Maybe<String> getJsonString(long id);

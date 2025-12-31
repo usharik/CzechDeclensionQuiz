@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
 import dagger.android.DispatchingAndroidInjector;
 
@@ -29,8 +28,7 @@ public abstract class ViewActivity<T extends ViewModel> extends AppCompatActivit
     protected void onResume() {
         super.onResume();
         AndroidInjection.inject(this);
-        viewModel = ViewModelProviders
-                .of(this, appViewModelFactory)
+        viewModel = new ViewModelProvider(this, appViewModelFactory)
                 .get(getViewModelClass());
     }
 

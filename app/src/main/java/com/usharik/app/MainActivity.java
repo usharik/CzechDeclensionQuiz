@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = manager.findFragmentByTag(fragmentClass.getSimpleName());
         if (fragment == null) {
             try {
-                fragment = fragmentClass.newInstance();
+                fragment = fragmentClass.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 Log.e(getClass().getName(), "Can't create fragment class", e);
                 return;
@@ -97,14 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

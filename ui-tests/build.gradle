@@ -9,14 +9,14 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
-    implementation 'junit:junit:4.12'
-    implementation 'io.appium:java-client:7.3.0'
+    implementation 'junit:junit:4.13.2'
+    implementation 'io.appium:java-client:10.0.0'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.10'
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.http-client:google-http-client:1.22.0'
-    implementation 'com.testdroid:testdroid-api:2.84'
-    implementation 'com.google.http-client:google-http-client-jackson2:1.22.0'
-    implementation 'org.xerial:sqlite-jdbc:3.28.0'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.apache.commons:commons-lang3:3.20.0'
+    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'com.google.http-client:google-http-client:2.0.3'
+    implementation 'com.testdroid:testdroid-api:3.49.0'
+    implementation 'com.google.http-client:google-http-client-jackson2:2.0.3'
+    implementation 'org.xerial:sqlite-jdbc:3.51.1.0'
 }

@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
@@ -34,8 +33,7 @@ public abstract class ViewFragment<T extends ViewModel> extends Fragment impleme
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         AndroidSupportInjection.inject(this);
-        viewModel = ViewModelProviders
-                .of(this, appViewModelFactory)
+        viewModel = new ViewModelProvider(this, appViewModelFactory)
                 .get(getViewModelClass());
         return null;
     }

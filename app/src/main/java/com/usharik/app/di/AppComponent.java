@@ -4,6 +4,7 @@ import com.usharik.app.App;
 
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
@@ -19,7 +20,9 @@ import dagger.android.support.AndroidSupportInjectionModule;
         ServiceModule.class})
 public interface AppComponent extends AndroidInjector<App> {
 
-    @Component.Builder
-    abstract class Builder extends AndroidInjector.Builder<App> {
+    @Component.Factory
+    interface Factory extends AndroidInjector.Factory<App> {
+        @Override
+        AppComponent create(@BindsInstance App app);
     }
 }

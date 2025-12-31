@@ -11,9 +11,11 @@ import com.usharik.database.dao.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 
 public class WordService {
 
@@ -31,55 +33,68 @@ public class WordService {
     }
 
     public Single<WordInfo> getNextWord() {
-        return Single.fromCallable(() -> {
-            Log.i(getClass().getName(), "New word generation");
-            WordInfo doc = null;
-            long wordCount = databaseManager.getDocumentDb().getCount().blockingGet();
-
-            if (rnd.nextBoolean() && rnd.nextBoolean() && rnd.nextBoolean()) {
-                doc = getRandomWordWithError();
-            }
-            if (doc == null) {
-                doc = getRandomWord(wordCount);
-            }
+        return Maybe.defer(() -> rnd.nextBoolean()
+                ? getRandomWordWithErrorAsync()
+                : Maybe.empty()
+        ).switchIfEmpty(
+                databaseManager.getDocumentDb().getCount().flatMap(this::getRandomWordAsync)
+        ).doOnSuccess(doc -> {
             Log.i(getClass().getName(), "New word is " + doc.word);
             Bundle bundle = new Bundle();
             bundle.putString("WORD", doc.word);
             firebaseAnalytics.logEvent("NEXT_WORD", bundle);
-            return doc;
         });
     }
 
-    private WordInfo getRandomWordWithError() {
-        WordInfo doc = null;
+    private Maybe<WordInfo> getRandomWordWithErrorAsync() {
         int size = appState.wordsWithErrors.size();
+        if (size == 0) {
+            return Maybe.empty();
+        }
         String prevWord = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.word;
-        if (size > 0) {
-            List<String> keys = new ArrayList<>(appState.wordsWithErrors.keySet());
-            String wordKey = keys.get(rnd.nextInt(size));
-            doc = databaseManager.getDocumentDb().getWordInfoByWord(wordKey).blockingGet();
+
+        List<String> keys = new ArrayList<>(appState.wordsWithErrors.keySet());
+        String wordKey = keys.get(rnd.nextInt(size));
+        return databaseManager.getDocumentDb().getWordInfoByWord(wordKey).flatMap(doc -> {
             if (doc == null) {
                 appState.removeWordFromErrorMap();
+                return Maybe.empty();
             } else if (prevWord.equals(doc.word)) {
-                doc = null;
+                return Maybe.empty();
             }
-        }
-        return doc;
+            return Maybe.just(doc);
+        });
     }
 
-    private WordInfo getRandomWord(long wordCount) {
-        WordInfo doc = null;
-        String prevGender = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.gender;
-        while (doc == null) {
-            int id = rnd.nextInt((int) wordCount);
-            doc = databaseManager.getDocumentDb().getWordInfoById(id).blockingGet();
-            String gender = appState.genderFilterStr;
-            if (gender != null && !gender.equals(Gender.ALL) && doc != null) {
-                doc = doc.gender == null || doc.gender.equals(gender) ? doc : null;
-            } else if (doc != null) {
-                doc = prevGender.equals(doc.gender) ? null : doc;
-            }
+    private Single<WordInfo> getRandomWordAsync(int wordCount) {
+        String prevGender = (appState.wordInfo == null || appState.wordInfo.gender == null)
+                ? ""
+                : appState.wordInfo.gender;
+
+        return Maybe.defer(() -> {
+                    int id = rnd.nextInt(wordCount);
+                    return databaseManager.getDocumentDb().getWordInfoById(id);
+                })
+                .flatMap(doc -> {
+                    WordInfo filtered = applyFilters(doc, prevGender);
+                    if (filtered == null) {
+                        return Maybe.error(new NoSuchElementException("Filtered out"));
+                    }
+                    return Maybe.just(filtered);
+                })
+                .retry()
+                .toSingle();
+    }
+
+    private WordInfo applyFilters(WordInfo doc, String prevGender) {
+        if (doc == null) {
+            return null;
         }
-        return doc;
+        String genderFilter = appState.genderFilterStr;
+        if (genderFilter != null && !genderFilter.equals(Gender.ALL)) {
+            return (doc.gender == null || doc.gender.equals(genderFilter)) ? doc : null;
+        } else {
+            return prevGender.equals(doc.gender) ? null : doc;
+        }
     }
 }

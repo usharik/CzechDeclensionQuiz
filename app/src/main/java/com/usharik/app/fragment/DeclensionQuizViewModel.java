@@ -2,6 +2,7 @@ package com.usharik.app.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,8 +20,9 @@ import javax.inject.Inject;
 import com.usharik.app.service.WordService;
 import com.usharik.database.WordInfo;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Created by macbook on 07/03/2018.
@@ -33,7 +35,6 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public static final String RUS = "rus";
     public static final String BEL = "bel";
     public static final String UKR = "ukr";
-    public static final String ENG = "eng";
 
     private static final Map<TextView, String> textView2value = new HashMap<>();
 
@@ -57,28 +58,21 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getWord() {
-        return appState.wordInfo.word;
+        return appState.wordInfo != null ? appState.wordInfo.word : "";
     }
 
     @Bindable
     public String getGender() {
-        return appState.wordInfo.gender;
+        return appState.wordInfo != null ? appState.wordInfo.gender : "";
     }
 
     @Bindable
     public String getTranslation() {
         String language = locale.getISO3Language();
-
-        switch (language) {
-            case RUS:
-            case BEL:
-            case UKR:
-                return appState.wordInfo.translation_ru;
-            case ENG:
-                return appState.wordInfo.translation_en;
-            default:
-                return appState.wordInfo.translation_en;
-        }
+        return switch (language) {
+            case RUS, BEL, UKR -> appState.wordInfo.translation_ru;
+            default -> appState.wordInfo != null ? appState.wordInfo.translation_en : "";
+        };
     }
 
     @SuppressLint("CheckResult")
@@ -91,6 +85,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         }
         wordInfoSingle
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
                     appState.wordInfo = wordInfo;
                     List<WordTextModel> words = new ArrayList<>();
@@ -108,7 +103,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                     appState.wordTextModels = words.toArray(new WordTextModel[0]);
                     errorCount = 0;
                     update();
-                });
+                }, thr -> Log.e("Error", "Error", thr));
     }
 
     public void update() {
@@ -165,7 +160,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     public String getWordByIndex(int ix) {
-        return (ix == -1) ? "" : appState.wordTextModels[ix].getWord();
+        return (ix == -1 || appState.wordTextModels[ix] == null) ? "" : appState.wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {

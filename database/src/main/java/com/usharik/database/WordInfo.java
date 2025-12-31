@@ -3,7 +3,7 @@ package com.usharik.database;
 public class WordInfo {
     public Long wordId;
     public String word;
-    public String cases[][];
+    public String[][] cases;
     public String translation_ru;
     public String translation_en;
     public String gender;

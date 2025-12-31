@@ -20,8 +20,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
-import io.reactivex.Maybe;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Created by macbook on 14/03/2018.
@@ -181,7 +182,7 @@ public class DatabaseManager {
     private class DocumentDbImpl implements DocumentDb {
 
         @Override
-        public Maybe<Long> getCount() {
+        public Single<Integer> getCount() {
             return getActiveDbInstance().documentDao().getCount()
                     .subscribeOn(Schedulers.io());
         }

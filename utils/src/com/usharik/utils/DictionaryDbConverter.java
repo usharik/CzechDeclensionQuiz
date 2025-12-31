@@ -107,8 +107,8 @@ public class DictionaryDbConverter {
         fillGender(conn, words);
         fillCases(conn, words);
         words.stream()
-                .filter(w -> !w.translation_ru.equals("") &&
-                        !w.translation_en.equals("") &&
+                .filter(w -> !w.translation_ru.isEmpty() &&
+                        !w.translation_en.isEmpty() &&
                         !w.word.contains(" "))
                 .map(gson::toJson)
                 .forEach(System.out::println);

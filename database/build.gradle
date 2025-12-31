@@ -4,7 +4,7 @@ android {
     namespace "com.usharik.database"
     compileSdkVersion 36
     defaultConfig {
-        minSdkVersion 33
+        minSdkVersion 28
         targetSdkVersion 36
         versionCode 210
         versionName "2.10"
@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_25
+        targetCompatibility JavaVersion.VERSION_25
     }
     sourceSets {
         androidTest.assets.srcDirs +=
@@ -34,15 +34,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'androidx.room:room-runtime:2.2.1'
-    implementation 'androidx.room:room-rxjava2:2.2.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    annotationProcessor 'androidx.room:room-compiler:2.2.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.room:room-testing:2.2.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-rxjava3:2.8.4'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.12'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
+    annotationProcessor 'androidx.room:room-compiler:2.8.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    androidTestImplementation 'androidx.room:room-testing:2.8.4'
 }
-

@@ -19,8 +19,8 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasAndroidInjector;
-import io.reactivex.Completable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static com.usharik.app.fragment.DeclensionQuizFragment.WORDS_WITH_ERRORS;
 import static com.usharik.app.fragment.SettingsFragment.GENDER_FILTER_KEY;
@@ -48,7 +48,7 @@ public class App extends Application implements HasAndroidInjector {
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerAppComponent.builder().create(this).inject(this);
+        DaggerAppComponent.factory().create(this).inject(this);
 
         Log.i(getClass().getName(), "Application start!!!");
         databaseManager.getDocumentDb().getCount()

@@ -192,8 +192,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 return true;
             }
             String[] info = ((String) dropped.getTag()).split("_");
-            int numberCode = Integer.valueOf(info[0]);
-            int caseNum = Integer.valueOf(info[1]);
+            int numberCode = Integer.parseInt(info[0]);
+            int caseNum = Integer.parseInt(info[1]);
             int droppedWordNum = getViewModel().getCaseModels()[numberCode][caseNum];
             getViewModel().updateCaseModel(caseNum, numberCode, -1);
             getViewModel().updateWordTextModel(droppedWordNum, View.VISIBLE);
@@ -207,8 +207,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             if (!wordEditViewSet.contains(v.getId())) {
                 TextView tv = (TextView) v;
                 String[] info1 = ((String) tv.getTag()).split("_");
-                int numberCode = Integer.valueOf(info1[0]);
-                int caseNum = Integer.valueOf(info1[1]);
+                int numberCode = Integer.parseInt(info1[0]);
+                int caseNum = Integer.parseInt(info1[1]);
                 if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
                     return false;
                 }
@@ -225,8 +225,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             TextView dropped = (TextView) event.getLocalState();
             TextView dropTarget = (TextView) v;
             String[] info = ((String) dropTarget.getTag()).split("_");
-            int numberCode = Integer.valueOf(info[0]);
-            int caseNum = Integer.valueOf(info[1]);
+            int numberCode = Integer.parseInt(info[0]);
+            int caseNum = Integer.parseInt(info[1]);
             if (wordEditViewSet.contains(dropped.getId())) {
                 int droppedWordNum = Integer.parseInt(dropped.getTag().toString());
                 getViewModel().updateCaseModel(caseNum, numberCode, droppedWordNum);
@@ -234,8 +234,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 dropTarget.setOnTouchListener(this::onTouch);
             } else {
                 String[] info1 = ((String) dropped.getTag()).split("_");
-                int numberCode1 = Integer.valueOf(info1[0]);
-                int caseNum1 = Integer.valueOf(info1[1]);
+                int numberCode1 = Integer.parseInt(info1[0]);
+                int caseNum1 = Integer.parseInt(info1[1]);
                 getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                 dropTarget.setOnTouchListener(this::onTouch);
             }

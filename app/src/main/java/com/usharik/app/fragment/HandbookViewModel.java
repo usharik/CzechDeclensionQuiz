@@ -8,7 +8,7 @@ import com.usharik.app.BR;
 
 import com.usharik.app.framework.ViewModelObservable;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -16,26 +16,23 @@ public class HandbookViewModel extends ViewModelObservable {
 
     private String[][] cases;
 
-    private static HashMap<String, String> otherNouns = buildOtherNounMap();
+    private static final Map<String, String> otherNouns = Map.ofEntries(
+        Map.entry("pán", "syn, pes, doktor"),
+        Map.entry("hrad", "dům, rok, hotel"),
+        Map.entry("muž", "lékař, řidič, strýc"),
+        Map.entry("stroj", "konec, čaj, nůž"),
+        Map.entry("předseda", "děda, Jirka, Honza"),
+        Map.entry("soudce", "poradce"),
+        Map.entry("město", "auto, okno, jablko, zrcadlo"),
+        Map.entry("moře", "pole, nebe"),
+        Map.entry("kuře", "dítě, štěně, kotě, tele"),
+        Map.entry("stavení", "nádraží, náměstí, září, umění"),
+        Map.entry("žena", "kniha, matka, třída, houska"),
+        Map.entry("růže", "večeře, historie"),
+        Map.entry("píseň", "povodeň, pláž, loď"),
+        Map.entry("kost", "radost, starost")
+    );
 
-    private static HashMap<String,String> buildOtherNounMap() {
-        HashMap<String, String> res = new HashMap<>();
-        res.put("pán", "syn, pes, doktor");
-        res.put("hrad", "dům, rok, hotel");
-        res.put("muž", "lékař, řidič, strýc");
-        res.put("stroj", "konec, čaj, nůž");
-        res.put("předseda", "děda, Jirka, Honza");
-        res.put("soudce", "poradce");
-        res.put("město", "auto, okno, jablko, zrcadlo");
-        res.put("moře", "pole, nebe");
-        res.put("kuře", "dítě, štěně, kotě, tele");
-        res.put("stavení", "nádraží, náměstí, září, umění");
-        res.put("žena", "kniha, matka, třída, houska");
-        res.put("růže", "večeře, historie");
-        res.put("píseň", "povodeň, pláž, loď");
-        res.put("kost", "radost, starost");
-        return res;
-    }
 
     private final DatabaseManager databaseManager;
     private final AppState appState;
