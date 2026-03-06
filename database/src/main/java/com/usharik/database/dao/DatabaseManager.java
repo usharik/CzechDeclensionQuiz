@@ -3,6 +3,7 @@ package com.usharik.database.dao;
 import android.content.Context;
 import android.os.Environment;
 
+import androidx.sqlite.db.SupportSQLiteStatement;
 import com.usharik.database.DocumentDb;
 import com.usharik.database.WordInfo;
 import com.google.gson.Gson;
@@ -102,14 +103,25 @@ public class DatabaseManager {
     }
 
     public void populateFromJsonStream(InputStream stream) throws IOException {
+        DocumentDatabase db = getActiveDbInstance();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
-            String json;
-            while ((json = reader.readLine()) != null) {
-                WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
-                getActiveDbInstance()
-                        .compileStatement(String.format("insert into DOCUMENT(word_id, word, gender, json) values(%d, '%s', '%s', '%s');",
-                        wordInfo.wordId, wordInfo.word, wordInfo.gender, json)).executeInsert();
-            }
+            db.runInTransaction(() -> {
+                try {
+                    String json;
+                    while ((json = reader.readLine()) != null) {
+                        WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
+                        SupportSQLiteStatement stmt =
+                                db.compileStatement("insert into DOCUMENT(word_id, word, gender, json) values(?, ?, ?, ?);");
+                        stmt.bindLong(1, wordInfo.wordId);
+                        stmt.bindString(2, wordInfo.word);
+                        stmt.bindString(3, wordInfo.gender);
+                        stmt.bindString(4, json);
+                        stmt.executeInsert();
+                    }
+                } catch (IOException e) {
+                    throw new IllegalStateException("Failed to populate database from JSON stream", e);
+                }
+            });
         }
     }
 
