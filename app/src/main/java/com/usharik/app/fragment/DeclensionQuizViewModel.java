@@ -58,54 +58,61 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getWord() {
-        return appState.wordInfo != null ? appState.wordInfo.word : "";
+        WordInfo wordInfo = appState.getWordInfo();
+        return wordInfo != null ? wordInfo.word : "";
     }
 
     @Bindable
     public String getGender() {
-        return appState.wordInfo != null ? appState.wordInfo.gender : "";
+        WordInfo wordInfo = appState.getWordInfo();
+        return wordInfo != null ? wordInfo.gender : "";
     }
 
     @Bindable
     public String getDeclensionType() {
-        return appState.wordInfo != null ? appState.wordInfo.declensionType : "";
+        WordInfo wordInfo = appState.getWordInfo();
+        return wordInfo != null ? wordInfo.declensionType : "";
     }
 
     @Bindable
     public String getTranslation() {
+        WordInfo wordInfo = appState.getWordInfo();
+        if (wordInfo == null) return "";
+
         String language = locale.getISO3Language();
         return switch (language) {
-            case RUS, BEL, UKR -> appState.wordInfo.translation_ru;
-            default -> appState.wordInfo != null ? appState.wordInfo.translation_en : "";
+            case RUS, BEL, UKR -> wordInfo.translation_ru;
+            default -> wordInfo.translation_en;
         };
     }
 
     @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
         Single<WordInfo> wordInfoSingle;
-        if (appState.wordInfo == null || !tryAgain) {
+        WordInfo currentWordInfo = appState.getWordInfo();
+        if (currentWordInfo == null || !tryAgain) {
             wordInfoSingle = wordService.getNextWord();
         } else {
-            wordInfoSingle = Single.just(appState.wordInfo);
+            wordInfoSingle = Single.just(currentWordInfo);
         }
         wordInfoSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
-                    appState.wordInfo = wordInfo;
+                    appState.setWordInfo(wordInfo);
                     List<WordTextModel> words = new ArrayList<>();
                     for (int i = 0; i < 7; i++) {
-                        String singular = appState.wordInfo.cases[SINGULAR][i];
-                        String plural = appState.wordInfo.cases[PLURAL][i];
+                        String singular = wordInfo.cases[SINGULAR][i];
+                        String plural = wordInfo.cases[PLURAL][i];
                         words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
                         words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
-                        appState.correctAnswers[SINGULAR][i] = singular;
-                        appState.correctAnswers[PLURAL][i] = plural;
-                        appState.actualAnswers[SINGULAR][i] = -1;
-                        appState.actualAnswers[PLURAL][i] = -1;
+                        appState.getCorrectAnswers()[SINGULAR][i] = singular;
+                        appState.getCorrectAnswers()[PLURAL][i] = plural;
+                        appState.getActualAnswers()[SINGULAR][i] = -1;
+                        appState.getActualAnswers()[PLURAL][i] = -1;
                     }
                     Collections.shuffle(words);
-                    appState.wordTextModels = words.toArray(new WordTextModel[0]);
+                    appState.setWordTextModels(words.toArray(new WordTextModel[0]));
                     errorCount = 0;
                     update();
                 }, thr -> Log.e("Error", "Error", thr));
@@ -123,27 +130,31 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public boolean checkAnswers() {
         Bundle bundle = new Bundle();
         boolean res = true;
+        int[][] actualAnswers = appState.getActualAnswers();
+        String[][] correctAnswers = appState.getCorrectAnswers();
+        WordTextModel[] wordTextModels = appState.getWordTextModels();
+
         for (int i = 0; i < 7; i++) {
-            int actualAnswerSingularIx = appState.actualAnswers[SINGULAR][i];
+            int actualAnswerSingularIx = actualAnswers[SINGULAR][i];
             if (actualAnswerSingularIx == -1) {
-                res &= appState.correctAnswers[SINGULAR][i].isEmpty();
-            } else if (!appState.correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
-                bundle.putStringArray("SINGULAR_" + i, new String[]{appState.correctAnswers[SINGULAR][i], getWordByIndex(actualAnswerSingularIx)});
+                res &= correctAnswers[SINGULAR][i].isEmpty();
+            } else if (!correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerSingularIx))) {
+                bundle.putStringArray("SINGULAR_" + i, new String[]{correctAnswers[SINGULAR][i], getWordByIndex(actualAnswerSingularIx)});
                 res = false;
                 errorCount++;
-                appState.wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
-                appState.actualAnswers[SINGULAR][i] = -1;
+                wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
+                actualAnswers[SINGULAR][i] = -1;
             }
 
-            int actualAnswerPluralIx = appState.actualAnswers[PLURAL][i];
+            int actualAnswerPluralIx = actualAnswers[PLURAL][i];
             if (actualAnswerPluralIx == -1) {
-                res &= appState.correctAnswers[PLURAL][i].isEmpty();
-            } else if (!appState.correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
-                bundle.putStringArray("PLURAL_" + i, new String[]{appState.correctAnswers[PLURAL][i], getWordByIndex(actualAnswerPluralIx)});
+                res &= correctAnswers[PLURAL][i].isEmpty();
+            } else if (!correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerPluralIx))) {
+                bundle.putStringArray("PLURAL_" + i, new String[]{correctAnswers[PLURAL][i], getWordByIndex(actualAnswerPluralIx)});
                 res = false;
                 errorCount++;
-                appState.wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
-                appState.actualAnswers[PLURAL][i] = -1;
+                wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
+                actualAnswers[PLURAL][i] = -1;
             }
         }
         notifyPropertyChanged(BR.wordTextModels);
@@ -157,41 +168,44 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public WordTextModel[] getWordTextModels() {
-        return appState.wordTextModels;
+        return appState.getWordTextModels();
     }
 
     @Bindable
     public int[][] getCaseModels() {
-        return appState.actualAnswers;
+        return appState.getActualAnswers();
     }
 
     public String getWordByIndex(int ix) {
-        return (ix == -1 || appState.wordTextModels[ix] == null) ? "" : appState.wordTextModels[ix].getWord();
+        WordTextModel[] wordTextModels = appState.getWordTextModels();
+        return (ix == -1 || wordTextModels[ix] == null) ? "" : wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {
-        appState.wordTextModels[num].visible = visible;
+        appState.getWordTextModels()[num].visible = visible;
         notifyPropertyChanged(BR.wordTextModels);
     }
 
     public void updateCaseModel(int caseNum, int number, int wordIx) {
-        if (appState.actualAnswers[number][caseNum] != -1) {
-            appState.wordTextModels[appState.actualAnswers[number][caseNum]].visible = View.VISIBLE;
+        int[][] actualAnswers = appState.getActualAnswers();
+        if (actualAnswers[number][caseNum] != -1) {
+            appState.getWordTextModels()[actualAnswers[number][caseNum]].visible = View.VISIBLE;
             notifyPropertyChanged(BR.wordTextModels);
         }
-        appState.actualAnswers[number][caseNum] = wordIx;
+        actualAnswers[number][caseNum] = wordIx;
         notifyPropertyChanged(BR.caseModels);
     }
 
     public void swapCaseModels(int caseNum1, int number1, int caseNum2, int number2) {
-        int tmp = appState.actualAnswers[number1][caseNum1];
-        appState.actualAnswers[number1][caseNum1] = appState.actualAnswers[number2][caseNum2];
-        appState.actualAnswers[number2][caseNum2] = tmp;
+        int[][] actualAnswers = appState.getActualAnswers();
+        int tmp = actualAnswers[number1][caseNum1];
+        actualAnswers[number1][caseNum1] = actualAnswers[number2][caseNum2];
+        actualAnswers[number2][caseNum2] = tmp;
         notifyPropertyChanged(BR.caseModels);
     }
 
     public boolean getSwitchOffAnimation() {
-        return appState.switchOffAnimation;
+        return appState.getSwitchOffAnimation();
     }
 
     @BindingAdapter("animateView")

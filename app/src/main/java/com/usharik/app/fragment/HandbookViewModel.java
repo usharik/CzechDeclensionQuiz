@@ -47,11 +47,11 @@ public class HandbookViewModel extends ViewModelObservable {
 
     @Bindable
     public int getSelectedGender() {
-        return appState.selectedGender;
+        return appState.getSelectedGender();
     }
 
     public void setSelectedGender(int selectedGender) {
-        appState.selectedGender = selectedGender;
+        appState.setSelectedGender(selectedGender);
         notifyPropertyChanged(BR.selectedGender);
     }
 
@@ -61,7 +61,7 @@ public class HandbookViewModel extends ViewModelObservable {
     }
 
     public void setSelectedWord(String selectedWord) {
-        appState.selectedWord = selectedWord;
+        appState.setSelectedWord(selectedWord);
         WordInfo wordInfo = databaseManager.getDocumentDb().getWordInfoByWord(selectedWord).blockingGet();
         cases = wordInfo.cases;
         notifyPropertyChanged(BR.cases);
@@ -70,16 +70,16 @@ public class HandbookViewModel extends ViewModelObservable {
 
     @Bindable
     public int getSelectedWordId() {
-        return appState.selectedWordId;
+        return appState.getSelectedWordId();
     }
 
     public void setSelectedWordId(int selectedWordId) {
-        appState.selectedWordId = selectedWordId;
+        appState.setSelectedWordId(selectedWordId);
         notifyPropertyChanged(BR.selectedWordId);
     }
 
     @Bindable
     public String getOtherNouns() {
-        return otherNouns.get(appState.selectedWord);
+        return otherNouns.get(appState.getSelectedWord());
     }
 }

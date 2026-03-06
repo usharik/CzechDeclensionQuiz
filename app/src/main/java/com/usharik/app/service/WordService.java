@@ -11,6 +11,7 @@ import com.usharik.database.dao.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -47,13 +48,15 @@ public class WordService {
     }
 
     private Maybe<WordInfo> getRandomWordWithErrorAsync() {
-        int size = appState.wordsWithErrors.size();
+        Map<String, Integer> wordsWithErrors = appState.getWordsWithErrors();
+        int size = wordsWithErrors.size();
         if (size == 0) {
             return Maybe.empty();
         }
-        String prevWord = appState.wordInfo == null || appState.wordInfo.gender == null ? "" : appState.wordInfo.word;
+        WordInfo currentWordInfo = appState.getWordInfo();
+        String prevWord = currentWordInfo == null || currentWordInfo.gender == null ? "" : currentWordInfo.word;
 
-        List<String> keys = new ArrayList<>(appState.wordsWithErrors.keySet());
+        List<String> keys = new ArrayList<>(wordsWithErrors.keySet());
         String wordKey = keys.get(rnd.nextInt(size));
         return databaseManager.getDocumentDb().getWordInfoByWord(wordKey).flatMap(doc -> {
             if (doc == null) {
@@ -67,9 +70,10 @@ public class WordService {
     }
 
     private Single<WordInfo> getRandomWordAsync(int wordCount) {
-        String prevGender = (appState.wordInfo == null || appState.wordInfo.gender == null)
+        WordInfo currentWordInfo = appState.getWordInfo();
+        String prevGender = (currentWordInfo == null || currentWordInfo.gender == null)
                 ? ""
-                : appState.wordInfo.gender;
+                : currentWordInfo.gender;
 
         return Maybe.defer(() -> {
                     int id = rnd.nextInt(wordCount);
@@ -90,7 +94,7 @@ public class WordService {
         if (doc == null) {
             return null;
         }
-        String genderFilter = appState.genderFilterStr;
+        String genderFilter = appState.getGenderFilterStr();
         if (genderFilter != null && !genderFilter.equals(Gender.ALL)) {
             return (doc.gender == null || doc.gender.equals(genderFilter)) ? doc : null;
         } else {

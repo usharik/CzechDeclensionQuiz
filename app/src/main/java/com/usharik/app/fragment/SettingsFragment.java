@@ -44,8 +44,8 @@ public class SettingsFragment extends ViewFragment<SettingsViewModel> {
     public void onPause() {
         super.onPause();
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
-        editor.putString(GENDER_FILTER_KEY, appState.genderFilterStr);
-        editor.putBoolean(SWITCH_OFF_ANIMATION, appState.switchOffAnimation);
+        editor.putString(GENDER_FILTER_KEY, appState.getGenderFilterStr());
+        editor.putBoolean(SWITCH_OFF_ANIMATION, appState.getSwitchOffAnimation());
         editor.apply();
     }
 

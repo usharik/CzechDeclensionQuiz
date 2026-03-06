@@ -78,7 +78,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
         binding.flow.setOnDragListener(this::onFlowDrag);
-        if (appState.wordInfo == null) {
+        if (appState.getWordInfo() == null) {
             getViewModel().nextWord(false);
         }
         setListeners();
@@ -272,7 +272,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onPause();
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
-        editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.wordsWithErrors, type));
+        editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.getWordsWithErrors(), type));
         editor.apply();
     }
 

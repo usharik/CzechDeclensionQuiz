@@ -65,15 +65,16 @@ public class App extends Application implements HasAndroidInjector {
         Log.i(getClass().getName(), "Loading preferences!!!");
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         appState.setGenderFilterStr(prefs.getString(GENDER_FILTER_KEY, Gender.ALL));
-        appState.switchOffAnimation = prefs.getBoolean(SWITCH_OFF_ANIMATION, false);
+        appState.setSwitchOffAnimation(prefs.getBoolean(SWITCH_OFF_ANIMATION, false));
         String str = prefs.getString(WORDS_WITH_ERRORS, "{}");
         try {
             Type type = new TypeToken<HashMap<String, Integer>>() {
             }.getType();
-            appState.wordsWithErrors = gson.fromJson(str, type);
+            HashMap<String, Integer> wordsWithErrors = gson.fromJson(str, type);
+            appState.setWordsWithErrors(wordsWithErrors);
         } catch (Exception ex) {
             Log.e(getClass().getName(), "Exception", ex);
-            appState.wordsWithErrors = new HashMap<>();
+            appState.setWordsWithErrors(new HashMap<>());
         }
     }
 

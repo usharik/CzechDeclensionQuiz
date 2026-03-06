@@ -12,7 +12,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
@@ -43,10 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(this::onNavigatorItemSelected);
 
-        if (appState.currentNavigationItem == null) {
-            appState.currentNavigationItem = R.id.nav_quiz;
+        Integer currentItem = appState.getCurrentNavigationItem();
+        if (currentItem == null) {
+            currentItem = R.id.nav_quiz;
+            appState.setCurrentNavigationItem(currentItem);
         }
-        navigationView.setCheckedItem(appState.currentNavigationItem);
+        navigationView.setCheckedItem(currentItem);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean onNavigatorItemSelected(MenuItem item) {
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
-        appState.currentNavigationItem = item.getItemId();
+        appState.setCurrentNavigationItem(item.getItemId());
         int itemId = item.getItemId();
         if (itemId == R.id.nav_quiz) {
             replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);

@@ -26,7 +26,7 @@ public class SettingsViewModel extends ViewModelObservable {
 
     @Bindable
     public int getGenderFilterId() {
-        return appState.genderFilterId;
+        return appState.getGenderFilterId();
     }
 
     public void setGenderFilterId(int genderFilterId) {
@@ -40,17 +40,16 @@ public class SettingsViewModel extends ViewModelObservable {
         } else if (genderFilterId == R.id.radioNeuter) {
             str = Gender.NEUTER;
         }
-        appState.genderFilterId = genderFilterId;
-        appState.genderFilterStr = str;
+        appState.setGenderFilterStr(str);
     }
 
     @Bindable
     public boolean isSwitchOffAnimation() {
-        return appState.switchOffAnimation;
+        return appState.getSwitchOffAnimation();
     }
 
     public void setSwitchOffAnimation(boolean switchOffAnimation) {
-        appState.switchOffAnimation = switchOffAnimation;
+        appState.setSwitchOffAnimation(switchOffAnimation);
         notifyPropertyChanged(BR.switchOffAnimation);
         logAction(switchOffAnimation);
     }
