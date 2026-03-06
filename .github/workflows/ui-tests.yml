@@ -108,7 +108,7 @@ jobs:
           check_name: UI Test Results
 
       - name: Comment test results on PR
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
         uses: actions/github-script@v7
         with:
           script: |
@@ -144,10 +144,14 @@ jobs:
               body = `❌ **UI Tests Failed to Run**\n\nTest results file not found. The tests may have failed to execute.\n\nView logs in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
             }
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (error) {
+              console.log('Unable to comment on PR (this is expected for Dependabot PRs):', error.message);
+            }
 
