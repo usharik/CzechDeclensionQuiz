@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
         entities = {
             DocumentEntity.class
         },
-        version = 4
+        version = 5
 )
 @TypeConverters({Converters.class})
 public abstract class DocumentDatabase extends RoomDatabase {
@@ -38,6 +38,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
                 .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5)
                 .build();
     }
 
@@ -91,6 +92,64 @@ public abstract class DocumentDatabase extends RoomDatabase {
             database.execSQL("CREATE INDEX `index_DOCUMENT_declension_type` ON `DOCUMENT` (`declension_type`)");
 
             Log.i("Migration3_4", "Migration completed");
+        }
+    };
+
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            Log.i("Migration4_5", "Starting migration 4->5");
+
+            // Check if database has any records
+            android.database.Cursor cursor = database.query("SELECT COUNT(*) FROM `DOCUMENT`");
+            int recordCount = 0;
+            if (cursor.moveToFirst()) {
+                recordCount = cursor.getInt(0);
+            }
+            cursor.close();
+
+            if (recordCount == 0) {
+                Log.i("Migration4_5", "Database is empty, skipping migration");
+                return;
+            }
+
+            Log.i("Migration4_5", "Database has " + recordCount + " records, updating all fields from data.json");
+
+            Gson gson = new Gson();
+            int updatedCount = 0;
+
+            try {
+                try(InputStream inputStream = mContext.getAssets().open("data.json");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    String json;
+                    while ((json = reader.readLine()) != null) {
+                        WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
+
+                        // Update all fields for this word
+                        database.execSQL(
+                            "UPDATE `DOCUMENT` SET " +
+                            "`word` = ?, " +
+                            "`gender` = ?, " +
+                            "`declension_type` = ?, " +
+                            "`json` = ? " +
+                            "WHERE `word_id` = ?",
+                            new Object[] {
+                                wordInfo.word,
+                                wordInfo.gender,
+                                wordInfo.declensionType,
+                                json,
+                                wordInfo.wordId
+                            }
+                        );
+                        updatedCount++;
+                    }
+                }
+                Log.i("Migration4_5", "Updated " + updatedCount + " records with all fields from data.json");
+            } catch (IOException e) {
+                Log.e("Migration4_5", "Error reading data.json", e);
+            }
+
+            Log.i("Migration4_5", "Migration completed");
         }
     };
 
