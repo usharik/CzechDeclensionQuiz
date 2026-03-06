@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.MenuProvider;
+import androidx.lifecycle.Lifecycle;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,8 +82,22 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             getViewModel().nextWord(false);
         }
         setListeners();
-        setHasOptionsMenu(true);
+        setupMenu();
         return binding.getRoot();
+    }
+
+    private void setupMenu() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem item) {
+                return handleMenuItemSelected(item);
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
     private void setListeners() {
@@ -123,8 +140,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.word14.setOnTouchListener(this::onTouch);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean handleMenuItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_check) {
             if (getViewModel().checkAnswers()) {
@@ -141,7 +157,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             nextWord(false);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
@@ -214,7 +230,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 }
             }
             CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder(v, 2f);
-            v.startDrag(null, shadowBuilder, v, 0);
+            v.startDragAndDrop(null, shadowBuilder, v, 0);
             return true;
         }
         return false;

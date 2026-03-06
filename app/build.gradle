@@ -1,29 +1,32 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
 
 android {
-    namespace "com.usharik.app"
-    compileSdkVersion 36
+    namespace = "com.usharik.app"
+    compileSdkVersion = 36
     defaultConfig {
-        applicationId "com.usharik.app"
-        minSdkVersion 28
-        targetSdkVersion 36
-        versionCode 210
-        versionName "2.10"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId = "com.usharik.app"
+        minSdkVersion = 28
+        targetSdkVersion = 36
+        versionCode = 210
+        versionName = "2.10"
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_25
-        targetCompatibility JavaVersion.VERSION_25
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     dataBinding {
         enabled = true
@@ -56,5 +59,3 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.57.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.57.2'
 }
-
-apply plugin: 'com.google.gms.google-services'

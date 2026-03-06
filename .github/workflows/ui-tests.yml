@@ -1,0 +1,153 @@
+name: UI Tests
+
+on:
+  push:
+    branches: [ master ]
+    tags-ignore:
+      - 'v*.*.*'  # Don't run on version tags (deploy workflow handles those)
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest  # Linux with KVM acceleration - faster and more reliable
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Appium
+        run: |
+          npm install -g appium@3.2.0
+          appium driver install uiautomator2
+          appium --version
+      
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+      
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      
+      - name: Grant execute permissions
+        run: |
+          chmod +x gradlew
+          chmod +x ui-tests/*.sh
+          chmod +x .github/scripts/run-ui-tests.sh
+
+      - name: Copy dummy google-services.json for CI build
+        run: cp utils/google-services.json.dummy app/google-services.json
+
+      - name: Build APK
+        run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
+      
+      - name: Run UI Tests with Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: .github/scripts/run-ui-tests.sh
+      
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            ui-tests/build/reports/tests/
+            ui-tests/build/test-results/
+            ui-tests/screenshots/
+          retention-days: 30
+      
+      - name: Upload Appium logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-logs
+          path: /tmp/appium.log
+          retention-days: 7
+      
+      - name: Check if test results exist
+        id: check_results
+        if: always()
+        run: |
+          if [ -f "ui-tests/build/test-results/test/TEST-com.usharik.app.UiTests.xml" ]; then
+            echo "results_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "results_exist=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish test results
+        if: always() && steps.check_results.outputs.results_exist == 'true'
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        with:
+          files: ui-tests/build/test-results/test/*.xml
+          check_name: UI Test Results
+
+      - name: Comment test results on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'ui-tests/build/test-results/test/TEST-com.usharik.app.UiTests.xml';
+
+            let body = '';
+
+            if (fs.existsSync(path)) {
+              try {
+                const testResults = fs.readFileSync(path, 'utf8');
+                const testsMatch = testResults.match(/tests="(\d+)"/);
+                const failuresMatch = testResults.match(/failures="(\d+)"/);
+                const errorsMatch = testResults.match(/errors="(\d+)"/);
+
+                const tests = testsMatch ? parseInt(testsMatch[1]) : 0;
+                const failures = failuresMatch ? parseInt(failuresMatch[1]) : 0;
+                const errors = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                const passed = tests - failures - errors;
+
+                const emoji = (failures === 0 && errors === 0) ? '✅' : '❌';
+
+                body = `${emoji} **UI Test Results**\n\n`;
+                body += `- Total: ${tests}\n`;
+                body += `- ✅ Passed: ${passed}\n`;
+                body += `- ❌ Failed: ${failures}\n`;
+                body += `- ⚠️ Errors: ${errors}\n\n`;
+                body += `View detailed results in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
+              } catch (error) {
+                body = `⚠️ UI Tests completed but results could not be parsed.\n\nError: ${error.message}\n\nView logs in the Actions tab.`;
+              }
+            } else {
+              body = `❌ **UI Tests Failed to Run**\n\nTest results file not found. The tests may have failed to execute.\n\nView logs in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+

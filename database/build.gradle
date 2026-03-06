@@ -1,14 +1,16 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
-    namespace "com.usharik.database"
-    compileSdkVersion 36
+    namespace = "com.usharik.database"
+    compileSdkVersion = 36
     defaultConfig {
-        minSdkVersion 28
-        targetSdkVersion 36
-        versionCode 210
-        versionName "2.10"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion = 28
+        targetSdkVersion = 36
+        versionCode = 210
+        versionName = "2.10"
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -18,13 +20,13 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_25
-        targetCompatibility JavaVersion.VERSION_25
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     sourceSets {
         androidTest.assets.srcDirs +=

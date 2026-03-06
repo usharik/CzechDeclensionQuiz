@@ -2,21 +2,35 @@ plugins {
     id 'java'
 }
 
-repositories {
-    google()
-    mavenCentral()
+dependencies {
+    // Core testing dependencies
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'io.appium:java-client:10.0.0'
+    testImplementation 'org.slf4j:slf4j-api:2.0.17'
 }
 
-dependencies {
-    implementation fileTree(dir: 'lib', include: ['*.jar'])
-    implementation 'junit:junit:4.13.2'
-    implementation 'io.appium:java-client:10.0.0'
-    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-    implementation 'org.apache.commons:commons-lang3:3.20.0'
-    implementation 'com.google.code.gson:gson:2.13.2'
-    implementation 'com.google.http-client:google-http-client:2.0.3'
-    implementation 'com.testdroid:testdroid-api:3.49.0'
-    implementation 'com.google.http-client:google-http-client-jackson2:2.0.3'
-    implementation 'org.xerial:sqlite-jdbc:3.51.1.0'
+test {
+    // Set system properties for test execution
+    systemProperty 'app.path', System.getProperty('app.path',
+        "${project.rootDir}/app/build/outputs/apk/release/app-release-unsigned.apk")
+    systemProperty 'data.json.path', System.getProperty('data.json.path',
+        "${project.rootDir}/database/src/main/assets/data.json")
+
+    // Pass environment variables to test process
+    environment 'ANDROID_HOME', System.getenv('ANDROID_HOME') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
+    environment 'ANDROID_SDK_ROOT', System.getenv('ANDROID_SDK_ROOT') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
+    environment 'PATH', System.getenv('PATH')
+
+    // Show test output
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat = "full"
+        showStandardStreams = true
+    }
+
+    // Fail fast on first test failure
+    failFast = false
+
+    // Set max heap size for tests
+    maxHeapSize = "1024m"
 }
