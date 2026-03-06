@@ -1,6 +1,6 @@
 # Czech Declension Quiz - UI Tests
 
-✅ **All tests passing!** Automated UI tests for the Czech Declension Quiz Android app using Appium.
+✅ **Comprehensive UI test suite!** Automated UI tests for the Czech Declension Quiz Android app using Appium.
 
 ## Quick Start
 
@@ -13,25 +13,56 @@ That's it! The script handles everything automatically.
 
 ## Test Results
 
-✅ **testNavigation** - Tests navigation between different quiz sections
-✅ **testCorrectQuizSolution** - Tests complete quiz workflow with drag-and-drop
+**Current Status: 8/8 tests passing (100% pass rate)** 🎉
+
+### Navigation Tests ✅
+All navigation tests now include **rotation testing** (landscape/portrait) to ensure screens handle orientation changes correctly.
+
+- ✅ **testNavigateToQuizScreen** - Verifies Quiz screen displays with word and action buttons + rotation test
+- ✅ **testNavigateToWordsWithErrorsScreen** - Verifies Words with Errors screen displays cases container + rotation test
+- ✅ **testNavigateToHandbookScreen** - Verifies Handbook screen displays gender selection with correct header text + rotation test
+- ✅ **testNavigateToSettingsScreen** - Verifies Settings screen displays filter options and additional settings + rotation test
+- ✅ **testNavigateToAboutScreen** - Verifies About screen displays app name, logo, and version + rotation test
+- ✅ **testScreenRotation** - Legacy rotation test for Quiz screen (kept for backwards compatibility)
+
+### Quiz Functionality Tests ✅
+- ✅ **testCorrectQuizSolution** - Tests complete quiz workflow with drag-and-drop, verifies success dialog
+- ✅ **testIncorrectQuizSolution** - Tests error handling with mixed mistakes: 6 words correct, 4 words in wrong positions (swapped singular/plural), 4 words missing. Verifies error toast appears and success dialog does NOT appear
 
 ## What It Does
 
 The test script automatically:
 1. ✅ Checks all prerequisites (Java, Node.js, Appium, ADB, emulator)
 2. ✅ Starts Appium server with proper environment variables
-3. ✅ Builds the APK if needed
-4. ✅ Loads test data directly from JSON (no database needed!)
-5. ✅ Runs all UI tests
-6. ✅ Generates detailed HTML reports
+3. ✅ **Always rebuilds the APK** to ensure latest code changes
+4. ✅ **Reinstalls the APK** on the emulator for fresh testing
+5. ✅ **Cleans test results** to force tests to re-run (no caching)
+6. ✅ Loads test data directly from JSON (no database needed!)
+7. ✅ Runs all UI tests
+8. ✅ Generates detailed HTML reports
+9. ✅ **Saves screenshots** to `ui-tests/screenshots/` (using project root from Gradle)
 
-## Test Results
+## Technology Stack
 
-**Current Status: 50% Pass Rate (1/2 tests passing)**
+- **JUnit 6.0.3** - Latest major version with unified versioning (Platform + Jupiter)
+- **Appium 3.2** - Mobile automation framework
+- **Java 21** - Latest LTS version (required for JUnit 6)
+- **Gradle 8.14** - Build tool with JUnit Platform support
 
-- ✅ **testNavigation** - PASSED (33s) - Full UI navigation working
-- ❌ **testCorrectQuizSolution** - FAILED - UI element not found (test needs updating)
+### JUnit 6 New Features & Improvements
+
+JUnit 6.0.3 brings several enhancements over JUnit 5:
+
+1. **Unified Version Numbering** - Platform, Jupiter, and Vintage now share the same version (6.0.3)
+2. **Java 17+ Baseline** - Requires Java 17 minimum (we use Java 21)
+3. **JSpecify Nullability Annotations** - Better null-safety support
+4. **Improved Display Names** - Non-printable control characters (like `\n`) are replaced with readable representations (e.g., `<LF>`)
+5. **Enhanced CSV Support** - Migrated to FastCSV library for better performance and error reporting
+6. **Kotlin Suspend Functions** - Native support for Kotlin coroutines in test methods
+7. **Cancellation Support** - New `--fail-fast` mode and `CancellationToken` API
+8. **Deterministic @Nested Class Ordering** - Consistent test execution order
+9. **Stack Trace Pruning** - Cleaner stack traces pruned up to test/lifecycle methods
+10. **Better Error Messages** - Improved diagnostics for configuration and assertion failures
 
 ## Prerequisites
 
@@ -60,9 +91,53 @@ This creates and starts a test emulator optimized for M-series Macs.
 
 Options:
   --check-only      Only check prerequisites, don't run tests
-  --skip-build      Skip APK build step
+  --skip-build      Skip APK build step (use existing APK)
   --skip-checks     Skip prerequisite checks (not recommended)
   --help            Show help message
+```
+
+**Note:** By default, the APK is **always rebuilt** to ensure you're testing the latest code changes. Use `--skip-build` only if you're certain the existing APK is up to date.
+
+## Customizing Timeouts and Delays
+
+All timeouts and delays are configurable via Gradle system properties. You can override them when running tests:
+
+```bash
+# Run tests with custom timeouts
+./gradlew :ui-tests:test \
+  -Dtest.timeout.default=15 \
+  -Dtest.timeout.implicit=3 \
+  -Dtest.delay.screen.stability=200 \
+  -Dtest.delay.ui.update=150 \
+  -Dtest.delay.drag.duration=200
+```
+
+### Available Configuration Properties
+
+| Property | Default | Unit | Description |
+|----------|---------|------|-------------|
+| `test.timeout.default` | `10` | seconds | Default timeout for element waits |
+| `test.timeout.implicit` | `2` | seconds | Implicit wait for driver |
+| `test.delay.screen.stability` | `100` | milliseconds | Wait after navigation/rotation |
+| `test.delay.ui.update` | `100` | milliseconds | Wait after drag-and-drop |
+| `test.delay.drag.duration` | `100` | milliseconds | Duration of drag gesture |
+
+### When to Adjust
+
+- **Slower devices**: Increase all timeouts and delays
+- **Faster devices**: Decrease delays for faster test execution
+- **Flaky tests**: Increase `screen.stability` and `ui.update` delays
+- **Network issues**: Increase `timeout.default`
+
+### Example: Slow Device Configuration
+
+```bash
+./gradlew :ui-tests:test \
+  -Dtest.timeout.default=20 \
+  -Dtest.timeout.implicit=5 \
+  -Dtest.delay.screen.stability=300 \
+  -Dtest.delay.ui.update=300 \
+  -Dtest.delay.drag.duration=300
 ```
 
 ## Test Data
@@ -121,7 +196,7 @@ ui-tests/
 ### Automatic Environment Setup
 - Auto-detects and sets `ANDROID_HOME`
 - Auto-starts Appium server if not running
-- Auto-builds APK if missing
+- **Always rebuilds APK** to ensure latest code
 - Auto-loads test data from JSON
 
 ### Comprehensive Checks

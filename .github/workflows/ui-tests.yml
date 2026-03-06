@@ -57,8 +57,8 @@ jobs:
       - name: Copy dummy google-services.json for CI build
         run: cp utils/google-services.json.dummy app/google-services.json
 
-      - name: Build APK
-        run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       
       - name: Run UI Tests with Emulator
         uses: reactivecircus/android-emulator-runner@v2

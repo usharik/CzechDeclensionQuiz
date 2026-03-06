@@ -26,7 +26,11 @@ import java.util.Map;
 public final class TestHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TestHelper.class);
-    private static final String SCREENSHOT_PATH = "ui-tests/screenshots/";
+
+    // Get project root directory from system property (set by Gradle)
+    // and construct absolute path to screenshots directory
+    private static final String PROJECT_ROOT = System.getProperty("project.root");
+    private static final String SCREENSHOT_PATH = PROJECT_ROOT + "/ui-tests/screenshots/";
 
     private final AndroidDriver driver;
     private final Map<String, String> wordDataCache;
@@ -34,6 +38,7 @@ public final class TestHelper {
     public TestHelper(AndroidDriver driver, String dataJsonPath) {
         this.driver = driver;
         this.wordDataCache = new HashMap<>();
+        logger.info("Screenshots will be saved to: {}", SCREENSHOT_PATH);
         loadJsonData(dataJsonPath);
     }
 

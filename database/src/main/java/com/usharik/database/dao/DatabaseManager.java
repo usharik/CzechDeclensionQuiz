@@ -32,10 +32,10 @@ public class DatabaseManager {
 
     private static final String BACKUP_FOLDER = "/Declination-Quiz/";
 
-    private Context context;
+    private final Context context;
     private DocumentDatabase instance;
-    private Gson gson = new Gson();
-    private DocumentDb documentDb = new DocumentDbImpl();
+    private final Gson gson = new Gson();
+    private final DocumentDb documentDb = new DocumentDbImpl();
 
     public DatabaseManager(Context context) {
         this.context = context;

@@ -82,8 +82,13 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             getViewModel().nextWord(false);
         }
         setListeners();
-        setupMenu();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupMenu();
     }
 
     private void setupMenu() {
@@ -97,7 +102,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             public boolean onMenuItemSelected(@NonNull MenuItem item) {
                 return handleMenuItemSelected(item);
             }
-        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        // Force menu to be created immediately
+        requireActivity().invalidateMenu();
     }
 
     private void setListeners() {

@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Default paths
-DEFAULT_APK_PATH="$PROJECT_ROOT/app/build/outputs/apk/release/app-release-unsigned.apk"
+DEFAULT_APK_PATH="$PROJECT_ROOT/app/build/outputs/apk/debug/app-debug.apk"
 DEFAULT_DATA_JSON_PATH="$PROJECT_ROOT/database/src/main/assets/data.json"
 
 # Allow overriding via environment variables or arguments
@@ -49,7 +49,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --skip-build         Skip building the APK"
+            echo "  --skip-build         Skip building the APK (use existing APK)"
             echo "  --skip-checks        Skip prerequisite checks"
             echo "  --check-only         Only check prerequisites, don't run tests"
             echo "  --apk-path PATH      Custom APK path"
@@ -59,6 +59,9 @@ while [[ $# -gt 0 ]]; do
             echo "Environment variables:"
             echo "  APK_PATH             Override default APK path"
             echo "  DATA_JSON_PATH       Override default data.json path"
+            echo ""
+            echo "Note: By default, the APK is always rebuilt to ensure latest code changes."
+            echo "      Use --skip-build only if you're sure the APK is up to date."
             exit 0
             ;;
         *)
@@ -242,10 +245,10 @@ build_apk() {
 
     cd "$PROJECT_ROOT"
 
-    print_status "info" "Running: ./gradlew :app:assembleRelease"
+    print_status "info" "Running: ./gradlew :app:assembleDebug"
     echo ""
 
-    if ./gradlew :app:assembleRelease; then
+    if ./gradlew :app:assembleDebug; then
         print_status "success" "APK built successfully"
 
         if [ -f "$APK_PATH" ]; then
@@ -255,6 +258,38 @@ build_apk() {
         return 0
     else
         print_status "error" "Failed to build APK"
+        return 1
+    fi
+}
+
+# Function to install APK on device
+install_apk() {
+    print_header "Installing APK on Device"
+
+    # Ensure ANDROID_HOME is set
+    if [ -z "$ANDROID_HOME" ]; then
+        export ANDROID_HOME="$HOME/Library/Android/sdk"
+    fi
+    export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+    print_status "info" "Installing APK: $APK_PATH"
+
+    # Uninstall existing app first to ensure clean install
+    print_status "info" "Uninstalling existing app (if any)..."
+    adb uninstall com.usharik.app 2>/dev/null || true
+
+    # Install APK
+    # Use -t flag to allow test APKs (unsigned/debug builds)
+    # Use -g flag to grant all permissions automatically
+    local install_output
+    install_output=$(adb install -t -g "$APK_PATH" 2>&1)
+
+    if echo "$install_output" | grep -q "Success"; then
+        print_status "success" "APK installed successfully"
+        return 0
+    else
+        print_status "error" "Failed to install APK"
+        echo "$install_output"
         return 1
     fi
 }
@@ -277,11 +312,12 @@ run_tests() {
     echo "  ANDROID_HOME: $ANDROID_HOME"
     echo ""
 
-    print_status "info" "Running: ./gradlew :ui-tests:test"
+    print_status "info" "Running: ./gradlew :ui-tests:cleanTest :ui-tests:test"
     echo ""
 
-    # Run tests with system properties and environment variables
-    if ANDROID_HOME="$ANDROID_HOME" ./gradlew :ui-tests:test \
+    # Clean test results first to ensure tests always run, then run tests
+    # with system properties and environment variables
+    if ANDROID_HOME="$ANDROID_HOME" ./gradlew :ui-tests:cleanTest :ui-tests:test \
         -Dapp.path="$APK_PATH" \
         -Ddata.json.path="$DATA_JSON_PATH" \
         --info; then
@@ -321,16 +357,11 @@ main() {
 
     # Build APK if needed
     if [ "$SKIP_BUILD" = false ]; then
-        if [ ! -f "$APK_PATH" ]; then
-            print_status "info" "APK not found, building..."
-            if ! build_apk; then
-                echo ""
-                print_status "error" "Failed to build APK. Cannot proceed with tests."
-                exit 1
-            fi
-        else
-            print_status "info" "APK already exists, skipping build"
-            echo "  Use --skip-build to always skip, or delete APK to force rebuild"
+        print_status "info" "Building APK to ensure latest code changes..."
+        if ! build_apk; then
+            echo ""
+            print_status "error" "Failed to build APK. Cannot proceed with tests."
+            exit 1
         fi
     else
         print_status "warning" "Skipping APK build"
@@ -338,6 +369,13 @@ main() {
             print_status "error" "APK not found and build skipped. Cannot proceed."
             exit 1
         fi
+    fi
+
+    # Install APK on device
+    if ! install_apk; then
+        echo ""
+        print_status "error" "Failed to install APK on device"
+        exit 1
     fi
 
     # Run tests
