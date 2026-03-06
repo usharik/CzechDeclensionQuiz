@@ -1,18 +1,17 @@
-apply plugin: 'java-library'
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-
-repositories {
-    mavenCentral()
-}
-
 jar {
-    baseName = "gs-gradle"
     version = "0.1.0"
     manifest {
         attributes 'Main-Class': 'DictionaryDbConverter'
@@ -21,7 +20,7 @@ jar {
 
 dependencies {
     sourceSets.main.java.srcDirs = ['src']
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation 'org.xerial:sqlite-jdbc:3.28.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    implementation 'org.xerial:sqlite-jdbc:3.51.1.0'
+    implementation 'com.google.code.gson:gson:2.13.2'
 }

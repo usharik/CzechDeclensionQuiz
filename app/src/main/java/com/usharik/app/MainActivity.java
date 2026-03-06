@@ -58,22 +58,22 @@ public class MainActivity extends AppCompatActivity {
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         appState.currentNavigationItem = item.getItemId();
-        switch (item.getItemId()) {
-            case R.id.nav_quiz:
-                replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);
-                return true;
-            case R.id.nav_words_with_errors:
-                replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
-                return true;
-            case R.id.nav_handbook:
-                replaceFragment(R.id.fragmentContainer, HandbookFragment.class);
-                return true;
-            case R.id.nav_settings:
-                replaceFragment(R.id.fragmentContainer, SettingsFragment.class);
-                return true;
-            case R.id.nav_about:
-                replaceFragment(R.id.fragmentContainer, AboutFragment.class);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_quiz) {
+            replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_words_with_errors) {
+            replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_handbook) {
+            replaceFragment(R.id.fragmentContainer, HandbookFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_settings) {
+            replaceFragment(R.id.fragmentContainer, SettingsFragment.class);
+            return true;
+        } else if (itemId == R.id.nav_about) {
+            replaceFragment(R.id.fragmentContainer, AboutFragment.class);
+            return true;
         }
         return true;
     }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = manager.findFragmentByTag(fragmentClass.getSimpleName());
         if (fragment == null) {
             try {
-                fragment = fragmentClass.newInstance();
+                fragment = fragmentClass.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 Log.e(getClass().getName(), "Can't create fragment class", e);
                 return;
@@ -97,18 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
     }
 }

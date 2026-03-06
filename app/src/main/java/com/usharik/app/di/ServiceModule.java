@@ -2,7 +2,6 @@ package com.usharik.app.di;
 
 import android.app.Application;
 
-import android.os.Build;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.usharik.app.App;
@@ -59,10 +58,6 @@ class ServiceModule {
     @Provides
     @Singleton
     Locale provideLocale(Application application) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return application.getResources().getConfiguration().getLocales().get(0);
-        } else {
-            return application.getResources().getConfiguration().locale;
-        }
+        return application.getResources().getConfiguration().getLocales().get(0);
     }
 }

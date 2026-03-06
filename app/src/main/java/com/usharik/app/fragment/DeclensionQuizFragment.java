@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.MenuProvider;
+import androidx.lifecycle.Lifecycle;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,8 +82,30 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             getViewModel().nextWord(false);
         }
         setListeners();
-        setHasOptionsMenu(true);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupMenu();
+    }
+
+    private void setupMenu() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem item) {
+                return handleMenuItemSelected(item);
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+
+        // Force menu to be created immediately
+        requireActivity().invalidateMenu();
     }
 
     private void setListeners() {
@@ -123,27 +148,24 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.word14.setOnTouchListener(this::onTouch);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_check:
-                if (getViewModel().checkAnswers()) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.correct_answer)
-                            .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
-                            .setCancelable(false)
-                            .show();
-                } else {
-                    Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
-                }
-                return true;
-            case R.id.action_next:
-                nextWord(false);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-
+    private boolean handleMenuItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_check) {
+            if (getViewModel().checkAnswers()) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.correct_answer)
+                        .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
+                        .setCancelable(false)
+                        .show();
+            } else {
+                Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
+            }
+            return true;
+        } else if (itemId == R.id.action_next) {
+            nextWord(false);
+            return true;
         }
+        return false;
     }
 
     private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
@@ -194,8 +216,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 return true;
             }
             String[] info = ((String) dropped.getTag()).split("_");
-            int numberCode = Integer.valueOf(info[0]);
-            int caseNum = Integer.valueOf(info[1]);
+            int numberCode = Integer.parseInt(info[0]);
+            int caseNum = Integer.parseInt(info[1]);
             int droppedWordNum = getViewModel().getCaseModels()[numberCode][caseNum];
             getViewModel().updateCaseModel(caseNum, numberCode, -1);
             getViewModel().updateWordTextModel(droppedWordNum, View.VISIBLE);
@@ -209,14 +231,14 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             if (!wordEditViewSet.contains(v.getId())) {
                 TextView tv = (TextView) v;
                 String[] info1 = ((String) tv.getTag()).split("_");
-                int numberCode = Integer.valueOf(info1[0]);
-                int caseNum = Integer.valueOf(info1[1]);
+                int numberCode = Integer.parseInt(info1[0]);
+                int caseNum = Integer.parseInt(info1[1]);
                 if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
                     return false;
                 }
             }
             CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder(v, 2f);
-            v.startDrag(null, shadowBuilder, v, 0);
+            v.startDragAndDrop(null, shadowBuilder, v, 0);
             return true;
         }
         return false;
@@ -227,8 +249,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             TextView dropped = (TextView) event.getLocalState();
             TextView dropTarget = (TextView) v;
             String[] info = ((String) dropTarget.getTag()).split("_");
-            int numberCode = Integer.valueOf(info[0]);
-            int caseNum = Integer.valueOf(info[1]);
+            int numberCode = Integer.parseInt(info[0]);
+            int caseNum = Integer.parseInt(info[1]);
             if (wordEditViewSet.contains(dropped.getId())) {
                 int droppedWordNum = Integer.parseInt(dropped.getTag().toString());
                 getViewModel().updateCaseModel(caseNum, numberCode, droppedWordNum);
@@ -236,8 +258,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 dropTarget.setOnTouchListener(this::onTouch);
             } else {
                 String[] info1 = ((String) dropped.getTag()).split("_");
-                int numberCode1 = Integer.valueOf(info1[0]);
-                int caseNum1 = Integer.valueOf(info1[1]);
+                int numberCode1 = Integer.parseInt(info1[0]);
+                int caseNum1 = Integer.parseInt(info1[1]);
                 getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                 dropTarget.setOnTouchListener(this::onTouch);
             }

@@ -1,9 +1,10 @@
 package com.usharik.database;
 
-import io.reactivex.Maybe;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 
 public interface DocumentDb {
-    Maybe<Long> getCount();
+    Single<Integer> getCount();
 
     Maybe<WordInfo> getWordInfoById(long id);
 
