@@ -1,5 +1,6 @@
 package com.usharik.app.helpers;
 
+import com.google.gson.Gson;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.OutputType;
@@ -33,11 +34,13 @@ public final class TestHelper {
     private static final String SCREENSHOT_PATH = PROJECT_ROOT + "/ui-tests/screenshots/";
 
     private final AndroidDriver driver;
-    private final Map<String, String> wordDataCache;
+    private final Map<String, WordInfo> wordDataCache;
+    private final Gson gson;
 
     public TestHelper(AndroidDriver driver, String dataJsonPath) {
         this.driver = driver;
         this.wordDataCache = new HashMap<>();
+        this.gson = new Gson();
         logger.info("Screenshots will be saved to: {}", SCREENSHOT_PATH);
         loadJsonData(dataJsonPath);
     }
@@ -51,17 +54,25 @@ public final class TestHelper {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(jsonPath))) {
             String line;
+            int lineNumber = 0;
 
             while ((line = reader.readLine()) != null) {
+                lineNumber++;
                 line = line.trim();
                 if (line.isEmpty()) {
                     continue;
                 }
 
-                // Extract word from JSON line
-                String word = extractWord(line);
-                if (word != null) {
-                    wordDataCache.put(word, line);
+                try {
+                    // Parse JSON line using GSON
+                    WordInfo wordInfo = gson.fromJson(line, WordInfo.class);
+                    if (wordInfo != null && wordInfo.word != null) {
+                        wordDataCache.put(wordInfo.word, wordInfo);
+                    } else {
+                        logger.warn("Skipping line {} - invalid word data", lineNumber);
+                    }
+                } catch (Exception e) {
+                    logger.error("Error parsing JSON at line {}: {}", lineNumber, line, e);
                 }
             }
 
@@ -72,23 +83,7 @@ public final class TestHelper {
         }
     }
 
-    /**
-     * Extract word field from JSON line
-     * @param json JSON string containing word data
-     * @return The extracted word, or null if not found
-     */
-    private String extractWord(String json) {
-        int wordStart = json.indexOf("\"word\":\"");
-        if (wordStart == -1) {
-            return null;
-        }
-        wordStart += 8; // Length of "word":"
-        int wordEnd = json.indexOf("\"", wordStart);
-        if (wordEnd == -1) {
-            return null;
-        }
-        return json.substring(wordStart, wordEnd);
-    }
+
 
     /**
      * Take a screenshot and save it to the screenshots directory
@@ -116,106 +111,19 @@ public final class TestHelper {
     public String[][] getWordCases(String word) {
         logger.debug("Getting word cases for: {}", word);
 
-        String json = wordDataCache.get(word);
-        if (json == null) {
+        WordInfo wordInfo = wordDataCache.get(word);
+        if (wordInfo == null) {
             logger.error("Word not found in cache: {}", word);
             throw new IllegalArgumentException("Word not found in cache: " + word);
         }
 
-        // Parse the JSON to extract cases
-        // JSON format: {"wordId":..., "word":"...", "cases":[["case1",...],["case1",...]]}
-        return parseCasesFromJson(json);
+        if (wordInfo.cases == null) {
+            logger.error("Word '{}' has no cases data", word);
+            return new String[2][7];
+        }
+
+        return wordInfo.cases;
     }
 
-    /**
-     * Parse cases array from JSON string
-     * @param json JSON string containing cases data
-     * @return 2D array of cases [singular/plural][case1-7]
-     */
-    private String[][] parseCasesFromJson(String json) {
-        // Parse JSON to extract cases array
-        // JSON format: {"cases":[["case1","case2",...],["case1","case2",...]]}
-        String[][] cases = new String[2][7];
 
-        int casesStart = json.indexOf("\"cases\":");
-        if (casesStart == -1) {
-            logger.warn("No 'cases' field found in JSON");
-            return cases;
-        }
-
-        // Find the start of the cases array
-        int arrayStart = json.indexOf("[[", casesStart);
-        if (arrayStart == -1) {
-            logger.warn("No cases array start found in JSON");
-            return cases;
-        }
-
-        // Find the end of the cases array (matching ]])
-        int arrayEnd = json.indexOf("]]", arrayStart);
-        if (arrayEnd == -1) {
-            logger.warn("No cases array end found in JSON");
-            return cases;
-        }
-
-        // Extract the content between [[ and ]]
-        String casesContent = json.substring(arrayStart + 2, arrayEnd);
-
-        // Split by "],["  to separate singular and plural
-        String[] numberArrays = casesContent.split("],\\[");
-
-        if (numberArrays.length >= 2) {
-            // Parse singular cases (first array)
-            cases[0] = parseStringArray(numberArrays[0]);
-
-            // Parse plural cases (second array)
-            cases[1] = parseStringArray(numberArrays[1]);
-        } else {
-            logger.warn("Expected 2 arrays (singular/plural), found: {}", numberArrays.length);
-        }
-
-        return cases;
-    }
-
-    /**
-     * Parse a string array from JSON format
-     * @param arrayContent String containing array content (e.g., "str1","str2","str3")
-     * @return Array of parsed strings
-     */
-    private String[] parseStringArray(String arrayContent) {
-        String[] result = new String[7];
-
-        // Parse quoted strings from the array
-        // Handle format: "str1","str2","str3"
-        java.util.List<String> values = new java.util.ArrayList<>();
-        boolean inQuote = false;
-        StringBuilder current = new StringBuilder();
-
-        for (int i = 0; i < arrayContent.length(); i++) {
-            char c = arrayContent.charAt(i);
-
-            if (c == '"') {
-                if (inQuote) {
-                    // End of quoted string
-                    values.add(current.toString());
-                    current = new StringBuilder();
-                    inQuote = false;
-                } else {
-                    // Start of quoted string
-                    inQuote = true;
-                }
-            } else if (inQuote) {
-                // Inside quoted string
-                current.append(c);
-            }
-        }
-
-        // Copy to result array
-        for (int i = 0; i < Math.min(7, values.size()); i++) {
-            result[i] = values.get(i);
-        }
-
-        logger.debug("Parsed {} values from array", values.size());
-
-        return result;
-    }
 }

@@ -28,7 +28,22 @@
                 android:textSize="@dimen/static_font_size"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="dum"/>
+                tools:text="kutil"/>
+
+        <TextView
+                android:id="@+id/declensionType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="8dp"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
+                android:text="@{@string/declension_pattern(viewModel.declensionType)}"
+                android:textSize="@dimen/static_font_size"
+                app:layout_constraintLeft_toRightOf="@id/word"
+                app:layout_constraintRight_toLeftOf="@id/gender"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="jako pán"/>
 
         <TextView
                 android:id="@+id/gender"

@@ -72,7 +72,7 @@ public class DatabaseManager {
     public void backup() throws IOException {
         close();
         if (!createBackupFolderIfNotExists()) {
-            throw new RuntimeException("Can't create folder for backup");
+            throw new IOException("Can't create folder for backup");
         }
         String sourcePath = getDatabasePath();
         String destPath = Environment.getExternalStorageDirectory() + BACKUP_FOLDER;
@@ -111,11 +111,12 @@ public class DatabaseManager {
                     while ((json = reader.readLine()) != null) {
                         WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
                         SupportSQLiteStatement stmt =
-                                db.compileStatement("insert into DOCUMENT(word_id, word, gender, json) values(?, ?, ?, ?);");
+                                db.compileStatement("insert into DOCUMENT(word_id, word, gender, declension_type, json) values(?, ?, ?, ?, ?);");
                         stmt.bindLong(1, wordInfo.wordId);
                         stmt.bindString(2, wordInfo.word);
                         stmt.bindString(3, wordInfo.gender);
-                        stmt.bindString(4, json);
+                        stmt.bindString(4, wordInfo.declensionType);
+                        stmt.bindString(5, json);
                         stmt.executeInsert();
                     }
                 } catch (IOException e) {
@@ -129,9 +130,10 @@ public class DatabaseManager {
         URL url = new URL(link);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.connect();
-        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        int responseCode = conn.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
             conn.disconnect();
-            throw new RuntimeException("Dictionary not found at URL.");
+            throw new IOException("Dictionary not found at URL. Response code: " + responseCode);
         }
         return conn;
     }
@@ -161,9 +163,7 @@ public class DatabaseManager {
                 loadedCount += count;
             }
         } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
+            conn.disconnect();
         }
         if (loadedCount != fileLength) {
             throw new RuntimeException("Incorrect dictionary file length.");
@@ -202,21 +202,21 @@ public class DatabaseManager {
         @Override
         public Maybe<WordInfo> getWordInfoById(long id) {
             return getActiveDbInstance().documentDao().getJsonString(id)
-                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .map(json -> gson.fromJson(json, WordInfo.class))
                     .subscribeOn(Schedulers.io());
         }
 
         @Override
         public Maybe<WordInfo> getWordInfoByWord(String word) {
             return getActiveDbInstance().documentDao().getJsonStringByWord(word)
-                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .map(json -> gson.fromJson(json, WordInfo.class))
                     .subscribeOn(Schedulers.io());
         }
 
         @Override
         public Maybe<WordInfo> getWordInfoByWordId(long wordId) {
             return getActiveDbInstance().documentDao().getJsonStringByWordId(wordId)
-                    .flatMap(json -> Maybe.just(gson.fromJson(json, WordInfo.class)))
+                    .map(json -> gson.fromJson(json, WordInfo.class))
                     .subscribeOn(Schedulers.io());
         }
 
@@ -224,7 +224,7 @@ public class DatabaseManager {
         public long addWordInfo(WordInfo wordInfo) {
             return getActiveDbInstance()
                     .documentDao()
-                    .insertDocument(new DocumentEntity(wordInfo.wordId, wordInfo.word, wordInfo.gender, gson.toJson(wordInfo)));
+                    .insertDocument(new DocumentEntity(wordInfo.wordId, wordInfo.word, wordInfo.gender, wordInfo.declensionType, gson.toJson(wordInfo)));
         }
     }
 }

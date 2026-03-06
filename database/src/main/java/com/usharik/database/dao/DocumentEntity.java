@@ -6,7 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "DOCUMENT",
-        indices = {@Index(value = "word"), @Index(value = "gender")})
+        indices = {@Index(value = "word"), @Index(value = "gender"), @Index(value = "declension_type")})
 public class DocumentEntity {
     @PrimaryKey(autoGenerate = true)
     private Long id;
@@ -20,13 +20,17 @@ public class DocumentEntity {
     @ColumnInfo(name = "gender")
     private String gender;
 
+    @ColumnInfo(name = "declension_type")
+    private String declensionType;
+
     @ColumnInfo(name = "json")
     private String json;
 
-    public DocumentEntity(Long wordId, String word, String gender, String json) {
+    public DocumentEntity(Long wordId, String word, String gender, String declensionType, String json) {
         this.wordId = wordId;
         this.word = word;
         this.gender = gender;
+        this.declensionType = declensionType;
         this.json = json;
     }
 
@@ -68,5 +72,13 @@ public class DocumentEntity {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getDeclensionType() {
+        return declensionType;
+    }
+
+    public void setDeclensionType(String declensionType) {
+        this.declensionType = declensionType;
     }
 }

@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
         entities = {
             DocumentEntity.class
         },
-        version = 3
+        version = 4
 )
 @TypeConverters({Converters.class})
 public abstract class DocumentDatabase extends RoomDatabase {
@@ -37,6 +37,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_3_4)
                 .build();
     }
 
@@ -78,6 +79,18 @@ public abstract class DocumentDatabase extends RoomDatabase {
             database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
 
             Log.i("Migration2_3", "Migration completed");
+        }
+    };
+
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            Log.i("Migration3_4", "Adding declension_type column");
+
+            database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `declension_type` TEXT");
+            database.execSQL("CREATE INDEX `index_DOCUMENT_declension_type` ON `DOCUMENT` (`declension_type`)");
+
+            Log.i("Migration3_4", "Migration completed");
         }
     };
 

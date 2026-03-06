@@ -67,6 +67,11 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     @Bindable
+    public String getDeclensionType() {
+        return appState.wordInfo != null ? appState.wordInfo.declensionType : "";
+    }
+
+    @Bindable
     public String getTranslation() {
         String language = locale.getISO3Language();
         return switch (language) {
@@ -109,6 +114,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public void update() {
         notifyPropertyChanged(BR.word);
         notifyPropertyChanged(BR.gender);
+        notifyPropertyChanged(BR.declensionType);
         notifyPropertyChanged(BR.translation);
         notifyPropertyChanged(BR.wordTextModels);
         notifyPropertyChanged(BR.caseModels);
