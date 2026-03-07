@@ -44,7 +44,7 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     public void onResume() {
         super.onResume();
         binding.wordsWithErrorsFlow.removeAllViews();
-        for (String word : appState.wordsWithErrors.keySet()) {
+        for (String word : appState.getWordsWithErrors().keySet()) {
             RadioButton radioButton = new RadioButton(new ContextThemeWrapper(getContext(), R.style.WordRadioButtonWithPadding), null, -1);
             radioButton.setText(word);
             radioButton.setLayoutParams(layoutParams);
@@ -58,13 +58,11 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     private void onRadioButtonClick(View view) {
         for(int i=0; i<binding.wordsWithErrorsFlow.getChildCount(); i++) {
             View child = binding.wordsWithErrorsFlow.getChildAt(i);
-            if (child instanceof RadioButton) {
-                RadioButton radioButton = (RadioButton) child;
+            if (child instanceof RadioButton radioButton) {
                 radioButton.setChecked(child.equals(view));
             }
         }
-        if (view instanceof RadioButton) {
-            RadioButton rb = (RadioButton) view;
+        if (view instanceof RadioButton rb) {
             if (rb.isChecked()) {
                 getViewModel().setSelectedWord(rb.getText().toString());
             }

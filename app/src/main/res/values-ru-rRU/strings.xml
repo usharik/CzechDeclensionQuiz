@@ -35,4 +35,5 @@
         <item>Оценить приложение</item>
     </string-array>
     <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="declension_pattern">как \"%s\"</string>
 </resources>

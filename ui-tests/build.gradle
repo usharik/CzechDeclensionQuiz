@@ -13,6 +13,9 @@ dependencies {
     // Appium and Selenium
     testImplementation 'io.appium:java-client:10.0.0'
 
+    // JSON parsing
+    testImplementation 'com.google.code.gson:gson:2.13.2'
+
     // Logging
     testImplementation 'org.slf4j:slf4j-api:2.0.17'
 }
@@ -24,7 +27,7 @@ test {
     // Set system properties for test execution
     systemProperty 'project.root', project.rootDir.absolutePath
     systemProperty 'app.path', System.getProperty('app.path',
-        "${project.rootDir}/app/build/outputs/apk/release/app-release-unsigned.apk")
+        "${project.rootDir}/app/build/outputs/apk/debug/app-debug.apk")
     systemProperty 'data.json.path', System.getProperty('data.json.path',
         "${project.rootDir}/database/src/main/assets/data.json")
 

@@ -11,7 +11,7 @@ android {
         minSdkVersion = 28
         targetSdkVersion = 36
         versionCode = 210
-        versionName = "2.10"
+        versionName = "2.20"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
