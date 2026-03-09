@@ -112,6 +112,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     private void applyBannerInsets() {
         if (binding != null && binding.adViewContainer != null) {
+            android.util.Log.d("BannerInsets", "applyBannerInsets() called");
+
             // Get root window insets directly
             androidx.core.view.WindowInsetsCompat rootInsets = androidx.core.view.ViewCompat.getRootWindowInsets(binding.adViewContainer);
             if (rootInsets != null) {
@@ -120,8 +122,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 );
                 // Apply bottom padding directly
                 binding.adViewContainer.setPadding(0, 0, 0, insets.bottom);
-                android.util.Log.d("BannerInsets", "Applied bottom padding: " + insets.bottom + "px");
+                android.util.Log.d("BannerInsets", "Applied bottom padding from rootInsets: " + insets.bottom + "px");
             } else {
+                android.util.Log.d("BannerInsets", "rootInsets is null, using fallback");
                 // Fallback: use display metrics to calculate navigation bar height
                 android.content.res.Resources resources = requireContext().getResources();
                 int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
@@ -129,8 +132,12 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                     int navBarHeight = resources.getDimensionPixelSize(resourceId);
                     binding.adViewContainer.setPadding(0, 0, 0, navBarHeight);
                     android.util.Log.d("BannerInsets", "Applied fallback padding: " + navBarHeight + "px");
+                } else {
+                    android.util.Log.w("BannerInsets", "Could not get navigation bar height");
                 }
             }
+        } else {
+            android.util.Log.w("BannerInsets", "binding or adViewContainer is null");
         }
     }
 
@@ -270,7 +277,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             // This runs after the ad is closed
             nextWord(tryAgain);
             // Re-apply insets after returning from interstitial ad
-            applyBannerInsets();
+            // Use postDelayed to ensure view hierarchy is fully restored
+            if (binding != null && binding.adViewContainer != null) {
+                binding.adViewContainer.post(() -> applyBannerInsets());
+            }
         });
     }
 
