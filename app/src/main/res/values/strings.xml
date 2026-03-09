@@ -31,7 +31,7 @@
     <string name="declension_pattern">like \"%s\"</string>
 
     <!-- AdMob Ad Unit IDs - will be overridden by BuildConfig in code -->
-    <string name="admob_banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_banner_ad_unit_id" translatable="false">ca-app-pub-6420074467468909~9307588615</string>
 
     <string-array name="next_word_dialog">
         <item>Next word</item>

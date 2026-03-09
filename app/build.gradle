@@ -10,8 +10,8 @@ android {
         applicationId = "com.usharik.app"
         minSdkVersion = 28
         targetSdkVersion = 36
-        versionCode = 210
-        versionName = "2.20"
+        versionCode = 230
+        versionName = "2.30"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
 
@@ -32,9 +32,9 @@ android {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            // TODO: Replace with your production ad IDs before releasing
-            // buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-YOUR_ID/YOUR_INTERSTITIAL_ID\""
-            // buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-YOUR_ID/YOUR_BANNER_ID\""
+            buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-6420074467468909~9307588615\""
+            buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/6041532532\""
+            buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/3910193217\""
         }
     }
     compileOptions {
