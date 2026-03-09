@@ -24,6 +24,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write  # Needed for creating GitHub releases
+
 jobs:
   deploy:
     name: Deploy to Google Play
