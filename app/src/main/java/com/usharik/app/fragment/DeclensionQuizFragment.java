@@ -116,8 +116,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             return windowInsets;
         });
 
-        // Request insets to be dispatched to this view
-        androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        // Request insets after view is laid out
+        binding.adViewContainer.post(() -> {
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        });
     }
 
     private void setupBannerAd() {
@@ -354,6 +356,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onResume();
         if (adView != null) {
             adView.resume();
+        }
+        // Request insets every time fragment becomes visible
+        if (binding != null && binding.adViewContainer != null) {
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
         }
     }
 

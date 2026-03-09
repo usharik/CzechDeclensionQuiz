@@ -90,8 +90,10 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
             return windowInsets;
         });
 
-        // Request insets to be dispatched to this view
-        androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        // Request insets after view is laid out
+        binding.adViewContainer.post(() -> {
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        });
     }
 
     private void setupBannerAd() {
@@ -106,6 +108,15 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Request insets every time fragment becomes visible
+        if (binding != null && binding.adViewContainer != null) {
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        }
     }
 
     @Override
