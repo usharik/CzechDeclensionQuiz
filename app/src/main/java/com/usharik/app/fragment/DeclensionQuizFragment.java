@@ -115,6 +115,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             v.setLayoutParams(params);
             return windowInsets;
         });
+
+        // Request insets to be dispatched to this view
+        androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
     }
 
     private void setupBannerAd() {
