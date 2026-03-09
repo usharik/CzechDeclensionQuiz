@@ -117,8 +117,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.adViewContainer.removeAllViews();
         binding.adViewContainer.addView(adView);
 
-        // Apply bottom padding to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(adView, (v, windowInsets) -> {
+        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
             androidx.core.graphics.Insets insets = windowInsets.getInsets(
                 androidx.core.view.WindowInsetsCompat.Type.systemBars()
             );
