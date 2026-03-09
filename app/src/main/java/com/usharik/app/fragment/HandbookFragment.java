@@ -77,18 +77,34 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(
-                androidx.core.view.WindowInsetsCompat.Type.systemBars()
-            );
-            // Apply only bottom padding to avoid navigation bar
-            v.setPadding(0, 0, 0, insets.bottom);
-            return windowInsets;
-        });
-
         // Load banner ad
         setupBannerAd();
+
+        // Apply insets to banner container
+        applyBannerInsets();
+    }
+
+    private void applyBannerInsets() {
+        if (binding != null && binding.adViewContainer != null) {
+            // Request to apply window insets
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+                androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                );
+                // Apply only bottom padding to avoid navigation bar
+                v.setPadding(0, 0, 0, insets.bottom);
+                return windowInsets;
+            });
+            // Force request insets
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Re-apply insets every time fragment becomes visible
+        applyBannerInsets();
     }
 
     private void setupBannerAd() {

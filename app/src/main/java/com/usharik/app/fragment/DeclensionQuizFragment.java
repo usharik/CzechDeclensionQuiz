@@ -100,21 +100,30 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
 
-        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(
-                androidx.core.view.WindowInsetsCompat.Type.systemBars()
-            );
-            // Apply only bottom padding to avoid navigation bar
-            v.setPadding(0, 0, 0, insets.bottom);
-            return windowInsets;
-        });
-
         // Load first interstitial ad
         adManager.loadAd(getActivity());
 
         // Load banner ad
         setupBannerAd();
+
+        // Apply insets to banner container
+        applyBannerInsets();
+    }
+
+    private void applyBannerInsets() {
+        if (binding != null && binding.adViewContainer != null) {
+            // Request to apply window insets
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+                androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                );
+                // Apply only bottom padding to avoid navigation bar
+                v.setPadding(0, 0, 0, insets.bottom);
+                return windowInsets;
+            });
+            // Force request insets
+            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+        }
     }
 
     private void setupBannerAd() {
@@ -352,6 +361,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         if (adView != null) {
             adView.resume();
         }
+        // Re-apply insets every time fragment becomes visible
+        applyBannerInsets();
     }
 
     @Override
