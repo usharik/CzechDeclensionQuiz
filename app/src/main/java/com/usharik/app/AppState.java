@@ -26,6 +26,7 @@ public class AppState {
     private final MutableLiveData<Integer> genderFilterIdLiveData = new MutableLiveData<>(-1);
     private final MutableLiveData<Boolean> switchOffAnimationLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<Integer> currentNavigationItemLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Integer> wordsCountSinceLastAdLiveData = new MutableLiveData<>(0);
 
     // Constructor to initialize arrays
     public AppState() {
@@ -95,6 +96,11 @@ public class AppState {
         return currentNavigationItemLiveData.getValue();
     }
 
+    public int getWordsCountSinceLastAd() {
+        Integer value = wordsCountSinceLastAdLiveData.getValue();
+        return value != null ? value : 0;
+    }
+
     public void setWordInfo(WordInfo wordInfo) {
         this.wordInfoLiveData.setValue(wordInfo);
     }
@@ -156,5 +162,14 @@ public class AppState {
             currentMap.remove(currentWordInfo.word);
             wordsWithErrorsLiveData.setValue(currentMap);
         }
+    }
+
+    public void incrementWordsCountSinceLastAd() {
+        int currentCount = getWordsCountSinceLastAd();
+        wordsCountSinceLastAdLiveData.setValue(currentCount + 1);
+    }
+
+    public void resetWordsCountSinceLastAd() {
+        wordsCountSinceLastAdLiveData.setValue(0);
     }
 }

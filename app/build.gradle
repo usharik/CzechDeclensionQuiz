@@ -10,18 +10,31 @@ android {
         applicationId = "com.usharik.app"
         minSdkVersion = 28
         targetSdkVersion = 36
-        versionCode = 210
-        versionName = "2.20"
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        versionCode = 231
+        versionName = "2.31"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
+
+        buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
+        buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
+        buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
     }
     buildFeatures {
         buildConfig = true
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
+            buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+        }
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-6420074467468909~9307588615\""
+            buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/6041532532\""
+            buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/3910193217\""
         }
     }
     compileOptions {
@@ -53,6 +66,7 @@ dependencies {
     implementation 'com.google.dagger:dagger-android-support:2.59.2'
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.code.gson:gson:2.13.2'
+    implementation 'com.google.android.gms:play-services-ads:25.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.7.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
