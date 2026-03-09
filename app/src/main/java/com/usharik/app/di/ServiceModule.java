@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.usharik.app.App;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.AppState;
+import com.usharik.app.ads.AdManager;
 import com.usharik.app.service.WordService;
 
 import javax.inject.Singleton;
@@ -59,5 +60,11 @@ class ServiceModule {
     @Singleton
     Locale provideLocale(Application application) {
         return application.getResources().getConfiguration().getLocales().get(0);
+    }
+
+    @Provides
+    @Singleton
+    AdManager provideAdManager() {
+        return new AdManager();
     }
 }

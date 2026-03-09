@@ -15,11 +15,14 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.widget.CustomDragShadowBuilder;
@@ -71,6 +74,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Inject
     Gson gson;
 
+    @Inject
+    AdManager adManager;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +95,18 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
+
+        // Load first interstitial ad
+        adManager.loadAd(getActivity());
+
+        // Load banner ad
+        setupBannerAd();
+    }
+
+    private void setupBannerAd() {
+        AdView adView = binding.adView;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     private void setupMenu() {
@@ -162,7 +180,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
             return true;
         } else if (itemId == R.id.action_next) {
-            nextWord(false);
+            // User skipped the word - count it and check for ad
+            checkAndShowAdThenNextWord(false);
             return true;
         }
         return false;
@@ -172,13 +191,15 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         saveErrorsInfo();
         switch (i) {
             case 0:
-                nextWord(false);
+                // User chose "Next" - count this word and check for ad
+                checkAndShowAdThenNextWord(false);
                 logAction("NEXT");
                 return;
             case 1:
                 logAction("STAY");
                 return;
             case 2:
+                // User chose "Try Again" - don't count, don't show ad
                 nextWord(true);
                 logAction("TRY_AGAIN");
                 return;
@@ -186,6 +207,30 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
         }
+    }
+
+    /**
+     * Check if we should show an ad (every 5 words), then proceed to next word.
+     * This is called for both correct answers and skipped words.
+     */
+    private void checkAndShowAdThenNextWord(boolean tryAgain) {
+        // Increment word count (any word, not just correct ones)
+        appState.incrementWordsCountSinceLastAd();
+
+        // Check if we should show an ad (every 10 words)
+        if (appState.getWordsCountSinceLastAd() >= 10) {
+            appState.resetWordsCountSinceLastAd();
+            showAdThenNextWord(tryAgain);
+        } else {
+            nextWord(tryAgain);
+        }
+    }
+
+    private void showAdThenNextWord(boolean tryAgain) {
+        adManager.showAd(getActivity(), () -> {
+            // This runs after the ad is closed
+            nextWord(tryAgain);
+        });
     }
 
     private void nextWord(boolean tryAgain) {
@@ -270,10 +315,29 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     public void onPause() {
         super.onPause();
+        if (binding != null && binding.adView != null) {
+            binding.adView.pause();
+        }
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
         editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.getWordsWithErrors(), type));
         editor.apply();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (binding != null && binding.adView != null) {
+            binding.adView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (binding != null && binding.adView != null) {
+            binding.adView.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override

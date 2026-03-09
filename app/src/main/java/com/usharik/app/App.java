@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import android.util.Log;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.database.dao.DatabaseManager;
@@ -51,6 +52,13 @@ public class App extends Application implements HasAndroidInjector {
         DaggerAppComponent.factory().create(this).inject(this);
 
         Log.i(getClass().getName(), "Application start!!!");
+
+        // Initialize Mobile Ads SDK
+        Log.i(getClass().getName(), "Initializing Mobile Ads SDK!!!");
+        MobileAds.initialize(this, initializationStatus -> {
+            Log.i(getClass().getName(), "Mobile Ads SDK initialized");
+        });
+
         databaseManager.getDocumentDb().getCount()
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {

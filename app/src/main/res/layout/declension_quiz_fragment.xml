@@ -246,7 +246,7 @@
                 app:layout_constraintTop_toTopOf="@id/guideLine"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintBottom_toTopOf="@id/adView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -355,6 +355,18 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+
+        <!-- AdMob Banner Ad -->
+        <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:adSize="BANNER"
+                app:adUnitId="@string/admob_banner_ad_unit_id"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
