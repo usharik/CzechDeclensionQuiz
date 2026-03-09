@@ -106,20 +106,24 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         // Load banner ad
         setupBannerAd();
 
-        // Apply insets to banner container - standard Android approach
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
-                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) v.getLayoutParams();
-            params.bottomMargin = insets.bottom;
-            v.setLayoutParams(params);
-            return windowInsets;
-        });
+        // Apply bottom margin for navigation bar
+        applyBottomMargin();
+    }
 
-        // Request insets after view is laid out
-        binding.adViewContainer.post(() -> {
-            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
-        });
+    private void applyBottomMargin() {
+        if (binding == null || binding.adViewContainer == null) {
+            return;
+        }
+
+        // Get insets from root view
+        androidx.core.view.WindowInsetsCompat insets = androidx.core.view.ViewCompat.getRootWindowInsets(binding.getRoot());
+        if (insets != null) {
+            androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.adViewContainer.getLayoutParams();
+            params.bottomMargin = systemBars.bottom;
+            binding.adViewContainer.setLayoutParams(params);
+        }
     }
 
     private void setupBannerAd() {
@@ -357,10 +361,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         if (adView != null) {
             adView.resume();
         }
-        // Request insets every time fragment becomes visible
-        if (binding != null && binding.adViewContainer != null) {
-            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
-        }
+        // Reapply margin every time fragment becomes visible
+        applyBottomMargin();
     }
 
     @Override
