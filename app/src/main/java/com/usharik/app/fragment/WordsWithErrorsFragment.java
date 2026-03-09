@@ -51,32 +51,15 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
         // Load banner ad
         setupBannerAd();
 
-        // Apply insets to banner container
-        applyBannerInsets();
-    }
-
-    private void applyBannerInsets() {
-        if (binding != null && binding.adViewContainer != null) {
-            // Get root window insets directly
-            androidx.core.view.WindowInsetsCompat rootInsets = androidx.core.view.ViewCompat.getRootWindowInsets(binding.adViewContainer);
-            if (rootInsets != null) {
-                androidx.core.graphics.Insets insets = rootInsets.getInsets(
-                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
-                );
-                // Apply bottom padding directly
-                binding.adViewContainer.setPadding(0, 0, 0, insets.bottom);
-                android.util.Log.d("BannerInsets", "Applied bottom padding: " + insets.bottom + "px");
-            } else {
-                // Fallback: use display metrics to calculate navigation bar height
-                android.content.res.Resources resources = requireContext().getResources();
-                int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-                if (resourceId > 0) {
-                    int navBarHeight = resources.getDimensionPixelSize(resourceId);
-                    binding.adViewContainer.setPadding(0, 0, 0, navBarHeight);
-                    android.util.Log.d("BannerInsets", "Applied fallback padding: " + navBarHeight + "px");
-                }
-            }
-        }
+        // Apply insets to banner container - standard Android approach
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
+                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) v.getLayoutParams();
+            params.bottomMargin = insets.bottom;
+            v.setLayoutParams(params);
+            return windowInsets;
+        });
     }
 
     private void setupBannerAd() {
@@ -96,9 +79,6 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     @Override
     public void onResume() {
         super.onResume();
-
-        // Re-apply insets every time fragment becomes visible
-        applyBannerInsets();
 
         binding.wordsWithErrorsFlow.removeAllViews();
         for (String word : appState.getWordsWithErrors().keySet()) {
