@@ -86,17 +86,25 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
     private void applyBannerInsets() {
         if (binding != null && binding.adViewContainer != null) {
-            // Request to apply window insets
-            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-                androidx.core.graphics.Insets insets = windowInsets.getInsets(
+            // Get root window insets directly
+            androidx.core.view.WindowInsetsCompat rootInsets = androidx.core.view.ViewCompat.getRootWindowInsets(binding.adViewContainer);
+            if (rootInsets != null) {
+                androidx.core.graphics.Insets insets = rootInsets.getInsets(
                     androidx.core.view.WindowInsetsCompat.Type.systemBars()
                 );
-                // Apply only bottom padding to avoid navigation bar
-                v.setPadding(0, 0, 0, insets.bottom);
-                return windowInsets;
-            });
-            // Force request insets
-            androidx.core.view.ViewCompat.requestApplyInsets(binding.adViewContainer);
+                // Apply bottom padding directly
+                binding.adViewContainer.setPadding(0, 0, 0, insets.bottom);
+                android.util.Log.d("BannerInsets", "Applied bottom padding: " + insets.bottom + "px");
+            } else {
+                // Fallback: use display metrics to calculate navigation bar height
+                android.content.res.Resources resources = requireContext().getResources();
+                int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+                if (resourceId > 0) {
+                    int navBarHeight = resources.getDimensionPixelSize(resourceId);
+                    binding.adViewContainer.setPadding(0, 0, 0, navBarHeight);
+                    android.util.Log.d("BannerInsets", "Applied fallback padding: " + navBarHeight + "px");
+                }
+            }
         }
     }
 
