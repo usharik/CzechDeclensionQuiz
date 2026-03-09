@@ -31,6 +31,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     FirebaseAnalytics firebaseAnalytics;
 
     private HandbookFragmentBinding binding;
+    private AdView adView;
 
     @Nullable
     @Override
@@ -83,7 +84,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
     private void setupBannerAd() {
         // Create AdView programmatically to set adUnitId from BuildConfig
-        AdView adView = new AdView(requireContext());
+        adView = new AdView(requireContext());
         adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
         adView.setAdSize(AdSize.BANNER);
 
@@ -95,7 +96,34 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         adView.loadAd(adRequest);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
+            // Ensure AdView is in the container when fragment becomes visible
+            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
+                binding.adViewContainer.removeAllViews();
+                binding.adViewContainer.addView(adView);
+            }
+        }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
+    }
 
     @Override
     protected Class<HandbookViewModel> getViewModelClass() {

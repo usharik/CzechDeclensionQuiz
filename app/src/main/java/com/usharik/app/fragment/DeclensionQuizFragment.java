@@ -341,6 +341,11 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onResume();
         if (adView != null) {
             adView.resume();
+            // Ensure AdView is in the container when fragment becomes visible
+            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
+                binding.adViewContainer.removeAllViews();
+                binding.adViewContainer.addView(adView);
+            }
         }
     }
 

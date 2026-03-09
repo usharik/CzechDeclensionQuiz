@@ -32,6 +32,7 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     AppState appState;
 
     private WordsWithErrorsFragmentBinding binding;
+    private AdView adView;
 
     @Nullable
     @Override
@@ -54,7 +55,7 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
 
     private void setupBannerAd() {
         // Create AdView programmatically to set adUnitId from BuildConfig
-        AdView adView = new AdView(requireContext());
+        adView = new AdView(requireContext());
         adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
         adView.setAdSize(AdSize.BANNER);
 
@@ -69,6 +70,15 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     @Override
     public void onResume() {
         super.onResume();
+
+        // Ensure AdView is in the container when fragment becomes visible
+        if (adView != null) {
+            adView.resume();
+            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
+                binding.adViewContainer.removeAllViews();
+                binding.adViewContainer.addView(adView);
+            }
+        }
 
         binding.wordsWithErrorsFlow.removeAllViews();
         for (String word : appState.getWordsWithErrors().keySet()) {
@@ -94,6 +104,22 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
                 getViewModel().setSelectedWord(rb.getText().toString());
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 
     @Override
