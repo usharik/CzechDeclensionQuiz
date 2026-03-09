@@ -10,8 +10,8 @@ android {
         applicationId = "com.usharik.app"
         minSdkVersion = 28
         targetSdkVersion = 36
-        versionCode = 232
-        versionName = "2.32"
+        versionCode = 240
+        versionName = "2.40"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
 
