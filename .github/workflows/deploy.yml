@@ -71,21 +71,7 @@ jobs:
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD \
             --no-daemon \
             --stacktrace
-      
-      - name: Build Release AAB (Bundle)
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          ./gradlew :app:bundleRelease \
-            -Pandroid.injected.signing.store.file=${{ github.workspace }}/release-keystore.jks \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD \
-            --no-daemon \
-            --stacktrace
-      
+
       - name: Determine release track
         id: track
         run: |
@@ -95,30 +81,12 @@ jobs:
             # For tag pushes, deploy to production
             echo "track=production" >> $GITHUB_OUTPUT
           fi
-      
-      - name: Upload to Google Play
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.usharik.app
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: ${{ steps.track.outputs.track }}
-          status: completed
-          inAppUpdatePriority: 2
-          whatsNewDirectory: distribution/whatsnew
-      
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: app/build/outputs/apk/release/app-release.apk
-          retention-days: 30
-      
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
       
       - name: Create GitHub Release
@@ -127,19 +95,17 @@ jobs:
         with:
           files: |
             app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
           body: |
             ## Release ${{ github.ref_name }}
-            
+
             ${{ inputs.release_notes || 'Bug fixes and improvements' }}
-            
+
             ### Downloads
-            - **APK**: Direct installation file
-            - **AAB**: Google Play Bundle
-            
-            ### Deployment
-            - Track: ${{ steps.track.outputs.track }}
+            - **APK**: Direct installation file for Android devices
+
+            ### Build Info
             - Build: ${{ github.run_number }}
+            - Version: ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
