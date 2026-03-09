@@ -41,11 +41,25 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.words_with_errors_fragment, container, false);
         binding.setViewModel(getViewModel());
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.systemBars()
+            );
+            // Apply only bottom padding to avoid navigation bar
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
 
         // Load banner ad
         setupBannerAd();
-
-        return binding.getRoot();
     }
 
     private void setupBannerAd() {
@@ -57,16 +71,6 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
         // Add AdView to container
         binding.adViewContainer.removeAllViews();
         binding.adViewContainer.addView(adView);
-
-        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(
-                androidx.core.view.WindowInsetsCompat.Type.systemBars()
-            );
-            // Apply only bottom padding to avoid navigation bar
-            v.setPadding(0, 0, 0, insets.bottom);
-            return windowInsets;
-        });
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);

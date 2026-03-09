@@ -100,6 +100,16 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
 
+        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.systemBars()
+            );
+            // Apply only bottom padding to avoid navigation bar
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
+
         // Load first interstitial ad
         adManager.loadAd(getActivity());
 
@@ -116,16 +126,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         // Add AdView to container
         binding.adViewContainer.removeAllViews();
         binding.adViewContainer.addView(adView);
-
-        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(
-                androidx.core.view.WindowInsetsCompat.Type.systemBars()
-            );
-            // Apply only bottom padding to avoid navigation bar
-            v.setPadding(0, 0, 0, insets.bottom);
-            return windowInsets;
-        });
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);

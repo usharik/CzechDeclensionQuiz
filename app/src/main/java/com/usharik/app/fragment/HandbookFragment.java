@@ -77,6 +77,16 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.systemBars()
+            );
+            // Apply only bottom padding to avoid navigation bar
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
+
         // Load banner ad
         setupBannerAd();
     }
@@ -90,16 +100,6 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         // Add AdView to container
         binding.adViewContainer.removeAllViews();
         binding.adViewContainer.addView(adView);
-
-        // Apply bottom padding to container to avoid being hidden behind navigation bar (Edge-to-Edge)
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.adViewContainer, (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(
-                androidx.core.view.WindowInsetsCompat.Type.systemBars()
-            );
-            // Apply only bottom padding to avoid navigation bar
-            v.setPadding(0, 0, 0, insets.bottom);
-            return windowInsets;
-        });
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
