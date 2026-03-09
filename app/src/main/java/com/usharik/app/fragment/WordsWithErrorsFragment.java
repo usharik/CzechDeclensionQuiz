@@ -50,23 +50,6 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
 
         // Load banner ad
         setupBannerAd();
-
-        // Set insets listener on fragment's root view - this ensures it works on fragment switches
-        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
-            androidx.core.graphics.Insets insets = windowInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
-
-            // Apply bottom margin to ad container
-            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
-                (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.adViewContainer.getLayoutParams();
-            params.bottomMargin = insets.bottom;
-            binding.adViewContainer.setLayoutParams(params);
-
-            // Return insets so they can be consumed by child views if needed
-            return windowInsets;
-        });
-
-        // Request insets to be applied
-        androidx.core.view.ViewCompat.requestApplyInsets(binding.getRoot());
     }
 
     private void setupBannerAd() {
