@@ -51,24 +51,22 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
         // Load banner ad
         setupBannerAd();
 
-        // Apply bottom margin for navigation bar
-        applyBottomMargin();
-    }
+        // Set insets listener on fragment's root view - this ensures it works on fragment switches
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
 
-    private void applyBottomMargin() {
-        if (binding == null || binding.adViewContainer == null) {
-            return;
-        }
-
-        // Get insets from root view
-        androidx.core.view.WindowInsetsCompat insets = androidx.core.view.ViewCompat.getRootWindowInsets(binding.getRoot());
-        if (insets != null) {
-            androidx.core.graphics.Insets systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            // Apply bottom margin to ad container
             androidx.constraintlayout.widget.ConstraintLayout.LayoutParams params =
                 (androidx.constraintlayout.widget.ConstraintLayout.LayoutParams) binding.adViewContainer.getLayoutParams();
-            params.bottomMargin = systemBars.bottom;
+            params.bottomMargin = insets.bottom;
             binding.adViewContainer.setLayoutParams(params);
-        }
+
+            // Return insets so they can be consumed by child views if needed
+            return windowInsets;
+        });
+
+        // Request insets to be applied
+        androidx.core.view.ViewCompat.requestApplyInsets(binding.getRoot());
     }
 
     private void setupBannerAd() {
@@ -88,9 +86,6 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     @Override
     public void onResume() {
         super.onResume();
-
-        // Reapply margin every time fragment becomes visible
-        applyBottomMargin();
 
         binding.wordsWithErrorsFlow.removeAllViews();
         for (String word : appState.getWordsWithErrors().keySet()) {
