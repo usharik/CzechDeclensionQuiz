@@ -269,6 +269,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         adManager.showAd(getActivity(), () -> {
             // This runs after the ad is closed
             nextWord(tryAgain);
+            // Re-apply insets after returning from interstitial ad
+            applyBannerInsets();
         });
     }
 
