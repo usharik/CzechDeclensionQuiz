@@ -10,8 +10,12 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
+import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
@@ -72,6 +76,33 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Load banner ad
+        setupBannerAd();
+    }
+
+    private void setupBannerAd() {
+        // Create AdView programmatically to set adUnitId from BuildConfig
+        AdView adView = new AdView(requireContext());
+        adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        // Add AdView to container
+        binding.adViewContainer.removeAllViews();
+        binding.adViewContainer.addView(adView);
+
+        // Apply bottom padding to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(adView, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.systemBars()
+            );
+            // Apply only bottom padding to avoid navigation bar
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override

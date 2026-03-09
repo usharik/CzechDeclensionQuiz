@@ -16,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
+import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
@@ -43,6 +45,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
 
     private static final Set<Integer> wordEditViewSet = buildWordEditViewSet();
+
+    private AdView adView;
 
     private static Set<Integer> buildWordEditViewSet() {
         HashSet<Integer> res = new HashSet<>();
@@ -104,7 +108,25 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     }
 
     private void setupBannerAd() {
-        AdView adView = binding.adView;
+        // Create AdView programmatically to set adUnitId from BuildConfig
+        adView = new AdView(requireContext());
+        adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        // Add AdView to container
+        binding.adViewContainer.removeAllViews();
+        binding.adViewContainer.addView(adView);
+
+        // Apply bottom padding to avoid being hidden behind navigation bar (Edge-to-Edge)
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(adView, (v, windowInsets) -> {
+            androidx.core.graphics.Insets insets = windowInsets.getInsets(
+                androidx.core.view.WindowInsetsCompat.Type.systemBars()
+            );
+            // Apply only bottom padding to avoid navigation bar
+            v.setPadding(0, 0, 0, insets.bottom);
+            return windowInsets;
+        });
+
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
     }
@@ -315,8 +337,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     public void onPause() {
         super.onPause();
-        if (binding != null && binding.adView != null) {
-            binding.adView.pause();
+        if (adView != null) {
+            adView.pause();
         }
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
@@ -327,15 +349,15 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     public void onResume() {
         super.onResume();
-        if (binding != null && binding.adView != null) {
-            binding.adView.resume();
+        if (adView != null) {
+            adView.resume();
         }
     }
 
     @Override
     public void onDestroy() {
-        if (binding != null && binding.adView != null) {
-            binding.adView.destroy();
+        if (adView != null) {
+            adView.destroy();
         }
         super.onDestroy();
     }
