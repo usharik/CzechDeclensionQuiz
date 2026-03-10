@@ -1,0 +1,100 @@
+🎓 Vítejte v aplikaci Kvíz českých pádů!
+
+Rádi vám pomůžeme zvládnout české pády. Je to jednodušší, než to vypadá! 😊
+
+═══════════════════════════════════════════════════════════
+
+📱 JAK POUŽÍVAT APLIKACI
+
+═══════════════════════════════════════════════════════════
+
+🎯 KROK 1: KVÍZ SKLOŇOVÁNÍ
+
+Na hlavní obrazovce uvidíte:
+• Slovo nahoře (např. "pán")
+• Sadu kartiček s tvary slov
+• Tabulku se 7 pády (Nominativ, Genitiv atd.)
+
+CO DĚLAT:
+1. Vezměte kartičku s tvarem slova (stiskněte a podržte prstem)
+2. Přetáhněte ji do správné buňky v tabulce
+3. Uvolněte prst - kartička zapadne na místo
+4. Vyplňte všech 14 buněk (7 pádů × 2 čísla)
+5. Stiskněte tlačítko "Zkontrolovat" ✓
+
+💡 TIP: 
+• Levý sloupec - jednotné číslo
+• Pravý sloupec - množné číslo
+• Vedle názvu pádu jsou otázky (kdo? co? atd.)
+
+═══════════════════════════════════════════════════════════
+
+📚 KROK 2: PŘÍRUČKA
+
+Otevřete menu (☰ vlevo nahoře) → "Příručka"
+
+Zde najdete:
+• Všechny vzory skloňování
+• Příklady slov pro každý typ
+• Hotové tabulky skloňování
+
+To je vaše nápověda! Používejte ji, když si nejste jisti.
+
+═══════════════════════════════════════════════════════════
+
+❌ KROK 3: SLOVA S CHYBAMI
+
+Aplikace si pamatuje, ve kterých slovech jste udělali chybu!
+
+Otevřete menu → "Slova s chybami"
+
+Zde můžete:
+• Vidět seznam obtížných slov
+• Procvičit je znovu
+• Upevnit si látku
+
+═══════════════════════════════════════════════════════════
+
+⚙️ KROK 4: NASTAVENÍ
+
+Otevřete menu → "Nastavení"
+
+Můžete:
+• Vybrat rod podstatných jmen (pouze mužský, ženský atd.)
+• Vypnout animaci (pokud vás ruší)
+
+═══════════════════════════════════════════════════════════
+
+🎁 UŽITEČNÉ RADY
+
+✅ Začněte s jednoduchými slovy (životný mužský rod)
+✅ Nespěchejte - raději pomalu, ale správně
+✅ Používejte příručku - to není podvádění, to je učení!
+✅ Opakujte slova s chybami - tak si je rychleji zapamatujete
+✅ Cvičte trochu každý den - 10 minut stačí
+
+═══════════════════════════════════════════════════════════
+
+❓ ČASTÉ OTÁZKY
+
+O: Jak přetáhnout kartičku?
+A: Stiskněte kartičku prstem, podržte a táhněte k požadované buňce
+
+O: Co když kartička nezapadne na místo?
+A: Ujistěte se, že jste uvolnili prst přesně nad buňkou
+
+O: Mohu opravit chybu?
+A: Ano! Prostě přetáhněte jinou kartičku na stejné místo
+
+O: Kolik slov je v aplikaci?
+A: 14 vzorů skloňování s mnoha příklady
+
+═══════════════════════════════════════════════════════════
+
+💪 HODNĚ ŠTĚSTÍ PŘI UČENÍ ČEŠTINY!
+
+Pamatujte: každá chyba je krok k úspěchu! 
+Nebojte se chybovat, hlavně pokračujte v procvičování.
+
+Hodně štěstí! 🍀
+

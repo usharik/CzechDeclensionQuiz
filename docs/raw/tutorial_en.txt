@@ -1,0 +1,100 @@
+🎓 Welcome to Czech Declension Quiz!
+
+We're happy to help you master Czech cases. It's easier than it looks! 😊
+
+═══════════════════════════════════════════════════════════
+
+📱 HOW TO USE THE APP
+
+═══════════════════════════════════════════════════════════
+
+🎯 STEP 1: DECLENSION QUIZ
+
+On the main screen you'll see:
+• A word at the top (e.g., "pán" - gentleman)
+• A set of cards with word forms
+• A table with 7 cases (Nominativ, Genitiv, etc.)
+
+WHAT TO DO:
+1. Pick up a card with a word form (tap and hold with your finger)
+2. Drag it to the correct cell in the table
+3. Release your finger - the card will snap into place
+4. Fill all 14 cells (7 cases × 2 numbers)
+5. Tap the "Check" button ✓
+
+💡 TIP: 
+• Left column - singular
+• Right column - plural
+• Next to each case name you'll see questions (kdo? co? etc.)
+
+═══════════════════════════════════════════════════════════
+
+📚 STEP 2: HANDBOOK
+
+Open the menu (☰ top left) → "Handbook"
+
+Here you'll find:
+• All declension patterns
+• Example words for each type
+• Complete declension tables
+
+This is your cheat sheet! Use it when in doubt.
+
+═══════════════════════════════════════════════════════════
+
+❌ STEP 3: WORDS WITH ERRORS
+
+The app remembers which words you got wrong!
+
+Open menu → "Words with errors"
+
+Here you can:
+• See the list of difficult words
+• Practice them again
+• Reinforce your learning
+
+═══════════════════════════════════════════════════════════
+
+⚙️ STEP 4: SETTINGS
+
+Open menu → "Settings"
+
+You can:
+• Choose noun gender (only masculine, feminine, etc.)
+• Turn off animation (if it's distracting)
+
+═══════════════════════════════════════════════════════════
+
+🎁 HELPFUL TIPS
+
+✅ Start with simple words (animate masculine)
+✅ Don't rush - better slow but correct
+✅ Use the handbook - it's not cheating, it's learning!
+✅ Review words with errors - that's how you'll remember faster
+✅ Practice a little every day - 10 minutes is enough
+
+═══════════════════════════════════════════════════════════
+
+❓ FREQUENTLY ASKED QUESTIONS
+
+Q: How do I drag a card?
+A: Tap the card with your finger, hold and drag to the desired cell
+
+Q: What if the card doesn't snap into place?
+A: Make sure you release your finger exactly over the cell
+
+Q: Can I fix a mistake?
+A: Yes! Just drag another card to the same spot
+
+Q: How many words are in the app?
+A: 14 declension patterns with many examples
+
+═══════════════════════════════════════════════════════════
+
+💪 GOOD LUCK LEARNING CZECH!
+
+Remember: every mistake is a step toward success! 
+Don't be afraid to make mistakes, just keep practicing.
+
+Hodně štěstí! 🍀
+
