@@ -11,7 +11,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.3'
 
     // Appium and Selenium
-    testImplementation 'io.appium:java-client:10.0.0'
+    testImplementation 'io.appium:java-client:10.1.0'
 
     // JSON parsing
     testImplementation 'com.google.code.gson:gson:2.13.2'
