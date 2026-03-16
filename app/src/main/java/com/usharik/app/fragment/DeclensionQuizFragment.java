@@ -1,6 +1,5 @@
 package com.usharik.app.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
@@ -8,8 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.MenuProvider;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.lifecycle.Lifecycle;
 import android.view.*;
 import android.widget.TextView;
@@ -182,11 +181,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         int itemId = item.getItemId();
         if (itemId == R.id.action_check) {
             if (getViewModel().checkAnswers()) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.correct_answer)
-                        .setItems(R.array.next_word_dialog, this::nextWordDialogHandler)
-                        .setCancelable(false)
-                        .show();
+                showCorrectAnswerDialog();
             } else {
                 Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
             }
@@ -199,26 +194,43 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         return false;
     }
 
-    private void nextWordDialogHandler(DialogInterface dialogInterface, int i) {
+    private void showCorrectAnswerDialog() {
+        android.view.View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_correct_answer, null, false);
+
+        androidx.appcompat.app.AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        // Save error info once — the dialog is non-cancelable so a button will always be pressed
         saveErrorsInfo();
-        switch (i) {
-            case 0:
-                // User chose "Next" - count this word and check for ad
-                checkAndShowAdThenNextWord(false);
-                logAction("NEXT");
-                return;
-            case 1:
-                logAction("STAY");
-                return;
-            case 2:
-                // User chose "Try Again" - don't count, don't show ad
-                nextWord(true);
-                logAction("TRY_AGAIN");
-                return;
-            case 3:
+
+        dialogView.findViewById(R.id.btnNextWord).setOnClickListener(v -> {
+            dialog.dismiss();
+            checkAndShowAdThenNextWord(false);
+            logAction("NEXT");
+        });
+        dialogView.findViewById(R.id.btnStayHere).setOnClickListener(v -> {
+            dialog.dismiss();
+            logAction("STAY");
+        });
+        dialogView.findViewById(R.id.btnTryAgain).setOnClickListener(v -> {
+            dialog.dismiss();
+            nextWord(true);
+            logAction("TRY_AGAIN");
+        });
+        dialogView.findViewById(R.id.btnRateApp).setOnClickListener(v -> {
+            dialog.dismiss();
+            try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
-        }
+                        Uri.parse("market://details?id=" + requireActivity().getPackageName())));
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
     }
 
     /**

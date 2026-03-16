@@ -6,6 +6,9 @@
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="correct_answer">All is correct!</string>
+    <string name="next_word">Next word</string>
+    <string name="stay_here">Stay here</string>
+    <string name="try_again">Try again</string>
     <string name="toast_some_errors">There\'re some errors.</string>
     <string name="version">Version %s %s</string>
     <string name="date_of_build">Date of build %s</string>
@@ -19,6 +22,7 @@
     <string name="about">About</string>
     <string name="other_nouns">Other nouns:</string>
     <string name="rate_app">Rate application</string>
+    <string name="rate_app_unavailable">No app store found</string>
     <string name="word_filter">Word filter by gender</string>
     <string name="all_words">All words</string>
     <string name="animate_masculine">Animate masculine</string>

@@ -6,6 +6,9 @@
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="correct_answer">Все правильно!</string>
+    <string name="next_word">Следующее слово</string>
+    <string name="stay_here">Остаться</string>
+    <string name="try_again">Повторить</string>
     <string name="toast_some_errors">Допущено несколько ошибок.</string>
     <string name="version">Версия %s %s</string>
     <string name="date_of_build">Дата сборки %s</string>
@@ -19,6 +22,7 @@
     <string name="about">О программе</string>
     <string name="other_nouns">Аналогично:</string>
     <string name="rate_app">Оценить приложение</string>
+    <string name="rate_app_unavailable">Магазин приложений не найден</string>
     <string name="word_filter">Фильтр по роду существительного</string>
     <string name="all_words">Все слова</string>
     <string name="animate_masculine">Одушевленный мужской</string>
