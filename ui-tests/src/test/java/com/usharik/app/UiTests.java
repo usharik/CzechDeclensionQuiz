@@ -64,8 +64,11 @@ public class UiTests {
     private static final String ID_CURRENT_WORD = "com.usharik.app:id/word";
     private static final String ID_CASE_SINGULAR = "com.usharik.app:id/caseSingular";
     private static final String ID_CASE_PLURAL = "com.usharik.app:id/casePlural";
-    private static final String ID_ALERT_TITLE = "com.usharik.app:id/alertTitle";
-    private static final String ID_ALERT_BUTTON = "android:id/text1";
+    private static final String ID_DIALOG_TITLE = "com.usharik.app:id/dialogTitle";
+    private static final String ID_BTN_NEXT_WORD = "com.usharik.app:id/btnNextWord";
+    private static final String ID_BTN_STAY_HERE = "com.usharik.app:id/btnStayHere";
+    private static final String ID_BTN_TRY_AGAIN = "com.usharik.app:id/btnTryAgain";
+    private static final String ID_BTN_RATE_APP = "com.usharik.app:id/btnRateApp";
 
     // UI element IDs - Navigation
     private static final String ID_NAV_MENU_ITEM = "com.usharik.app:id/design_menu_item_text";
@@ -279,7 +282,7 @@ public class UiTests {
         assertEquals("There're some errors.", toastText, "Error toast should show correct message");
 
         // Verify that success dialog did NOT appear
-        List<WebElement> alertDialogs = driver.findElements(AppiumBy.id(ID_ALERT_TITLE));
+        List<WebElement> alertDialogs = driver.findElements(AppiumBy.id(ID_DIALOG_TITLE));
         assertTrue(alertDialogs.isEmpty(), "Success dialog should not appear for incorrect solution");
 
         logger.info("Incorrect quiz solution test completed successfully");
@@ -533,16 +536,18 @@ public class UiTests {
     private void verifySuccessDialog() {
         logger.debug("Verifying success dialog");
 
-        WebElement alertTitle = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_ALERT_TITLE))
+        WebElement dialogTitle = wait.until(
+            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_DIALOG_TITLE))
         );
-        assertEquals("All is correct!", alertTitle.getText(), "Success message should be correct");
+        assertEquals("All is correct!", dialogTitle.getText(), "Success message should be correct");
 
-        List<WebElement> alertButtons = findElements(ID_ALERT_BUTTON);
-        assertEquals(4, alertButtons.size(), "Should have 4 dialog options");
+        assertNotNull(findElement(ID_BTN_NEXT_WORD), "Next word button should be present");
+        assertNotNull(findElement(ID_BTN_STAY_HERE), "Stay here button should be present");
+        assertNotNull(findElement(ID_BTN_TRY_AGAIN), "Try again button should be present");
+        assertNotNull(findElement(ID_BTN_RATE_APP), "Rate app button should be present");
 
-        logger.debug("Dismissing success dialog");
-        alertButtons.getFirst().click();
+        logger.debug("Dismissing success dialog via Next word");
+        findElement(ID_BTN_NEXT_WORD).click();
     }
 
     /**
