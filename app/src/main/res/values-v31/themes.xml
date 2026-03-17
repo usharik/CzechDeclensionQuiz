@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme for Android 12+ (API 31+) with edge-to-edge support -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
@@ -9,9 +9,8 @@
         <item name="colorSurface">@color/colorSurface</item>
         <item name="android:colorBackground">@color/colorSurface</item>
 
-        <!-- Enable edge-to-edge by making system bars transparent -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/colorSurface</item>
         
         <!-- Ensure proper contrast for system bar icons -->
         <item name="android:windowLightStatusBar">false</item>

@@ -4,12 +4,9 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentManager;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.appbar.MaterialToolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.view.GravityCompat;
@@ -18,7 +15,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
@@ -41,15 +37,13 @@ public class MainActivity extends AppCompatActivity {
         AndroidInjection.inject(this);
         Log.i(getClass().getName(), "Start main activity!!!");
 
-        // Enable edge-to-edge display for Android 15+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            enableEdgeToEdge();
-        }
-
         setContentView(R.layout.main_activity);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        setSupportActionBar(toolbar);
 
         navigationView.setNavigationItemSelectedListener(this::onNavigatorItemSelected);
 
@@ -61,49 +55,17 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(currentItem);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        onNavigatorItemSelected(navigationView.getCheckedItem());
-
-        // Apply window insets for edge-to-edge
-        applyWindowInsets();
-    }
-
-    /**
-     * Enable edge-to-edge display (Android 15+)
-     */
-    private void enableEdgeToEdge() {
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-    }
-
-    /**
-     * Apply window insets to handle edge-to-edge display properly
-     */
-    private void applyWindowInsets() {
-        // Apply insets to the main content container, not the DrawerLayout
-        // This prevents the NavigationView from being clipped
-        View fragmentContainer = findViewById(R.id.fragmentContainer);
-        if (fragmentContainer != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (v, windowInsets) -> {
-                Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-                // Apply padding only to top to avoid content being hidden behind status bar
-                // Don't apply bottom padding as it can interfere with fragment layouts
-                v.setPadding(
-                    0,  // left - no padding needed
-                    insets.top,  // top - avoid status bar
-                    0,  // right - no padding needed
-                    0   // bottom - let fragments handle their own bottom padding
-                );
-
-                return windowInsets;
-            });
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+        onNavigatorItemSelected(navigationView.getCheckedItem());
     }
 
     private boolean onNavigatorItemSelected(MenuItem item) {
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
+        setTitle(item.getTitle());
         appState.setCurrentNavigationItem(item.getItemId());
         int itemId = item.getItemId();
         if (itemId == R.id.nav_quiz) {
