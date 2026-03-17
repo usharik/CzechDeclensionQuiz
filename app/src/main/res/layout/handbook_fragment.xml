@@ -227,13 +227,22 @@
 
         </RadioGroup>
 
+        <!-- Barrier to position content below all three RadioGroups -->
+        <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/wordGroupsBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="wordGroupMasculine,wordGroupNeuter,wordGroupFeminine" />
+
         <TextView
                 android:id="@+id/otherNounsHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/other_nouns"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/guideLine"
+                app:layout_constraintTop_toBottomOf="@id/wordGroupsBarrier"
                 tools:text="Other nouns: "/>
 
         <TextView
@@ -241,24 +250,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="5dp"
+                android:layout_marginBottom="8dp"
                 android:text="@{viewModel.otherNouns}"
                 app:layout_constraintLeft_toRightOf="@id/otherNounsHeader"
-                app:layout_constraintBottom_toTopOf="@id/guideLine"
+                app:layout_constraintTop_toTopOf="@id/otherNounsHeader"
                 tools:text="dum, pes"/>
-
-        <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideLine"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="110dp"/>
 
         <ScrollView
                 android:id="@+id/casesContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scrollX="0dp"
-                app:layout_constraintTop_toTopOf="@id/guideLine"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/otherNounsHeader"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/adViewContainer"
