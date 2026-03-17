@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme for Android 12+ (API 31+) with edge-to-edge support -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="android:colorBackground">@color/colorSurface</item>
+        <item name="android:windowBackground">@color/colorSurface</item>
 
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorSurface</item>
+        <item name="android:forceDarkAllowed">false</item>
         
         <!-- Ensure proper contrast for system bar icons -->
         <item name="android:windowLightStatusBar">false</item>

@@ -9,13 +9,15 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/colorSurface">
         <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/radioGroupHeader"
                 android:text="@string/word_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="@dimen/spacing_sm"/>
@@ -67,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/spacing_sm"/>

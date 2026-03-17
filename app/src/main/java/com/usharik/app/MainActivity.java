@@ -1,6 +1,5 @@
 package com.usharik.app;
 
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
