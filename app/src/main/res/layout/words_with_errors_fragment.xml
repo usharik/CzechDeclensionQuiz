@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,12 +11,35 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/spacing_xxs"
+        android:paddingTop="@dimen/spacing_sm"
+        android:paddingEnd="@dimen/spacing_xxs"
+        tools:context="com.usharik.app.MainActivity">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/headerCard"
+            style="@style/Widget.App.SectionCard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/flowScroll" />
 
         <ScrollView android:id="@+id/flowScroll"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:fillViewport="true"
+            android:paddingStart="@dimen/spacing_xxs"
+            android:paddingEnd="@dimen/spacing_xxs"
+            android:paddingBottom="@dimen/spacing_sm"
+            android:clipToPadding="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -24,9 +48,7 @@
             <com.usharik.app.widget.FlowLayout
                 android:id="@+id/wordsWithErrorsFlow"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginStart="@dimen/spacing_content"
-                android:layout_marginEnd="@dimen/spacing_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_content">
 
             </com.usharik.app.widget.FlowLayout>
@@ -43,6 +65,12 @@
             android:id="@+id/casesContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:fillViewport="true"
+            android:paddingStart="@dimen/spacing_xxs"
+            android:paddingEnd="@dimen/spacing_xxs"
+            android:paddingBottom="@dimen/spacing_xxs"
+            android:clipToPadding="false"
             android:scrollX="0dp"
             app:layout_constraintTop_toTopOf="@id/guideLine"
             app:layout_constraintStart_toStartOf="parent"

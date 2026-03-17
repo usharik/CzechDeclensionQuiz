@@ -15,10 +15,10 @@
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="81dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/caseNum"
-            style="@style/HeaderTextView"
-            android:layout_width="15dp"
+            style="@style/RowCaseHeaderText"
+            android:layout_width="@dimen/case_num_width"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_xxs"
             android:layout_marginTop="@dimen/spacing_xxs"
@@ -28,10 +28,10 @@
             android:text="@{String.valueOf(num+1)}"
             tools:text="1" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/caseName"
-            style="@style/HeaderTextView"
-            android:layout_width="100dp"
+            style="@style/RowCaseHeaderText"
+            android:layout_width="@dimen/case_name_width"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_xxs"
             android:layout_marginTop="@dimen/spacing_xxs"
@@ -41,9 +41,9 @@
             android:text="@{@stringArray/caseName[num]}"
             tools:text="Genetiv" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/caseHint"
-            style="@style/HeaderTextView"
+            style="@style/RowCaseHeaderText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_xxs"
@@ -54,9 +54,9 @@
             android:text="@{@stringArray/caseHint[num]}"
             tools:text="bez" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/caseQuestion"
-            style="@style/HeaderTextView"
+            style="@style/RowCaseHeaderText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xxs"
@@ -67,13 +67,12 @@
             android:text="@{@stringArray/caseQuestion[num]}"
             tools:text="koho? čeho?" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/caseSingular"
+            style="@style/RowCaseValueText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rect_blue"
-            android:textAlignment="center"
-            android:textSize="@dimen/draggable_font_size"
             android:layout_marginStart="@dimen/spacing_xxs"
             android:layout_marginTop="@dimen/spacing_xxs"
             app:layout_constraintEnd_toStartOf="@id/casePlural"
@@ -84,13 +83,12 @@
             app:animateView="@{singular.isEmpty() &amp;&amp; !switchOffAnimation}"
             tools:text="Singular" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/casePlural"
+            style="@style/RowCaseValueText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_rect_red"
-            android:textAlignment="center"
-            android:textSize="@dimen/draggable_font_size"
             android:layout_marginStart="@dimen/spacing_xxs"
             android:layout_marginEnd="@dimen/spacing_xxs"
             android:layout_marginTop="@dimen/spacing_xxs"

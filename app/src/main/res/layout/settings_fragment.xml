@@ -10,11 +10,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                  android:layout_height="match_parent">
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/radioGroupHeader"
                 android:text="@string/word_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="@dimen/spacing_sm"/>
@@ -28,49 +29,56 @@
                 android:layout_marginStart="@dimen/spacing_md"
                 android:checkedButton="@={viewModel.genderFilterId}">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioAllWords"
                     android:text="@string/all_words"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            <RadioButton
+                    android:layout_height="wrap_content"
+                    app:useMaterialThemeColors="true"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioAnimateMasculine"
                     android:text="@string/animate_masculine"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            <RadioButton
+                    android:layout_height="wrap_content"
+                    app:useMaterialThemeColors="true"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioInanimateMasculine"
                     android:text="@string/inanimate_masculine"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            <RadioButton
+                    android:layout_height="wrap_content"
+                    app:useMaterialThemeColors="true"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioFeminine"
                     android:text="@string/feminine"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            <RadioButton
+                    android:layout_height="wrap_content"
+                    app:useMaterialThemeColors="true"/>
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioNeuter"
                     android:text="@string/neuter"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:useMaterialThemeColors="true"/>
         </RadioGroup>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/checkBoxHeader"
                 android:text="@string/additional_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="@dimen/spacing_sm"/>
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkBox"
                 android:text="@string/turn_off_animation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_md"
                 android:checked="@={viewModel.switchOffAnimation}"
+                app:useMaterialThemeColors="true"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxHeader"
                 app:layout_constraintStart_toStartOf="parent"/>
 

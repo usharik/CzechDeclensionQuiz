@@ -15,13 +15,31 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/spacing_xxs"
+            android:paddingTop="@dimen/spacing_sm"
+            android:paddingEnd="@dimen/spacing_xxs">
 
-        <TextView
+        <com.google.android.material.card.MaterialCardView
+                android:id="@+id/selectionCard"
+                style="@style/Widget.App.SectionCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:cardBackgroundColor="@color/colorSurface"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/detailsBarrier" />
+
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/genderHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_content"
                 android:text="@string/gender_of_noun"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -31,32 +49,35 @@
                 android:id="@+id/genderGroup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xxs"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:orientation="horizontal"
                 android:checkedButton="@={viewModel.selectedGender}"
                 app:layout_constraintTop_toBottomOf="@+id/genderHeader"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioMasculine"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/masculine"
                     tools:checked="true"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioNeuter"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/neuter"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/radioFeminine"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -64,11 +85,14 @@
 
         </RadioGroup>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/typeHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:text="@string/type_of_declension"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/genderGroup"
@@ -78,6 +102,9 @@
                 android:id="@+id/wordGroupMasculine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xxs"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioMasculine ? View.VISIBLE : View.GONE}"
@@ -85,49 +112,49 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/typeHeader">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/pan"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="pán"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/hrad"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="hrad"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/muz"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="muž"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/stroj"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="stroj"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/predseda"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="předseda"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/soudce"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -139,6 +166,9 @@
                 android:id="@+id/wordGroupNeuter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xxs"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioNeuter ? View.VISIBLE : View.GONE}"
@@ -147,33 +177,33 @@
                 app:layout_constraintTop_toBottomOf="@id/typeHeader"
                 tools:visibility="gone">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/mesto"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="město"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/more"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="moře"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/kure"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="kuře"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/staveni"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -185,6 +215,9 @@
                 android:id="@+id/wordGroupFeminine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xxs"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioFeminine ? View.VISIBLE : View.GONE}"
@@ -193,33 +226,33 @@
                 app:layout_constraintTop_toBottomOf="@id/typeHeader"
                 tools:visibility="gone">
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/zena"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="žena"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/ruze"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="růže"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/pisen"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="píseň"/>
 
-            <RadioButton
+            <com.google.android.material.radiobutton.MaterialRadioButton
                     android:id="@+id/kost"
-                    style="@style/WordRadioButton"
+                    style="@style/HandbookRadioButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -235,26 +268,38 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="wordGroupMasculine,wordGroupNeuter,wordGroupFeminine" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/otherNounsHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
                 android:text="@string/other_nouns"
+                android:textAppearance="@style/TextAppearance.App.Label"
+                android:textColor="@color/colorOnSurfaceVariant"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wordGroupsBarrier"
                 tools:text="Other nouns: "/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/otherNouns"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/spacing_content"
+                android:paddingStart="@dimen/spacing_xxs"
                 android:layout_marginBottom="@dimen/spacing_sm"
                 android:text="@{viewModel.otherNouns}"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:textColor="@color/colorOnSurfaceVariant"
                 app:layout_constraintStart_toEndOf="@id/otherNounsHeader"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/otherNounsHeader"
                 tools:text="dum, pes"/>
+
+        <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/detailsBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="otherNounsHeader,otherNouns" />
 
         <ScrollView
                 android:id="@+id/casesContainer"
@@ -262,7 +307,12 @@
                 android:layout_height="wrap_content"
                 android:scrollX="0dp"
                 android:layout_marginTop="@dimen/spacing_sm"
-                app:layout_constraintTop_toBottomOf="@id/otherNounsHeader"
+                android:fillViewport="true"
+                android:paddingStart="@dimen/spacing_xxs"
+                android:paddingEnd="@dimen/spacing_xxs"
+                android:paddingBottom="@dimen/spacing_xxs"
+                android:clipToPadding="false"
+                app:layout_constraintTop_toBottomOf="@id/detailsBarrier"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/adViewContainer"

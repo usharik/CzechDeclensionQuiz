@@ -27,6 +27,14 @@
     <dimen name="corner_radius_medium">8dp</dimen>
     <dimen name="corner_radius_large">10dp</dimen>
 
+    <!-- Shared stroke/padding tokens for custom shape drawables -->
+    <dimen name="stroke_width_thin">1dp</dimen>
+    <dimen name="shape_inner_padding">2dp</dimen>
+
+    <!-- Shared row_case layout tokens -->
+    <dimen name="case_num_width">15dp</dimen>
+    <dimen name="case_name_width">100dp</dimen>
+
     <!-- Typography size tokens -->
     <dimen name="text_size_heading">22sp</dimen>
     <dimen name="text_size_title">18sp</dimen>

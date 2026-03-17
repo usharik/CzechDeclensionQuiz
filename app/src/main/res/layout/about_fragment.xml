@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/appName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:textAppearance="?attr/textAppearanceHeadline6"
         android:layout_marginBottom="@dimen/spacing_xxl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,58 +35,54 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideLine" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/appVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_xxl"
-        android:textStyle="bold"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appLogo"
         tools:text="Version 1.01-RC Debug" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
             android:id="@+id/appDateOfBuild"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_content"
-            android:textStyle="bold"
+            android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appVersion"
             tools:text="Date of build: 27.07.2018 15:07" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/rateApp"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_button_horizontal"
         android:layout_marginTop="@dimen/spacing_button_horizontal"
         android:layout_marginEnd="@dimen/spacing_button_horizontal"
-        android:background="@drawable/button_background"
-        android:drawableStart="@drawable/ic_star"
-        android:drawablePadding="@dimen/spacing_content"
-        android:paddingStart="@dimen/spacing_md"
-        android:paddingEnd="@dimen/spacing_md"
         android:text="@string/rate_app"
+        app:icon="@drawable/ic_star"
+        app:iconPadding="@dimen/spacing_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appVersion" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/privacyPolicy"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_button_horizontal"
         android:layout_marginTop="@dimen/spacing_md_large"
         android:layout_marginEnd="@dimen/spacing_button_horizontal"
-        android:background="@drawable/button_background"
-        android:drawableStart="@drawable/ic_privacy_black_24dp"
-        android:drawablePadding="@dimen/spacing_content"
-        android:paddingStart="@dimen/spacing_md"
-        android:paddingEnd="@dimen/spacing_md"
         android:text="@string/privacy_policy"
+        app:icon="@drawable/ic_privacy_black_24dp"
+        app:iconPadding="@dimen/spacing_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rateApp" />

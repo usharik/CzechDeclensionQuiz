@@ -14,59 +14,81 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingStart="@dimen/spacing_xxs"
+            android:paddingTop="@dimen/spacing_sm"
+            android:paddingEnd="@dimen/spacing_xxs"
             tools:context="com.usharik.app.MainActivity">
 
-        <TextView
+        <com.google.android.material.card.MaterialCardView
+                android:id="@+id/headerCard"
+                style="@style/Widget.App.SectionCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:cardBackgroundColor="@color/colorSurface"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/flowScroll" />
+
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/word"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_content"
+                android:layout_marginStart="@dimen/spacing_xxs"
                 android:paddingStart="@dimen/spacing_xxs"
                 android:paddingEnd="@dimen/spacing_xxs"
                 android:text="@{viewModel.word}"
-                android:textStyle="bold"
-                android:textSize="@dimen/static_font_size"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="kutil"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/declensionType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_content"
-                android:layout_marginStart="@dimen/spacing_sm"
+                android:layout_marginStart="@dimen/spacing_xxs"
                 android:paddingStart="@dimen/spacing_xxs"
                 android:paddingEnd="@dimen/spacing_xxs"
                 android:text="@{@string/declension_pattern(viewModel.declensionType)}"
-                android:textSize="@dimen/static_font_size"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textColor="@color/colorOnSurface"
                 app:layout_constraintStart_toEndOf="@id/word"
                 app:layout_constraintEnd_toStartOf="@id/gender"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="jako pán"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/gender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_content"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:paddingStart="@dimen/spacing_xxs"
                 android:paddingEnd="@dimen/spacing_xxs"
                 android:text="@{viewModel.gender}"
-                android:textSize="@dimen/static_font_size"
+                android:textAppearance="@style/TextAppearance.App.Label"
+                android:textColor="@color/colorOnSurfaceVariant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="rod. m. neziv."/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/translation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xxs"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:layout_marginStart="@dimen/spacing_xxs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
                 android:paddingStart="@dimen/spacing_xxs"
                 android:paddingEnd="@dimen/spacing_xxs"
                 android:text="@{viewModel.translation}"
-                android:textSize="@dimen/static_font_size"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:textColor="@color/colorOnSurfaceVariant"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/word"
@@ -75,6 +97,12 @@
         <ScrollView android:id="@+id/flowScroll"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:fillViewport="true"
+                    android:paddingStart="@dimen/spacing_xxs"
+                    android:paddingEnd="@dimen/spacing_xxs"
+                    android:paddingBottom="@dimen/spacing_sm"
+                    android:clipToPadding="false"
                     app:layout_constraintTop_toBottomOf="@id/translation"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,12 +111,10 @@
             <com.usharik.app.widget.FlowLayout
                     android:id="@+id/flow"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="@dimen/spacing_content"
-                    android:layout_marginEnd="@dimen/spacing_content"
-                    android:layout_marginTop="@dimen/spacing_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_sm">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word1"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -98,7 +124,7 @@
                         android:visibility="@{viewModel.wordTextModels[0].visible}"
                         tools:text="bbbbbb"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word2"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -108,7 +134,7 @@
                         android:visibility="@{viewModel.wordTextModels[1].visible}"
                         tools:text="jjjjjjjjjjj"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word3"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -118,7 +144,7 @@
                         android:visibility="@{viewModel.wordTextModels[2].visible}"
                         tools:text="text text text 3"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word4"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -128,7 +154,7 @@
                         android:visibility="@{viewModel.wordTextModels[3].visible}"
                         tools:text="aaaaa"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word5"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -138,7 +164,7 @@
                         android:visibility="@{viewModel.wordTextModels[4].visible}"
                         tools:text="jjjjjj"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word6"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -148,7 +174,7 @@
                         android:visibility="@{viewModel.wordTextModels[5].visible}"
                         tools:text="text text text 3"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word7"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -158,7 +184,7 @@
                         android:visibility="@{viewModel.wordTextModels[6].visible}"
                         tools:text="text text text 3"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word8"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -168,7 +194,7 @@
                         android:visibility="@{viewModel.wordTextModels[7].visible}"
                         tools:text="bbbbbb"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word9"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -178,7 +204,7 @@
                         android:visibility="@{viewModel.wordTextModels[8].visible}"
                         tools:text="jjjjjjjjjjj"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word10"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -188,7 +214,7 @@
                         android:visibility="@{viewModel.wordTextModels[9].visible}"
                         tools:text="text text text 3"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word11"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -198,7 +224,7 @@
                         android:visibility="@{viewModel.wordTextModels[10].visible}"
                         tools:text="aaaaa"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word12"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -208,7 +234,7 @@
                         android:visibility="@{viewModel.wordTextModels[11].visible}"
                         tools:text="jjjjjj"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word13"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -218,7 +244,7 @@
                         android:visibility="@{viewModel.wordTextModels[12].visible}"
                         tools:text="text text text 3"/>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/word14"
                         style="@style/WordTextEdit"
                         android:layout_width="wrap_content"
@@ -242,6 +268,12 @@
                 android:id="@+id/casesContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:fillViewport="true"
+                android:paddingStart="@dimen/spacing_xs"
+                android:paddingEnd="@dimen/spacing_xs"
+                android:paddingBottom="@dimen/spacing_xs"
+                android:clipToPadding="false"
                 android:scrollX="0dp"
                 app:layout_constraintTop_toTopOf="@id/guideLine"
                 app:layout_constraintStart_toStartOf="parent"
