@@ -13,4 +13,7 @@
 
     <!-- Stroke remains the same in dark mode -->
     <color name="colorStroke">#ff207d94</color>
+
+    <!-- Success text color (high contrast on dark background) -->
+    <color name="colorSuccessText">#81C784</color>
 </resources>

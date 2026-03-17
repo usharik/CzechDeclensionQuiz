@@ -442,9 +442,15 @@ public class UiTests {
      */
     private void navigateToScreen(int screenIndex) {
         logger.debug("Opening navigation drawer");
-        WebElement drawerButton = wait.until(
-            ExpectedConditions.elementToBeClickable(AppiumBy.xpath(XPATH_NAV_DRAWER))
-        );
+        WebElement drawerButton;
+        try {
+            drawerButton = wait.until(
+                ExpectedConditions.elementToBeClickable(AppiumBy.xpath(XPATH_NAV_DRAWER))
+            );
+        } catch (Exception e) {
+            logger.error("Navigation drawer button not found. Page source:\n{}", driver.getPageSource());
+            throw e;
+        }
         drawerButton.click();
 
         logger.debug("Selecting screen at index: {}", screenIndex);

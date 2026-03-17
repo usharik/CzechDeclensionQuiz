@@ -24,4 +24,7 @@
 
     <!-- Semantic stroke / outline color -->
     <color name="colorStroke">#ff207d94</color>
+
+    <!-- Success text color (high contrast on light background) -->
+    <color name="colorSuccessText">#2E7D32</color>
 </resources>
