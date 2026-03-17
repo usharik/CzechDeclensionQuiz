@@ -2,6 +2,20 @@
 
 ✅ **Comprehensive UI test suite!** Automated UI tests for the Czech Declension Quiz Android app using Appium.
 
+## Configure Appium
+
+First install appium and uiautomator2 driver with npm:
+```bash
+npm install -g appium@2
+appium driver install uiautomator2@2с
+```
+
+In some cases it's required to kill it before running tests
+```bash
+lsof -nP -iTCP:4723 -sTCP:LISTEN
+kill -9 <PID>
+```
+
 ## Quick Start
 
 ```bash
