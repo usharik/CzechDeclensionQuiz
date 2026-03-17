@@ -2,11 +2,11 @@ name: Build APK
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags-ignore:
       - 'v*.*.*'  # Don't run on version tags (deploy workflow handles those)
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
