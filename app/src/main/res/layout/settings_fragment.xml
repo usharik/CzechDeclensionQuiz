@@ -17,7 +17,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="@dimen/spacing_sm"/>
 
         <RadioGroup
                 android:id="@+id/radioGroup"
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/radioGroupHeader"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/spacing_md"
                 android:checkedButton="@={viewModel.genderFilterId}">
 
             <RadioButton
@@ -62,14 +62,14 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="@dimen/spacing_sm"/>
 
         <CheckBox
                 android:id="@+id/checkBox"
                 android:text="@string/turn_off_animation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/spacing_md"
                 android:checked="@={viewModel.switchOffAnimation}"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxHeader"
                 app:layout_constraintStart_toStartOf="parent"/>
