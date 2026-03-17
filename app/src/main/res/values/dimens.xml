@@ -6,4 +6,23 @@
     <dimen name="activity_half_vertical_margin">9dp</dimen>
     <dimen name="draggable_font_size">17sp</dimen>
     <dimen name="static_font_size">13sp</dimen>
+
+    <!-- Spacing scale tokens -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+
+    <!-- Corner radius tokens -->
+    <dimen name="corner_radius_small">4dp</dimen>
+    <dimen name="corner_radius_medium">8dp</dimen>
+    <dimen name="corner_radius_large">10dp</dimen>
+
+    <!-- Typography size tokens -->
+    <dimen name="text_size_heading">22sp</dimen>
+    <dimen name="text_size_title">18sp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_label">12sp</dimen>
+    <dimen name="text_size_small">11sp</dimen>
 </resources>

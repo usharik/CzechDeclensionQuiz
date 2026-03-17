@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme semantic surface colors -->
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorSurfaceVariant">#2D2D2D</color>
+    <color name="colorOnSurface">#E0E0E0</color>
+    <color name="colorOnSurfaceVariant">#AAAAAA</color>
+
+    <!-- Dark theme answer-state colors (lower-saturation tints for dark backgrounds) -->
+    <color name="colorAnswerCorrectBackground">#1a3d52</color>
+    <color name="colorAnswerIncorrectBackground">#52201a</color>
+    <color name="colorAnswerNeutralBackground">#3A3A3A</color>
+
+    <!-- Stroke remains the same in dark mode -->
+    <color name="colorStroke">#ff207d94</color>
+</resources>
