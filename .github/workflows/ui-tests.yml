@@ -65,6 +65,16 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       
+      - name: Kill any stray Appium processes
+        run: |
+          pkill -f "appium" || true
+          sleep 2
+          if lsof -i :4723 > /dev/null 2>&1; then
+            echo "Force-freeing port 4723..."
+            lsof -ti :4723 | xargs kill -9 || true
+          fi
+          echo "Port 4723 is available for Appium."
+
       - name: Run UI Tests with Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:

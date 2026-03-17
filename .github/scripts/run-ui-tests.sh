@@ -1,30 +1,92 @@
 #!/bin/bash
 set -e
 
+echo "=== UI Test Runner Starting ==="
+
+APPIUM_STARTUP_TIMEOUT=90
+BOOT_COMPLETE_TIMEOUT=120
+
+# Kill any existing Appium processes to avoid port conflicts
+echo "Killing any existing Appium processes on port 4723..."
+pkill -f "appium" || true
+sleep 2
+
+# Ensure port 4723 is free
+if lsof -i :4723 > /dev/null 2>&1; then
+  echo "Port 4723 still in use, forcefully freeing it..."
+  lsof -ti :4723 | xargs kill -9 || true
+  sleep 2
+fi
+
+echo "Port 4723 is free. Starting Appium..."
+
 # Start Appium in background
 export ANDROID_HOME=$ANDROID_HOME
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 appium --log-timestamp --log-no-colors > /tmp/appium.log 2>&1 &
 APPIUM_PID=$!
+echo "Appium started with PID $APPIUM_PID"
 
-# Wait for Appium to start
-echo "Waiting for Appium to start..."
-for i in {1..60}; do
+# Wait for Appium to start (up to 90 seconds)
+echo "Waiting for Appium to be ready..."
+APPIUM_READY=false
+for i in $(seq 1 $APPIUM_STARTUP_TIMEOUT); do
   if curl -s http://localhost:4723/status > /dev/null 2>&1; then
-    echo "Appium is ready!"
+    echo "Appium is ready after ${i}s!"
+    APPIUM_READY=true
+    break
+  fi
+  if ! kill -0 $APPIUM_PID 2>/dev/null; then
+    echo "❌ Appium process died unexpectedly!"
+    echo "=== Appium log ==="
+    cat /tmp/appium.log
+    exit 1
+  fi
+  sleep 1
+done
+
+if [ "$APPIUM_READY" = false ]; then
+  echo "❌ Appium failed to start within ${APPIUM_STARTUP_TIMEOUT} seconds!"
+  echo "=== Appium log ==="
+  cat /tmp/appium.log
+  kill $APPIUM_PID || true
+  exit 1
+fi
+
+# Wait for emulator to be fully ready
+echo "Waiting for emulator to be ready..."
+adb wait-for-device
+
+# Wait for boot to complete (up to 120 seconds)
+echo "Waiting for Android boot to complete..."
+BOOT_COMPLETE=false
+for i in $(seq 1 $BOOT_COMPLETE_TIMEOUT); do
+  BOOT_STATUS=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+  if [ "$BOOT_STATUS" = "1" ]; then
+    echo "Android boot completed after ${i}s!"
+    BOOT_COMPLETE=true
     break
   fi
   sleep 1
 done
 
-# Wait for emulator to be ready
-adb wait-for-device
-adb shell input keyevent 82
-sleep 5
+if [ "$BOOT_COMPLETE" = false ]; then
+  echo "⚠️ Boot completion check timed out, continuing anyway..."
+fi
+
+# Dismiss lock screen and ensure ADB is responsive
+adb shell input keyevent 82 || true
+sleep 3
+
+# Log device state for debugging
+echo "=== Device state ==="
+adb devices -l
+echo "=== ADB shell properties ==="
+adb shell getprop ro.product.model || true
 
 # Run tests
 cd ui-tests
-echo "Starting UI tests..."
+echo "=== Starting UI tests ==="
 if ./run-ui-tests.sh --skip-build; then
   echo "✅ Tests passed!"
   TEST_EXIT_CODE=0
@@ -34,7 +96,10 @@ else
 fi
 
 # Stop Appium
+echo "Stopping Appium (PID $APPIUM_PID)..."
 kill $APPIUM_PID || true
+
+echo "=== UI Test Runner Finished (exit code: $TEST_EXIT_CODE) ==="
 
 # Exit with test result code
 exit $TEST_EXIT_CODE
