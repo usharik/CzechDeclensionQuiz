@@ -1,7 +1,7 @@
 package com.usharik.app.helpers;
 
 /**
- * Data class representing word information from data.json
+ * Data class representing word information from data.jsonl
  * Used for parsing JSON in UI tests
  */
 public class WordInfo {

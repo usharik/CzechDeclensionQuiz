@@ -158,7 +158,7 @@ All timeouts and delays are configurable via Gradle system properties. You can o
 
 Tests use JSON data directly - **no database needed!**
 
-- **Source**: `../database/src/main/assets/data.json`
+- **Source**: `../database/src/main/assets/data.jsonl`
 - **Format**: JSON Lines (one word per line)
 - **Records**: 902 Czech words with declensions
 - **Size**: ~200KB
@@ -166,7 +166,7 @@ Tests use JSON data directly - **no database needed!**
 
 ### How It Works
 
-1. **Test startup**: Reads `data.json` and loads all words into a HashMap
+1. **Test startup**: Reads `data.jsonl` and loads all words into a HashMap
 2. **During tests**: Looks up word cases from the in-memory cache
 3. **Fast**: No database queries, no SQL, no external dependencies
 4. **Simple**: Just Java standard library + JSON parsing
@@ -250,9 +250,9 @@ Start the emulator:
 This is expected for `testCorrectQuizSolution` - the test needs updating to match current app UI.
 
 ### Data JSON not found
-Make sure the data.json file exists:
+Make sure the data.jsonl file exists:
 ```bash
-ls -lh database/src/main/assets/data.json
+ls -lh database/src/main/assets/data.jsonl
 ```
 
 ## Migration Notes
@@ -265,8 +265,8 @@ This test suite has been updated from Appium 7.x to 10.x:
 
 ### Database Removal
 
-The tests previously used a SQLite database built from `data.json`. This has been **completely removed** in favor of:
-- **Direct JSON parsing** - Loads `data.json` directly into memory
+The tests previously used a SQLite database built from `data.jsonl`. This has been **completely removed** in favor of:
+- **Direct JSON parsing** - Loads `data.jsonl` directly into memory
 - **No database dependencies** - Removed `sqlite-jdbc` and all SQL code
 - **Faster startup** - No database creation or connection overhead
 - **Simpler code** - Just HashMap lookups instead of SQL queries

@@ -29,30 +29,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/flowScroll" />
+            app:layout_constraintBottom_toBottomOf="@id/wordsRecyclerView" />
 
-        <ScrollView android:id="@+id/flowScroll"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wordsRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/spacing_xs"
-            android:fillViewport="true"
-            android:paddingStart="@dimen/spacing_xxs"
-            android:paddingEnd="@dimen/spacing_xxs"
+            android:paddingStart="@dimen/spacing_xs"
+            android:paddingEnd="@dimen/spacing_xs"
             android:paddingBottom="@dimen/spacing_sm"
             android:clipToPadding="false"
+            android:nestedScrollingEnabled="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideLine">
-
-            <com.usharik.app.widget.FlowLayout
-                android:id="@+id/wordsWithErrorsFlow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_content">
-
-            </com.usharik.app.widget.FlowLayout>
-        </ScrollView>
+            app:layout_constraintBottom_toTopOf="@id/guideLine" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideLine"

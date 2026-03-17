@@ -53,12 +53,12 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-checks        Skip prerequisite checks"
             echo "  --check-only         Only check prerequisites, don't run tests"
             echo "  --apk-path PATH      Custom APK path"
-            echo "  --data-json-path PATH Custom data.json path"
+            echo "  --data-json-path PATH Custom data.jsonl path"
             echo "  --help               Show this help message"
             echo ""
             echo "Environment variables:"
             echo "  APK_PATH             Override default APK path"
-            echo "  DATA_JSON_PATH       Override default data.json path"
+            echo "  DATA_JSON_PATH       Override default data.jsonl path"
             echo ""
             echo "Note: By default, the APK is always rebuilt to ensure latest code changes."
             echo "      Use --skip-build only if you're sure the APK is up to date."
@@ -216,7 +216,7 @@ check_prerequisites() {
         fi
     fi
 
-    # Check data.json file
+    # Check data.jsonl file
     if [ -f "$DATA_JSON_PATH" ]; then
         JSON_SIZE=$(du -h "$DATA_JSON_PATH" | cut -f1)
         JSON_LINES=$(wc -l < "$DATA_JSON_PATH" | tr -d ' ')
@@ -321,7 +321,7 @@ run_tests() {
     # with system properties and environment variables
     if ANDROID_HOME="$ANDROID_HOME" ./gradlew :ui-tests:cleanTest :ui-tests:test \
         -Dapp.path="$APK_PATH" \
-        -Ddata.json.path="$DATA_JSON_PATH" \
+        -Ddata.jsonl.path="$DATA_JSON_PATH" \
         -Dappium.url="$appium_url" \
         --info; then
         print_status "success" "Tests completed successfully"

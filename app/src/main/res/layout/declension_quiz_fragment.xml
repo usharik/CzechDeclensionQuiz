@@ -29,7 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/flowScroll" />
+                app:layout_constraintBottom_toBottomOf="@id/wordsRecyclerView" />
 
         <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/word"
@@ -101,168 +101,20 @@
                 app:layout_constraintTop_toBottomOf="@id/headerTextBottomBarrier"
                 tools:text="translation1, translation2, translation3, translation4, translation5, translation6, translation7"/>
 
-        <ScrollView android:id="@+id/flowScroll"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/spacing_xs"
-                    android:fillViewport="true"
-                    android:paddingStart="@dimen/spacing_xxs"
-                    android:paddingEnd="@dimen/spacing_xxs"
-                    android:paddingBottom="@dimen/spacing_sm"
-                    android:clipToPadding="false"
-                    app:layout_constraintTop_toBottomOf="@id/translation"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/guideLine">
-
-            <com.usharik.app.widget.FlowLayout
-                    android:id="@+id/flow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_sm">
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word1"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="0"
-                        android:text="@{viewModel.wordTextModels[0].word}"
-                        android:visibility="@{viewModel.wordTextModels[0].visible}"
-                        tools:text="bbbbbb"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word2"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="1"
-                        android:text="@{viewModel.wordTextModels[1].word}"
-                        android:visibility="@{viewModel.wordTextModels[1].visible}"
-                        tools:text="jjjjjjjjjjj"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word3"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="2"
-                        android:text="@{viewModel.wordTextModels[2].word}"
-                        android:visibility="@{viewModel.wordTextModels[2].visible}"
-                        tools:text="text text text 3"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word4"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="3"
-                        android:text="@{viewModel.wordTextModels[3].word}"
-                        android:visibility="@{viewModel.wordTextModels[3].visible}"
-                        tools:text="aaaaa"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word5"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="4"
-                        android:text="@{viewModel.wordTextModels[4].word}"
-                        android:visibility="@{viewModel.wordTextModels[4].visible}"
-                        tools:text="jjjjjj"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word6"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="5"
-                        android:text="@{viewModel.wordTextModels[5].word}"
-                        android:visibility="@{viewModel.wordTextModels[5].visible}"
-                        tools:text="text text text 3"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word7"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="6"
-                        android:text="@{viewModel.wordTextModels[6].word}"
-                        android:visibility="@{viewModel.wordTextModels[6].visible}"
-                        tools:text="text text text 3"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word8"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="7"
-                        android:text="@{viewModel.wordTextModels[7].word}"
-                        android:visibility="@{viewModel.wordTextModels[7].visible}"
-                        tools:text="bbbbbb"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word9"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="8"
-                        android:text="@{viewModel.wordTextModels[8].word}"
-                        android:visibility="@{viewModel.wordTextModels[8].visible}"
-                        tools:text="jjjjjjjjjjj"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word10"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="9"
-                        android:text="@{viewModel.wordTextModels[9].word}"
-                        android:visibility="@{viewModel.wordTextModels[9].visible}"
-                        tools:text="text text text 3"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word11"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="10"
-                        android:text="@{viewModel.wordTextModels[10].word}"
-                        android:visibility="@{viewModel.wordTextModels[10].visible}"
-                        tools:text="aaaaa"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word12"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="11"
-                        android:text="@{viewModel.wordTextModels[11].word}"
-                        android:visibility="@{viewModel.wordTextModels[11].visible}"
-                        tools:text="jjjjjj"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word13"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="12"
-                        android:text="@{viewModel.wordTextModels[12].word}"
-                        android:visibility="@{viewModel.wordTextModels[12].visible}"
-                        tools:text="text text text 3"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/word14"
-                        style="@style/WordTextEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:tag="13"
-                        android:text="@{viewModel.wordTextModels[13].word}"
-                        android:visibility="@{viewModel.wordTextModels[13].visible}"
-                        tools:text="text text text 3"/>
-
-            </com.usharik.app.widget.FlowLayout>
-        </ScrollView>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/wordsRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:paddingStart="@dimen/spacing_xxs"
+                android:paddingEnd="@dimen/spacing_xxs"
+                android:paddingBottom="@dimen/spacing_sm"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="true"
+                app:layout_constraintTop_toBottomOf="@id/translation"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideLine" />
 
         <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideLine"

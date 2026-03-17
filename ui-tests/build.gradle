@@ -28,7 +28,7 @@ test {
     systemProperty 'project.root', project.rootDir.absolutePath
     systemProperty 'app.path', System.getProperty('app.path',
         "${project.rootDir}/app/build/outputs/apk/debug/app-debug.apk")
-    systemProperty 'data.json.path', System.getProperty('data.json.path',
+    systemProperty 'data.jsonl.path', System.getProperty('data.jsonl.path',
         "${project.rootDir}/database/src/main/assets/data.jsonl")
     systemProperty 'appium.url', System.getProperty('appium.url', '')
 

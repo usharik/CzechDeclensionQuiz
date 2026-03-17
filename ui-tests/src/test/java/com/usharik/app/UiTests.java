@@ -43,7 +43,7 @@ public class UiTests {
 
     // Configuration - Paths
     private static final String APP_PATH = System.getProperty("app.path", "app/release/app-release.apk");
-    private static final String DATA_JSON_PATH = System.getProperty("data.json.path", "database/src/main/assets/data.jsonl");
+    private static final String DATA_JSON_PATH = System.getProperty("data.jsonl.path", "database/src/main/assets/data.jsonl");
     private static final String APPIUM_URL = System.getProperty("appium.url", "").trim();
 
     // Configuration - Timeouts (in seconds)
@@ -66,6 +66,7 @@ public class UiTests {
     private static final String ID_CURRENT_WORD = "com.usharik.app:id/word";
     private static final String ID_CASE_SINGULAR = "com.usharik.app:id/caseSingular";
     private static final String ID_CASE_PLURAL = "com.usharik.app:id/casePlural";
+    private static final String ID_WORDS_RECYCLER = "com.usharik.app:id/wordsRecyclerView";
     private static final String ID_DIALOG_TITLE = "com.usharik.app:id/dialogTitle";
     private static final String ID_BTN_NEXT_WORD = "com.usharik.app:id/btnNextWord";
     private static final String ID_BTN_STAY_HERE = "com.usharik.app:id/btnStayHere";
@@ -239,26 +240,26 @@ public class UiTests {
         helper.makeScreenshot(timestamp, "before_incorrect_solution.png");
 
         // Create an intentionally incorrect solution:
-        // - First 6 words: placed correctly
-        // - Next 4 words: placed in WRONG positions (swap singular/plural)
-        // - Last 4 words: not placed at all (left empty)
-        logger.info("Placing words with intentional errors: 6 correct, 4 wrong, 4 missing");
+        // - First N words: placed correctly
+        // - Next M words: placed in WRONG positions (swap singular/plural)
+        // - Remaining words: left unplaced
+        logger.info("Placing words with intentional errors");
 
-        for (int i = 0; i < 10; i++) {
-            String wordId = "com.usharik.app:id/word" + (i + 1);
-            WebElement wordElement = findElement(wordId);
+        List<String> initialPoolWords = getVisibleWordPoolWordTexts();
+        int wordsToPlace = Math.min(10, initialPoolWords.size());
+        logger.info("Visible words in pool: {}, placing first {}", initialPoolWords.size(), wordsToPlace);
 
-            String wordText = wordElement.getText();
+        for (int i = 0; i < wordsToPlace; i++) {
+            String wordText = initialPoolWords.get(i);
+            WebElement wordElement = findWordPoolWordByText(wordText);
+
             logger.debug("Processing word {}: {}", i + 1, wordText);
 
             WebElement targetCell;
             if (i < 6) {
-                // First 6 words: place correctly
                 targetCell = getProperCell(wordText, wordCases, caseSingular, casePlural);
                 logger.debug("Placing word {} correctly", i + 1);
             } else {
-                // Next 4 words (indices 6-9): place in wrong position
-                // Swap singular and plural to create errors
                 targetCell = getWrongCell(wordText, wordCases, caseSingular, casePlural);
                 logger.debug("Placing word {} INCORRECTLY (swapped singular/plural)", i + 1);
             }
@@ -266,7 +267,8 @@ public class UiTests {
             performDragAndDrop(wordElement, targetCell);
             waitForUiUpdate();
         }
-        // Words 11-14 are intentionally not placed (left in word pool)
+
+        // Remaining words are intentionally not placed (left in pool)
 
         helper.makeScreenshot(timestamp, "after_incorrect_solution.png");
 
@@ -473,23 +475,31 @@ public class UiTests {
     private void placeAllWordForms(String[][] wordCases,
                                     List<WebElement> caseSingular,
                                     List<WebElement> casePlural) {
-        logger.info("Placing all 14 word forms");
+        logger.info("Placing all visible word forms from RecyclerView pool");
 
-        for (int i = 0; i < 14; i++) {
-            String wordId = "com.usharik.app:id/word" + (i + 1);
-            WebElement wordElement = waitForVisibleElement(wordId);
-
+        int placedCount = 0;
+        int safetyGuard = 0;
+        while (true) {
+            List<WebElement> poolItems = findVisibleWordPoolItems();
+            if (poolItems.isEmpty()) {
+                break;
+            }
+            WebElement wordElement = poolItems.get(0);
             String wordText = wordElement.getText();
-            logger.debug("Processing word {}: {}", i + 1, wordText);
+            logger.debug("Processing visible pool word {}: {}", placedCount + 1, wordText);
 
             WebElement targetCell = getProperCell(wordText, wordCases, caseSingular, casePlural);
             performDragAndDrop(wordElement, targetCell);
-
-            // Small delay to let the UI update
             waitForUiUpdate();
+
+            placedCount++;
+            safetyGuard++;
+            if (safetyGuard > 30) {
+                throw new IllegalStateException("Safety guard hit while placing words. Possible drag/drop regression.");
+            }
         }
 
-        logger.info("All word forms placed successfully");
+        logger.info("All visible word forms placed successfully. Count={}", placedCount);
     }
 
 
@@ -676,5 +686,43 @@ public class UiTests {
             Thread.currentThread().interrupt();
             logger.warn("Interrupted while waiting for UI update", e);
         }
+    }
+
+    private List<WebElement> findVisibleWordPoolItems() {
+        String xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id='" + ID_WORDS_RECYCLER + "']"
+                + "//android.widget.TextView[string-length(@text) > 0]";
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.xpath(xpath)));
+    }
+
+    private List<String> getVisibleWordPoolWordTexts() {
+        List<WebElement> items = findVisibleWordPoolItems();
+        return items.stream().map(WebElement::getText).toList();
+    }
+
+    private WebElement findWordPoolWordByText(String wordText) {
+        String escaped = escapeXPathText(wordText);
+        String xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id='" + ID_WORDS_RECYCLER + "']"
+                + "//android.widget.TextView[@text=" + escaped + "]";
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.xpath(xpath)));
+    }
+
+    private String escapeXPathText(String text) {
+        if (!text.contains("'")) {
+            return "'" + text + "'";
+        }
+        if (!text.contains("\"")) {
+            return "\"" + text + "\"";
+        }
+        // Fallback for strings containing both quotes: concat('a',"'",'b')
+        String[] parts = text.split("'");
+        StringBuilder sb = new StringBuilder("concat(");
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                sb.append(", \"'\", ");
+            }
+            sb.append("'").append(parts[i]).append("'");
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }

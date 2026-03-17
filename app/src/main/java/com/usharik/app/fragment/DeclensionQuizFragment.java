@@ -3,6 +3,7 @@ package com.usharik.app.fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,6 +15,10 @@ import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -21,10 +26,13 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
+import com.usharik.app.BR;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.adapter.WordDragAdapter;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
+import com.usharik.app.fragment.DeclensionQuizViewModel.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.widget.CustomDragShadowBuilder;
 
@@ -33,8 +41,6 @@ import javax.inject.Inject;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
@@ -43,42 +49,16 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
 
-    private static final Set<Integer> wordEditViewSet = buildWordEditViewSet();
-
     private AdView adView;
-
-    private static Set<Integer> buildWordEditViewSet() {
-        HashSet<Integer> res = new HashSet<>();
-        res.add(R.id.word1);
-        res.add(R.id.word2);
-        res.add(R.id.word3);
-        res.add(R.id.word4);
-        res.add(R.id.word5);
-        res.add(R.id.word6);
-        res.add(R.id.word7);
-        res.add(R.id.word8);
-        res.add(R.id.word9);
-        res.add(R.id.word10);
-        res.add(R.id.word11);
-        res.add(R.id.word12);
-        res.add(R.id.word13);
-        res.add(R.id.word14);
-        return Collections.unmodifiableSet(res);
-    }
+    private WordDragAdapter wordDragAdapter;
+    private Observable.OnPropertyChangedCallback wordModelCallback;
 
     private DeclensionQuizFragmentBinding binding;
 
-    @Inject
-    AppState appState;
-
-    @Inject
-    FirebaseAnalytics firebaseAnalytics;
-
-    @Inject
-    Gson gson;
-
-    @Inject
-    AdManager adManager;
+    @Inject AppState appState;
+    @Inject FirebaseAnalytics firebaseAnalytics;
+    @Inject Gson gson;
+    @Inject AdManager adManager;
 
     @Nullable
     @Override
@@ -86,10 +66,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
-        binding.flow.setOnDragListener(this::onFlowDrag);
         if (appState.getWordInfo() == null) {
             getViewModel().nextWord(false);
         }
+        setupWordDragRecyclerView();
         setListeners();
         return binding.getRoot();
     }
@@ -98,26 +78,62 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
-
-        // Load first interstitial ad
         adManager.loadAd(getActivity());
-
-        // Load banner ad
         setupBannerAd();
+
+        // Keep the RecyclerView in sync whenever the ViewModel updates wordTextModels.
+        wordModelCallback = new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (propertyId == BR.wordTextModels) {
+                    WordTextModel[] items = getViewModel().getWordTextModels();
+                    if (items != null && wordDragAdapter != null) {
+                        wordDragAdapter.updateItems(items);
+                    }
+                }
+            }
+        };
+        getViewModel().addOnPropertyChangedCallback(wordModelCallback);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (wordModelCallback != null) {
+            getViewModel().removeOnPropertyChangedCallback(wordModelCallback);
+            wordModelCallback = null;
+        }
+        super.onDestroyView();
+    }
+
+    // ─── Setup ───────────────────────────────────────────────────────────────
+
+    private void setupWordDragRecyclerView() {
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(requireContext());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
+
+        wordDragAdapter = new WordDragAdapter(this::onTouch);
+
+        binding.wordsRecyclerView.setLayoutManager(layoutManager);
+        binding.wordsRecyclerView.setHasFixedSize(false);
+        binding.wordsRecyclerView.setAdapter(wordDragAdapter);
+        // Returning a word from a case cell by dropping onto the pool area.
+        binding.wordsRecyclerView.setOnDragListener(this::onRecyclerViewDrag);
+
+        WordTextModel[] existing = getViewModel().getWordTextModels();
+        if (existing != null) {
+            wordDragAdapter.updateItems(existing);
+        }
     }
 
     private void setupBannerAd() {
-        // Create AdView programmatically to set adUnitId from BuildConfig
         adView = new AdView(requireContext());
         adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
         adView.setAdSize(AdSize.BANNER);
-
-        // Add AdView to container
         binding.adViewContainer.removeAllViews();
         binding.adViewContainer.addView(adView);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        adView.loadAd(new AdRequest.Builder().build());
     }
 
     private void setupMenu() {
@@ -132,8 +148,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 return handleMenuItemSelected(item);
             }
         }, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-
-        // Force menu to be created immediately
         requireActivity().invalidateMenu();
     }
 
@@ -142,40 +156,22 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
         binding.case1.caseSingular.setOnDragListener(this::onDrag);
         binding.case1.casePlural.setOnDragListener(this::onDrag);
-
         binding.case2.caseSingular.setOnDragListener(this::onDrag);
         binding.case2.casePlural.setOnDragListener(this::onDrag);
-
         binding.case3.caseSingular.setOnDragListener(this::onDrag);
         binding.case3.casePlural.setOnDragListener(this::onDrag);
-
         binding.case4.caseSingular.setOnDragListener(this::onDrag);
         binding.case4.casePlural.setOnDragListener(this::onDrag);
-
         binding.case5.caseSingular.setOnDragListener(this::onDrag);
         binding.case5.casePlural.setOnDragListener(this::onDrag);
-
         binding.case6.caseSingular.setOnDragListener(this::onDrag);
         binding.case6.casePlural.setOnDragListener(this::onDrag);
-
         binding.case7.caseSingular.setOnDragListener(this::onDrag);
         binding.case7.casePlural.setOnDragListener(this::onDrag);
-
-        binding.word1.setOnTouchListener(this::onTouch);
-        binding.word2.setOnTouchListener(this::onTouch);
-        binding.word3.setOnTouchListener(this::onTouch);
-        binding.word4.setOnTouchListener(this::onTouch);
-        binding.word5.setOnTouchListener(this::onTouch);
-        binding.word6.setOnTouchListener(this::onTouch);
-        binding.word7.setOnTouchListener(this::onTouch);
-        binding.word8.setOnTouchListener(this::onTouch);
-        binding.word9.setOnTouchListener(this::onTouch);
-        binding.word10.setOnTouchListener(this::onTouch);
-        binding.word11.setOnTouchListener(this::onTouch);
-        binding.word12.setOnTouchListener(this::onTouch);
-        binding.word13.setOnTouchListener(this::onTouch);
-        binding.word14.setOnTouchListener(this::onTouch);
+        // Word-pool touch listeners are now set by WordDragAdapter.onBindViewHolder.
     }
+
+    // ─── Menu ────────────────────────────────────────────────────────────────
 
     private boolean handleMenuItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -187,7 +183,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
             return true;
         } else if (itemId == R.id.action_next) {
-            // User skipped the word - count it and check for ad
             checkAndShowAdThenNextWord(false);
             return true;
         }
@@ -203,7 +198,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 .setCancelable(false)
                 .create();
 
-        // Save error info once — the dialog is non-cancelable so a button will always be pressed
         saveErrorsInfo();
 
         dialogView.findViewById(R.id.btnNextWord).setOnClickListener(v -> {
@@ -233,15 +227,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         dialog.show();
     }
 
-    /**
-     * Check if we should show an ad (every 5 words), then proceed to next word.
-     * This is called for both correct answers and skipped words.
-     */
-    private void checkAndShowAdThenNextWord(boolean tryAgain) {
-        // Increment word count (any word, not just correct ones)
-        appState.incrementWordsCountSinceLastAd();
+    // ─── Word flow / navigation ───────────────────────────────────────────────
 
-        // Check if we should show an ad (every 10 words)
+    private void checkAndShowAdThenNextWord(boolean tryAgain) {
+        appState.incrementWordsCountSinceLastAd();
         if (appState.getWordsCountSinceLastAd() >= 10) {
             appState.resetWordsCountSinceLastAd();
             showAdThenNextWord(tryAgain);
@@ -251,10 +240,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     }
 
     private void showAdThenNextWord(boolean tryAgain) {
-        adManager.showAd(getActivity(), () -> {
-            // This runs after the ad is closed
-            nextWord(tryAgain);
-        });
+        adManager.showAd(getActivity(), () -> nextWord(tryAgain));
     }
 
     private void nextWord(boolean tryAgain) {
@@ -270,23 +256,61 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     private void saveErrorsInfo() {
         int errorCount = getViewModel().getErrorCount();
-        if (errorCount == 0) {
-            appState.removeWordFromErrorMap();
-        }
-        if (errorCount > 2) {
-            appState.putWordToErrorMap(errorCount);
-        }
+        if (errorCount == 0) appState.removeWordFromErrorMap();
+        if (errorCount > 2)  appState.putWordToErrorMap(errorCount);
     }
 
-    private boolean onFlowDrag(View v, DragEvent event) {
+    // ─── Drag-and-drop helpers ────────────────────────────────────────────────
+
+    /**
+     * Returns true when {@code v} is a word-pool item (tag contains no underscore),
+     * false when it is a case cell (tag is "numberCode_caseNum").
+     */
+    private boolean isWordPoolItem(View v) {
+        Object tag = v.getTag();
+        return tag instanceof String && !((String) tag).contains("_");
+    }
+
+    // ─── Drag-and-drop handlers ───────────────────────────────────────────────
+
+    /**
+     * Touch handler shared by word-pool items (via WordDragAdapter) and case cells
+     * (set by onDrag after a word is placed).
+     *
+     * Word-pool items always start a drag.
+     * Case cells only start a drag when they contain a word (index != -1).
+     */
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!isWordPoolItem(v)) {
+                // Case-cell path: only draggable when occupied.
+                String[] info = ((String) v.getTag()).split("_");
+                int numberCode = Integer.parseInt(info[0]);
+                int caseNum    = Integer.parseInt(info[1]);
+                if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
+                    return false;
+                }
+            }
+            v.startDragAndDrop(null, new CustomDragShadowBuilder(v, 2f), v, 0);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Drag listener on the RecyclerView itself.
+     * Handles the "return a word to the pool" case when the user drops a case-cell
+     * word onto the word-pool area. Drops originating from word-pool items are ignored.
+     */
+    private boolean onRecyclerViewDrag(View v, DragEvent event) {
         if (event.getAction() == DragEvent.ACTION_DROP) {
-            TextView dropped = (TextView) event.getLocalState();
-            if (wordEditViewSet.contains(dropped.getId())) {
-                return true;
+            View dropped = (View) event.getLocalState();
+            if (isWordPoolItem(dropped)) {
+                return true; // already in pool — no-op
             }
             String[] info = ((String) dropped.getTag()).split("_");
-            int numberCode = Integer.parseInt(info[0]);
-            int caseNum = Integer.parseInt(info[1]);
+            int numberCode   = Integer.parseInt(info[0]);
+            int caseNum      = Integer.parseInt(info[1]);
             int droppedWordNum = getViewModel().getCaseModels()[numberCode][caseNum];
             getViewModel().updateCaseModel(caseNum, numberCode, -1);
             getViewModel().updateWordTextModel(droppedWordNum, View.VISIBLE);
@@ -295,40 +319,31 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         return true;
     }
 
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (!wordEditViewSet.contains(v.getId())) {
-                TextView tv = (TextView) v;
-                String[] info1 = ((String) tv.getTag()).split("_");
-                int numberCode = Integer.parseInt(info1[0]);
-                int caseNum = Integer.parseInt(info1[1]);
-                if (getViewModel().getCaseModels()[numberCode][caseNum] == -1) {
-                    return false;
-                }
-            }
-            CustomDragShadowBuilder shadowBuilder = new CustomDragShadowBuilder(v, 2f);
-            v.startDragAndDrop(null, shadowBuilder, v, 0);
-            return true;
-        }
-        return false;
-    }
-
+    /**
+     * Drag listener on each case cell (caseSingular / casePlural in every row_case).
+     * Handles:
+     *   - word-pool item → case cell  (place word)
+     *   - case cell      → case cell  (swap words)
+     */
     public boolean onDrag(View v, DragEvent event) {
         if (event.getAction() == DragEvent.ACTION_DROP) {
-            TextView dropped = (TextView) event.getLocalState();
+            View dropped     = (View) event.getLocalState();
             TextView dropTarget = (TextView) v;
-            String[] info = ((String) dropTarget.getTag()).split("_");
-            int numberCode = Integer.parseInt(info[0]);
-            int caseNum = Integer.parseInt(info[1]);
-            if (wordEditViewSet.contains(dropped.getId())) {
+            String[] info    = ((String) dropTarget.getTag()).split("_");
+            int numberCode   = Integer.parseInt(info[0]);
+            int caseNum      = Integer.parseInt(info[1]);
+
+            if (isWordPoolItem(dropped)) {
+                // Place a word from the pool into this cell.
                 int droppedWordNum = Integer.parseInt(dropped.getTag().toString());
                 getViewModel().updateCaseModel(caseNum, numberCode, droppedWordNum);
                 getViewModel().updateWordTextModel(droppedWordNum, View.GONE);
                 dropTarget.setOnTouchListener(this::onTouch);
             } else {
-                String[] info1 = ((String) dropped.getTag()).split("_");
+                // Swap two case cells.
+                String[] info1  = ((String) dropped.getTag()).split("_");
                 int numberCode1 = Integer.parseInt(info1[0]);
-                int caseNum1 = Integer.parseInt(info1[1]);
+                int caseNum1    = Integer.parseInt(info1[1]);
                 getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                 dropTarget.setOnTouchListener(this::onTouch);
             }
@@ -336,13 +351,14 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         return true;
     }
 
+    // ─── Lifecycle ────────────────────────────────────────────────────────────
+
     @Override
     public void onPause() {
         super.onPause();
-        if (adView != null) {
-            adView.pause();
-        }
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
+        if (adView != null) adView.pause();
+        SharedPreferences.Editor editor =
+                getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
         editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.getWordsWithErrors(), type));
         editor.apply();
@@ -353,7 +369,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onResume();
         if (adView != null) {
             adView.resume();
-            // Ensure AdView is in the container when fragment becomes visible
             if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
                 binding.adViewContainer.removeAllViews();
                 binding.adViewContainer.addView(adView);
@@ -363,9 +378,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     @Override
     public void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
+        if (adView != null) adView.destroy();
         super.onDestroy();
     }
 
