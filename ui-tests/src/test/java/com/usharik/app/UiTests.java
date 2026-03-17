@@ -42,7 +42,7 @@ public class UiTests {
 
     // Configuration - Paths
     private static final String APP_PATH = System.getProperty("app.path", "app/release/app-release.apk");
-    private static final String DATA_JSON_PATH = System.getProperty("data.json.path", "database/src/main/assets/data.json");
+    private static final String DATA_JSON_PATH = System.getProperty("data.json.path", "database/src/main/assets/data.jsonl");
 
     // Configuration - Timeouts (in seconds)
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(

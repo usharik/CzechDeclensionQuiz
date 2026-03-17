@@ -113,7 +113,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 return;
             }
 
-            Log.i("Migration4_5", "Database has " + recordCount + " records, updating all fields from data.json");
+            Log.i("Migration4_5", "Database has " + recordCount + " records, updating all fields from data.jsonl");
 
             Gson gson = new Gson();
             int updatedCount = 0;
@@ -144,9 +144,9 @@ public abstract class DocumentDatabase extends RoomDatabase {
                         updatedCount++;
                     }
                 }
-                Log.i("Migration4_5", "Updated " + updatedCount + " records with all fields from data.json");
+                Log.i("Migration4_5", "Updated " + updatedCount + " records with all fields from data.jsonl");
             } catch (IOException e) {
-                Log.e("Migration4_5", "Error reading data.json", e);
+                Log.e("Migration4_5", "Error reading data.jsonl", e);
             }
 
             Log.i("Migration4_5", "Migration completed");
