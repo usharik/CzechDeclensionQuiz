@@ -4,7 +4,6 @@ import com.usharik.app.helpers.TestHelper;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
-import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class UiTests {
     // Configuration - Paths
     private static final String APP_PATH = System.getProperty("app.path", "app/release/app-release.apk");
     private static final String DATA_JSON_PATH = System.getProperty("data.json.path", "database/src/main/assets/data.jsonl");
+    private static final String APPIUM_URL = System.getProperty("appium.url", "").trim();
 
     // Configuration - Timeouts (in seconds)
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(
@@ -93,7 +95,6 @@ public class UiTests {
     private static final String ID_APP_VERSION = "com.usharik.app:id/appVersion";
 
     private static AndroidDriver driver;
-    private static AppiumDriverLocalService service;
     private static TestHelper helper;
     private WebDriverWait wait;
 
@@ -111,9 +112,20 @@ public class UiTests {
             throw new IllegalStateException("Data JSON file not found at: " + dataFile.getAbsolutePath());
         }
 
-        logger.info("Starting Appium service");
-        service = AppiumDriverLocalService.buildDefaultService();
-        service.start();
+        if (APPIUM_URL.isEmpty()) {
+            throw new IllegalStateException(
+                "Missing required system property 'appium.url'. " +
+                "Internal Appium service startup is disabled."
+            );
+        }
+
+        logger.info("Using external Appium service at: {}", APPIUM_URL);
+        final URL appiumServerUrl;
+        try {
+            appiumServerUrl = new URL(APPIUM_URL);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException("Invalid Appium URL: " + APPIUM_URL, e);
+        }
 
         logger.info("Initializing Android driver with app: {}", appFile.getAbsolutePath());
         UiAutomator2Options options = new UiAutomator2Options()
@@ -122,7 +134,7 @@ public class UiTests {
                 .setNoReset(true)
                 .setAutoGrantPermissions(true);
 
-        driver = new AndroidDriver(service.getUrl(), options);
+        driver = new AndroidDriver(appiumServerUrl, options);
         driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT);
 
         logger.info("Initializing test helper with data from: {}", DATA_JSON_PATH);
@@ -149,14 +161,6 @@ public class UiTests {
                 driver.quit();
             } catch (Exception e) {
                 logger.error("Error quitting driver", e);
-            }
-        }
-
-        if (service != null && service.isRunning()) {
-            try {
-                service.stop();
-            } catch (Exception e) {
-                logger.error("Error stopping Appium service", e);
             }
         }
 
@@ -295,20 +299,13 @@ public class UiTests {
         navigateToScreen(0);
 
         // Verify quiz screen elements are present
-        WebElement currentWord = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_CURRENT_WORD))
-        );
+        WebElement currentWord = waitForVisibleElement(ID_CURRENT_WORD);
         assertNotNull(currentWord, "Current word should be displayed");
-        assertTrue(currentWord.isDisplayed(), "Current word should be visible");
 
-        WebElement checkButton = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_ACTION_CHECK))
-        );
+        WebElement checkButton = waitForVisibleElement(ID_ACTION_CHECK);
         assertNotNull(checkButton, "Check button should be present");
 
-        WebElement nextButton = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_ACTION_NEXT))
-        );
+        WebElement nextButton = waitForVisibleElement(ID_ACTION_NEXT);
         assertNotNull(nextButton, "Next button should be present");
 
         // Test rotation
@@ -325,11 +322,8 @@ public class UiTests {
 
         // Verify words with errors screen elements are present
         // The screen shows cases container which displays word declensions
-        WebElement casesContainer = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_CASES_CONTAINER))
-        );
+        WebElement casesContainer = waitForVisibleElement(ID_CASES_CONTAINER);
         assertNotNull(casesContainer, "Cases container should be displayed");
-        assertTrue(casesContainer.isDisplayed(), "Cases container should be visible");
 
         // Test rotation
         testScreenRotationForCurrentScreen(ID_CASES_CONTAINER, "Cases container");
@@ -344,18 +338,12 @@ public class UiTests {
         navigateToScreen(2);
 
         // Verify handbook screen elements are present
-        WebElement genderHeader = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_GENDER_HEADER))
-        );
+        WebElement genderHeader = waitForVisibleElement(ID_GENDER_HEADER);
         assertNotNull(genderHeader, "Gender header should be displayed");
-        assertTrue(genderHeader.isDisplayed(), "Gender header should be visible");
         assertEquals("Gender of noun", genderHeader.getText(), "Gender header should have correct text");
 
-        WebElement genderGroup = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_GENDER_GROUP))
-        );
+        WebElement genderGroup = waitForVisibleElement(ID_GENDER_GROUP);
         assertNotNull(genderGroup, "Gender radio group should be present");
-        assertTrue(genderGroup.isDisplayed(), "Gender radio group should be visible");
 
         // Test rotation
         testScreenRotationForCurrentScreen(ID_GENDER_HEADER, "Gender header");
@@ -370,24 +358,15 @@ public class UiTests {
         navigateToScreen(3);
 
         // Verify settings screen elements are present
-        WebElement radioGroupHeader = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_RADIO_GROUP_HEADER))
-        );
+        WebElement radioGroupHeader = waitForVisibleElement(ID_RADIO_GROUP_HEADER);
         assertNotNull(radioGroupHeader, "Radio group header should be displayed");
-        assertTrue(radioGroupHeader.isDisplayed(), "Radio group header should be visible");
         assertEquals("Word filter by gender", radioGroupHeader.getText(), "Radio group header should have correct text");
 
-        WebElement radioGroup = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_RADIO_GROUP))
-        );
+        WebElement radioGroup = waitForVisibleElement(ID_RADIO_GROUP);
         assertNotNull(radioGroup, "Radio group should be present");
-        assertTrue(radioGroup.isDisplayed(), "Radio group should be visible");
 
-        WebElement checkboxHeader = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_CHECKBOX_HEADER))
-        );
+        WebElement checkboxHeader = waitForVisibleElement(ID_CHECKBOX_HEADER);
         assertNotNull(checkboxHeader, "Checkbox header should be displayed");
-        assertTrue(checkboxHeader.isDisplayed(), "Checkbox header should be visible");
         assertEquals("Additional settings", checkboxHeader.getText(), "Checkbox header should have correct text");
 
         // Test rotation
@@ -403,24 +382,15 @@ public class UiTests {
         navigateToScreen(4);
 
         // Verify about screen elements are present
-        WebElement appName = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_APP_NAME))
-        );
+        WebElement appName = waitForVisibleElement(ID_APP_NAME);
         assertNotNull(appName, "App name should be displayed");
-        assertTrue(appName.isDisplayed(), "App name should be visible");
         assertEquals("Czech declension quiz", appName.getText(), "App name should be correct");
 
-        WebElement appLogo = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_APP_LOGO))
-        );
+        WebElement appLogo = waitForVisibleElement(ID_APP_LOGO);
         assertNotNull(appLogo, "App logo should be present");
-        assertTrue(appLogo.isDisplayed(), "App logo should be visible");
 
-        WebElement appVersion = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_APP_VERSION))
-        );
+        WebElement appVersion = waitForVisibleElement(ID_APP_VERSION);
         assertNotNull(appVersion, "App version should be displayed");
-        assertTrue(appVersion.isDisplayed(), "App version should be visible");
         
         testScreenRotationForCurrentScreen(ID_APP_NAME, "App name");
 
@@ -440,20 +410,16 @@ public class UiTests {
         driver.rotate(ScreenOrientation.LANDSCAPE);
         waitForScreenStability();
 
-        WebElement elementLandscape = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(elementId))
-        );
-        assertTrue(elementLandscape.isDisplayed(), elementName + " should be visible in landscape");
+        WebElement elementLandscape = waitForVisibleElement(elementId);
+        assertNotNull(elementLandscape, elementName + " should be visible in landscape");
 
         // Test portrait orientation
         logger.debug("Rotating to portrait");
         driver.rotate(ScreenOrientation.PORTRAIT);
         waitForScreenStability();
 
-        WebElement elementPortrait = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(elementId))
-        );
-        assertTrue(elementPortrait.isDisplayed(), elementName + " should be visible in portrait");
+        WebElement elementPortrait = waitForVisibleElement(elementId);
+        assertNotNull(elementPortrait, elementName + " should be visible in portrait");
 
         logger.debug("Screen rotation test completed for {}", elementName);
     }
@@ -511,9 +477,7 @@ public class UiTests {
 
         for (int i = 0; i < 14; i++) {
             String wordId = "com.usharik.app:id/word" + (i + 1);
-            WebElement wordElement = findElement(wordId);
-
-            assertTrue(wordElement.isDisplayed(), "Word " + (i + 1) + " should be displayed");
+            WebElement wordElement = waitForVisibleElement(wordId);
 
             String wordText = wordElement.getText();
             logger.debug("Processing word {}: {}", i + 1, wordText);
@@ -669,7 +633,18 @@ public class UiTests {
      * Find a single element by ID with explicit wait
      */
     private WebElement findElement(String id) {
-        return wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.id(id)));
+        return waitForVisibleElement(id);
+    }
+
+    /**
+     * Find a single visible element by ID and refresh stale references during UI transitions.
+     */
+    private WebElement waitForVisibleElement(String id) {
+        return wait.until(
+            ExpectedConditions.refreshed(
+                ExpectedConditions.visibilityOfElementLocated(AppiumBy.id(id))
+            )
+        );
     }
 
     /**

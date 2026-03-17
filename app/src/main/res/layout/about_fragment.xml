@@ -10,9 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_marginBottom="35dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="@dimen/spacing_xxl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guideLine"
         android:text="@string/app_name" />
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="80dp" />
+        app:layout_constraintGuide_begin="@dimen/about_logo_guideline_offset" />
 
     <ImageView
         android:id="@+id/appLogo"
@@ -30,18 +30,19 @@
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:src="@mipmap/ic_launcher_round"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideLine" />
 
     <TextView
         android:id="@+id/appVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="@dimen/spacing_xxl"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appLogo"
         tools:text="Version 1.01-RC Debug" />
 
@@ -49,10 +50,10 @@
             android:id="@+id/appDateOfBuild"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/spacing_content"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appVersion"
             tools:text="Date of build: 27.07.2018 15:07" />
 
@@ -60,34 +61,34 @@
         android:id="@+id/rateApp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginStart="@dimen/spacing_button_horizontal"
+        android:layout_marginTop="@dimen/spacing_button_horizontal"
+        android:layout_marginEnd="@dimen/spacing_button_horizontal"
         android:background="@drawable/button_background"
         android:drawableStart="@drawable/ic_star"
-        android:drawablePadding="5dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:drawablePadding="@dimen/spacing_content"
+        android:paddingStart="@dimen/spacing_md"
+        android:paddingEnd="@dimen/spacing_md"
         android:text="@string/rate_app"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appVersion" />
 
     <Button
         android:id="@+id/privacyPolicy"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginStart="@dimen/spacing_button_horizontal"
+        android:layout_marginTop="@dimen/spacing_md_large"
+        android:layout_marginEnd="@dimen/spacing_button_horizontal"
         android:background="@drawable/button_background"
         android:drawableStart="@drawable/ic_privacy_black_24dp"
-        android:drawablePadding="5dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
+        android:drawablePadding="@dimen/spacing_content"
+        android:paddingStart="@dimen/spacing_md"
+        android:paddingEnd="@dimen/spacing_md"
         android:text="@string/privacy_policy"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rateApp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

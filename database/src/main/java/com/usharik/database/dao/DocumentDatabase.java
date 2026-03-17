@@ -55,7 +55,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             Log.i("Migration1_2", "Insert new data");
             Gson gson = new Gson();
             try {
-                try(InputStream inputStream = mContext.getAssets().open("data.json");
+                try(InputStream inputStream = mContext.getAssets().open("data.jsonl");
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String json;
                     while ((json = reader.readLine()) != null) {
@@ -119,7 +119,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             int updatedCount = 0;
 
             try {
-                try(InputStream inputStream = mContext.getAssets().open("data.json");
+                try(InputStream inputStream = mContext.getAssets().open("data.jsonl");
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String json;
                     while ((json = reader.readLine()) != null) {

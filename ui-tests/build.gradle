@@ -29,7 +29,8 @@ test {
     systemProperty 'app.path', System.getProperty('app.path',
         "${project.rootDir}/app/build/outputs/apk/debug/app-debug.apk")
     systemProperty 'data.json.path', System.getProperty('data.json.path',
-        "${project.rootDir}/database/src/main/assets/data.json")
+        "${project.rootDir}/database/src/main/assets/data.jsonl")
+    systemProperty 'appium.url', System.getProperty('appium.url', '')
 
     systemProperty 'test.timeout.default', System.getProperty('test.timeout.default', '10')           // seconds
     systemProperty 'test.timeout.implicit', System.getProperty('test.timeout.implicit', '2')          // seconds

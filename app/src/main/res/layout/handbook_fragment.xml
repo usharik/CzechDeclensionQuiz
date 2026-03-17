@@ -22,8 +22,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gender_of_noun"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Gender of noun"/>
 
@@ -34,8 +34,8 @@
                 android:orientation="horizontal"
                 android:checkedButton="@={viewModel.selectedGender}"
                 app:layout_constraintTop_toBottomOf="@+id/genderHeader"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
             <RadioButton
                     android:id="@+id/radioMasculine"
@@ -69,8 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/type_of_declension"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/genderGroup"
                 tools:text="Type of declension"/>
 
@@ -81,8 +81,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioMasculine ? View.VISIBLE : View.GONE}"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/typeHeader">
 
             <RadioButton
@@ -142,8 +142,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioNeuter ? View.VISIBLE : View.GONE}"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/typeHeader"
                 tools:visibility="gone">
 
@@ -188,8 +188,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:visibility="@{viewModel.selectedGender == R.id.radioFeminine ? View.VISIBLE : View.GONE}"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/typeHeader"
                 tools:visibility="gone">
 
@@ -239,9 +239,9 @@
                 android:id="@+id/otherNounsHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:text="@string/other_nouns"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wordGroupsBarrier"
                 tools:text="Other nouns: "/>
 
@@ -249,10 +249,10 @@
                 android:id="@+id/otherNouns"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="5dp"
-                android:layout_marginBottom="8dp"
+                android:paddingStart="@dimen/spacing_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 android:text="@{viewModel.otherNouns}"
-                app:layout_constraintLeft_toRightOf="@id/otherNounsHeader"
+                app:layout_constraintStart_toEndOf="@id/otherNounsHeader"
                 app:layout_constraintTop_toTopOf="@id/otherNounsHeader"
                 tools:text="dum, pes"/>
 
@@ -261,10 +261,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:scrollX="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/spacing_sm"
                 app:layout_constraintTop_toBottomOf="@id/otherNounsHeader"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/adViewContainer"
                 app:layout_constraintVertical_chainStyle="packed">
 
@@ -278,10 +278,10 @@
                         layout="@layout/row_case"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="@dimen/spacing_content"
                         android:tag="0"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case2"
                         app:num="@{0}"
                         app:plural="@{viewModel.cases[1][0]}"
@@ -293,8 +293,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="1"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case3"
                         app:num="@{1}"
                         app:plural="@{viewModel.cases[1][1]}"
@@ -306,8 +306,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="2"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case4"
                         app:num="@{2}"
                         app:plural="@{viewModel.cases[1][2]}"
@@ -319,8 +319,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="3"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case5"
                         app:num="@{3}"
                         app:plural="@{viewModel.cases[1][3]}"
@@ -332,8 +332,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="4"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case6"
                         app:num="@{4}"
                         app:plural="@{viewModel.cases[1][4]}"
@@ -345,8 +345,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="5"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/case7"
                         app:num="@{5}"
                         app:plural="@{viewModel.cases[1][5]}"
@@ -358,9 +358,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:tag="6"
-                        android:layout_marginBottom="10dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        android:layout_marginBottom="@dimen/spacing_sm_large"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:num="@{6}"
                         app:plural="@{viewModel.cases[1][6]}"
@@ -373,12 +373,12 @@
                 android:id="@+id/adViewContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/spacing_sm"
                 android:minHeight="60dp"
-                android:background="#F5F5F5"
+                android:background="@color/colorSurfaceVariant"
                 app:layout_constraintTop_toBottomOf="@id/casesContainer"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

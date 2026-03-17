@@ -8,11 +8,19 @@
     <dimen name="static_font_size">13sp</dimen>
 
     <!-- Spacing scale tokens -->
+    <dimen name="spacing_xxs">3dp</dimen>
     <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_content">5dp</dimen>
     <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_sm_large">10dp</dimen>
     <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_md_large">20dp</dimen>
     <dimen name="spacing_lg">24dp</dimen>
     <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">35dp</dimen>
+    <dimen name="spacing_button_horizontal">50dp</dimen>
+    <!-- Component-specific: guideline offset for app logo in About screen -->
+    <dimen name="about_logo_guideline_offset">80dp</dimen>
 
     <!-- Corner radius tokens -->
     <dimen name="corner_radius_small">4dp</dimen>
