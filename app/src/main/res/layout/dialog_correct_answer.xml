@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:text="@string/correct_answer"
-        android:textSize="24sp"
-        android:textColor="?attr/colorPrimary"
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:textColor="@color/colorSuccessText"
         android:textStyle="bold"
         android:gravity="center" />
 
