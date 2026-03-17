@@ -12,7 +12,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Default paths
 DEFAULT_APK_PATH="$PROJECT_ROOT/app/build/outputs/apk/debug/app-debug.apk"
-DEFAULT_DATA_JSON_PATH="$PROJECT_ROOT/database/src/main/assets/data.json"
+DEFAULT_DATA_JSON_PATH="$PROJECT_ROOT/database/src/main/assets/data.jsonl"
 
 # Allow overriding via environment variables or arguments
 APK_PATH="${APK_PATH:-$DEFAULT_APK_PATH}"
@@ -299,6 +299,7 @@ run_tests() {
     print_header "Running UI Tests"
 
     cd "$PROJECT_ROOT"
+    local appium_url="${APPIUM_URL:-http://127.0.0.1:4723}"
 
     # Ensure ANDROID_HOME is set
     if [ -z "$ANDROID_HOME" ]; then
@@ -309,6 +310,7 @@ run_tests() {
     print_status "info" "Test configuration:"
     echo "  APK Path: $APK_PATH"
     echo "  Data JSON Path: $DATA_JSON_PATH"
+    echo "  Appium URL: $appium_url"
     echo "  ANDROID_HOME: $ANDROID_HOME"
     echo ""
 
@@ -320,6 +322,7 @@ run_tests() {
     if ANDROID_HOME="$ANDROID_HOME" ./gradlew :ui-tests:cleanTest :ui-tests:test \
         -Dapp.path="$APK_PATH" \
         -Ddata.json.path="$DATA_JSON_PATH" \
+        -Dappium.url="$appium_url" \
         --info; then
         print_status "success" "Tests completed successfully"
         return 0

@@ -63,7 +63,7 @@ public class App extends Application implements HasAndroidInjector {
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {
                         Log.i(getClass().getName(), "Populating empty database!!!");
-                        databaseManager.populateFromJsonStream(getAssets().open("data.json"));
+                        databaseManager.populateFromJsonStream(getAssets().open("data.jsonl"));
                     }
                     return Completable.complete();
                 })
