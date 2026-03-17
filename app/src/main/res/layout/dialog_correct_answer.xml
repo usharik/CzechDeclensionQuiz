@@ -12,10 +12,11 @@
         android:id="@+id/dialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/correct_answer"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall"
-        android:textColor="?attr/colorPrimary" />
+        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:textColor="@color/colorSuccessText"
+        android:textStyle="bold" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNextWord"
