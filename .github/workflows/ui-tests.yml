@@ -77,6 +77,7 @@ jobs:
           script: .github/scripts/run-ui-tests.sh
       
       - name: Upload test reports
+        id: upload_test_reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -86,14 +87,33 @@ jobs:
             ui-tests/build/test-results/
             ui-tests/screenshots/
           retention-days: 30
-      
-      - name: Upload Appium logs
+
+      - name: Upload UI test logs
+        id: upload_ui_test_logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: appium-logs
-          path: /tmp/appium.log
-          retention-days: 7
+          name: ui-test-logs
+          path: ui-tests/build/test-results/logs/
+          retention-days: 30
+
+      - name: Publish logs summary to workflow output
+        if: always()
+        run: |
+          if [ -f "ui-tests/build/test-results/logs/summary.md" ]; then
+            cat ui-tests/build/test-results/logs/summary.md >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [test-reports](${{ steps.upload_test_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [ui-test-logs](${{ steps.upload_ui_test_logs.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## UI test debug logs" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Logs were not generated. Check the test runner output." >> "$GITHUB_STEP_SUMMARY"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [test-reports](${{ steps.upload_test_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+            echo "- [ui-test-logs](${{ steps.upload_ui_test_logs.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+          fi
       
       - name: Check if test results exist
         id: check_results
