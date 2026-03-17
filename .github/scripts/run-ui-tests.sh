@@ -3,10 +3,9 @@ set -e
 
 echo "=== UI Test Runner Starting ==="
 
-APPIUM_STARTUP_TIMEOUT=90
 BOOT_COMPLETE_TIMEOUT=120
 
-# Kill any existing Appium processes to avoid port conflicts
+# Kill any existing Appium processes so the Java test can start its own cleanly
 echo "Killing any existing Appium processes on port 4723..."
 pkill -f "appium" || true
 sleep 2
@@ -18,40 +17,10 @@ if lsof -i :4723 > /dev/null 2>&1; then
   sleep 2
 fi
 
-echo "Port 4723 is free. Starting Appium..."
+echo "Port 4723 is free."
 
-# Start Appium in background
-export ANDROID_HOME=$ANDROID_HOME
+# Set up environment for Android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
-appium --log-timestamp --log-no-colors > /tmp/appium.log 2>&1 &
-APPIUM_PID=$!
-echo "Appium started with PID $APPIUM_PID"
-
-# Wait for Appium to start (up to 90 seconds)
-echo "Waiting for Appium to be ready..."
-APPIUM_READY=false
-for i in $(seq 1 $APPIUM_STARTUP_TIMEOUT); do
-  if curl -s http://localhost:4723/status > /dev/null 2>&1; then
-    echo "Appium is ready after ${i}s!"
-    APPIUM_READY=true
-    break
-  fi
-  if ! kill -0 $APPIUM_PID 2>/dev/null; then
-    echo "❌ Appium process died unexpectedly!"
-    echo "=== Appium log ==="
-    cat /tmp/appium.log
-    exit 1
-  fi
-  sleep 1
-done
-
-if [ "$APPIUM_READY" = false ]; then
-  echo "❌ Appium failed to start within ${APPIUM_STARTUP_TIMEOUT} seconds!"
-  echo "=== Appium log ==="
-  cat /tmp/appium.log
-  kill $APPIUM_PID || true
-  exit 1
-fi
 
 # Wait for emulator to be fully ready
 echo "Waiting for emulator to be ready..."
@@ -85,19 +54,17 @@ echo "=== ADB shell properties ==="
 adb shell getprop ro.product.model || true
 
 # Run tests
+# --skip-checks: skip prerequisite check that would also try to start Appium
+# --skip-build:  APK was already built in a prior workflow step
 cd ui-tests
 echo "=== Starting UI tests ==="
-if ./run-ui-tests.sh --skip-build; then
+if ./run-ui-tests.sh --skip-checks --skip-build; then
   echo "✅ Tests passed!"
   TEST_EXIT_CODE=0
 else
   echo "❌ Tests failed!"
   TEST_EXIT_CODE=1
 fi
-
-# Stop Appium
-echo "Stopping Appium (PID $APPIUM_PID)..."
-kill $APPIUM_PID || true
 
 echo "=== UI Test Runner Finished (exit code: $TEST_EXIT_CODE) ==="
 
