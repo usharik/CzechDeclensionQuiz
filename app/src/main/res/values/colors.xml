@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Legacy color names (kept for backward compatibility) -->
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -9,4 +10,18 @@
     <color name="lightGray">#DDDDDD</color>
     <color name="veryLightGray">#f2f2f2</color>
     <color name="darkGray">#999999</color>
+
+    <!-- Semantic surface colors -->
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#f2f2f2</color>
+    <color name="colorOnSurface">#212121</color>
+    <color name="colorOnSurfaceVariant">#999999</color>
+
+    <!-- Semantic answer-state colors -->
+    <color name="colorAnswerCorrectBackground">#b3e0ff</color>
+    <color name="colorAnswerIncorrectBackground">#ffcccc</color>
+    <color name="colorAnswerNeutralBackground">#DDDDDD</color>
+
+    <!-- Semantic stroke / outline color -->
+    <color name="colorStroke">#ff207d94</color>
 </resources>
