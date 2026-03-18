@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.databinding.Bindable;
 
 import com.usharik.app.AppState;
-import com.usharik.app.BR;
 import com.usharik.app.CzechCase;
 import com.usharik.app.framework.ViewModelObservable;
 import com.usharik.app.service.WordService;
