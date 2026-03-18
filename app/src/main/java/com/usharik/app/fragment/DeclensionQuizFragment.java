@@ -32,7 +32,7 @@ import com.usharik.app.R;
 import com.usharik.app.adapter.WordDragAdapter;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
-import com.usharik.app.fragment.DeclensionQuizViewModel.WordTextModel;
+import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.widget.CustomDragShadowBuilder;
 
@@ -252,8 +252,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     private void saveErrorsInfo() {
         int errorCount = getViewModel().getErrorCount();
-        if (errorCount == 0) appState.removeWordFromErrorMap();
-        if (errorCount > 2)  appState.putWordToErrorMap(errorCount);
+        String currentWord = getViewModel().getWord();
+        if (errorCount == 0) appState.removeWordFromErrorMap(currentWord);
+        if (errorCount > 2)  appState.putWordToErrorMap(currentWord, errorCount);
     }
 
     // ─── Drag-and-drop helpers ────────────────────────────────────────────────

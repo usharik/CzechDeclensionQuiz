@@ -2,9 +2,6 @@ package com.usharik.app;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.usharik.database.WordInfo;
-import com.usharik.app.fragment.DeclensionQuizViewModel;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +11,6 @@ import java.util.Map;
  * This class maintains the global state of the quiz application.
  */
 public class AppState {
-    private final MutableLiveData<WordInfo> wordInfoLiveData = new MutableLiveData<>();
-    private final MutableLiveData<DeclensionQuizViewModel.WordTextModel[]> wordTextModelsLiveData;
-    private final MutableLiveData<String[][]> correctAnswersLiveData;
-    private final MutableLiveData<int[][]> actualAnswersLiveData;
     private final MutableLiveData<Map<String, Integer>> wordsWithErrorsLiveData = new MutableLiveData<>(new HashMap<>());
     private final MutableLiveData<String> selectedWordLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> selectedWordIdLiveData = new MutableLiveData<>(-1);
@@ -28,36 +21,6 @@ public class AppState {
     private final MutableLiveData<Integer> currentNavigationItemLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> wordsCountSinceLastAdLiveData = new MutableLiveData<>(0);
     private final MutableLiveData<String> selectedQuizModeLiveData = new MutableLiveData<>(null);
-
-    // Constructor to initialize arrays
-    public AppState() {
-        wordTextModelsLiveData = new MutableLiveData<>(new DeclensionQuizViewModel.WordTextModel[14]);
-        correctAnswersLiveData = new MutableLiveData<>(new String[2][7]);
-
-        int[][] initialActualAnswers = new int[2][7];
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 7; j++) {
-                initialActualAnswers[i][j] = -1;
-            }
-        }
-        actualAnswersLiveData = new MutableLiveData<>(initialActualAnswers);
-    }
-
-    public WordInfo getWordInfo() {
-        return wordInfoLiveData.getValue();
-    }
-
-    public DeclensionQuizViewModel.WordTextModel[] getWordTextModels() {
-        return wordTextModelsLiveData.getValue();
-    }
-
-    public String[][] getCorrectAnswers() {
-        return correctAnswersLiveData.getValue();
-    }
-
-    public int[][] getActualAnswers() {
-        return actualAnswersLiveData.getValue();
-    }
 
     public Map<String, Integer> getWordsWithErrors() {
         Map<String, Integer> value = wordsWithErrorsLiveData.getValue();
@@ -102,14 +65,6 @@ public class AppState {
         return value != null ? value : 0;
     }
 
-    public void setWordInfo(WordInfo wordInfo) {
-        this.wordInfoLiveData.setValue(wordInfo);
-    }
-
-    public void setWordTextModels(DeclensionQuizViewModel.WordTextModel[] wordTextModels) {
-        this.wordTextModelsLiveData.setValue(wordTextModels);
-    }
-
     public void setWordsWithErrors(Map<String, Integer> wordsWithErrors) {
         this.wordsWithErrorsLiveData.setValue(wordsWithErrors);
     }
@@ -147,21 +102,19 @@ public class AppState {
         this.genderFilterIdLiveData.setValue(filterId);
     }
 
-    public void putWordToErrorMap(int errorCount) {
-        WordInfo currentWordInfo = getWordInfo();
-        if (currentWordInfo != null) {
-            Map<String, Integer> currentMap = getWordsWithErrors();
-            currentMap.put(currentWordInfo.word(), errorCount);
-            wordsWithErrorsLiveData.setValue(currentMap);
+    public void putWordToErrorMap(String word, int errorCount) {
+        if (word != null && !word.isEmpty()) {
+            Map<String, Integer> newMap = new HashMap<>(getWordsWithErrors());
+            newMap.put(word, errorCount);
+            wordsWithErrorsLiveData.setValue(newMap);
         }
     }
 
-    public void removeWordFromErrorMap() {
-        WordInfo currentWordInfo = getWordInfo();
-        if (currentWordInfo != null) {
-            Map<String, Integer> currentMap = getWordsWithErrors();
-            currentMap.remove(currentWordInfo.word());
-            wordsWithErrorsLiveData.setValue(currentMap);
+    public void removeWordFromErrorMap(String word) {
+        if (word != null && !word.isEmpty()) {
+            Map<String, Integer> newMap = new HashMap<>(getWordsWithErrors());
+            newMap.remove(word);
+            wordsWithErrorsLiveData.setValue(newMap);
         }
     }
 

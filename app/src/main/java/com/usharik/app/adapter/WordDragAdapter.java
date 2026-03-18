@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.usharik.app.R;
-import com.usharik.app.fragment.DeclensionQuizViewModel.WordTextModel;
+import com.usharik.app.DeclensionQuizState.WordTextModel;
 
 import java.util.ArrayList;
 import java.util.List;

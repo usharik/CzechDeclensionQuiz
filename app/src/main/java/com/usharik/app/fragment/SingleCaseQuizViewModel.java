@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.databinding.Bindable;
 
-import com.usharik.app.AppState;
 import com.usharik.app.CzechCase;
 import com.usharik.app.framework.ViewModelObservable;
 import com.usharik.app.service.WordService;
@@ -28,15 +27,18 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     private static final String TAG = "SingleCaseQuizVM";
 
-    private final AppState appState;
     private final WordService wordService;
 
+    private WordInfo currentWordInfo;
     private int currentStepIndex = 0;
 
     @Inject
-    public SingleCaseQuizViewModel(final AppState appState, final WordService wordService) {
-        this.appState = appState;
+    public SingleCaseQuizViewModel(final WordService wordService) {
         this.wordService = wordService;
+    }
+
+    public boolean hasCurrentWord() {
+        return currentWordInfo != null;
     }
 
     public int getCurrentCaseIndex() {
@@ -49,20 +51,17 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getWord() {
-        WordInfo wi = appState.getWordInfo();
-        return wi != null ? wi.word() : "";
+        return currentWordInfo != null ? currentWordInfo.word() : "";
     }
 
     @Bindable
     public String getGender() {
-        WordInfo wi = appState.getWordInfo();
-        return wi != null ? wi.gender() : "";
+        return currentWordInfo != null ? currentWordInfo.gender() : "";
     }
 
     @Bindable
     public String getDeclensionType() {
-        WordInfo wi = appState.getWordInfo();
-        return wi != null ? wi.declensionType() : "";
+        return currentWordInfo != null ? currentWordInfo.declensionType() : "";
     }
 
     @Bindable
@@ -84,22 +83,20 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     }
 
     public String getCorrectAnswer() {
-        WordInfo wi = appState.getWordInfo();
-        if (wi == null) return "";
-        return wi.cases(getCurrentNumber(), getCurrentCaseIndex());
+        if (currentWordInfo == null) return "";
+        return currentWordInfo.cases(getCurrentNumber(), getCurrentCaseIndex());
     }
 
     public List<String> buildAnswers() {
-        WordInfo wi = appState.getWordInfo();
-        if (wi == null) return Collections.emptyList();
+        if (currentWordInfo == null) return Collections.emptyList();
 
         String correct = getCorrectAnswer();
 
         List<String> distractors = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            String sg = wi.cases(SINGULAR, i);
+            String sg = currentWordInfo.cases(SINGULAR, i);
             if (!sg.isEmpty() && !sg.equals(correct)) distractors.add(sg);
-            String pl = wi.cases(PLURAL, i);
+            String pl = currentWordInfo.cases(PLURAL, i);
             if (!pl.isEmpty() && !pl.equals(correct)) distractors.add(pl);
         }
 
@@ -118,17 +115,16 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
-        WordInfo current = appState.getWordInfo();
-        if (tryAgain && current != null) {
+        if (tryAgain && currentWordInfo != null) {
             currentStepIndex = 0;
             update();
             return;
         }
-        wordService.getNextWord()
+        wordService.getNextWord(currentWordInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
-                    appState.setWordInfo(wordInfo);
+                    currentWordInfo = wordInfo;
                     currentStepIndex = 0;
                     update();
                 }, thr -> Log.e(TAG, "Error loading word", thr));

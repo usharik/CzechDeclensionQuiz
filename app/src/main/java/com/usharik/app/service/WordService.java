@@ -33,10 +33,10 @@ public class WordService {
 
     public Single<WordInfo> getNextWord() {
         return Maybe.defer(() -> rnd.nextBoolean()
-                ? getRandomWordWithErrorAsync()
+                ? getRandomWordWithErrorAsync(null)
                 : Maybe.empty()
         ).switchIfEmpty(
-                getRandomWordAsync()
+                getRandomWordAsync(null)
         ).doOnSuccess(doc -> {
             Log.i(getClass().getName(), "New word is " + doc.word());
             Bundle bundle = new Bundle();
@@ -45,20 +45,33 @@ public class WordService {
         });
     }
 
-    private Maybe<WordInfo> getRandomWordWithErrorAsync() {
+    public Single<WordInfo> getNextWord(WordInfo currentWord) {
+        return Maybe.defer(() -> rnd.nextBoolean()
+                ? getRandomWordWithErrorAsync(currentWord)
+                : Maybe.empty()
+        ).switchIfEmpty(
+                getRandomWordAsync(currentWord)
+        ).doOnSuccess(doc -> {
+            Log.i(getClass().getName(), "New word is " + doc.word());
+            Bundle bundle = new Bundle();
+            bundle.putString("WORD", doc.word());
+            firebaseAnalytics.logEvent("NEXT_WORD", bundle);
+        });
+    }
+
+    private Maybe<WordInfo> getRandomWordWithErrorAsync(WordInfo currentWord) {
         Map<String, Integer> wordsWithErrors = appState.getWordsWithErrors();
         int size = wordsWithErrors.size();
         if (size == 0) {
             return Maybe.empty();
         }
-        WordInfo currentWordInfo = appState.getWordInfo();
-        String prevWord = currentWordInfo == null || currentWordInfo.gender() == null ? "" : currentWordInfo.word();
+        String prevWord = currentWord == null || currentWord.gender() == null ? "" : currentWord.word();
 
         List<String> keys = new ArrayList<>(wordsWithErrors.keySet());
         String wordKey = keys.get(rnd.nextInt(size));
         return databaseManager.getDocumentDb().getWordInfoByWord(wordKey).flatMap(doc -> {
             if (doc == null) {
-                appState.removeWordFromErrorMap();
+                appState.removeWordFromErrorMap(wordKey);
                 return Maybe.empty();
             } else if (prevWord.equals(doc.word())) {
                 return Maybe.empty();
@@ -67,11 +80,10 @@ public class WordService {
         });
     }
 
-    private Single<WordInfo> getRandomWordAsync() {
-        WordInfo currentWordInfo = appState.getWordInfo();
-        String declensionType = (currentWordInfo == null || currentWordInfo.declensionType() == null)
+    private Single<WordInfo> getRandomWordAsync(WordInfo currentWord) {
+        String declensionType = (currentWord == null || currentWord.declensionType() == null)
                 ? ""
-                : currentWordInfo.declensionType();
+                : currentWord.declensionType();
         return databaseManager.getDocumentDb().getRandomWordWithAnotherDeclensionType(declensionType);
     }
 }
