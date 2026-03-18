@@ -1,36 +1,23 @@
-name: Build
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: '11'
-
-    - name: Build release APK
-      run: ./gradlew assembleRelease
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk
-        path: app/build/outputs/apk/release/app-release.apk
-        retention-days: 3
-
-    - name: Build summary
-      run: echo "APK Download Link: [Download]($\{GITHUB_RUN_ARTIFACTS\})"
-
-    - name: Post summary
-      run: echo "Post build summary in a comment.
-"
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Upload release APK artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 3
+      - name: Create a build summary
+        run: |
+          echo "Build completed!"
+          echo "Download your APK: [here](https://example.com/download)"
+          echo "Retention: 3 days"
