@@ -12,19 +12,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 
 import com.google.android.material.button.MaterialButton;
-import com.usharik.app.AppState;
 import com.usharik.app.R;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
-
-    @Inject
-    AppState appState;
 
     private FragmentSingleCaseQuizBinding binding;
     private List<String> currentAnswers;
@@ -51,7 +45,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         };
         getViewModel().addOnPropertyChangedCallback(viewModelCallback);
 
-        if (appState.getWordInfo() == null) {
+        if (!getViewModel().hasCurrentWord()) {
             getViewModel().nextWord(false);
         } else {
             refreshAnswerButtons();

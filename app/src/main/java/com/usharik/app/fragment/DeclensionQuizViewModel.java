@@ -11,6 +11,8 @@ import androidx.databinding.BindingAdapter;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
+import com.usharik.app.DeclensionQuizState;
+import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewModelObservable;
 
 import java.util.*;
@@ -43,6 +45,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     private final FirebaseAnalytics firebaseAnalytics;
     private final Locale locale;
 
+    private final DeclensionQuizState quizState = new DeclensionQuizState();
     private int errorCount;
 
     @Inject
@@ -58,25 +61,25 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getWord() {
-        WordInfo wordInfo = appState.getWordInfo();
+        WordInfo wordInfo = quizState.getWordInfo();
         return wordInfo != null ? wordInfo.word() : "";
     }
 
     @Bindable
     public String getGender() {
-        WordInfo wordInfo = appState.getWordInfo();
+        WordInfo wordInfo = quizState.getWordInfo();
         return wordInfo != null ? wordInfo.gender() : "";
     }
 
     @Bindable
     public String getDeclensionType() {
-        WordInfo wordInfo = appState.getWordInfo();
+        WordInfo wordInfo = quizState.getWordInfo();
         return wordInfo != null ? wordInfo.declensionType() : "";
     }
 
     @Bindable
     public String getTranslation() {
-        WordInfo wordInfo = appState.getWordInfo();
+        WordInfo wordInfo = quizState.getWordInfo();
         if (wordInfo == null) return "";
 
         String language = locale.getISO3Language();
@@ -89,9 +92,9 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
         Single<WordInfo> wordInfoSingle;
-        WordInfo currentWordInfo = appState.getWordInfo();
+        WordInfo currentWordInfo = quizState.getWordInfo();
         if (currentWordInfo == null || !tryAgain) {
-            wordInfoSingle = wordService.getNextWord();
+            wordInfoSingle = wordService.getNextWord(currentWordInfo);
         } else {
             wordInfoSingle = Single.just(currentWordInfo);
         }
@@ -99,20 +102,20 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
-                    appState.setWordInfo(wordInfo);
+                    quizState.setWordInfo(wordInfo);
                     List<WordTextModel> words = new ArrayList<>();
                     for (int i = 0; i < 7; i++) {
                         String singular = wordInfo.cases(SINGULAR, i);
                         String plural = wordInfo.cases(PLURAL, i);
                         words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
                         words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
-                        appState.getCorrectAnswers()[SINGULAR][i] = singular;
-                        appState.getCorrectAnswers()[PLURAL][i] = plural;
-                        appState.getActualAnswers()[SINGULAR][i] = -1;
-                        appState.getActualAnswers()[PLURAL][i] = -1;
+                        quizState.getCorrectAnswers()[SINGULAR][i] = singular;
+                        quizState.getCorrectAnswers()[PLURAL][i] = plural;
+                        quizState.getActualAnswers()[SINGULAR][i] = -1;
+                        quizState.getActualAnswers()[PLURAL][i] = -1;
                     }
                     Collections.shuffle(words);
-                    appState.setWordTextModels(words.toArray(new WordTextModel[0]));
+                    quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
                     errorCount = 0;
                     update();
                 }, thr -> Log.e("Error", "Error", thr));
@@ -130,9 +133,9 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public boolean checkAnswers() {
         Bundle bundle = new Bundle();
         boolean res = true;
-        int[][] actualAnswers = appState.getActualAnswers();
-        String[][] correctAnswers = appState.getCorrectAnswers();
-        WordTextModel[] wordTextModels = appState.getWordTextModels();
+        int[][] actualAnswers = quizState.getActualAnswers();
+        String[][] correctAnswers = quizState.getCorrectAnswers();
+        WordTextModel[] wordTextModels = quizState.getWordTextModels();
 
         for (int i = 0; i < 7; i++) {
             int actualAnswerSingularIx = actualAnswers[SINGULAR][i];
@@ -142,7 +145,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                 bundle.putStringArray("SINGULAR_" + i, new String[]{correctAnswers[SINGULAR][i], getWordByIndex(actualAnswerSingularIx)});
                 res = false;
                 errorCount++;
-                wordTextModels[actualAnswerSingularIx].visible = View.VISIBLE;
+                wordTextModels[actualAnswerSingularIx].setVisible(View.VISIBLE);
                 actualAnswers[SINGULAR][i] = -1;
             }
 
@@ -153,7 +156,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                 bundle.putStringArray("PLURAL_" + i, new String[]{correctAnswers[PLURAL][i], getWordByIndex(actualAnswerPluralIx)});
                 res = false;
                 errorCount++;
-                wordTextModels[actualAnswerPluralIx].visible = View.VISIBLE;
+                wordTextModels[actualAnswerPluralIx].setVisible(View.VISIBLE);
                 actualAnswers[PLURAL][i] = -1;
             }
         }
@@ -168,28 +171,28 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public WordTextModel[] getWordTextModels() {
-        return appState.getWordTextModels();
+        return quizState.getWordTextModels();
     }
 
     @Bindable
     public int[][] getCaseModels() {
-        return appState.getActualAnswers();
+        return quizState.getActualAnswers();
     }
 
     public String getWordByIndex(int ix) {
-        WordTextModel[] wordTextModels = appState.getWordTextModels();
+        WordTextModel[] wordTextModels = quizState.getWordTextModels();
         return (ix == -1 || wordTextModels[ix] == null) ? "" : wordTextModels[ix].getWord();
     }
 
     public void updateWordTextModel(int num, int visible) {
-        appState.getWordTextModels()[num].visible = visible;
+        quizState.getWordTextModels()[num].setVisible(visible);
         notifyPropertyChanged(BR.wordTextModels);
     }
 
     public void updateCaseModel(int caseNum, int number, int wordIx) {
-        int[][] actualAnswers = appState.getActualAnswers();
+        int[][] actualAnswers = quizState.getActualAnswers();
         if (actualAnswers[number][caseNum] != -1) {
-            appState.getWordTextModels()[actualAnswers[number][caseNum]].visible = View.VISIBLE;
+            quizState.getWordTextModels()[actualAnswers[number][caseNum]].setVisible(View.VISIBLE);
             notifyPropertyChanged(BR.wordTextModels);
         }
         actualAnswers[number][caseNum] = wordIx;
@@ -197,7 +200,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     }
 
     public void swapCaseModels(int caseNum1, int number1, int caseNum2, int number2) {
-        int[][] actualAnswers = appState.getActualAnswers();
+        int[][] actualAnswers = quizState.getActualAnswers();
         int tmp = actualAnswers[number1][caseNum1];
         actualAnswers[number1][caseNum1] = actualAnswers[number2][caseNum2];
         actualAnswers[number2][caseNum2] = tmp;
@@ -227,23 +230,5 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     public int getErrorCount() {
         return errorCount;
-    }
-
-    public static class WordTextModel {
-        String word;
-        int visible;
-
-        public WordTextModel(String word, int visible) {
-            this.word = word;
-            this.visible = visible;
-        }
-
-        public String getWord() {
-            return word;
-        }
-
-        public int getVisible() {
-            return visible;
-        }
     }
 }
