@@ -39,7 +39,14 @@ import static com.usharik.app.UiConstants.ID_ACTION_NEXT;
 import static com.usharik.app.UiConstants.ID_APP_LOGO;
 import static com.usharik.app.UiConstants.ID_APP_NAME;
 import static com.usharik.app.UiConstants.ID_APP_VERSION;
+import static com.usharik.app.UiConstants.ID_BTN_ANSWER_1;
+import static com.usharik.app.UiConstants.ID_BTN_ANSWER_2;
+import static com.usharik.app.UiConstants.ID_BTN_ANSWER_3;
+import static com.usharik.app.UiConstants.ID_BTN_ANSWER_4;
+import static com.usharik.app.UiConstants.ID_BTN_FULL_TABLE;
+import static com.usharik.app.UiConstants.ID_BTN_NEXT_CASE;
 import static com.usharik.app.UiConstants.ID_BTN_NEXT_WORD;
+import static com.usharik.app.UiConstants.ID_BTN_ONE_CASE;
 import static com.usharik.app.UiConstants.ID_BTN_RATE_APP;
 import static com.usharik.app.UiConstants.ID_BTN_STAY_HERE;
 import static com.usharik.app.UiConstants.ID_BTN_TRY_AGAIN;
@@ -54,9 +61,15 @@ import static com.usharik.app.UiConstants.ID_GENDER_HEADER;
 import static com.usharik.app.UiConstants.ID_NAV_MENU_ITEM;
 import static com.usharik.app.UiConstants.ID_RADIO_GROUP;
 import static com.usharik.app.UiConstants.ID_RADIO_GROUP_HEADER;
+import static com.usharik.app.UiConstants.ID_TITLE_QUIZ_MODE;
+import static com.usharik.app.UiConstants.ID_TV_CASE_NAME;
+import static com.usharik.app.UiConstants.ID_TV_CASE_QUESTION;
+import static com.usharik.app.UiConstants.ID_TV_NUMBER_LABEL;
+import static com.usharik.app.UiConstants.ID_TV_WORD;
 import static com.usharik.app.UiConstants.ID_WORDS_RECYCLER;
 import static com.usharik.app.UiConstants.XPATH_NAV_DRAWER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -347,7 +360,154 @@ public class UiTests {
     }
 
     /**
-     * Helper method to test screen rotation for the current screen
+     * Navigate to the quiz mode selection screen by pressing Back from within any quiz.
+     * This is the only way to reach mode selection after the initial launch, so it is
+     * extracted as a reusable helper used by all mode-selection-related tests.
+     */
+    private void navigateToModeSelection() {
+        // Ensure we start from a quiz screen (navigateToQuizScreen handles mode selection
+        // transparently by selecting Full Table if it appears)
+        navigateToQuizScreen();
+        // One Back press pops the quiz fragment and reveals QuizModeSelectionFragment
+        driver.navigate().back();
+        waitForScreenStability();
+    }
+
+    /**
+     * Test that the quiz mode selection screen shows the correct UI:
+     * a title and two mode buttons.
+     */
+    @Test
+    public void testQuizModeSelectionScreen() {
+        navigateToModeSelection();
+
+        WebElement title = waitForVisibleElement(ID_TITLE_QUIZ_MODE);
+        assertNotNull(title, "Mode selection title should be present");
+        assertEquals("Choose quiz mode", title.getText(), "Mode selection title text should be correct");
+
+        WebElement btnFullTable = waitForVisibleElement(ID_BTN_FULL_TABLE);
+        assertNotNull(btnFullTable, "Full Table button should be present");
+        assertEquals("Full declension table", btnFullTable.getText(), "Full Table button text should be correct");
+
+        WebElement btnOneCase = waitForVisibleElement(ID_BTN_ONE_CASE);
+        assertNotNull(btnOneCase, "One Case button should be present");
+        assertEquals("One case at a time", btnOneCase.getText(), "One Case button text should be correct");
+
+        testScreenRotationForCurrentScreen(ID_TITLE_QUIZ_MODE, "Mode selection title");
+
+        logger.info("Quiz mode selection screen verified successfully");
+    }
+
+    /**
+     * Test that selecting "One case at a time" from the mode selection screen
+     * opens the single-case quiz and shows all expected UI elements.
+     */
+    @Test
+    public void testSingleCaseQuizScreen() {
+        navigateToModeSelection();
+
+        waitForVisibleElement(ID_BTN_ONE_CASE).click();
+        waitForScreenStability();
+
+        WebElement tvWord = waitForVisibleElement(ID_TV_WORD);
+        assertNotNull(tvWord, "Word label should be displayed");
+        assertFalse(tvWord.getText().isEmpty(), "Word label should not be empty");
+
+        WebElement tvCaseName = waitForVisibleElement(ID_TV_CASE_NAME);
+        assertNotNull(tvCaseName, "Case name should be displayed");
+        assertFalse(tvCaseName.getText().isEmpty(), "Case name should not be empty");
+
+        WebElement tvNumberLabel = waitForVisibleElement(ID_TV_NUMBER_LABEL);
+        assertNotNull(tvNumberLabel, "Number label (Singular/Plural) should be displayed");
+        assertEquals("Singular", tvNumberLabel.getText(), "First step should be Singular");
+
+        WebElement tvCaseQuestion = waitForVisibleElement(ID_TV_CASE_QUESTION);
+        assertNotNull(tvCaseQuestion, "Case question should be displayed");
+        assertFalse(tvCaseQuestion.getText().isEmpty(), "Case question should not be empty");
+
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_1), "Answer button 1 should be present");
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_2), "Answer button 2 should be present");
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_3), "Answer button 3 should be present");
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_4), "Answer button 4 should be present");
+
+        WebElement btnNext = waitForVisibleElement(ID_BTN_NEXT_CASE);
+        assertNotNull(btnNext, "Next button should be present");
+        assertFalse(btnNext.isEnabled(), "Next button should be disabled before answering");
+
+        testScreenRotationForCurrentScreen(ID_TV_WORD, "Single case quiz word");
+
+        logger.info("Single case quiz screen verified successfully");
+    }
+
+    /**
+     * Test that selecting an answer in single-case quiz provides visual feedback
+     * and enables the Next button.
+     */
+    @Test
+    public void testSingleCaseQuizAnswerInteraction() {
+        navigateToModeSelection();
+
+        waitForVisibleElement(ID_BTN_ONE_CASE).click();
+        waitForScreenStability();
+
+        WebElement btnNext = waitForVisibleElement(ID_BTN_NEXT_CASE);
+        assertFalse(btnNext.isEnabled(), "Next button should be disabled before answering");
+
+        // Select first answer (correct or incorrect — either way feedback should appear)
+        waitForVisibleElement(ID_BTN_ANSWER_1).click();
+        waitForUiUpdate();
+
+        WebElement btnNextAfter = waitForVisibleElement(ID_BTN_NEXT_CASE);
+        assertTrue(btnNextAfter.isEnabled(), "Next button should be enabled after selecting an answer");
+
+        // Answer buttons should now be disabled (no double-selection)
+        assertFalse(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled(),
+                "Answer buttons should be disabled after selection");
+
+        // Clicking Next should advance to the next step
+        btnNextAfter.click();
+        waitForScreenStability();
+
+        // After advancing, answer buttons should be re-enabled for the next question
+        assertTrue(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled(),
+                "Answer buttons should be re-enabled on the next question");
+        assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled(),
+                "Next button should be disabled again for the next question");
+
+        logger.info("Single case quiz answer interaction verified successfully");
+    }
+
+    /**
+     * Test that after a quiz mode is selected, tapping the quiz drawer item
+     * navigates directly to that quiz without showing the mode selection screen.
+     */
+    @Test
+    public void testDrawerNavigationReturnsToLastQuizMode() {
+        // Ensure Full Table mode is selected and persisted in AppState
+        navigateToQuizScreen();
+
+        // Navigate away to the Settings screen
+        navigateToScreen(3);
+        waitForVisibleElement(ID_RADIO_GROUP_HEADER);
+
+        // Return to quiz via the drawer
+        navigateToScreen(0);
+        waitForScreenStability();
+
+        // The app should go directly to the DeclensionQuizFragment, not mode selection.
+        // Verify the DeclensionQuiz element (current word) is visible, not the mode selection title.
+        List<WebElement> modeTitle = driver.findElements(AppiumBy.id(ID_TITLE_QUIZ_MODE));
+        assertTrue(modeTitle.isEmpty() || !modeTitle.get(0).isDisplayed(),
+                "Mode selection screen should NOT appear when a quiz mode is already selected");
+
+        WebElement currentWord = waitForVisibleElement(ID_CURRENT_WORD);
+        assertNotNull(currentWord, "Drawer nav should return directly to the quiz screen");
+
+        logger.info("Drawer navigation returns to last quiz mode verified successfully");
+    }
+
+    /**
+     * Helper method to test screen rotation for the current screen.
      * @param elementId The ID of an element to verify after rotation
      * @param elementName Human-readable name of the element for logging
      */
@@ -374,11 +534,20 @@ public class UiTests {
     // ========== Helper Methods ==========
 
     /**
-     * Navigate to the quiz screen (first screen)
+     * Navigate to the quiz screen (first screen).
+     * If the quiz-mode selection screen appears (first launch or after back navigation),
+     * automatically selects "Full Table" so existing drag-and-drop tests are unaffected.
      */
     private void navigateToQuizScreen() {
         logger.debug("Navigating to quiz screen");
         navigateToScreen(0);
+        // If mode selection appears, pick Full Table to reach the DeclensionQuizFragment
+        List<WebElement> modeButtons = driver.findElements(AppiumBy.id(ID_BTN_FULL_TABLE));
+        if (!modeButtons.isEmpty()) {
+            logger.debug("Mode selection screen detected — selecting Full Table");
+            modeButtons.get(0).click();
+            waitForScreenStability();
+        }
     }
 
     /**

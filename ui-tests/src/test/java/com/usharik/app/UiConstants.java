@@ -19,6 +19,22 @@ public final class UiConstants {
     static final String ID_NAV_MENU_ITEM = "com.usharik.app:id/design_menu_item_text";
     static final String XPATH_NAV_DRAWER = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]";
 
+    // UI element IDs - Quiz Mode Selection Screen
+    static final String ID_TITLE_QUIZ_MODE = "com.usharik.app:id/titleQuizMode";
+    static final String ID_BTN_FULL_TABLE = "com.usharik.app:id/btnFullTable";
+    static final String ID_BTN_ONE_CASE = "com.usharik.app:id/btnOneCase";
+
+    // UI element IDs - Single Case Quiz Screen
+    static final String ID_TV_WORD = "com.usharik.app:id/tvWord";
+    static final String ID_TV_CASE_NAME = "com.usharik.app:id/tvCaseName";
+    static final String ID_TV_NUMBER_LABEL = "com.usharik.app:id/tvNumberLabel";
+    static final String ID_TV_CASE_QUESTION = "com.usharik.app:id/tvCaseQuestion";
+    static final String ID_BTN_ANSWER_1 = "com.usharik.app:id/btnAnswer1";
+    static final String ID_BTN_ANSWER_2 = "com.usharik.app:id/btnAnswer2";
+    static final String ID_BTN_ANSWER_3 = "com.usharik.app:id/btnAnswer3";
+    static final String ID_BTN_ANSWER_4 = "com.usharik.app:id/btnAnswer4";
+    static final String ID_BTN_NEXT_CASE = "com.usharik.app:id/btnNext";
+
     // UI element IDs - Words with Errors Screen
     static final String ID_CASES_CONTAINER = "com.usharik.app:id/casesContainer";
 
