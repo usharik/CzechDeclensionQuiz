@@ -34,8 +34,8 @@ jobs:
       - name: Copy dummy google-services.json for CI build
         run: cp utils/google-services.json.dummy app/google-services.json
 
-      - name: Build release APK
-        run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
+      - name: Build debug APK
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v7
