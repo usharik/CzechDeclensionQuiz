@@ -1,3 +1,13 @@
+name: Build APKs
+
+on:
+  push:
+    branches: [ main ]
+    tags-ignore:
+      - 'v*.*.*'  # Don't run on version tags (deploy workflow handles those)
+  pull_request:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,6 +28,9 @@ jobs:
           retention-days: 3
       - name: Create a build summary
         run: |
-          echo "Build completed!"
-          echo "Download your APK: [here](https://example.com/download)"
-          echo "Retention: 3 days"
+          echo "## Build Completed! ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- [Download Release APK](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Retention:** 3 days" >> $GITHUB_STEP_SUMMARY
