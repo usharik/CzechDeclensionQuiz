@@ -67,7 +67,7 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getCaseName() {
-        return CzechCase.fromIndex(getCurrentCaseIndex()).name;
+        return (getCurrentCaseIndex() + 1) + ". " + CzechCase.fromIndex(getCurrentCaseIndex()).name;
     }
 
     @Bindable
@@ -77,7 +77,8 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @Bindable
     public String getCaseQuestion() {
-        return CzechCase.fromIndex(getCurrentCaseIndex()).question;
+        CzechCase czechCase = CzechCase.fromIndex(getCurrentCaseIndex());
+        return czechCase.helperWord + " " + czechCase.question;
     }
 
     public String getCorrectAnswer() {
