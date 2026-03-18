@@ -15,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
+import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
 import com.usharik.app.fragment.QuizModeSelectionFragment;
 import com.usharik.app.fragment.SettingsFragment;
+import com.usharik.app.fragment.SingleCaseQuizFragment;
 import com.usharik.app.fragment.WordsWithErrorsFragment;
 import dagger.android.AndroidInjection;
 
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         appState.setCurrentNavigationItem(item.getItemId());
         int itemId = item.getItemId();
         if (itemId == R.id.nav_quiz) {
-            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
+            navigateToQuiz();
             return true;
         } else if (itemId == R.id.nav_words_with_errors) {
             replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
@@ -84,6 +86,52 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return true;
+    }
+
+    private void navigateToQuiz() {
+        String selectedQuizMode = appState.getSelectedQuizMode();
+
+        if (selectedQuizMode == null) {
+            // No mode chosen yet — show mode selection
+            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
+            return;
+        }
+
+        Class<? extends Fragment> quizClass = resolveQuizClass(selectedQuizMode);
+        if (quizClass == null) {
+            appState.setSelectedQuizMode(null);
+            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
+            return;
+        }
+
+        // Place QuizModeSelectionFragment in the backstack so Back from the quiz returns to it,
+        // then show the selected quiz on top — this is the only way to reach mode selection.
+        FragmentManager manager = getSupportFragmentManager();
+        try {
+            manager.beginTransaction()
+                    .replace(R.id.fragmentContainer,
+                            QuizModeSelectionFragment.class.getDeclaredConstructor().newInstance(),
+                            QuizModeSelectionFragment.class.getSimpleName())
+                    .addToBackStack(QuizModeSelectionFragment.class.getSimpleName())
+                    .commit();
+            manager.executePendingTransactions();
+
+            manager.beginTransaction()
+                    .replace(R.id.fragmentContainer,
+                            quizClass.getDeclaredConstructor().newInstance(),
+                            quizClass.getSimpleName())
+                    .addToBackStack(quizClass.getSimpleName())
+                    .commit();
+        } catch (ReflectiveOperationException e) {
+            Log.e(getClass().getName(), "Can't navigate to quiz", e);
+            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
+        }
+    }
+
+    private Class<? extends Fragment> resolveQuizClass(String name) {
+        if (DeclensionQuizFragment.class.getSimpleName().equals(name)) return DeclensionQuizFragment.class;
+        if (SingleCaseQuizFragment.class.getSimpleName().equals(name)) return SingleCaseQuizFragment.class;
+        return null;
     }
 
     private void replaceFragment(@IdRes int containerId, Class<? extends Fragment> fragmentClass) {
