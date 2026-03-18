@@ -14,18 +14,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '11'
+
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Upload release APK artifact
-        uses: actions/upload-artifact@v2
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v7
         with:
-          name: release-apk
-          path: app/build/outputs/apk/release/*.apk
-          retention-days: 3
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+
       - name: Create a build summary
         run: |
           echo "## Build Completed! ✅" >> $GITHUB_STEP_SUMMARY
