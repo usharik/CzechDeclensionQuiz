@@ -40,4 +40,8 @@
     <!-- Button-specific colors (dark mode) - MUCH lighter than background -->
     <color name="button_answer_background">#505050</color>
     <color name="button_answer_text">#FFFFFF</color>
+
+    <!-- Quiz answer state colors (dark mode - slightly lighter/desaturated) -->
+    <color name="colorCorrect">#66BB6A</color>
+    <color name="colorIncorrect">#EF5350</color>
 </resources>

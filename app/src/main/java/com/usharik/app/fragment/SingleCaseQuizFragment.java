@@ -23,9 +23,6 @@ import javax.inject.Inject;
 
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
 
-    private static final int COLOR_CORRECT = 0xFF4CAF50;
-    private static final int COLOR_INCORRECT = 0xFFF44336;
-
     @Inject
     AppState appState;
 
@@ -99,7 +96,8 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
                 buttons[i].setText(currentAnswers.get(i));
                 buttons[i].setEnabled(true);
                 buttons[i].setVisibility(View.VISIBLE);
-                buttons[i].setBackgroundTintList(null);
+                ColorStateList buttonColor = ColorStateList.valueOf(requireContext().getColor(R.color.colorSurfaceVariant));
+                buttons[i].setBackgroundTintList(buttonColor);
             } else {
                 buttons[i].setVisibility(View.GONE);
             }
@@ -110,12 +108,17 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     private void onAnswerSelected(int index) {
         String correct = getViewModel().getCorrectAnswer();
         MaterialButton[] buttons = answerButtons();
+
+        // Get colors from theme resources
+        int colorCorrect = getResources().getColor(R.color.colorCorrect, null);
+        int colorIncorrect = getResources().getColor(R.color.colorIncorrect, null);
+
         for (int i = 0; i < 4; i++) {
             buttons[i].setEnabled(false);
             if (currentAnswers.get(i).equals(correct)) {
-                buttons[i].setBackgroundTintList(ColorStateList.valueOf(COLOR_CORRECT));
+                buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorCorrect));
             } else if (i == index) {
-                buttons[i].setBackgroundTintList(ColorStateList.valueOf(COLOR_INCORRECT));
+                buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorIncorrect));
             }
         }
         binding.btnNextCase.setEnabled(true);

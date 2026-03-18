@@ -78,7 +78,9 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     @Bindable
     public String getCaseQuestion() {
         CzechCase czechCase = CzechCase.fromIndex(getCurrentCaseIndex());
-        return czechCase.helperWord + " " + czechCase.question;
+        return czechCase.helperWord.isBlank()
+                ? czechCase.question
+                : czechCase.helperWord + " - " + czechCase.question;
     }
 
     public String getCorrectAnswer() {

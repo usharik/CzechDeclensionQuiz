@@ -40,4 +40,8 @@
     <!-- Button-specific colors (light mode) -->
     <color name="button_answer_background">#F5F5F5</color>
     <color name="button_answer_text">#212121</color>
+
+    <!-- Quiz answer state colors -->
+    <color name="colorCorrect">#4CAF50</color>
+    <color name="colorIncorrect">#F44336</color>
 </resources>
