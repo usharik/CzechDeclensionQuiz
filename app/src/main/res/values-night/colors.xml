@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Legacy colors for dark mode (desaturated/lightened for dark backgrounds) -->
+    <color name="colorPrimary">#9FA8DA</color>
+    <color name="colorPrimaryDark">#7986CB</color>
+    <color name="colorAccent">#FF80AB</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#52201a</color>
+    <color name="blue">#1a3d52</color>
+    <color name="lightGray">#3A3A3A</color>
+    <color name="veryLightGray">#2D2D2D</color>
+    <color name="darkGray">#888888</color>
+
     <!-- Dark theme semantic surface colors -->
     <color name="colorSurface">#1E1E1E</color>
     <color name="colorSurfaceVariant">#2D2D2D</color>
@@ -16,4 +27,13 @@
 
     <!-- Success text color (high contrast on dark background) -->
     <color name="colorSuccessText">#81C784</color>
+
+    <!-- Material Design 3 color attributes for dark mode -->
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorSecondary">#FF80AB</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="colorTertiary">#80DEEA</color>
+    <color name="colorOnTertiary">#000000</color>
+    <color name="colorError">#CF6679</color>
+    <color name="colorOnError">#000000</color>
 </resources>

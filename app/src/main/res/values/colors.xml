@@ -27,4 +27,13 @@
 
     <!-- Success text color (high contrast on light background) -->
     <color name="colorSuccessText">#2E7D32</color>
+
+    <!-- Material Design 3 color attributes -->
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#FF4081</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorTertiary">#00BCD4</color>
+    <color name="colorOnTertiary">#000000</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">#FFFFFF</color>
 </resources>
