@@ -48,6 +48,21 @@
                 tools:text="jako růže" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvTranslation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:text="@{viewModel.translation}"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textSize="@dimen/text_size_body"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                tools:text="evolution" />
+
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvCaseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +72,7 @@
                 android:textSize="@dimen/text_size_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tvNumberLabel"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                app:layout_constraintTop_toBottomOf="@id/tvTranslation"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 tools:text="Genitiv" />
 
@@ -71,7 +86,7 @@
                 android:textSize="@dimen/text_size_body"
                 app:layout_constraintStart_toEndOf="@id/tvCaseName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                app:layout_constraintTop_toBottomOf="@id/tvTranslation"
                 tools:text="Singular" />
 
             <com.google.android.material.textview.MaterialTextView

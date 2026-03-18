@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -67,6 +68,22 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     @Bindable
     public String getDeclensionType() {
         return state.getWordInfo() != null ? state.getWordInfo().declensionType() : "";
+    }
+
+    @Bindable
+    public String getTranslation() {
+        WordInfo wordInfo = state.getWordInfo();
+        if (wordInfo == null) {
+            return "";
+        }
+        
+        // Check if system language is Russian
+        String systemLanguage = Locale.getDefault().getLanguage();
+        if ("ru".equals(systemLanguage)) {
+            return wordInfo.translation_ru();
+        }
+        
+        return wordInfo.translation_en();
     }
 
     @Bindable
