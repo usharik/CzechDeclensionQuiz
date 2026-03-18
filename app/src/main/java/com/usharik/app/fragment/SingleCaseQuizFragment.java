@@ -43,7 +43,8 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         binding.setViewModel(getViewModel());
 
         setupAnswerButtons();
-        setupNextButton();
+        setupNextCaseButton();
+        setupNextWordButton();
 
         viewModelCallback = new Observable.OnPropertyChangedCallback() {
             @Override
@@ -79,11 +80,13 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         binding.btnAnswer4.setOnClickListener(v -> onAnswerSelected(3));
     }
 
-    private void setupNextButton() {
-        binding.btnNext.setEnabled(false);
-        binding.btnNext.setOnClickListener(v -> {
-            getViewModel().nextStep();
-        });
+    private void setupNextCaseButton() {
+        binding.btnNextCase.setEnabled(false);
+        binding.btnNextCase.setOnClickListener(v -> getViewModel().nextStep());
+    }
+
+    private void setupNextWordButton() {
+        binding.btnNextWord.setOnClickListener(v -> getViewModel().nextWord(false));
     }
 
     private void refreshAnswerButtons() {
@@ -101,7 +104,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
                 buttons[i].setVisibility(View.GONE);
             }
         }
-        binding.btnNext.setEnabled(false);
+        binding.btnNextCase.setEnabled(false);
     }
 
     private void onAnswerSelected(int index) {
@@ -115,7 +118,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
                 buttons[i].setBackgroundTintList(ColorStateList.valueOf(COLOR_INCORRECT));
             }
         }
-        binding.btnNext.setEnabled(true);
+        binding.btnNextCase.setEnabled(true);
     }
 
     private MaterialButton[] answerButtons() {

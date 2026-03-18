@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Czech declension quiz</string>
     <string name="check">Check</string>
-    <string name="next">Next</string>
+    <string name="nextCase">Next case</string>
     <string name="OK" translatable="false">OK</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>

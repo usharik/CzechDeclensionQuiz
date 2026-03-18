@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Склонения в чешском</string>
     <string name="check">Проверить</string>
-    <string name="next">Дальше</string>
+    <string name="nextCase">Следующий падеж</string>
     <string name="Yes">Да</string>
     <string name="No">Нет</string>
     <string name="correct_answer">Все правильно!</string>
