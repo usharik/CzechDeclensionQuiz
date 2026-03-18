@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -697,7 +699,13 @@ public class UiTests {
     private List<WebElement> findVisibleWordPoolItems() {
         String xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id='" + ID_WORDS_RECYCLER + "']"
                 + "//android.widget.TextView[string-length(@text) > 0]";
-        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.xpath(xpath)));
+        try {
+            return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.xpath(xpath)));
+        } catch (TimeoutException e) {
+            // Pool is empty — all words have been placed or none are visible
+            logger.debug("Word pool is empty (no items found within timeout)");
+            return Collections.emptyList();
+        }
     }
 
     private List<String> getVisibleWordPoolWordTexts() {
