@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sự biến đổi tiếng Séc</string>
+    <string name="check">Kiểm tra</string>
+    <string name="nextCase">Trường hợp tiếp theo</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Có</string>
+    <string name="No">Không</string>
+    <string name="correct_answer">Tất cả đều chính xác!</string>
+    <string name="next_word">Từ tiếp theo</string>
+    <string name="stay_here">Ở lại đây</string>
+    <string name="try_again">Thử lại</string>
+    <string name="toast_some_errors">Có một số lỗi.</string>
+    <string name="version">Phiên bản %s %s</string>
+    <string name="date_of_build">Ngày xây dựng %s</string>
+    <string name="gender_of_noun">Giới tính của danh từ</string>
+    <string name="type_of_declension">Loại biến đổi</string>
+    <string name="masculine">Nam tính</string>
+    <string name="neuter">Trung tính</string>
+    <string name="feminine">Nữ tính</string>
+    <string name="declension_quiz_1">Bài kiểm tra biến đổi</string>
+    <string name="handbook">Hướng dẫn</string>
+    <string name="about">Giới thiệu</string>
+    <string name="other_nouns">Các danh từ khác:</string>
+    <string name="rate_app">Đánh giá ứng dụng</string>
+    <string name="rate_app_unavailable">Không tìm thấy cửa hàng ứng dụng</string>
+    <string name="word_filter">Bộ lọc từ theo giới tính</string>
+    <string name="all_words">Tất cả từ</string>
+    <string name="animate_masculine">Nam tính sống</string>
+    <string name="inanimate_masculine">Nam tính không sống</string>
+    <string name="additional_settings">Cài đặt bổ sung</string>
+    <string name="turn_off_animation">Tắt hoạt ảnh</string>
+    <string name="settings">Cài đặt</string>
+    <string name="words_with_errors">Từ có lỗi</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="declension_pattern">như \"%s\"</string>
+
+    <string name="quiz_mode_title">Chọn chế độ bài kiểm tra</string>
+    <string name="hub_title">Mở trang</string>
+    <string name="quiz_mode_full_table">Bài kiểm tra bảng biến đổi đầy đủ</string>
+    <string name="quiz_mode_one_case">Bài kiểm tra một trường hợp</string>
+
+    <string-array name="next_word_dialog">
+        <item>Từ tiếp theo</item>
+        <item>Ở lại đây</item>
+        <item>Thử lại</item>
+        <item>Đánh giá ứng dụng</item>
+    </string-array>
+
+    <array name="caseName">
+        <item>Chủ cách</item>
+        <item>Sở hữu cách</item>
+        <item>Dẫn cách</item>
+        <item>Tân cách</item>
+        <item>Hô cách</item>
+        <item>Địa cách</item>
+        <item>Cụ cách</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item>-</item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item>-</item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item>-</item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>

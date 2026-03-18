@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tschechische Deklination</string>
+    <string name="check">Überprüfen</string>
+    <string name="nextCase">Nächster Fall</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Ja</string>
+    <string name="No">Nein</string>
+    <string name="correct_answer">Alles ist korrekt!</string>
+    <string name="next_word">Nächstes Wort</string>
+    <string name="stay_here">Hier bleiben</string>
+    <string name="try_again">Versuchen Sie es erneut</string>
+    <string name="toast_some_errors">Es gibt mehrere Fehler.</string>
+    <string name="version">Version %s %s</string>
+    <string name="date_of_build">Erstellungsdatum %s</string>
+    <string name="gender_of_noun">Geschlecht des Substantivs</string>
+    <string name="type_of_declension">Art der Deklination</string>
+    <string name="masculine">Maskulinum</string>
+    <string name="neuter">Neutrum</string>
+    <string name="feminine">Femininum</string>
+    <string name="declension_quiz_1">Deklinationstest</string>
+    <string name="handbook">Handbuch</string>
+    <string name="about">Über die App</string>
+    <string name="other_nouns">Andere Substantive:</string>
+    <string name="rate_app">App bewerten</string>
+    <string name="rate_app_unavailable">Kein App Store gefunden</string>
+    <string name="word_filter">Wortfilter nach Geschlecht</string>
+    <string name="all_words">Alle Wörter</string>
+    <string name="animate_masculine">Belebt maskulinum</string>
+    <string name="inanimate_masculine">Unbelebt maskulinum</string>
+    <string name="additional_settings">Zusätzliche Einstellungen</string>
+    <string name="turn_off_animation">Animation ausschalten</string>
+    <string name="settings">Einstellungen</string>
+    <string name="words_with_errors">Wörter mit Fehlern</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="declension_pattern">wie \"%s\"</string>
+
+    <string name="quiz_mode_title">Wählen Sie den Testmodus</string>
+    <string name="hub_title">Seite öffnen</string>
+    <string name="quiz_mode_full_table">Test der vollständigen Deklinationstabelle</string>
+    <string name="quiz_mode_one_case">Test eines Falls</string>
+
+    <string-array name="next_word_dialog">
+        <item>Nächstes Wort</item>
+        <item>Hier bleiben</item>
+        <item>Versuchen Sie es erneut</item>
+        <item>App bewerten</item>
+    </string-array>
+
+    <array name="caseName">
+        <item>Nominativ</item>
+        <item>Genitiv</item>
+        <item>Dativ</item>
+        <item>Akkusativ</item>
+        <item>Vokativ</item>
+        <item>Lokativ</item>
+        <item>Instrumental</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item>-</item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item>-</item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item>-</item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>

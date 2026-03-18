@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Česká skloňování</string>
+    <string name="check">Zkontrolovat</string>
+    <string name="nextCase">Další pád</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Ano</string>
+    <string name="No">Ne</string>
+    <string name="correct_answer">Vše je správně!</string>
+    <string name="next_word">Další slovo</string>
+    <string name="stay_here">Zůstat zde</string>
+    <string name="try_again">Zkusit znovu</string>
+    <string name="toast_some_errors">Existuje několik chyb.</string>
+    <string name="version">Verze %s %s</string>
+    <string name="date_of_build">Datum vytvoření %s</string>
+    <string name="gender_of_noun">Rod podstatného jména</string>
+    <string name="type_of_declension">Typ skloňování</string>
+    <string name="masculine">Mužský rod</string>
+    <string name="neuter">Střední rod</string>
+    <string name="feminine">Ženský rod</string>
+    <string name="declension_quiz_1">Test skloňování</string>
+    <string name="handbook">Příručka</string>
+    <string name="about">O aplikaci</string>
+    <string name="other_nouns">Další podstatná jména:</string>
+    <string name="rate_app">Hodnotit aplikaci</string>
+    <string name="rate_app_unavailable">Obchod Play Store nebyl nalezen</string>
+    <string name="word_filter">Filtr slov podle rodu</string>
+    <string name="all_words">Všechna slova</string>
+    <string name="animate_masculine">Maskulinum životné</string>
+    <string name="inanimate_masculine">Maskulinum neživotné</string>
+    <string name="additional_settings">Další nastavení</string>
+    <string name="turn_off_animation">Vypnout animaci</string>
+    <string name="settings">Nastavení</string>
+    <string name="words_with_errors">Slova s chybami</string>
+    <string name="privacy_policy">Zásady ochrany osobních údajů</string>
+    <string name="declension_pattern">jako \"%s\"</string>
+
+    <string name="quiz_mode_title">Vyberte režim testu</string>
+    <string name="hub_title">Otevřít stránku</string>
+    <string name="quiz_mode_full_table">Test úplné tabulky skloňování</string>
+    <string name="quiz_mode_one_case">Test jednoho pádu</string>
+
+    <string-array name="next_word_dialog">
+        <item>Další slovo</item>
+        <item>Zůstat zde</item>
+        <item>Zkusit znovu</item>
+        <item>Hodnotit aplikaci</item>
+    </string-array>
+
+    <array name="caseName">
+        <item>Nominativ</item>
+        <item>Genitiv</item>
+        <item>Dativ</item>
+        <item>Akuzativ</item>
+        <item>Vokativ</item>
+        <item>Lokativ</item>
+        <item>Instrumentál</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item>-</item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item>-</item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item>-</item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>

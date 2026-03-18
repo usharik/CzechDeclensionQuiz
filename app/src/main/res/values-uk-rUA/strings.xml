@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Чеське схилення</string>
+    <string name="check">Перевірити</string>
+    <string name="nextCase">Наступний відмінок</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Так</string>
+    <string name="No">Ні</string>
+    <string name="correct_answer">Все правильно!</string>
+    <string name="next_word">Наступне слово</string>
+    <string name="stay_here">Залишитися</string>
+    <string name="try_again">Повторити</string>
+    <string name="toast_some_errors">Кілька помилок.</string>
+    <string name="version">Версія %s %s</string>
+    <string name="date_of_build">Дата збірки %s</string>
+    <string name="gender_of_noun">Рід іменника</string>
+    <string name="type_of_declension">Тип схилення</string>
+    <string name="masculine">Чоловічий</string>
+    <string name="neuter">Середній</string>
+    <string name="feminine">Жіночий</string>
+    <string name="declension_quiz_1">Тест схилення</string>
+    <string name="handbook">Довідник</string>
+    <string name="about">Про додаток</string>
+    <string name="other_nouns">Інші іменники:</string>
+    <string name="rate_app">Оцінити додаток</string>
+    <string name="rate_app_unavailable">Магазин додатків не знайдено</string>
+    <string name="word_filter">Фільтр слів за родом</string>
+    <string name="all_words">Усі слова</string>
+    <string name="animate_masculine">Одушевлений чоловічий</string>
+    <string name="inanimate_masculine">Неживий чоловічий</string>
+    <string name="additional_settings">Додаткові параметри</string>
+    <string name="turn_off_animation">Вимкнути анімацію</string>
+    <string name="settings">Параметри</string>
+    <string name="words_with_errors">Слова з помилками</string>
+    <string name="privacy_policy">Політика конфіденційності</string>
+    <string name="declension_pattern">як \"%s\"</string>
+
+    <string name="quiz_mode_title">Виберіть режим тесту</string>
+    <string name="hub_title">Відкрити сторінку</string>
+    <string name="quiz_mode_full_table">Тест повної таблиці схилення</string>
+    <string name="quiz_mode_one_case">Тест одного відмінка</string>
+
+    <string-array name="next_word_dialog">
+        <item>Наступне слово</item>
+        <item>Залишитися</item>
+        <item>Повторити</item>
+        <item>Оцінити додаток</item>
+    </string-array>
+
+    <array name="caseName">
+        <item>Називний</item>
+        <item>Родовий</item>
+        <item>Давальний</item>
+        <item>Знахідний</item>
+        <item>Кличний</item>
+        <item>Місцевий</item>
+        <item>Орудний</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item>-</item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item>-</item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item>-</item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>

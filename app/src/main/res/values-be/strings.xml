@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Чэшскае скланенне</string>
+    <string name="check">Праверыць</string>
+    <string name="nextCase">Наступны падзеж</string>
+    <string name="OK" translatable="false">OK</string>
+    <string name="Yes">Так</string>
+    <string name="No">Не</string>
+    <string name="correct_answer">Усё правільна!</string>
+    <string name="next_word">Наступнае слова</string>
+    <string name="stay_here">Заставацца</string>
+    <string name="try_again">Паспрабаваць зноў</string>
+    <string name="toast_some_errors">Некалькі памылак.</string>
+    <string name="version">Версія %s %s</string>
+    <string name="date_of_build">Дата збору %s</string>
+    <string name="gender_of_noun">Род іменніка</string>
+    <string name="type_of_declension">Тып скланення</string>
+    <string name="masculine">Мужчынскі</string>
+    <string name="neuter">Сярёдні</string>
+    <string name="feminine">Жаночы</string>
+    <string name="declension_quiz_1">Тэст скланення</string>
+    <string name="handbook">Дапаможнік</string>
+    <string name="about">Аб праграме</string>
+    <string name="other_nouns">Іншыя іменнікі:</string>
+    <string name="rate_app">Адзаніць праграму</string>
+    <string name="rate_app_unavailable">Магазін прыкладанняў не знойдзены</string>
+    <string name="word_filter">Фільтр слоў па родзе</string>
+    <string name="all_words">Усе словы</string>
+    <string name="animate_masculine">Адушаўлены мужчынскі</string>
+    <string name="inanimate_masculine">Неадушаўлены мужчынскі</string>
+    <string name="additional_settings">Дадатковыя параметры</string>
+    <string name="turn_off_animation">Адключыць анімацыю</string>
+    <string name="settings">Параметры</string>
+    <string name="words_with_errors">Словы з памылкамі</string>
+    <string name="privacy_policy">Палітыка приватнасці</string>
+    <string name="declension_pattern">як \"%s\"</string>
+
+    <string name="quiz_mode_title">Выберыце рэжым тэста</string>
+    <string name="hub_title">Адкрыць старонку</string>
+    <string name="quiz_mode_full_table">Тэст поўнай табліцы скланення</string>
+    <string name="quiz_mode_one_case">Тэст аднаго падзежа</string>
+
+    <string-array name="next_word_dialog">
+        <item>Наступнае слова</item>
+        <item>Заставацца</item>
+        <item>Паспрабаваць зноў</item>
+        <item>Адзаніць праграму</item>
+    </string-array>
+
+    <array name="caseName">
+        <item>Менавальны</item>
+        <item>Радзіцельны</item>
+        <item>Дацельны</item>
+        <item>Вінавальны</item>
+        <item>Клічны</item>
+        <item>Месцавы</item>
+        <item>Творчы</item>
+    </array>
+
+    <array name="caseQuestion">
+        <item>kdo? co?</item>
+        <item>koho? čeho?</item>
+        <item>komu? čemu?</item>
+        <item>koho? co?</item>
+        <item>-</item>
+        <item>(o) kom? (o) čem?</item>
+        <item>kým? čím?</item>
+    </array>
+
+    <array name="caseHint">
+        <item>-</item>
+        <item>bez</item>
+        <item>ke</item>
+        <item>vidim</item>
+        <item>-</item>
+        <item>o</item>
+        <item>s</item>
+    </array>
+</resources>
