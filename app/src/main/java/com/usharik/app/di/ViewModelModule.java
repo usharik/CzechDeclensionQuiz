@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.usharik.app.fragment.DeclensionQuizViewModel;
 import com.usharik.app.fragment.HandbookViewModel;
+import com.usharik.app.fragment.SingleCaseQuizViewModel;
 
 import com.usharik.app.fragment.SettingsViewModel;
 import com.usharik.app.fragment.WordsWithErrorsViewModel;
@@ -37,6 +38,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(WordsWithErrorsViewModel.class)
     abstract ViewModel bindWordsWithErrorsViewModel(WordsWithErrorsViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SingleCaseQuizViewModel.class)
+    abstract ViewModel bindSingleCaseQuizViewModel(SingleCaseQuizViewModel viewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(AppViewModelFactory factory);

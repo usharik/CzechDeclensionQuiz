@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
-import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
+import com.usharik.app.fragment.QuizModeSelectionFragment;
 import com.usharik.app.fragment.SettingsFragment;
 import com.usharik.app.fragment.WordsWithErrorsFragment;
 import dagger.android.AndroidInjection;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         appState.setCurrentNavigationItem(item.getItemId());
         int itemId = item.getItemId();
         if (itemId == R.id.nav_quiz) {
-            replaceFragment(R.id.fragmentContainer, DeclensionQuizFragment.class);
+            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
             return true;
         } else if (itemId == R.id.nav_words_with_errors) {
             replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);

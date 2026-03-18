@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.usharik.app.fragment.SingleCaseQuizViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_md"
+            tools:context="com.usharik.app.MainActivity">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvWord"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:gravity="center"
+                android:text="@{viewModel.word}"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textSize="@dimen/text_size_heading"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="evoluce" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:text="@{@string/declension_pattern(viewModel.declensionType)}"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textSize="@dimen/text_size_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvWord"
+                tools:text="jako růže" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvCaseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@{viewModel.caseName}"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textSize="@dimen/text_size_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tvNumberLabel"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                tools:text="Genitiv" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvNumberLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:text="@{viewModel.numberLabel}"
+                android:textAppearance="@style/TextAppearance.App.Label"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintStart_toEndOf="@id/tvCaseName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
+                tools:text="Singular" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvCaseQuestion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:text="@{viewModel.caseQuestion}"
+                android:textAppearance="@style/TextAppearance.App.Body"
+                android:textStyle="italic"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCaseName"
+                tools:text="koho? čeho?" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnswer1"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCaseQuestion"
+                tools:text="evoluce" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnswer2"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnAnswer1"
+                tools:text="evoluci" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnswer3"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnAnswer2"
+                tools:text="evolucí" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnswer4"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnAnswer3"
+                tools:text="evolucemi" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:enabled="false"
+                android:text="@string/next"
+                android:textSize="@dimen/text_size_body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnAnswer4"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
