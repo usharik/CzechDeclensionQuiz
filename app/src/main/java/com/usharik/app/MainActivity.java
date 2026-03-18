@@ -1,17 +1,13 @@
 package com.usharik.app;
 
 import android.os.Bundle;
-import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.appbar.MaterialToolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.util.Log;
 import android.view.MenuItem;
 import com.usharik.app.fragment.AboutFragment;
@@ -23,16 +19,7 @@ import com.usharik.app.fragment.SingleCaseQuizFragment;
 import com.usharik.app.fragment.WordsWithErrorsFragment;
 import dagger.android.AndroidInjection;
 
-import javax.inject.Inject;
-
 public class MainActivity extends AppCompatActivity {
-
-    private static final String STATE_CURRENT_NAVIGATION_ITEM = "state_current_navigation_item";
-    private static final String STATE_SELECTED_QUIZ_MODE = "state_selected_quiz_mode";
-
-    DrawerLayout mDrawerLayout;
-    private int currentNavigationItem = R.id.nav_quiz;
-    private String selectedQuizMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,137 +29,107 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.main_activity);
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
 
         setSupportActionBar(toolbar);
-
-        if (savedInstanceState != null) {
-            currentNavigationItem = savedInstanceState.getInt(STATE_CURRENT_NAVIGATION_ITEM, R.id.nav_quiz);
-            selectedQuizMode = savedInstanceState.getString(STATE_SELECTED_QUIZ_MODE);
-        }
-
-        navigationView.setNavigationItemSelectedListener(this::onNavigatorItemSelected);
-
-        navigationView.setCheckedItem(currentNavigationItem);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        }
-        MenuItem selectedItem = navigationView.getMenu().findItem(currentNavigationItem);
-        onNavigatorItemSelected(selectedItem != null ? selectedItem : navigationView.getMenu().findItem(R.id.nav_quiz));
-    }
-
-    private boolean onNavigatorItemSelected(MenuItem item) {
-        if (item == null) {
-            return false;
-        }
-        item.setChecked(true);
-        mDrawerLayout.closeDrawers();
-        setTitle(item.getTitle());
-        currentNavigationItem = item.getItemId();
-        int itemId = item.getItemId();
-        if (itemId == R.id.nav_quiz) {
-            navigateToQuiz();
-            return true;
-        } else if (itemId == R.id.nav_words_with_errors) {
-            replaceFragment(R.id.fragmentContainer, WordsWithErrorsFragment.class);
-            return true;
-        } else if (itemId == R.id.nav_handbook) {
-            replaceFragment(R.id.fragmentContainer, HandbookFragment.class);
-            return true;
-        } else if (itemId == R.id.nav_settings) {
-            replaceFragment(R.id.fragmentContainer, SettingsFragment.class);
-            return true;
-        } else if (itemId == R.id.nav_about) {
-            replaceFragment(R.id.fragmentContainer, AboutFragment.class);
-            return true;
-        }
-        return true;
-    }
-
-    private void navigateToQuiz() {
-        if (selectedQuizMode == null) {
-            // No mode chosen yet — show mode selection
-            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
-            return;
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_home_black_24dp);
         }
 
-        Class<? extends Fragment> quizClass = resolveQuizClass(selectedQuizMode);
-        if (quizClass == null) {
-            selectedQuizMode = null;
-            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
-            return;
-        }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isHubVisible()) {
+                    finish();
+                } else {
+                    openHubFragment();
+                }
+            }
+        });
 
-        // Place QuizModeSelectionFragment in the backstack so Back from the quiz returns to it,
-        // then show the selected quiz on top — this is the only way to reach mode selection.
-        FragmentManager manager = getSupportFragmentManager();
-        try {
-            manager.beginTransaction()
-                    .replace(R.id.fragmentContainer,
-                            QuizModeSelectionFragment.class.getDeclaredConstructor().newInstance(),
-                            QuizModeSelectionFragment.class.getSimpleName())
-                    .addToBackStack(QuizModeSelectionFragment.class.getSimpleName())
-                    .commit();
-            manager.executePendingTransactions();
-
-            manager.beginTransaction()
-                    .replace(R.id.fragmentContainer,
-                            quizClass.getDeclaredConstructor().newInstance(),
-                            quizClass.getSimpleName())
-                    .addToBackStack(quizClass.getSimpleName())
-                    .commit();
-        } catch (ReflectiveOperationException e) {
-            Log.e(getClass().getName(), "Can't navigate to quiz", e);
-            replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
+        if (savedInstanceState == null) {
+            openHubFragment();
+        } else {
+            updateTitleForCurrentFragment();
         }
     }
 
-    private Class<? extends Fragment> resolveQuizClass(String name) {
-        if (DeclensionQuizFragment.class.getSimpleName().equals(name)) return DeclensionQuizFragment.class;
-        if (SingleCaseQuizFragment.class.getSimpleName().equals(name)) return SingleCaseQuizFragment.class;
-        return null;
+    public void openHubFragment() {
+        openTopLevelFragment(new QuizModeSelectionFragment(), QuizModeSelectionFragment.class.getSimpleName());
+        setTitle(R.string.hub_title);
     }
 
     public void openQuizMode(Class<? extends Fragment> quizClass) {
-        selectedQuizMode = quizClass.getSimpleName();
-        replaceFragment(R.id.fragmentContainer, quizClass);
+        try {
+            pushFragment(createFragment(quizClass), quizClass.getSimpleName());
+            setTitle(resolveTitle(quizClass));
+        } catch (ReflectiveOperationException e) {
+            Log.e(getClass().getName(), "Can't open quiz mode", e);
+        }
     }
 
-    private void replaceFragment(@IdRes int containerId, Class<? extends Fragment> fragmentClass) {
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(fragmentClass.getSimpleName());
-        if (fragment == null) {
-            try {
-                fragment = fragmentClass.getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
-                Log.e(getClass().getName(), "Can't create fragment class", e);
-                return;
-            }
+    public void openPage(Class<? extends Fragment> fragmentClass) {
+        try {
+            pushFragment(createFragment(fragmentClass), fragmentClass.getSimpleName());
+            setTitle(resolveTitle(fragmentClass));
+        } catch (ReflectiveOperationException e) {
+            Log.e(getClass().getName(), "Can't open page", e);
         }
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(containerId, fragment);
-        transaction.addToBackStack(fragmentClass.getSimpleName());
-        transaction.commit();
+    }
+
+    public void openTopLevelFragment(Fragment fragment, String tag) {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        manager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment, tag)
+                .commit();
+    }
+
+    public void pushFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, fragment, tag)
+                .addToBackStack(tag)
+                .commit();
+    }
+
+    private Fragment createFragment(Class<? extends Fragment> fragmentClass) throws ReflectiveOperationException {
+        return fragmentClass.getDeclaredConstructor().newInstance();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+            openHubFragment();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(STATE_CURRENT_NAVIGATION_ITEM, currentNavigationItem);
-        outState.putString(STATE_SELECTED_QUIZ_MODE, selectedQuizMode);
+    private boolean isHubVisible() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        return fragment instanceof QuizModeSelectionFragment;
+    }
+
+    private void updateTitleForCurrentFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment == null) {
+            setTitle(R.string.hub_title);
+        } else {
+            setTitle(resolveTitle(fragment.getClass()));
+        }
+    }
+
+    private int resolveTitle(Class<? extends Fragment> fragmentClass) {
+        if (QuizModeSelectionFragment.class.equals(fragmentClass)) return R.string.hub_title;
+        if (DeclensionQuizFragment.class.equals(fragmentClass)) return R.string.quiz_mode_full_table;
+        if (SingleCaseQuizFragment.class.equals(fragmentClass)) return R.string.quiz_mode_one_case;
+        if (WordsWithErrorsFragment.class.equals(fragmentClass)) return R.string.words_with_errors;
+        if (HandbookFragment.class.equals(fragmentClass)) return R.string.handbook;
+        if (SettingsFragment.class.equals(fragmentClass)) return R.string.settings;
+        if (AboutFragment.class.equals(fragmentClass)) return R.string.about;
+        return R.string.app_name;
     }
 }

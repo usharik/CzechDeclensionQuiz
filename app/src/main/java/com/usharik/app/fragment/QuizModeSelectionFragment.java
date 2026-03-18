@@ -36,6 +36,10 @@ public class QuizModeSelectionFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz_mode_selection, container, false);
         binding.btnFullTable.setOnClickListener(v -> selectQuizMode(DeclensionQuizFragment.class));
         binding.btnOneCase.setOnClickListener(v -> selectQuizMode(SingleCaseQuizFragment.class));
+        binding.btnWordsWithErrors.setOnClickListener(v -> openPage(WordsWithErrorsFragment.class));
+        binding.btnHandbook.setOnClickListener(v -> openPage(HandbookFragment.class));
+        binding.btnSettings.setOnClickListener(v -> openPage(SettingsFragment.class));
+        binding.btnAbout.setOnClickListener(v -> openPage(AboutFragment.class));
         return binding.getRoot();
     }
 
@@ -50,6 +54,14 @@ public class QuizModeSelectionFragment extends Fragment {
             ((MainActivity) requireActivity()).openQuizMode(quizClass);
         } else {
             Log.e(getClass().getName(), "Host activity does not support quiz navigation");
+        }
+    }
+
+    private void openPage(Class<? extends Fragment> fragmentClass) {
+        if (requireActivity() instanceof MainActivity) {
+            ((MainActivity) requireActivity()).openPage(fragmentClass);
+        } else {
+            Log.e(getClass().getName(), "Host activity does not support page navigation");
         }
     }
 }

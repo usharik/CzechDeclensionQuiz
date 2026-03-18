@@ -3,50 +3,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/spacing_md"
         tools:context="com.usharik.app.MainActivity">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/titleQuizMode"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/quiz_mode_title"
-            android:textAppearance="@style/TextAppearance.App.Title"
-            android:textSize="@dimen/text_size_heading"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btnFullTable"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:layout_marginBottom="@dimen/spacing_xl" />
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_md">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFullTable"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/quiz_mode_full_table"
-            android:textSize="@dimen/text_size_body"
-            android:layout_marginBottom="@dimen/spacing_md"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleQuizMode"
-            app:layout_constraintBottom_toTopOf="@id/btnOneCase" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/titleQuizMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/spacing_xl"
+                android:text="@string/hub_title"
+                android:textAppearance="@style/TextAppearance.App.Title"
+                android:textSize="@dimen/text_size_heading" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOneCase"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/quiz_mode_one_case"
-            android:textSize="@dimen/text_size_body"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnFullTable"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFullTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/quiz_mode_full_table"
+                android:textSize="@dimen/text_size_body" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOneCase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/quiz_mode_one_case"
+                android:textSize="@dimen/text_size_body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWordsWithErrors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/words_with_errors"
+                android:textSize="@dimen/text_size_body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHandbook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/handbook"
+                android:textSize="@dimen/text_size_body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/settings"
+                android:textSize="@dimen/text_size_body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about"
+                android:textSize="@dimen/text_size_body" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

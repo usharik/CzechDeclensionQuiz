@@ -35,6 +35,7 @@
     <string name="declension_pattern">like \"%s\"</string>
 
     <string name="quiz_mode_title">Choose quiz mode</string>
+    <string name="hub_title">Open page</string>
     <string name="quiz_mode_full_table">Full declension table</string>
     <string name="quiz_mode_one_case">One case at a time</string>
 
