@@ -5,14 +5,12 @@ import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
-import com.usharik.app.Gender;
 import com.usharik.database.WordInfo;
 import com.usharik.database.dao.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 import io.reactivex.rxjava3.core.Maybe;
@@ -38,11 +36,11 @@ public class WordService {
                 ? getRandomWordWithErrorAsync()
                 : Maybe.empty()
         ).switchIfEmpty(
-                databaseManager.getDocumentDb().getCount().flatMap(this::getRandomWordAsync)
+                getRandomWordAsync()
         ).doOnSuccess(doc -> {
-            Log.i(getClass().getName(), "New word is " + doc.word);
+            Log.i(getClass().getName(), "New word is " + doc.word());
             Bundle bundle = new Bundle();
-            bundle.putString("WORD", doc.word);
+            bundle.putString("WORD", doc.word());
             firebaseAnalytics.logEvent("NEXT_WORD", bundle);
         });
     }
@@ -54,7 +52,7 @@ public class WordService {
             return Maybe.empty();
         }
         WordInfo currentWordInfo = appState.getWordInfo();
-        String prevWord = currentWordInfo == null || currentWordInfo.gender == null ? "" : currentWordInfo.word;
+        String prevWord = currentWordInfo == null || currentWordInfo.gender() == null ? "" : currentWordInfo.word();
 
         List<String> keys = new ArrayList<>(wordsWithErrors.keySet());
         String wordKey = keys.get(rnd.nextInt(size));
@@ -62,43 +60,18 @@ public class WordService {
             if (doc == null) {
                 appState.removeWordFromErrorMap();
                 return Maybe.empty();
-            } else if (prevWord.equals(doc.word)) {
+            } else if (prevWord.equals(doc.word())) {
                 return Maybe.empty();
             }
             return Maybe.just(doc);
         });
     }
 
-    private Single<WordInfo> getRandomWordAsync(int wordCount) {
+    private Single<WordInfo> getRandomWordAsync() {
         WordInfo currentWordInfo = appState.getWordInfo();
-        String prevGender = (currentWordInfo == null || currentWordInfo.gender == null)
+        String declensionType = (currentWordInfo == null || currentWordInfo.declensionType() == null)
                 ? ""
-                : currentWordInfo.gender;
-
-        return Maybe.defer(() -> {
-                    int id = rnd.nextInt(wordCount);
-                    return databaseManager.getDocumentDb().getWordInfoById(id);
-                })
-                .flatMap(doc -> {
-                    WordInfo filtered = applyFilters(doc, prevGender);
-                    if (filtered == null) {
-                        return Maybe.error(new NoSuchElementException("Filtered out"));
-                    }
-                    return Maybe.just(filtered);
-                })
-                .retry()
-                .toSingle();
-    }
-
-    private WordInfo applyFilters(WordInfo doc, String prevGender) {
-        if (doc == null) {
-            return null;
-        }
-        String genderFilter = appState.getGenderFilterStr();
-        if (genderFilter != null && !genderFilter.equals(Gender.ALL)) {
-            return (doc.gender == null || doc.gender.equals(genderFilter)) ? doc : null;
-        } else {
-            return prevGender.equals(doc.gender) ? null : doc;
-        }
+                : currentWordInfo.declensionType();
+        return databaseManager.getDocumentDb().getRandomWordWithAnotherDeclensionType(declensionType);
     }
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
@@ -22,11 +21,41 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
+import static com.usharik.app.Parameters.APPIUM_URL;
+import static com.usharik.app.Parameters.APP_PATH;
+import static com.usharik.app.Parameters.DATA_JSON_PATH;
+import static com.usharik.app.Parameters.DEFAULT_TIMEOUT;
+import static com.usharik.app.Parameters.DRAG_DURATION;
+import static com.usharik.app.Parameters.IMPLICIT_WAIT;
+import static com.usharik.app.Parameters.SCREEN_STABILITY_DELAY;
+import static com.usharik.app.Parameters.UI_UPDATE_DELAY;
+import static com.usharik.app.UiConstants.ID_ACTION_CHECK;
+import static com.usharik.app.UiConstants.ID_ACTION_NEXT;
+import static com.usharik.app.UiConstants.ID_APP_LOGO;
+import static com.usharik.app.UiConstants.ID_APP_NAME;
+import static com.usharik.app.UiConstants.ID_APP_VERSION;
+import static com.usharik.app.UiConstants.ID_BTN_NEXT_WORD;
+import static com.usharik.app.UiConstants.ID_BTN_RATE_APP;
+import static com.usharik.app.UiConstants.ID_BTN_STAY_HERE;
+import static com.usharik.app.UiConstants.ID_BTN_TRY_AGAIN;
+import static com.usharik.app.UiConstants.ID_CASES_CONTAINER;
+import static com.usharik.app.UiConstants.ID_CASE_PLURAL;
+import static com.usharik.app.UiConstants.ID_CASE_SINGULAR;
+import static com.usharik.app.UiConstants.ID_CHECKBOX_HEADER;
+import static com.usharik.app.UiConstants.ID_CURRENT_WORD;
+import static com.usharik.app.UiConstants.ID_DIALOG_TITLE;
+import static com.usharik.app.UiConstants.ID_GENDER_GROUP;
+import static com.usharik.app.UiConstants.ID_GENDER_HEADER;
+import static com.usharik.app.UiConstants.ID_NAV_MENU_ITEM;
+import static com.usharik.app.UiConstants.ID_RADIO_GROUP;
+import static com.usharik.app.UiConstants.ID_RADIO_GROUP_HEADER;
+import static com.usharik.app.UiConstants.ID_WORDS_RECYCLER;
+import static com.usharik.app.UiConstants.XPATH_NAV_DRAWER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,59 +72,7 @@ public class UiTests {
 
     private static final Logger logger = LoggerFactory.getLogger(UiTests.class);
 
-    // Configuration - Paths
-    private static final String APP_PATH = System.getProperty("app.path", "app/release/app-release.apk");
-    private static final String DATA_JSON_PATH = System.getProperty("data.jsonl.path", "database/src/main/assets/data.jsonl");
-    private static final String APPIUM_URL = System.getProperty("appium.url", "").trim();
-
-    // Configuration - Timeouts (in seconds)
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(
-        Long.parseLong(System.getProperty("test.timeout.default", "10")));
-    private static final Duration IMPLICIT_WAIT = Duration.ofSeconds(
-        Long.parseLong(System.getProperty("test.timeout.implicit", "2")));
-
-    // Configuration - Delays (in milliseconds)
-    private static final long SCREEN_STABILITY_DELAY = Long.parseLong(
-        System.getProperty("test.delay.screen.stability", "100"));
-    private static final long UI_UPDATE_DELAY = Long.parseLong(
-        System.getProperty("test.delay.ui.update", "100"));
-    private static final long DRAG_DURATION = Long.parseLong(
-        System.getProperty("test.delay.drag.duration", "100"));
-
-    // UI element IDs - Quiz Screen
-    private static final String ID_ACTION_NEXT = "com.usharik.app:id/action_next";
-    private static final String ID_ACTION_CHECK = "com.usharik.app:id/action_check";
-    private static final String ID_CURRENT_WORD = "com.usharik.app:id/word";
-    private static final String ID_CASE_SINGULAR = "com.usharik.app:id/caseSingular";
-    private static final String ID_CASE_PLURAL = "com.usharik.app:id/casePlural";
-    private static final String ID_WORDS_RECYCLER = "com.usharik.app:id/wordsRecyclerView";
-    private static final String ID_DIALOG_TITLE = "com.usharik.app:id/dialogTitle";
-    private static final String ID_BTN_NEXT_WORD = "com.usharik.app:id/btnNextWord";
-    private static final String ID_BTN_STAY_HERE = "com.usharik.app:id/btnStayHere";
-    private static final String ID_BTN_TRY_AGAIN = "com.usharik.app:id/btnTryAgain";
-    private static final String ID_BTN_RATE_APP = "com.usharik.app:id/btnRateApp";
-
-    // UI element IDs - Navigation
-    private static final String ID_NAV_MENU_ITEM = "com.usharik.app:id/design_menu_item_text";
-    private static final String XPATH_NAV_DRAWER = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]";
-
-    // UI element IDs - Words with Errors Screen
-    private static final String ID_WORDS_WITH_ERRORS_FLOW = "com.usharik.app:id/wordsWithErrorsFlow";
-    private static final String ID_CASES_CONTAINER = "com.usharik.app:id/casesContainer";
-
-    // UI element IDs - Handbook Screen
-    private static final String ID_GENDER_HEADER = "com.usharik.app:id/genderHeader";
-    private static final String ID_GENDER_GROUP = "com.usharik.app:id/genderGroup";
-
-    // UI element IDs - Settings Screen
-    private static final String ID_RADIO_GROUP_HEADER = "com.usharik.app:id/radioGroupHeader";
-    private static final String ID_RADIO_GROUP = "com.usharik.app:id/radioGroup";
-    private static final String ID_CHECKBOX_HEADER = "com.usharik.app:id/checkBoxHeader";
-
-    // UI element IDs - About Screen
-    private static final String ID_APP_NAME = "com.usharik.app:id/appName";
-    private static final String ID_APP_LOGO = "com.usharik.app:id/appLogo";
-    private static final String ID_APP_VERSION = "com.usharik.app:id/appVersion";
+    private static final String TIMESTAMP = Long.toString(System.currentTimeMillis());
 
     private static AndroidDriver driver;
     private static TestHelper helper;
@@ -116,16 +93,13 @@ public class UiTests {
         }
 
         if (APPIUM_URL.isEmpty()) {
-            throw new IllegalStateException(
-                "Missing required system property 'appium.url'. " +
-                "Internal Appium service startup is disabled."
-            );
+            throw new IllegalStateException("Missing required system property 'appium.url'");
         }
 
         logger.info("Using external Appium service at: {}", APPIUM_URL);
         final URL appiumServerUrl;
         try {
-            appiumServerUrl = new URL(APPIUM_URL);
+            appiumServerUrl = URI.create(APPIUM_URL).toURL();
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Invalid Appium URL: " + APPIUM_URL, e);
         }
@@ -179,15 +153,10 @@ public class UiTests {
      */
     @Test
     public void testCorrectQuizSolution() {
-        logger.info("Testing correct quiz solution workflow");
-
-        // Navigate to quiz screen
         navigateToQuizScreen();
 
-        // Get a fresh word to ensure clean state
         clickNextWord();
 
-        // Find UI elements
         List<WebElement> caseSingular = findElements(ID_CASE_SINGULAR);
         List<WebElement> casePlural = findElements(ID_CASE_PLURAL);
         WebElement currentWord = findElement(ID_CURRENT_WORD);
@@ -200,32 +169,23 @@ public class UiTests {
         String[][] wordCases = helper.getWordCases(currentWordText);
         assertNotNull(wordCases, "Word cases should not be null");
 
-        String timestamp = Long.toString(System.currentTimeMillis());
-        helper.makeScreenshot(timestamp, "before_solution.png");
+        helper.makeScreenshot(TIMESTAMP, "before_solution.png");
 
-        // Place all 14 word forms in correct positions
         placeAllWordForms(wordCases, caseSingular, casePlural);
 
-        helper.makeScreenshot(timestamp, "after_solution.png");
+        helper.makeScreenshot(TIMESTAMP, "after_solution.png");
 
-        // Check the solution
         checkButton.click();
 
-        // Verify success dialog
         verifySuccessDialog();
     }
     
     @Test
     public void testIncorrectQuizSolution() {
-        logger.info("Testing incorrect quiz solution workflow");
-
-        // Navigate to quiz screen
         navigateToQuizScreen();
 
-        // Get a fresh word to ensure clean state
         clickNextWord();
 
-        // Find UI elements
         List<WebElement> caseSingular = findElements(ID_CASE_SINGULAR);
         List<WebElement> casePlural = findElements(ID_CASE_PLURAL);
         WebElement currentWord = findElement(ID_CURRENT_WORD);
@@ -238,8 +198,7 @@ public class UiTests {
         String[][] wordCases = helper.getWordCases(currentWordText);
         assertNotNull(wordCases, "Word cases should not be null");
 
-        String timestamp = Long.toString(System.currentTimeMillis());
-        helper.makeScreenshot(timestamp, "before_incorrect_solution.png");
+        helper.makeScreenshot(TIMESTAMP, "before_incorrect_solution.png");
 
         // Create an intentionally incorrect solution:
         // - First N words: placed correctly
@@ -270,15 +229,12 @@ public class UiTests {
             waitForUiUpdate();
         }
 
-        // Remaining words are intentionally not placed (left in pool)
+        helper.makeScreenshot(TIMESTAMP, "after_incorrect_solution.png");
 
-        helper.makeScreenshot(timestamp, "after_incorrect_solution.png");
-
-        // Check the solution
         checkButton.click();
         waitForUiUpdate();
 
-        helper.makeScreenshot(timestamp, "after_error_check.png");
+        helper.makeScreenshot(TIMESTAMP, "after_error_check.png");
         
         WebElement toast = wait.until(
             ExpectedConditions.presenceOfElementLocated(
@@ -289,7 +245,6 @@ public class UiTests {
         logger.info("Toast message: {}", toastText);
         assertEquals("There're some errors.", toastText, "Error toast should show correct message");
 
-        // Verify that success dialog did NOT appear
         List<WebElement> alertDialogs = driver.findElements(AppiumBy.id(ID_DIALOG_TITLE));
         assertTrue(alertDialogs.isEmpty(), "Success dialog should not appear for incorrect solution");
 
@@ -298,8 +253,6 @@ public class UiTests {
     
     @Test
     public void testNavigateToQuizScreen() {
-        logger.info("Testing navigation to Quiz screen");
-
         navigateToScreen(0);
 
         // Verify quiz screen elements are present
@@ -320,8 +273,6 @@ public class UiTests {
     
     @Test
     public void testNavigateToWordsWithErrorsScreen() {
-        logger.info("Testing navigation to Words with Errors screen");
-
         navigateToScreen(1);
 
         // Verify words with errors screen elements are present
@@ -337,8 +288,6 @@ public class UiTests {
     
     @Test
     public void testNavigateToHandbookScreen() {
-        logger.info("Testing navigation to Handbook screen");
-
         navigateToScreen(2);
 
         // Verify handbook screen elements are present
@@ -357,8 +306,6 @@ public class UiTests {
     
     @Test
     public void testNavigateToSettingsScreen() {
-        logger.info("Testing navigation to Settings screen");
-
         navigateToScreen(3);
 
         // Verify settings screen elements are present
@@ -381,8 +328,6 @@ public class UiTests {
     
     @Test
     public void testNavigateToAboutScreen() {
-        logger.info("Testing navigation to About screen");
-
         navigateToScreen(4);
 
         // Verify about screen elements are present
@@ -407,8 +352,6 @@ public class UiTests {
      * @param elementName Human-readable name of the element for logging
      */
     private void testScreenRotationForCurrentScreen(String elementId, String elementName) {
-        logger.debug("Testing screen rotation for {}", elementName);
-
         // Test landscape orientation
         logger.debug("Rotating to landscape");
         driver.rotate(ScreenOrientation.LANDSCAPE);
@@ -492,7 +435,7 @@ public class UiTests {
             if (poolItems.isEmpty()) {
                 break;
             }
-            WebElement wordElement = poolItems.get(0);
+            WebElement wordElement = poolItems.getFirst();
             String wordText = wordElement.getText();
             logger.debug("Processing visible pool word {}: {}", placedCount + 1, wordText);
 
@@ -510,8 +453,6 @@ public class UiTests {
         logger.info("All visible word forms placed successfully. Count={}", placedCount);
     }
 
-
-
     /**
      * Verify that the success dialog appears with correct content
      */
@@ -521,6 +462,9 @@ public class UiTests {
         WebElement dialogTitle = wait.until(
             ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_DIALOG_TITLE))
         );
+
+        helper.makeScreenshot(TIMESTAMP, "success_dialog_open.png");
+
         assertEquals("All is correct!", dialogTitle.getText(), "Success message should be correct");
 
         assertNotNull(findElement(ID_BTN_NEXT_WORD), "Next word button should be present");
@@ -699,18 +643,13 @@ public class UiTests {
     private List<WebElement> findVisibleWordPoolItems() {
         String xpath = "//androidx.recyclerview.widget.RecyclerView[@resource-id='" + ID_WORDS_RECYCLER + "']"
                 + "//android.widget.TextView[string-length(@text) > 0]";
-        try {
-            return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.xpath(xpath)));
-        } catch (TimeoutException e) {
-            // Pool is empty — all words have been placed or none are visible
-            logger.debug("Word pool is empty (no items found within timeout)");
-            return Collections.emptyList();
-        }
+        return driver.findElements(AppiumBy.xpath(xpath));
     }
 
     private List<String> getVisibleWordPoolWordTexts() {
-        List<WebElement> items = findVisibleWordPoolItems();
-        return items.stream().map(WebElement::getText).toList();
+        return findVisibleWordPoolItems().stream()
+                .map(WebElement::getText)
+                .toList();
     }
 
     private WebElement findWordPoolWordByText(String wordText) {

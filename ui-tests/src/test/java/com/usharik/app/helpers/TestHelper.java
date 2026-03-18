@@ -1,7 +1,6 @@
 package com.usharik.app.helpers;
 
 import com.google.gson.Gson;
-import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.OutputType;
 import org.slf4j.Logger;
@@ -28,8 +27,6 @@ public final class TestHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(TestHelper.class);
 
-    // Get project root directory from system property (set by Gradle)
-    // and construct absolute path to screenshots directory
     private static final String PROJECT_ROOT = System.getProperty("project.root");
     private static final String SCREENSHOT_PATH = PROJECT_ROOT + "/ui-tests/screenshots/";
 
@@ -37,22 +34,22 @@ public final class TestHelper {
     private final Map<String, WordInfo> wordDataCache;
     private final Gson gson;
 
-    public TestHelper(AndroidDriver driver, String dataJsonPath) {
+    public TestHelper(AndroidDriver driver, String dataPath) {
         this.driver = driver;
         this.wordDataCache = new HashMap<>();
         this.gson = new Gson();
         logger.info("Screenshots will be saved to: {}", SCREENSHOT_PATH);
-        loadJsonData(dataJsonPath);
+        loadJsonlData(dataPath);
     }
 
     /**
      * Load all word data from JSON file into memory cache
-     * @param jsonPath Path to the JSON data file
+     * @param jsonlPath Path to the JSON data file
      */
-    private void loadJsonData(String jsonPath) {
-        logger.info("Loading word data from: {}", jsonPath);
+    private void loadJsonlData(String jsonlPath) {
+        logger.info("Loading word data from: {}", jsonlPath);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(jsonPath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(jsonlPath))) {
             String line;
             int lineNumber = 0;
 
@@ -64,10 +61,10 @@ public final class TestHelper {
                 }
 
                 try {
-                    // Parse JSON line using GSON
+                    // Parse JSONL line using GSON
                     WordInfo wordInfo = gson.fromJson(line, WordInfo.class);
-                    if (wordInfo != null && wordInfo.word != null) {
-                        wordDataCache.put(wordInfo.word, wordInfo);
+                    if (wordInfo != null && wordInfo.word() != null) {
+                        wordDataCache.put(wordInfo.word(), wordInfo);
                     } else {
                         logger.warn("Skipping line {} - invalid word data", lineNumber);
                     }
@@ -78,12 +75,10 @@ public final class TestHelper {
 
             logger.info("Successfully loaded {} words from JSON", wordDataCache.size());
         } catch (IOException e) {
-            logger.error("Error loading JSON data from: {}", jsonPath, e);
-            throw new RuntimeException("Failed to load word data", e);
+            logger.error("Error loading JSON data from: {}", jsonlPath, e);
+            throw new IllegalStateException("Failed to load word data", e);
         }
     }
-
-
 
     /**
      * Take a screenshot and save it to the screenshots directory
@@ -117,13 +112,11 @@ public final class TestHelper {
             throw new IllegalArgumentException("Word not found in cache: " + word);
         }
 
-        if (wordInfo.cases == null) {
+        if (wordInfo.cases() == null) {
             logger.error("Word '{}' has no cases data", word);
             return new String[2][7];
         }
 
-        return wordInfo.cases;
+        return wordInfo.cases();
     }
-
-
 }

@@ -39,7 +39,6 @@ import com.usharik.app.widget.CustomDragShadowBuilder;
 import javax.inject.Inject;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -168,7 +167,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.case6.casePlural.setOnDragListener(this::onDrag);
         binding.case7.caseSingular.setOnDragListener(this::onDrag);
         binding.case7.casePlural.setOnDragListener(this::onDrag);
-        // Word-pool touch listeners are now set by WordDragAdapter.onBindViewHolder.
     }
 
     // ─── Menu ────────────────────────────────────────────────────────────────

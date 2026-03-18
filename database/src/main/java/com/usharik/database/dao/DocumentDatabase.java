@@ -61,7 +61,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
                     while ((json = reader.readLine()) != null) {
                         WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
                         database.execSQL("insert into DOCUMENT(word_id, word, gender, json) values(?, ?, ?, ?);",
-                                new Object[] {wordInfo.wordId, wordInfo.word, wordInfo.gender, json});
+                                new Object[] {wordInfo.wordId(), wordInfo.word(), wordInfo.gender(), json});
                     }
                 }
             } catch (IOException e) {
@@ -134,11 +134,11 @@ public abstract class DocumentDatabase extends RoomDatabase {
                             "`json` = ? " +
                             "WHERE `word_id` = ?",
                             new Object[] {
-                                wordInfo.word,
-                                wordInfo.gender,
-                                wordInfo.declensionType,
+                                wordInfo.word(),
+                                wordInfo.gender(),
+                                wordInfo.declensionType(),
                                 json,
-                                wordInfo.wordId
+                                wordInfo.wordId()
                             }
                         );
                         updatedCount++;

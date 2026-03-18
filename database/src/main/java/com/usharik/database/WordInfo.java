@@ -1,18 +1,14 @@
 package com.usharik.database;
 
-public class WordInfo {
-    public Long wordId;
-    public String word;
-    public String[][] cases;
-    public String translation_ru;
-    public String translation_en;
-    public String gender;
-    public String declensionType;
-
-    // No-arg constructor for GSON
-    public WordInfo() {
-    }
-
+public record WordInfo(
+    Long wordId,
+    String word,
+    String[][] cases,
+    String translation_ru,
+    String translation_en,
+    String gender,
+    String declensionType
+) {
     public WordInfo(Long wordId, String word, String[][] cases, String translation_ru, String translation_en, String gender, String declensionType) {
         this.wordId = wordId;
         this.word = word == null ? "" : word;
@@ -21,5 +17,9 @@ public class WordInfo {
         this.translation_en = translation_en == null ? "" : translation_en;
         this.gender = gender == null ? "" : gender;
         this.declensionType = declensionType == null ? "" : declensionType;
+    }
+
+    public String cases(int i, int j) {
+        return this.cases[i][j];
     }
 }

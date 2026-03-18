@@ -59,19 +59,19 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     @Bindable
     public String getWord() {
         WordInfo wordInfo = appState.getWordInfo();
-        return wordInfo != null ? wordInfo.word : "";
+        return wordInfo != null ? wordInfo.word() : "";
     }
 
     @Bindable
     public String getGender() {
         WordInfo wordInfo = appState.getWordInfo();
-        return wordInfo != null ? wordInfo.gender : "";
+        return wordInfo != null ? wordInfo.gender() : "";
     }
 
     @Bindable
     public String getDeclensionType() {
         WordInfo wordInfo = appState.getWordInfo();
-        return wordInfo != null ? wordInfo.declensionType : "";
+        return wordInfo != null ? wordInfo.declensionType() : "";
     }
 
     @Bindable
@@ -81,8 +81,8 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
         String language = locale.getISO3Language();
         return switch (language) {
-            case RUS, BEL, UKR -> wordInfo.translation_ru;
-            default -> wordInfo.translation_en;
+            case RUS, BEL, UKR -> wordInfo.translation_ru();
+            default -> wordInfo.translation_en();
         };
     }
 
@@ -102,8 +102,8 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                     appState.setWordInfo(wordInfo);
                     List<WordTextModel> words = new ArrayList<>();
                     for (int i = 0; i < 7; i++) {
-                        String singular = wordInfo.cases[SINGULAR][i];
-                        String plural = wordInfo.cases[PLURAL][i];
+                        String singular = wordInfo.cases(SINGULAR, i);
+                        String plural = wordInfo.cases(PLURAL, i);
                         words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
                         words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
                         appState.getCorrectAnswers()[SINGULAR][i] = singular;

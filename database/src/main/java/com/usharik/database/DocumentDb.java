@@ -6,11 +6,7 @@ import io.reactivex.rxjava3.core.Single;
 public interface DocumentDb {
     Single<Integer> getCount();
 
-    Maybe<WordInfo> getWordInfoById(long id);
-
     Maybe<WordInfo> getWordInfoByWord(String word);
 
-    Maybe<WordInfo> getWordInfoByWordId(long wordId);
-
-    long addWordInfo(WordInfo wordInfo);
+    Single<WordInfo> getRandomWordWithAnotherDeclensionType(String prevDeclensionType);
 }

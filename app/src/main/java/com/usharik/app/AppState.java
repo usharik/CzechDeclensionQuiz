@@ -150,7 +150,7 @@ public class AppState {
         WordInfo currentWordInfo = getWordInfo();
         if (currentWordInfo != null) {
             Map<String, Integer> currentMap = getWordsWithErrors();
-            currentMap.put(currentWordInfo.word, errorCount);
+            currentMap.put(currentWordInfo.word(), errorCount);
             wordsWithErrorsLiveData.setValue(currentMap);
         }
     }
@@ -159,7 +159,7 @@ public class AppState {
         WordInfo currentWordInfo = getWordInfo();
         if (currentWordInfo != null) {
             Map<String, Integer> currentMap = getWordsWithErrors();
-            currentMap.remove(currentWordInfo.word);
+            currentMap.remove(currentWordInfo.word());
             wordsWithErrorsLiveData.setValue(currentMap);
         }
     }

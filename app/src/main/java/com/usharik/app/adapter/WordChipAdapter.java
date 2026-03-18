@@ -42,16 +42,6 @@ public class WordChipAdapter extends RecyclerView.Adapter<WordChipAdapter.ChipVi
         notifyDataSetChanged();
     }
 
-    /** Update only the selection highlight without replacing the whole list. */
-    public void setSelectedWord(String word) {
-        String previous = selectedWord;
-        selectedWord = word;
-        int prevIndex = words.indexOf(previous);
-        int newIndex = words.indexOf(word);
-        if (prevIndex >= 0) notifyItemChanged(prevIndex);
-        if (newIndex >= 0) notifyItemChanged(newIndex);
-    }
-
     @NonNull
     @Override
     public ChipViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -63,7 +63,7 @@ public class HandbookViewModel extends ViewModelObservable {
     public void setSelectedWord(String selectedWord) {
         appState.setSelectedWord(selectedWord);
         WordInfo wordInfo = databaseManager.getDocumentDb().getWordInfoByWord(selectedWord).blockingGet();
-        cases = wordInfo.cases;
+        cases = wordInfo.cases();
         notifyPropertyChanged(BR.cases);
         notifyPropertyChanged(BR.otherNouns);
     }
