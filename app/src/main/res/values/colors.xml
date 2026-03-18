@@ -36,4 +36,8 @@
     <color name="colorOnTertiary">#000000</color>
     <color name="colorError">#B00020</color>
     <color name="colorOnError">#FFFFFF</color>
+
+    <!-- Button-specific colors (light mode) -->
+    <color name="button_answer_background">#F5F5F5</color>
+    <color name="button_answer_text">#212121</color>
 </resources>

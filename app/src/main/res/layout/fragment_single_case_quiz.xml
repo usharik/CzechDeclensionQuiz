@@ -91,9 +91,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnswer1"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:backgroundTint="@color/colorSurfaceVariant"
-                android:textColor="@color/colorOnSurfaceVariant"
+                style="@style/Widget.App.Button.Answer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lg"
@@ -105,9 +103,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnswer2"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:backgroundTint="@color/colorSurfaceVariant"
-                android:textColor="@color/colorOnSurfaceVariant"
+                style="@style/Widget.App.Button.Answer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
@@ -119,9 +115,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnswer3"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:backgroundTint="@color/colorSurfaceVariant"
-                android:textColor="@color/colorOnSurfaceVariant"
+                style="@style/Widget.App.Button.Answer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
@@ -133,9 +127,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnswer4"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:backgroundTint="@color/colorSurfaceVariant"
-                android:textColor="@color/colorOnSurfaceVariant"
+                style="@style/Widget.App.Button.Answer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_sm"
@@ -147,6 +139,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNextCase"
+                style="@style/Widget.App.Button.Secondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lg"
@@ -161,6 +154,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNextWord"
+                style="@style/Widget.App.Button.Primary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lg"

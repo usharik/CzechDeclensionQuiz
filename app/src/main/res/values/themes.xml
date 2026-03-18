@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme for Android 12+ (API 31+) with edge-to-edge support -->
+    <!-- Base application theme (Light mode) -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -32,9 +32,8 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorSurface</item>
 
-        <!-- Android 12+ specific: Light status/nav bars -->
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <!-- CRITICAL: Disable Material elevation overlays -->
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 </resources>
 
