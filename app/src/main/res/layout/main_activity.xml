@@ -6,16 +6,23 @@
         android:background="@color/colorSurface"
         android:orientation="vertical">
 
-    <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/toolbar_height_large"
             android:background="@color/colorPrimary"
             android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:navigationIcon="@drawable/ic_home_black_24dp"
-            app:navigationIconTint="@android:color/white"
-            app:titleTextColor="@android:color/white" />
+            android:gravity="bottom"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height_default"
+                android:background="@android:color/transparent"
+                app:navigationIcon="@drawable/ic_home_black_24dp"
+                app:navigationIconTint="@android:color/white"
+                app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
             android:id="@+id/fragmentContainer"

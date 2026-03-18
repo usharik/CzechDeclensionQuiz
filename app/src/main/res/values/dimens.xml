@@ -36,6 +36,8 @@
     <dimen name="case_name_width">100dp</dimen>
 
     <!-- Typography size tokens -->
+    <dimen name="toolbar_height_default">56dp</dimen>
+    <dimen name="toolbar_height_large">68dp</dimen>
     <dimen name="text_size_heading">22sp</dimen>
     <dimen name="text_size_title">18sp</dimen>
     <dimen name="text_size_body">14sp</dimen>
