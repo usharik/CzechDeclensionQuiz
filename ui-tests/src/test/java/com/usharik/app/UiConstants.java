@@ -2,6 +2,8 @@ package com.usharik.app;
 
 public final class UiConstants {
 
+    static final String APP_PACKAGE = "com.usharik.app";
+
     // UI element IDs - Quiz Screen
     static final String ID_ACTION_NEXT = "com.usharik.app:id/action_next";
     static final String ID_ACTION_CHECK = "com.usharik.app:id/action_check";
@@ -16,13 +18,16 @@ public final class UiConstants {
     static final String ID_BTN_RATE_APP = "com.usharik.app:id/btnRateApp";
 
     // UI element IDs - Navigation
-    static final String ID_NAV_MENU_ITEM = "com.usharik.app:id/design_menu_item_text";
-    static final String XPATH_NAV_DRAWER = "//android.widget.ImageButton[@content-desc=\"Navigate up\"]";
+    static final String ID_TOOLBAR = "com.usharik.app:id/toolbar";
 
     // UI element IDs - Quiz Mode Selection Screen
     static final String ID_TITLE_QUIZ_MODE = "com.usharik.app:id/titleQuizMode";
     static final String ID_BTN_FULL_TABLE = "com.usharik.app:id/btnFullTable";
     static final String ID_BTN_ONE_CASE = "com.usharik.app:id/btnOneCase";
+    static final String ID_BTN_WORDS_WITH_ERRORS = "com.usharik.app:id/btnWordsWithErrors";
+    static final String ID_BTN_HANDBOOK = "com.usharik.app:id/btnHandbook";
+    static final String ID_BTN_SETTINGS = "com.usharik.app:id/btnSettings";
+    static final String ID_BTN_ABOUT = "com.usharik.app:id/btnAbout";
 
     // UI element IDs - Single Case Quiz Screen
     static final String ID_TV_WORD = "com.usharik.app:id/tvWord";
@@ -33,7 +38,8 @@ public final class UiConstants {
     static final String ID_BTN_ANSWER_2 = "com.usharik.app:id/btnAnswer2";
     static final String ID_BTN_ANSWER_3 = "com.usharik.app:id/btnAnswer3";
     static final String ID_BTN_ANSWER_4 = "com.usharik.app:id/btnAnswer4";
-    static final String ID_BTN_NEXT_CASE = "com.usharik.app:id/btnNext";
+    static final String ID_BTN_NEXT_CASE = "com.usharik.app:id/btnNextCase";
+    static final String ID_BTN_NEXT_WORD_SINGLE_CASE = "com.usharik.app:id/btnNextWord";
 
     // UI element IDs - Words with Errors Screen
     static final String ID_CASES_CONTAINER = "com.usharik.app:id/casesContainer";

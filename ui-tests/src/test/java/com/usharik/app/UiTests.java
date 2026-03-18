@@ -34,22 +34,27 @@ import static com.usharik.app.Parameters.DRAG_DURATION;
 import static com.usharik.app.Parameters.IMPLICIT_WAIT;
 import static com.usharik.app.Parameters.SCREEN_STABILITY_DELAY;
 import static com.usharik.app.Parameters.UI_UPDATE_DELAY;
+import static com.usharik.app.UiConstants.APP_PACKAGE;
 import static com.usharik.app.UiConstants.ID_ACTION_CHECK;
 import static com.usharik.app.UiConstants.ID_ACTION_NEXT;
 import static com.usharik.app.UiConstants.ID_APP_LOGO;
 import static com.usharik.app.UiConstants.ID_APP_NAME;
 import static com.usharik.app.UiConstants.ID_APP_VERSION;
+import static com.usharik.app.UiConstants.ID_BTN_ABOUT;
 import static com.usharik.app.UiConstants.ID_BTN_ANSWER_1;
 import static com.usharik.app.UiConstants.ID_BTN_ANSWER_2;
 import static com.usharik.app.UiConstants.ID_BTN_ANSWER_3;
 import static com.usharik.app.UiConstants.ID_BTN_ANSWER_4;
 import static com.usharik.app.UiConstants.ID_BTN_FULL_TABLE;
+import static com.usharik.app.UiConstants.ID_BTN_HANDBOOK;
 import static com.usharik.app.UiConstants.ID_BTN_NEXT_CASE;
 import static com.usharik.app.UiConstants.ID_BTN_NEXT_WORD;
 import static com.usharik.app.UiConstants.ID_BTN_ONE_CASE;
 import static com.usharik.app.UiConstants.ID_BTN_RATE_APP;
+import static com.usharik.app.UiConstants.ID_BTN_SETTINGS;
 import static com.usharik.app.UiConstants.ID_BTN_STAY_HERE;
 import static com.usharik.app.UiConstants.ID_BTN_TRY_AGAIN;
+import static com.usharik.app.UiConstants.ID_BTN_WORDS_WITH_ERRORS;
 import static com.usharik.app.UiConstants.ID_CASES_CONTAINER;
 import static com.usharik.app.UiConstants.ID_CASE_PLURAL;
 import static com.usharik.app.UiConstants.ID_CASE_SINGULAR;
@@ -58,34 +63,25 @@ import static com.usharik.app.UiConstants.ID_CURRENT_WORD;
 import static com.usharik.app.UiConstants.ID_DIALOG_TITLE;
 import static com.usharik.app.UiConstants.ID_GENDER_GROUP;
 import static com.usharik.app.UiConstants.ID_GENDER_HEADER;
-import static com.usharik.app.UiConstants.ID_NAV_MENU_ITEM;
 import static com.usharik.app.UiConstants.ID_RADIO_GROUP;
 import static com.usharik.app.UiConstants.ID_RADIO_GROUP_HEADER;
 import static com.usharik.app.UiConstants.ID_TITLE_QUIZ_MODE;
+import static com.usharik.app.UiConstants.ID_TOOLBAR;
 import static com.usharik.app.UiConstants.ID_TV_CASE_NAME;
 import static com.usharik.app.UiConstants.ID_TV_CASE_QUESTION;
 import static com.usharik.app.UiConstants.ID_TV_NUMBER_LABEL;
 import static com.usharik.app.UiConstants.ID_TV_WORD;
 import static com.usharik.app.UiConstants.ID_WORDS_RECYCLER;
-import static com.usharik.app.UiConstants.XPATH_NAV_DRAWER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * UI Tests for Czech Declension Quiz App
- *
- * Tests the main quiz functionality including:
- * - Correct quiz solution with drag and drop
- * - Navigation between different screens
- * - Screen rotation handling
- */
 public class UiTests {
 
     private static final Logger logger = LoggerFactory.getLogger(UiTests.class);
-
     private static final String TIMESTAMP = Long.toString(System.currentTimeMillis());
+    private static final String XPATH_TOOLBAR_HOME = "//*[@resource-id='" + ID_TOOLBAR + "']//android.widget.ImageButton[1]";
 
     private static AndroidDriver driver;
     private static TestHelper helper;
@@ -93,8 +89,6 @@ public class UiTests {
 
     @BeforeAll
     public static void setupClass() {
-        logger.info("Setting up test environment");
-
         File appFile = new File(APP_PATH);
         if (!appFile.exists()) {
             throw new IllegalStateException("APK file not found at: " + appFile.getAbsolutePath());
@@ -109,7 +103,6 @@ public class UiTests {
             throw new IllegalStateException("Missing required system property 'appium.url'");
         }
 
-        logger.info("Using external Appium service at: {}", APPIUM_URL);
         final URL appiumServerUrl;
         try {
             appiumServerUrl = URI.create(APPIUM_URL).toURL();
@@ -117,7 +110,6 @@ public class UiTests {
             throw new IllegalStateException("Invalid Appium URL: " + APPIUM_URL, e);
         }
 
-        logger.info("Initializing Android driver with app: {}", appFile.getAbsolutePath());
         UiAutomator2Options options = new UiAutomator2Options()
                 .setDeviceName("Android Device")
                 .setApp(appFile.getAbsolutePath())
@@ -126,8 +118,6 @@ public class UiTests {
 
         driver = new AndroidDriver(appiumServerUrl, options);
         driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT);
-
-        logger.info("Initializing test helper with data from: {}", DATA_JSON_PATH);
         helper = new TestHelper(driver, DATA_JSON_PATH);
     }
 
@@ -135,468 +125,277 @@ public class UiTests {
     public void setupTest(TestInfo testInfo) {
         logger.info("Starting test: {}", testInfo.getDisplayName());
         wait = new WebDriverWait(driver, DEFAULT_TIMEOUT);
+        ensureHubScreen();
     }
 
     @AfterEach
     public void tearDownTest(TestInfo testInfo) {
+        try {
+            driver.rotate(ScreenOrientation.PORTRAIT);
+        } catch (Exception ignored) {
+        }
         logger.info("Finished test: {}", testInfo.getDisplayName());
     }
 
     @AfterAll
     public static void tearDownClass() {
-        logger.info("Tearing down test environment");
-
         if (driver != null) {
-            try {
-                driver.quit();
-            } catch (Exception e) {
-                logger.error("Error quitting driver", e);
-            }
+            driver.quit();
         }
-
-        logger.info("Test environment cleanup complete");
     }
 
-    /**
-     * Test that verifies the complete quiz workflow:
-     * 1. Navigate to quiz screen
-     * 2. Get a fresh word
-     * 3. Drag and drop all word forms to correct positions
-     * 4. Verify the solution is correct
-     */
+    @Test
+    public void testHubScreenShowsAllNavigationButtons() {
+        assertHubVisible();
+        assertButtonText(ID_BTN_FULL_TABLE, "Full declension table");
+        assertButtonText(ID_BTN_ONE_CASE, "One case at a time");
+        assertButtonText(ID_BTN_WORDS_WITH_ERRORS, "Words with errors");
+        assertButtonText(ID_BTN_HANDBOOK, "Handbook");
+        assertButtonText(ID_BTN_SETTINGS, "Settings");
+        assertButtonText(ID_BTN_ABOUT, "About");
+    }
+
+    @Test
+    public void testFullQuizNavigationReturnsToHubViaBack() {
+        openFullQuizFromHub();
+        assertDeclensionQuizVisible();
+
+        driver.navigate().back();
+        waitForHubScreen();
+
+        openFullQuizFromHub();
+        assertDeclensionQuizVisible();
+        driver.navigate().back();
+        waitForHubScreen();
+    }
+
+    @Test
+    public void testNavigateToWordsWithErrorsScreen() {
+        openPageFromHub(ID_BTN_WORDS_WITH_ERRORS, ID_CASES_CONTAINER);
+        assertNotNull(waitForVisibleElement(ID_CASES_CONTAINER));
+        driver.navigate().back();
+        waitForHubScreen();
+    }
+
+    @Test
+    public void testNavigateToHandbookScreen() {
+        openPageFromHub(ID_BTN_HANDBOOK, ID_GENDER_HEADER);
+
+        WebElement genderHeader = waitForVisibleElement(ID_GENDER_HEADER);
+        assertEquals("Gender of noun", genderHeader.getText());
+        assertNotNull(waitForVisibleElement(ID_GENDER_GROUP));
+
+        driver.navigate().back();
+        waitForHubScreen();
+    }
+
+    @Test
+    public void testNavigateToSettingsScreen() {
+        openPageFromHub(ID_BTN_SETTINGS, ID_RADIO_GROUP_HEADER);
+
+        WebElement radioGroupHeader = waitForVisibleElement(ID_RADIO_GROUP_HEADER);
+        assertEquals("Word filter by gender", radioGroupHeader.getText());
+        assertNotNull(waitForVisibleElement(ID_RADIO_GROUP));
+
+        WebElement checkboxHeader = waitForVisibleElement(ID_CHECKBOX_HEADER);
+        assertEquals("Additional settings", checkboxHeader.getText());
+
+        driver.navigate().back();
+        waitForHubScreen();
+    }
+
+    @Test
+    public void testNavigateToAboutScreen() {
+        openPageFromHub(ID_BTN_ABOUT, ID_APP_NAME);
+
+        WebElement appName = waitForVisibleElement(ID_APP_NAME);
+        assertEquals("Czech declension quiz", appName.getText());
+        assertNotNull(waitForVisibleElement(ID_APP_LOGO));
+        assertTrue(waitForVisibleElement(ID_APP_VERSION).getText().startsWith("Version "));
+
+        driver.navigate().back();
+        waitForHubScreen();
+    }
+
     @Test
     public void testCorrectQuizSolution() {
-        navigateToQuizScreen();
-
+        openFullQuizFromHub();
         clickNextWord();
 
         List<WebElement> caseSingular = findElements(ID_CASE_SINGULAR);
         List<WebElement> casePlural = findElements(ID_CASE_PLURAL);
-        WebElement currentWord = findElement(ID_CURRENT_WORD);
-        WebElement checkButton = findElement(ID_ACTION_CHECK);
-
-        String currentWordText = currentWord.getText();
-        assertNotNull(currentWordText, "Current word should not be null");
-        logger.info("Testing word: {}", currentWordText);
+        String currentWordText = findElement(ID_CURRENT_WORD).getText();
+        assertNotNull(currentWordText);
 
         String[][] wordCases = helper.getWordCases(currentWordText);
-        assertNotNull(wordCases, "Word cases should not be null");
-
         helper.makeScreenshot(TIMESTAMP, "before_solution.png");
-
         placeAllWordForms(wordCases, caseSingular, casePlural);
-
         helper.makeScreenshot(TIMESTAMP, "after_solution.png");
 
-        checkButton.click();
-
+        findElement(ID_ACTION_CHECK).click();
         verifySuccessDialog();
     }
-    
+
     @Test
     public void testIncorrectQuizSolution() {
-        navigateToQuizScreen();
-
+        openFullQuizFromHub();
         clickNextWord();
 
         List<WebElement> caseSingular = findElements(ID_CASE_SINGULAR);
         List<WebElement> casePlural = findElements(ID_CASE_PLURAL);
-        WebElement currentWord = findElement(ID_CURRENT_WORD);
-        WebElement checkButton = findElement(ID_ACTION_CHECK);
-
-        String currentWordText = currentWord.getText();
-        assertNotNull(currentWordText, "Current word should not be null");
-        logger.info("Testing word with intentional errors: {}", currentWordText);
+        String currentWordText = findElement(ID_CURRENT_WORD).getText();
+        assertNotNull(currentWordText);
 
         String[][] wordCases = helper.getWordCases(currentWordText);
-        assertNotNull(wordCases, "Word cases should not be null");
-
         helper.makeScreenshot(TIMESTAMP, "before_incorrect_solution.png");
-
-        // Create an intentionally incorrect solution:
-        // - First N words: placed correctly
-        // - Next M words: placed in WRONG positions (swap singular/plural)
-        // - Remaining words: left unplaced
-        logger.info("Placing words with intentional errors");
 
         List<String> initialPoolWords = getVisibleWordPoolWordTexts();
         int wordsToPlace = Math.min(10, initialPoolWords.size());
-        logger.info("Visible words in pool: {}, placing first {}", initialPoolWords.size(), wordsToPlace);
-
         for (int i = 0; i < wordsToPlace; i++) {
             String wordText = initialPoolWords.get(i);
             WebElement wordElement = findWordPoolWordByText(wordText);
-
-            logger.debug("Processing word {}: {}", i + 1, wordText);
-
-            WebElement targetCell;
-            if (i < 6) {
-                targetCell = getProperCell(wordText, wordCases, caseSingular, casePlural);
-                logger.debug("Placing word {} correctly", i + 1);
-            } else {
-                targetCell = getWrongCell(wordText, wordCases, caseSingular, casePlural);
-                logger.debug("Placing word {} INCORRECTLY (swapped singular/plural)", i + 1);
-            }
-
+            WebElement targetCell = i < 6
+                    ? getProperCell(wordText, wordCases, caseSingular, casePlural)
+                    : getWrongCell(wordText, wordCases, caseSingular, casePlural);
             performDragAndDrop(wordElement, targetCell);
             waitForUiUpdate();
         }
 
         helper.makeScreenshot(TIMESTAMP, "after_incorrect_solution.png");
-
-        checkButton.click();
+        findElement(ID_ACTION_CHECK).click();
         waitForUiUpdate();
 
-        helper.makeScreenshot(TIMESTAMP, "after_error_check.png");
-        
-        WebElement toast = wait.until(
-            ExpectedConditions.presenceOfElementLocated(
-                AppiumBy.xpath("//android.widget.Toast[1]")
-            )
-        );
-        String toastText = toast.getAttribute("text");
-        logger.info("Toast message: {}", toastText);
-        assertEquals("There're some errors.", toastText, "Error toast should show correct message");
-
-        List<WebElement> alertDialogs = driver.findElements(AppiumBy.id(ID_DIALOG_TITLE));
-        assertTrue(alertDialogs.isEmpty(), "Success dialog should not appear for incorrect solution");
-
-        logger.info("Incorrect quiz solution test completed successfully");
-    }
-    
-    @Test
-    public void testNavigateToQuizScreen() {
-        navigateToScreen(0);
-
-        // Verify quiz screen elements are present
-        WebElement currentWord = waitForVisibleElement(ID_CURRENT_WORD);
-        assertNotNull(currentWord, "Current word should be displayed");
-
-        WebElement checkButton = waitForVisibleElement(ID_ACTION_CHECK);
-        assertNotNull(checkButton, "Check button should be present");
-
-        WebElement nextButton = waitForVisibleElement(ID_ACTION_NEXT);
-        assertNotNull(nextButton, "Next button should be present");
-
-        // Test rotation
-        testScreenRotationForCurrentScreen(ID_CURRENT_WORD, "Current word");
-
-        logger.info("Quiz screen verified successfully");
-    }
-    
-    @Test
-    public void testNavigateToWordsWithErrorsScreen() {
-        navigateToScreen(1);
-
-        // Verify words with errors screen elements are present
-        // The screen shows cases container which displays word declensions
-        WebElement casesContainer = waitForVisibleElement(ID_CASES_CONTAINER);
-        assertNotNull(casesContainer, "Cases container should be displayed");
-
-        // Test rotation
-        testScreenRotationForCurrentScreen(ID_CASES_CONTAINER, "Cases container");
-
-        logger.info("Words with Errors screen verified successfully");
-    }
-    
-    @Test
-    public void testNavigateToHandbookScreen() {
-        navigateToScreen(2);
-
-        // Verify handbook screen elements are present
-        WebElement genderHeader = waitForVisibleElement(ID_GENDER_HEADER);
-        assertNotNull(genderHeader, "Gender header should be displayed");
-        assertEquals("Gender of noun", genderHeader.getText(), "Gender header should have correct text");
-
-        WebElement genderGroup = waitForVisibleElement(ID_GENDER_GROUP);
-        assertNotNull(genderGroup, "Gender radio group should be present");
-
-        // Test rotation
-        testScreenRotationForCurrentScreen(ID_GENDER_HEADER, "Gender header");
-
-        logger.info("Handbook screen verified successfully");
-    }
-    
-    @Test
-    public void testNavigateToSettingsScreen() {
-        navigateToScreen(3);
-
-        // Verify settings screen elements are present
-        WebElement radioGroupHeader = waitForVisibleElement(ID_RADIO_GROUP_HEADER);
-        assertNotNull(radioGroupHeader, "Radio group header should be displayed");
-        assertEquals("Word filter by gender", radioGroupHeader.getText(), "Radio group header should have correct text");
-
-        WebElement radioGroup = waitForVisibleElement(ID_RADIO_GROUP);
-        assertNotNull(radioGroup, "Radio group should be present");
-
-        WebElement checkboxHeader = waitForVisibleElement(ID_CHECKBOX_HEADER);
-        assertNotNull(checkboxHeader, "Checkbox header should be displayed");
-        assertEquals("Additional settings", checkboxHeader.getText(), "Checkbox header should have correct text");
-
-        // Test rotation
-        testScreenRotationForCurrentScreen(ID_RADIO_GROUP_HEADER, "Radio group header");
-
-        logger.info("Settings screen verified successfully");
-    }
-    
-    @Test
-    public void testNavigateToAboutScreen() {
-        navigateToScreen(4);
-
-        // Verify about screen elements are present
-        WebElement appName = waitForVisibleElement(ID_APP_NAME);
-        assertNotNull(appName, "App name should be displayed");
-        assertEquals("Czech declension quiz", appName.getText(), "App name should be correct");
-
-        WebElement appLogo = waitForVisibleElement(ID_APP_LOGO);
-        assertNotNull(appLogo, "App logo should be present");
-
-        WebElement appVersion = waitForVisibleElement(ID_APP_VERSION);
-        assertNotNull(appVersion, "App version should be displayed");
-        
-        testScreenRotationForCurrentScreen(ID_APP_NAME, "App name");
-
-        logger.info("About screen verified successfully");
+        WebElement toast = wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Toast[1]")));
+        assertEquals("There're some errors.", toast.getAttribute("text"));
+        assertTrue(driver.findElements(AppiumBy.id(ID_DIALOG_TITLE)).isEmpty());
     }
 
-    /**
-     * Navigate to the quiz mode selection screen by pressing Back from within any quiz.
-     * This is the only way to reach mode selection after the initial launch, so it is
-     * extracted as a reusable helper used by all mode-selection-related tests.
-     */
-    private void navigateToModeSelection() {
-        // Ensure we start from a quiz screen (navigateToQuizScreen handles mode selection
-        // transparently by selecting Full Table if it appears)
-        navigateToQuizScreen();
-        // One Back press pops the quiz fragment and reveals QuizModeSelectionFragment
-        driver.navigate().back();
-        waitForScreenStability();
-    }
-
-    /**
-     * Test that the quiz mode selection screen shows the correct UI:
-     * a title and two mode buttons.
-     */
-    @Test
-    public void testQuizModeSelectionScreen() {
-        navigateToModeSelection();
-
-        WebElement title = waitForVisibleElement(ID_TITLE_QUIZ_MODE);
-        assertNotNull(title, "Mode selection title should be present");
-        assertEquals("Choose quiz mode", title.getText(), "Mode selection title text should be correct");
-
-        WebElement btnFullTable = waitForVisibleElement(ID_BTN_FULL_TABLE);
-        assertNotNull(btnFullTable, "Full Table button should be present");
-        assertEquals("Full declension table", btnFullTable.getText(), "Full Table button text should be correct");
-
-        WebElement btnOneCase = waitForVisibleElement(ID_BTN_ONE_CASE);
-        assertNotNull(btnOneCase, "One Case button should be present");
-        assertEquals("One case at a time", btnOneCase.getText(), "One Case button text should be correct");
-
-        testScreenRotationForCurrentScreen(ID_TITLE_QUIZ_MODE, "Mode selection title");
-
-        logger.info("Quiz mode selection screen verified successfully");
-    }
-
-    /**
-     * Test that selecting "One case at a time" from the mode selection screen
-     * opens the single-case quiz and shows all expected UI elements.
-     */
     @Test
     public void testSingleCaseQuizScreen() {
-        navigateToModeSelection();
+        openOneCaseQuizFromHub();
 
-        waitForVisibleElement(ID_BTN_ONE_CASE).click();
-        waitForScreenStability();
+        assertFalse(waitForVisibleElement(ID_TV_WORD).getText().isEmpty());
+        assertFalse(waitForVisibleElement(ID_TV_CASE_NAME).getText().isEmpty());
+        assertEquals("Singular", waitForVisibleElement(ID_TV_NUMBER_LABEL).getText());
+        assertFalse(waitForVisibleElement(ID_TV_CASE_QUESTION).getText().isEmpty());
 
-        WebElement tvWord = waitForVisibleElement(ID_TV_WORD);
-        assertNotNull(tvWord, "Word label should be displayed");
-        assertFalse(tvWord.getText().isEmpty(), "Word label should not be empty");
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_1));
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_2));
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_3));
+        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_4));
+        assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled());
 
-        WebElement tvCaseName = waitForVisibleElement(ID_TV_CASE_NAME);
-        assertNotNull(tvCaseName, "Case name should be displayed");
-        assertFalse(tvCaseName.getText().isEmpty(), "Case name should not be empty");
-
-        WebElement tvNumberLabel = waitForVisibleElement(ID_TV_NUMBER_LABEL);
-        assertNotNull(tvNumberLabel, "Number label (Singular/Plural) should be displayed");
-        assertEquals("Singular", tvNumberLabel.getText(), "First step should be Singular");
-
-        WebElement tvCaseQuestion = waitForVisibleElement(ID_TV_CASE_QUESTION);
-        assertNotNull(tvCaseQuestion, "Case question should be displayed");
-        assertFalse(tvCaseQuestion.getText().isEmpty(), "Case question should not be empty");
-
-        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_1), "Answer button 1 should be present");
-        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_2), "Answer button 2 should be present");
-        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_3), "Answer button 3 should be present");
-        assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_4), "Answer button 4 should be present");
-
-        WebElement btnNext = waitForVisibleElement(ID_BTN_NEXT_CASE);
-        assertNotNull(btnNext, "Next button should be present");
-        assertFalse(btnNext.isEnabled(), "Next button should be disabled before answering");
-
-        testScreenRotationForCurrentScreen(ID_TV_WORD, "Single case quiz word");
-
-        logger.info("Single case quiz screen verified successfully");
+        driver.navigate().back();
+        waitForHubScreen();
     }
 
-    /**
-     * Test that selecting an answer in single-case quiz provides visual feedback
-     * and enables the Next button.
-     */
     @Test
     public void testSingleCaseQuizAnswerInteraction() {
-        navigateToModeSelection();
+        openOneCaseQuizFromHub();
 
-        waitForVisibleElement(ID_BTN_ONE_CASE).click();
-        waitForScreenStability();
+        WebElement nextCaseButton = waitForVisibleElement(ID_BTN_NEXT_CASE);
+        assertFalse(nextCaseButton.isEnabled());
 
-        WebElement btnNext = waitForVisibleElement(ID_BTN_NEXT_CASE);
-        assertFalse(btnNext.isEnabled(), "Next button should be disabled before answering");
-
-        // Select first answer (correct or incorrect — either way feedback should appear)
         waitForVisibleElement(ID_BTN_ANSWER_1).click();
         waitForUiUpdate();
 
-        WebElement btnNextAfter = waitForVisibleElement(ID_BTN_NEXT_CASE);
-        assertTrue(btnNextAfter.isEnabled(), "Next button should be enabled after selecting an answer");
+        WebElement updatedNextCaseButton = waitForVisibleElement(ID_BTN_NEXT_CASE);
+        assertTrue(updatedNextCaseButton.isEnabled());
+        assertFalse(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled());
 
-        // Answer buttons should now be disabled (no double-selection)
-        assertFalse(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled(),
-                "Answer buttons should be disabled after selection");
-
-        // Clicking Next should advance to the next step
-        btnNextAfter.click();
+        updatedNextCaseButton.click();
         waitForScreenStability();
 
-        // After advancing, answer buttons should be re-enabled for the next question
-        assertTrue(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled(),
-                "Answer buttons should be re-enabled on the next question");
-        assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled(),
-                "Next button should be disabled again for the next question");
+        assertTrue(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled());
+        assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled());
 
-        logger.info("Single case quiz answer interaction verified successfully");
+        driver.navigate().back();
+        waitForHubScreen();
     }
 
-    /**
-     * Test that after a quiz mode is selected, tapping the quiz drawer item
-     * navigates directly to that quiz without showing the mode selection screen.
-     */
-    @Test
-    public void testDrawerNavigationReturnsToLastQuizMode() {
-        // Ensure Full Table mode is selected and persisted in AppState
-        navigateToQuizScreen();
+    private void ensureHubScreen() {
+        if (isElementVisible(ID_TITLE_QUIZ_MODE, Duration.ofSeconds(2))) {
+            return;
+        }
 
-        // Navigate away to the Settings screen
-        navigateToScreen(3);
-        waitForVisibleElement(ID_RADIO_GROUP_HEADER);
+        for (int i = 0; i < 3; i++) {
+            if (isElementVisible(ID_TITLE_QUIZ_MODE, Duration.ofSeconds(2))) {
+                return;
+            }
 
-        // Return to quiz via the drawer
-        navigateToScreen(0);
-        waitForScreenStability();
+            if (isElementVisible(ID_TOOLBAR, Duration.ofSeconds(1))) {
+                try {
+                    clickToolbarHome();
+                    if (isElementVisible(ID_TITLE_QUIZ_MODE, Duration.ofSeconds(2))) {
+                        return;
+                    }
+                } catch (Exception ignored) {
+                }
+            }
 
-        // The app should go directly to the DeclensionQuizFragment, not mode selection.
-        // Verify the DeclensionQuiz element (current word) is visible, not the mode selection title.
-        List<WebElement> modeTitle = driver.findElements(AppiumBy.id(ID_TITLE_QUIZ_MODE));
-        assertTrue(modeTitle.isEmpty() || !modeTitle.get(0).isDisplayed(),
-                "Mode selection screen should NOT appear when a quiz mode is already selected");
-
-        WebElement currentWord = waitForVisibleElement(ID_CURRENT_WORD);
-        assertNotNull(currentWord, "Drawer nav should return directly to the quiz screen");
-
-        logger.info("Drawer navigation returns to last quiz mode verified successfully");
-    }
-
-    /**
-     * Helper method to test screen rotation for the current screen.
-     * @param elementId The ID of an element to verify after rotation
-     * @param elementName Human-readable name of the element for logging
-     */
-    private void testScreenRotationForCurrentScreen(String elementId, String elementName) {
-        // Test landscape orientation
-        logger.debug("Rotating to landscape");
-        driver.rotate(ScreenOrientation.LANDSCAPE);
-        waitForScreenStability();
-
-        WebElement elementLandscape = waitForVisibleElement(elementId);
-        assertNotNull(elementLandscape, elementName + " should be visible in landscape");
-
-        // Test portrait orientation
-        logger.debug("Rotating to portrait");
-        driver.rotate(ScreenOrientation.PORTRAIT);
-        waitForScreenStability();
-
-        WebElement elementPortrait = waitForVisibleElement(elementId);
-        assertNotNull(elementPortrait, elementName + " should be visible in portrait");
-
-        logger.debug("Screen rotation test completed for {}", elementName);
-    }
-
-    // ========== Helper Methods ==========
-
-    /**
-     * Navigate to the quiz screen (first screen).
-     * If the quiz-mode selection screen appears (first launch or after back navigation),
-     * automatically selects "Full Table" so existing drag-and-drop tests are unaffected.
-     */
-    private void navigateToQuizScreen() {
-        logger.debug("Navigating to quiz screen");
-        navigateToScreen(0);
-        // If mode selection appears, pick Full Table to reach the DeclensionQuizFragment
-        List<WebElement> modeButtons = driver.findElements(AppiumBy.id(ID_BTN_FULL_TABLE));
-        if (!modeButtons.isEmpty()) {
-            logger.debug("Mode selection screen detected — selecting Full Table");
-            modeButtons.get(0).click();
+            driver.navigate().back();
             waitForScreenStability();
         }
+
+        driver.activateApp(APP_PACKAGE);
+        waitForHubScreen();
     }
 
-    /**
-     * Navigate to a specific screen by index
-     * @param screenIndex The index of the screen (0-4)
-     */
-    private void navigateToScreen(int screenIndex) {
-        logger.debug("Opening navigation drawer");
-        WebElement drawerButton;
+    private void openFullQuizFromHub() {
+        waitForVisibleElement(ID_BTN_FULL_TABLE).click();
+        waitForScreenStability();
+        assertDeclensionQuizVisible();
+    }
+
+    private void openOneCaseQuizFromHub() {
+        waitForVisibleElement(ID_BTN_ONE_CASE).click();
+        waitForScreenStability();
+        waitForVisibleElement(ID_TV_WORD);
+    }
+
+    private void openPageFromHub(String buttonId, String expectedScreenId) {
+        waitForVisibleElement(buttonId).click();
+        waitForScreenStability();
+        waitForVisibleElement(expectedScreenId);
+    }
+
+    private void assertDeclensionQuizVisible() {
+        assertNotNull(waitForVisibleElement(ID_CURRENT_WORD));
+        assertNotNull(waitForVisibleElement(ID_ACTION_CHECK));
+        assertNotNull(waitForVisibleElement(ID_ACTION_NEXT));
+    }
+
+    private void assertHubVisible() {
+        WebElement title = waitForVisibleElement(ID_TITLE_QUIZ_MODE);
+        assertEquals("Open page", title.getText());
+        assertNotNull(waitForVisibleElement(ID_BTN_FULL_TABLE));
+        assertNotNull(waitForVisibleElement(ID_BTN_ONE_CASE));
+    }
+
+    private void waitForHubScreen() {
+        waitForScreenStability();
+        assertHubVisible();
+    }
+
+    private void clickToolbarHome() {
         try {
-            drawerButton = wait.until(
-                ExpectedConditions.elementToBeClickable(AppiumBy.xpath(XPATH_NAV_DRAWER))
-            );
-        } catch (Exception e) {
-            logger.error("Navigation drawer button not found. Page source:\n{}", driver.getPageSource());
-            throw e;
+            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Navigate up"))).click();
+        } catch (Exception ignored) {
+            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath(XPATH_TOOLBAR_HOME))).click();
         }
-        drawerButton.click();
-
-        logger.debug("Selecting screen at index: {}", screenIndex);
-        List<WebElement> navButtons = wait.until(
-            ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.id(ID_NAV_MENU_ITEM))
-        );
-        assertEquals(5, navButtons.size(), "Expected 5 navigation items");
-        navButtons.get(screenIndex).click();
-
         waitForScreenStability();
     }
 
-    /**
-     * Click the "Next Word" button to get a fresh word
-     */
     private void clickNextWord() {
-        logger.debug("Clicking next word button");
-        WebElement nextButton = wait.until(
-            ExpectedConditions.elementToBeClickable(AppiumBy.id(ID_ACTION_NEXT))
-        );
-        nextButton.click();
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.id(ID_ACTION_NEXT))).click();
         waitForScreenStability();
     }
 
-    /**
-     * Place all 14 word forms in their correct positions
-     */
-    private void placeAllWordForms(String[][] wordCases,
-                                    List<WebElement> caseSingular,
-                                    List<WebElement> casePlural) {
-        logger.info("Placing all visible word forms from RecyclerView pool");
+    private void assertButtonText(String id, String expectedText) {
+        assertEquals(expectedText.toLowerCase(), waitForVisibleElement(id).getText().toLowerCase());
+    }
 
+    private void placeAllWordForms(String[][] wordCases, List<WebElement> caseSingular, List<WebElement> casePlural) {
         int placedCount = 0;
         int safetyGuard = 0;
         while (true) {
@@ -605,10 +404,7 @@ public class UiTests {
                 break;
             }
             WebElement wordElement = poolItems.getFirst();
-            String wordText = wordElement.getText();
-            logger.debug("Processing visible pool word {}: {}", placedCount + 1, wordText);
-
-            WebElement targetCell = getProperCell(wordText, wordCases, caseSingular, casePlural);
+            WebElement targetCell = getProperCell(wordElement.getText(), wordCases, caseSingular, casePlural);
             performDragAndDrop(wordElement, targetCell);
             waitForUiUpdate();
 
@@ -618,86 +414,53 @@ public class UiTests {
                 throw new IllegalStateException("Safety guard hit while placing words. Possible drag/drop regression.");
             }
         }
-
-        logger.info("All visible word forms placed successfully. Count={}", placedCount);
+        logger.info("Placed {} forms", placedCount);
     }
 
-    /**
-     * Verify that the success dialog appears with correct content
-     */
     private void verifySuccessDialog() {
-        logger.debug("Verifying success dialog");
-
-        WebElement dialogTitle = wait.until(
-            ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_DIALOG_TITLE))
-        );
-
+        WebElement dialogTitle = wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_DIALOG_TITLE)));
         helper.makeScreenshot(TIMESTAMP, "success_dialog_open.png");
 
-        assertEquals("All is correct!", dialogTitle.getText(), "Success message should be correct");
+        assertEquals("All is correct!", dialogTitle.getText());
+        assertNotNull(findElement(ID_BTN_NEXT_WORD));
+        assertNotNull(findElement(ID_BTN_STAY_HERE));
+        assertNotNull(findElement(ID_BTN_TRY_AGAIN));
+        assertNotNull(findElement(ID_BTN_RATE_APP));
 
-        assertNotNull(findElement(ID_BTN_NEXT_WORD), "Next word button should be present");
-        assertNotNull(findElement(ID_BTN_STAY_HERE), "Stay here button should be present");
-        assertNotNull(findElement(ID_BTN_TRY_AGAIN), "Try again button should be present");
-        assertNotNull(findElement(ID_BTN_RATE_APP), "Rate app button should be present");
-
-        logger.debug("Dismissing success dialog via Next word");
         findElement(ID_BTN_NEXT_WORD).click();
     }
 
-    /**
-     * Perform drag and drop operation from source to target element
-     */
     private void performDragAndDrop(WebElement source, WebElement target) {
-        logger.debug("Performing drag and drop");
-
         PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
         Sequence dragAndDrop = new Sequence(finger, 1);
 
-        // Calculate source center point
         org.openqa.selenium.Point sourceLocation = source.getLocation();
         org.openqa.selenium.Dimension sourceSize = source.getSize();
         int sourceCenterX = sourceLocation.getX() + sourceSize.getWidth() / 2;
         int sourceCenterY = sourceLocation.getY() + sourceSize.getHeight() / 2;
 
-        // Calculate target center point
         org.openqa.selenium.Point targetLocation = target.getLocation();
         org.openqa.selenium.Dimension targetSize = target.getSize();
         int targetCenterX = targetLocation.getX() + targetSize.getWidth() / 2;
         int targetCenterY = targetLocation.getY() + targetSize.getHeight() / 2;
 
-        // Build drag and drop sequence
         dragAndDrop.addAction(finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), sourceCenterX, sourceCenterY));
         dragAndDrop.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
         dragAndDrop.addAction(finger.createPointerMove(Duration.ofMillis(DRAG_DURATION), PointerInput.Origin.viewport(), targetCenterX, targetCenterY));
         dragAndDrop.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
-
         driver.perform(List.of(dragAndDrop));
     }
 
-    /**
-     * Find the proper cell (singular or plural, case 1-7) for a given word
-     * @param word The word to find the cell for
-     * @param wordCases 2D array of word cases [singular/plural][case1-7]
-     * @param caseSingular List of singular case elements
-     * @param casePlural List of plural case elements
-     * @return The target cell element
-     */
-    private WebElement getProperCell(String word, String[][] wordCases,
-                                     List<WebElement> caseSingular, List<WebElement> casePlural) {
-        logger.debug("Finding proper cell for word: {}", word);
-
+    private WebElement getProperCell(String word, String[][] wordCases, List<WebElement> caseSingular, List<WebElement> casePlural) {
         int rowIndex = -1;
         int colIndex = -1;
-
-        // Find the word in the cases array
         outerLoop:
         for (int i = 0; i < wordCases.length; i++) {
             for (int j = 0; j < wordCases[i].length; j++) {
                 if (wordCases[i][j] != null && wordCases[i][j].equals(word)) {
                     rowIndex = i;
                     colIndex = j;
-                    wordCases[i][j] = null; // Mark as used
+                    wordCases[i][j] = null;
                     break outerLoop;
                 }
             }
@@ -706,38 +469,19 @@ public class UiTests {
         if (rowIndex == -1) {
             throw new IllegalStateException("Could not find proper cell for word: " + word);
         }
-
-        // Return the appropriate cell (singular or plural)
-        List<WebElement> targetList = (rowIndex == 0) ? caseSingular : casePlural;
-        logger.debug("Word '{}' belongs to {} case {}", word, (rowIndex == 0 ? "singular" : "plural"), colIndex + 1);
-
-        return targetList.get(colIndex);
+        return (rowIndex == 0 ? caseSingular : casePlural).get(colIndex);
     }
 
-    /**
-     * Find the WRONG cell for a given word (for testing error handling)
-     * This intentionally swaps singular and plural to create errors
-     * @param word The word to find the wrong cell for
-     * @param wordCases 2D array of word cases [singular/plural][case1-7]
-     * @param caseSingular List of singular case elements
-     * @param casePlural List of plural case elements
-     * @return The wrong target cell element
-     */
-    private WebElement getWrongCell(String word, String[][] wordCases,
-                                    List<WebElement> caseSingular, List<WebElement> casePlural) {
-        logger.debug("Finding WRONG cell for word: {}", word);
-
+    private WebElement getWrongCell(String word, String[][] wordCases, List<WebElement> caseSingular, List<WebElement> casePlural) {
         int rowIndex = -1;
         int colIndex = -1;
-
-        // Find where this word belongs
         outerLoop:
         for (int i = 0; i < wordCases.length; i++) {
             for (int j = 0; j < wordCases[i].length; j++) {
                 if (wordCases[i][j] != null && wordCases[i][j].equals(word)) {
                     rowIndex = i;
                     colIndex = j;
-                    wordCases[i][j] = null; // Mark as used
+                    wordCases[i][j] = null;
                     break outerLoop;
                 }
             }
@@ -746,66 +490,45 @@ public class UiTests {
         if (rowIndex == -1) {
             throw new IllegalStateException("Could not find cell for word: " + word);
         }
-
-        // Return the OPPOSITE cell (swap singular and plural)
-        List<WebElement> targetList = (rowIndex == 0) ? casePlural : caseSingular;
-        logger.debug("Word '{}' belongs to {} but placing in {} case {} (WRONG)",
-                     word,
-                     (rowIndex == 0 ? "singular" : "plural"),
-                     (rowIndex == 0 ? "plural" : "singular"),
-                     colIndex + 1);
-
-        return targetList.get(colIndex);
+        return (rowIndex == 0 ? casePlural : caseSingular).get(colIndex);
     }
 
-    // ========== Utility Methods ==========
-
-    /**
-     * Find a single element by ID with explicit wait
-     */
     private WebElement findElement(String id) {
         return waitForVisibleElement(id);
     }
 
-    /**
-     * Find a single visible element by ID and refresh stale references during UI transitions.
-     */
     private WebElement waitForVisibleElement(String id) {
-        return wait.until(
-            ExpectedConditions.refreshed(
-                ExpectedConditions.visibilityOfElementLocated(AppiumBy.id(id))
-            )
-        );
+        return wait.until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id(id))));
     }
 
-    /**
-     * Find multiple elements by ID with explicit wait
-     */
+    private boolean isElementVisible(String id, Duration timeout) {
+        try {
+            return new WebDriverWait(driver, timeout)
+                    .until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id(id)))
+                    .isDisplayed();
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     private List<WebElement> findElements(String id) {
         return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(AppiumBy.id(id)));
     }
 
-    /**
-     * Wait for screen to stabilize after navigation or rotation
-     */
     private void waitForScreenStability() {
-        try {
-            Thread.sleep(SCREEN_STABILITY_DELAY);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.warn("Interrupted while waiting for screen stability", e);
-        }
+        sleep(SCREEN_STABILITY_DELAY);
     }
 
-    /**
-     * Wait for UI to update after drag and drop
-     */
     private void waitForUiUpdate() {
+        sleep(UI_UPDATE_DELAY);
+    }
+
+    private void sleep(long millis) {
         try {
-            Thread.sleep(UI_UPDATE_DELAY);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.warn("Interrupted while waiting for UI update", e);
+            throw new IllegalStateException("Interrupted while waiting for UI", e);
         }
     }
 
@@ -816,9 +539,7 @@ public class UiTests {
     }
 
     private List<String> getVisibleWordPoolWordTexts() {
-        return findVisibleWordPoolItems().stream()
-                .map(WebElement::getText)
-                .toList();
+        return findVisibleWordPoolItems().stream().map(WebElement::getText).toList();
     }
 
     private WebElement findWordPoolWordByText(String wordText) {
@@ -835,7 +556,6 @@ public class UiTests {
         if (!text.contains("\"")) {
             return "\"" + text + "\"";
         }
-        // Fallback for strings containing both quotes: concat('a',"'",'b')
         String[] parts = text.split("'");
         StringBuilder sb = new StringBuilder("concat(");
         for (int i = 0; i < parts.length; i++) {

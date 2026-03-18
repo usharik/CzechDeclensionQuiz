@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> openHubFragment());
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
