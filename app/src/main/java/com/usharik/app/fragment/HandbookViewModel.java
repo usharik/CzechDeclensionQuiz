@@ -1,12 +1,13 @@
 package com.usharik.app.fragment;
 
 import androidx.databinding.Bindable;
-import com.usharik.app.AppState;
-import com.usharik.database.WordInfo;
 import com.usharik.database.dao.DatabaseManager;
 import com.usharik.app.BR;
+import com.usharik.app.R;
 
 import com.usharik.app.framework.ViewModelObservable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.Map;
 
@@ -14,7 +15,14 @@ import javax.inject.Inject;
 
 public class HandbookViewModel extends ViewModelObservable {
 
+    private static final int DEFAULT_SELECTED_GENDER = R.id.radioMasculine;
+    private static final int DEFAULT_SELECTED_WORD_ID = R.id.pan;
+    private static final String DEFAULT_SELECTED_WORD = "pán";
+
     private String[][] cases;
+    private String selectedWord;
+    private int selectedWordId;
+    private int selectedGender;
 
     private static final Map<String, String> otherNouns = Map.ofEntries(
         Map.entry("pán", "syn, pes, doktor"),
@@ -35,23 +43,23 @@ public class HandbookViewModel extends ViewModelObservable {
 
 
     private final DatabaseManager databaseManager;
-    private final AppState appState;
 
     @Inject
-    public HandbookViewModel(final DatabaseManager databaseManager,
-                             final AppState appState) {
+    public HandbookViewModel(final DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.appState = appState;
         this.cases = new String[2][7];
+        this.selectedGender = DEFAULT_SELECTED_GENDER;
+        this.selectedWordId = DEFAULT_SELECTED_WORD_ID;
+        applySelectedWord(DEFAULT_SELECTED_WORD, false);
     }
 
     @Bindable
     public int getSelectedGender() {
-        return appState.getSelectedGender();
+        return selectedGender;
     }
 
     public void setSelectedGender(int selectedGender) {
-        appState.setSelectedGender(selectedGender);
+        this.selectedGender = selectedGender;
         notifyPropertyChanged(BR.selectedGender);
     }
 
@@ -61,25 +69,35 @@ public class HandbookViewModel extends ViewModelObservable {
     }
 
     public void setSelectedWord(String selectedWord) {
-        appState.setSelectedWord(selectedWord);
-        WordInfo wordInfo = databaseManager.getDocumentDb().getWordInfoByWord(selectedWord).blockingGet();
-        cases = wordInfo.cases();
-        notifyPropertyChanged(BR.cases);
-        notifyPropertyChanged(BR.otherNouns);
+        applySelectedWord(selectedWord, true);
+    }
+
+    private void applySelectedWord(String selectedWord, boolean notify) {
+        this.selectedWord = selectedWord;
+        databaseManager.getDocumentDb().getWordInfoByWord(selectedWord)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(wordInfo -> {
+                    cases = wordInfo.cases();
+                    if (notify) {
+                        notifyPropertyChanged(BR.cases);
+                        notifyPropertyChanged(BR.otherNouns);
+                    }
+                });
     }
 
     @Bindable
     public int getSelectedWordId() {
-        return appState.getSelectedWordId();
+        return selectedWordId;
     }
 
     public void setSelectedWordId(int selectedWordId) {
-        appState.setSelectedWordId(selectedWordId);
+        this.selectedWordId = selectedWordId;
         notifyPropertyChanged(BR.selectedWordId);
     }
 
     @Bindable
     public String getOtherNouns() {
-        return otherNouns.get(appState.getSelectedWord());
+        return otherNouns.get(selectedWord);
     }
 }

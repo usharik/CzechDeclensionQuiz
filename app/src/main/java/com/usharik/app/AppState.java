@@ -12,33 +12,14 @@ import java.util.Map;
  */
 public class AppState {
     private final MutableLiveData<Map<String, Integer>> wordsWithErrorsLiveData = new MutableLiveData<>(new HashMap<>());
-    private final MutableLiveData<String> selectedWordLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Integer> selectedWordIdLiveData = new MutableLiveData<>(-1);
-    private final MutableLiveData<Integer> selectedGenderLiveData = new MutableLiveData<>(-1);
     private final MutableLiveData<String> genderFilterStrLiveData = new MutableLiveData<>(Gender.ALL);
     private final MutableLiveData<Integer> genderFilterIdLiveData = new MutableLiveData<>(-1);
     private final MutableLiveData<Boolean> switchOffAnimationLiveData = new MutableLiveData<>(false);
-    private final MutableLiveData<Integer> currentNavigationItemLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> wordsCountSinceLastAdLiveData = new MutableLiveData<>(0);
-    private final MutableLiveData<String> selectedQuizModeLiveData = new MutableLiveData<>(null);
 
     public Map<String, Integer> getWordsWithErrors() {
         Map<String, Integer> value = wordsWithErrorsLiveData.getValue();
         return value != null ? value : new HashMap<>();
-    }
-
-    public String getSelectedWord() {
-        return selectedWordLiveData.getValue();
-    }
-
-    public int getSelectedWordId() {
-        Integer value = selectedWordIdLiveData.getValue();
-        return value != null ? value : -1;
-    }
-
-    public int getSelectedGender() {
-        Integer value = selectedGenderLiveData.getValue();
-        return value != null ? value : -1;
     }
 
     public String getGenderFilterStr() {
@@ -56,10 +37,6 @@ public class AppState {
         return value != null ? value : false;
     }
 
-    public Integer getCurrentNavigationItem() {
-        return currentNavigationItemLiveData.getValue();
-    }
-
     public int getWordsCountSinceLastAd() {
         Integer value = wordsCountSinceLastAdLiveData.getValue();
         return value != null ? value : 0;
@@ -69,24 +46,8 @@ public class AppState {
         this.wordsWithErrorsLiveData.setValue(wordsWithErrors);
     }
 
-    public void setSelectedWord(String selectedWord) {
-        this.selectedWordLiveData.setValue(selectedWord);
-    }
-
-    public void setSelectedWordId(int selectedWordId) {
-        this.selectedWordIdLiveData.setValue(selectedWordId);
-    }
-
-    public void setSelectedGender(int selectedGender) {
-        this.selectedGenderLiveData.setValue(selectedGender);
-    }
-
     public void setSwitchOffAnimation(boolean switchOffAnimation) {
         this.switchOffAnimationLiveData.setValue(switchOffAnimation);
-    }
-
-    public void setCurrentNavigationItem(Integer currentNavigationItem) {
-        this.currentNavigationItemLiveData.setValue(currentNavigationItem);
     }
 
     public void setGenderFilterStr(String genderFilterStr) {
@@ -125,13 +86,5 @@ public class AppState {
 
     public void resetWordsCountSinceLastAd() {
         wordsCountSinceLastAdLiveData.setValue(0);
-    }
-
-    public String getSelectedQuizMode() {
-        return selectedQuizModeLiveData.getValue();
-    }
-
-    public void setSelectedQuizMode(String quizMode) {
-        selectedQuizModeLiveData.setValue(quizMode);
     }
 }

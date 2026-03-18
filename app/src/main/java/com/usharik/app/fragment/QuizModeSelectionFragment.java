@@ -11,21 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.usharik.app.AppState;
+import com.usharik.app.MainActivity;
 import com.usharik.app.R;
 import com.usharik.app.databinding.FragmentQuizModeSelectionBinding;
-
-import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 
 public class QuizModeSelectionFragment extends Fragment {
-
-    @Inject
-    AppState appState;
 
     private FragmentQuizModeSelectionBinding binding;
 
@@ -53,24 +46,10 @@ public class QuizModeSelectionFragment extends Fragment {
     }
 
     private void selectQuizMode(Class<? extends Fragment> quizClass) {
-        appState.setSelectedQuizMode(quizClass.getSimpleName());
-        navigateTo(quizClass);
-    }
-
-    private void navigateTo(Class<? extends Fragment> fragmentClass) {
-        FragmentManager manager = requireActivity().getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(fragmentClass.getSimpleName());
-        if (fragment == null) {
-            try {
-                fragment = fragmentClass.getDeclaredConstructor().newInstance();
-            } catch (ReflectiveOperationException e) {
-                Log.e(getClass().getName(), "Can't create fragment", e);
-                return;
-            }
+        if (requireActivity() instanceof MainActivity) {
+            ((MainActivity) requireActivity()).openQuizMode(quizClass);
+        } else {
+            Log.e(getClass().getName(), "Host activity does not support quiz navigation");
         }
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragmentContainer, fragment, fragmentClass.getSimpleName());
-        transaction.addToBackStack(fragmentClass.getSimpleName());
-        transaction.commit();
     }
 }

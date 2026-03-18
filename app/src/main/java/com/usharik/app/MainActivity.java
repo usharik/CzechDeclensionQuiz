@@ -27,10 +27,12 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
-    DrawerLayout mDrawerLayout;
+    private static final String STATE_CURRENT_NAVIGATION_ITEM = "state_current_navigation_item";
+    private static final String STATE_SELECTED_QUIZ_MODE = "state_selected_quiz_mode";
 
-    @Inject
-    AppState appState;
+    DrawerLayout mDrawerLayout;
+    private int currentNavigationItem = R.id.nav_quiz;
+    private String selectedQuizMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,28 +48,32 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
+        if (savedInstanceState != null) {
+            currentNavigationItem = savedInstanceState.getInt(STATE_CURRENT_NAVIGATION_ITEM, R.id.nav_quiz);
+            selectedQuizMode = savedInstanceState.getString(STATE_SELECTED_QUIZ_MODE);
+        }
+
         navigationView.setNavigationItemSelectedListener(this::onNavigatorItemSelected);
 
-        Integer currentItem = appState.getCurrentNavigationItem();
-        if (currentItem == null) {
-            currentItem = R.id.nav_quiz;
-            appState.setCurrentNavigationItem(currentItem);
-        }
-        navigationView.setCheckedItem(currentItem);
+        navigationView.setCheckedItem(currentNavigationItem);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        onNavigatorItemSelected(navigationView.getCheckedItem());
+        MenuItem selectedItem = navigationView.getMenu().findItem(currentNavigationItem);
+        onNavigatorItemSelected(selectedItem != null ? selectedItem : navigationView.getMenu().findItem(R.id.nav_quiz));
     }
 
     private boolean onNavigatorItemSelected(MenuItem item) {
+        if (item == null) {
+            return false;
+        }
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         setTitle(item.getTitle());
-        appState.setCurrentNavigationItem(item.getItemId());
+        currentNavigationItem = item.getItemId();
         int itemId = item.getItemId();
         if (itemId == R.id.nav_quiz) {
             navigateToQuiz();
@@ -89,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateToQuiz() {
-        String selectedQuizMode = appState.getSelectedQuizMode();
-
         if (selectedQuizMode == null) {
             // No mode chosen yet — show mode selection
             replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
@@ -99,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         Class<? extends Fragment> quizClass = resolveQuizClass(selectedQuizMode);
         if (quizClass == null) {
-            appState.setSelectedQuizMode(null);
+            selectedQuizMode = null;
             replaceFragment(R.id.fragmentContainer, QuizModeSelectionFragment.class);
             return;
         }
@@ -134,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+    public void openQuizMode(Class<? extends Fragment> quizClass) {
+        selectedQuizMode = quizClass.getSimpleName();
+        replaceFragment(R.id.fragmentContainer, quizClass);
+    }
+
     private void replaceFragment(@IdRes int containerId, Class<? extends Fragment> fragmentClass) {
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(fragmentClass.getSimpleName());
@@ -158,5 +167,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_CURRENT_NAVIGATION_ITEM, currentNavigationItem);
+        outState.putString(STATE_SELECTED_QUIZ_MODE, selectedQuizMode);
     }
 }

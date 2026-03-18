@@ -14,7 +14,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.usharik.app.AppState;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.databinding.HandbookFragmentBinding;
@@ -23,9 +22,6 @@ import com.usharik.app.framework.ViewFragment;
 import javax.inject.Inject;
 
 public class HandbookFragment extends ViewFragment<HandbookViewModel> {
-
-    @Inject
-    AppState appState;
 
     @Inject
     FirebaseAnalytics firebaseAnalytics;
@@ -44,8 +40,6 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         binding.wordGroupMasculine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
         binding.wordGroupFeminine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
         binding.wordGroupNeuter.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
-        getViewModel().setSelectedGender(getViewModel().getSelectedGender() != -1 ? getViewModel().getSelectedGender() : R.id.radioMasculine);
-        getViewModel().setSelectedWordId(getViewModel().getSelectedWordId() != -1 ? getViewModel().getSelectedWordId() : R.id.pan);
         int selectedGender = getViewModel().getSelectedGender();
         if (selectedGender == R.id.radioMasculine) {
             binding.wordGroupMasculine.check(getViewModel().getSelectedWordId());
