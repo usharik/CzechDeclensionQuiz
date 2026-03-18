@@ -21,7 +21,6 @@ import java.util.List;
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
 
     private FragmentSingleCaseQuizBinding binding;
-    private List<String> currentAnswers;
     private Observable.OnPropertyChangedCallback viewModelCallback;
 
     @Nullable
@@ -81,25 +80,35 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     private void refreshAnswerButtons() {
-        currentAnswers = getViewModel().buildAnswers();
-        if (currentAnswers.isEmpty()) return;
-
         MaterialButton[] buttons = answerButtons();
+        List<String> answers = getViewModel().getAnswers();
+        boolean answered = getViewModel().isAnswered();
+        String correct = getViewModel().getCorrectAnswer();
+        int defaultColor = requireContext().getColor(R.color.colorSurfaceVariant);
+        int colorCorrect = getResources().getColor(R.color.colorCorrect, null);
+
         for (int i = 0; i < 4; i++) {
-            if (i < currentAnswers.size()) {
-                buttons[i].setText(currentAnswers.get(i));
-                buttons[i].setEnabled(true);
+            if (i < answers.size()) {
+                String answer = answers.get(i);
+                buttons[i].setText(answer);
+                buttons[i].setEnabled(!answered);
                 buttons[i].setVisibility(View.VISIBLE);
-                ColorStateList buttonColor = ColorStateList.valueOf(requireContext().getColor(R.color.colorSurfaceVariant));
+                int buttonTint = answered && answer.equals(correct) ? colorCorrect : defaultColor;
+                ColorStateList buttonColor = ColorStateList.valueOf(buttonTint);
                 buttons[i].setBackgroundTintList(buttonColor);
             } else {
                 buttons[i].setVisibility(View.GONE);
             }
         }
-        binding.btnNextCase.setEnabled(false);
+        binding.btnNextCase.setEnabled(answered);
     }
 
     private void onAnswerSelected(int index) {
+        List<String> answers = getViewModel().getAnswers();
+        if (getViewModel().isAnswered() || index >= answers.size()) {
+            return;
+        }
+
         String correct = getViewModel().getCorrectAnswer();
         MaterialButton[] buttons = answerButtons();
 
@@ -107,14 +116,15 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         int colorCorrect = getResources().getColor(R.color.colorCorrect, null);
         int colorIncorrect = getResources().getColor(R.color.colorIncorrect, null);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < answers.size(); i++) {
             buttons[i].setEnabled(false);
-            if (currentAnswers.get(i).equals(correct)) {
+            if (answers.get(i).equals(correct)) {
                 buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorCorrect));
             } else if (i == index) {
                 buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorIncorrect));
             }
         }
+        getViewModel().markAnswered();
         binding.btnNextCase.setEnabled(true);
     }
 

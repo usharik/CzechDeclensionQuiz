@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.databinding.Bindable;
 
 import com.usharik.app.CzechCase;
+import com.usharik.app.SingleCaseQuizState;
 import com.usharik.app.framework.ViewModelObservable;
 import com.usharik.app.service.WordService;
 import com.usharik.database.WordInfo;
@@ -28,40 +29,44 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     private static final String TAG = "SingleCaseQuizVM";
 
     private final WordService wordService;
-
-    private WordInfo currentWordInfo;
-    private int currentStepIndex = 0;
+    private final SingleCaseQuizState state;
 
     @Inject
     public SingleCaseQuizViewModel(final WordService wordService) {
+        this(wordService, new SingleCaseQuizState());
+    }
+
+    SingleCaseQuizViewModel(final WordService wordService,
+                            final SingleCaseQuizState state) {
         this.wordService = wordService;
+        this.state = state;
     }
 
     public boolean hasCurrentWord() {
-        return currentWordInfo != null;
+        return state.getWordInfo() != null;
     }
 
     public int getCurrentCaseIndex() {
-        return currentStepIndex < 7 ? currentStepIndex : currentStepIndex - 7;
+        return state.getCurrentCase();
     }
 
     public int getCurrentNumber() {
-        return currentStepIndex < 7 ? SINGULAR : PLURAL;
+        return state.isPlural() ? PLURAL : SINGULAR;
     }
 
     @Bindable
     public String getWord() {
-        return currentWordInfo != null ? currentWordInfo.word() : "";
+        return state.getWordInfo() != null ? state.getWordInfo().word() : "";
     }
 
     @Bindable
     public String getGender() {
-        return currentWordInfo != null ? currentWordInfo.gender() : "";
+        return state.getWordInfo() != null ? state.getWordInfo().gender() : "";
     }
 
     @Bindable
     public String getDeclensionType() {
-        return currentWordInfo != null ? currentWordInfo.declensionType() : "";
+        return state.getWordInfo() != null ? state.getWordInfo().declensionType() : "";
     }
 
     @Bindable
@@ -83,20 +88,29 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     }
 
     public String getCorrectAnswer() {
-        if (currentWordInfo == null) return "";
-        return currentWordInfo.cases(getCurrentNumber(), getCurrentCaseIndex());
+        return state.getCorrectAnswer();
     }
 
-    public List<String> buildAnswers() {
-        if (currentWordInfo == null) return Collections.emptyList();
+    public List<String> getAnswers() {
+        return state.getAnswers();
+    }
 
-        String correct = getCorrectAnswer();
+    public boolean isAnswered() {
+        return state.isAnswered();
+    }
+
+    public void markAnswered() {
+        state.setAnswered(true);
+    }
+
+    private List<String> buildAnswers(WordInfo wordInfo, String correct) {
+        if (wordInfo == null) return Collections.emptyList();
 
         List<String> distractors = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
-            String sg = currentWordInfo.cases(SINGULAR, i);
+            String sg = wordInfo.cases(SINGULAR, i);
             if (!sg.isEmpty() && !sg.equals(correct)) distractors.add(sg);
-            String pl = currentWordInfo.cases(PLURAL, i);
+            String pl = wordInfo.cases(PLURAL, i);
             if (!pl.isEmpty() && !pl.equals(correct)) distractors.add(pl);
         }
 
@@ -115,28 +129,54 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
-        if (tryAgain && currentWordInfo != null) {
-            currentStepIndex = 0;
+        if (tryAgain && state.getWordInfo() != null) {
+            resetRound();
             update();
             return;
         }
-        wordService.getNextWord(currentWordInfo)
+        wordService.getNextWord(state.getWordInfo())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
-                    currentWordInfo = wordInfo;
-                    currentStepIndex = 0;
+                    state.setWordInfo(wordInfo);
+                    resetRound();
                     update();
                 }, thr -> Log.e(TAG, "Error loading word", thr));
     }
 
     public void nextStep() {
-        if (currentStepIndex < 13) {
-            currentStepIndex++;
-            update();
+        if (state.getCurrentCase() < 6) {
+            state.setCurrentCase(state.getCurrentCase() + 1);
+        } else if (!state.isPlural()) {
+            state.setPlural(true);
+            state.setCurrentCase(0);
         } else {
             nextWord(false);
+            return;
         }
+        prepareCurrentQuestion();
+        update();
+    }
+
+    private void resetRound() {
+        state.setCurrentCase(0);
+        state.setPlural(false);
+        prepareCurrentQuestion();
+    }
+
+    private void prepareCurrentQuestion() {
+        WordInfo wordInfo = state.getWordInfo();
+        if (wordInfo == null) {
+            state.setCorrectAnswer("");
+            state.setAnswers(Collections.emptyList());
+            state.setAnswered(false);
+            return;
+        }
+
+        String correct = wordInfo.cases(getCurrentNumber(), getCurrentCaseIndex());
+        state.setCorrectAnswer(correct);
+        state.setAnswers(buildAnswers(wordInfo, state.getCorrectAnswer()));
+        state.setAnswered(false);
     }
 
     private void update() {

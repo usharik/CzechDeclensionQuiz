@@ -9,8 +9,8 @@ import com.usharik.database.WordInfo;
 public class DeclensionQuizState {
     private WordInfo wordInfo;
     private WordTextModel[] wordTextModels;
-    private String[][] correctAnswers;
-    private int[][] actualAnswers;
+    private final String[][] correctAnswers;
+    private final int[][] actualAnswers;
 
     public DeclensionQuizState() {
         wordTextModels = new WordTextModel[14];
