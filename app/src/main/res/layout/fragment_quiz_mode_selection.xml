@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/spacing_md"
+        tools:context="com.usharik.app.MainActivity">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/titleQuizMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/quiz_mode_title"
+            android:textAppearance="@style/TextAppearance.App.Title"
+            android:textSize="@dimen/text_size_heading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btnFullTable"
+            app:layout_constraintVertical_chainStyle="packed"
+            android:layout_marginBottom="@dimen/spacing_xl" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFullTable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quiz_mode_full_table"
+            android:textSize="@dimen/text_size_body"
+            android:layout_marginBottom="@dimen/spacing_md"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleQuizMode"
+            app:layout_constraintBottom_toTopOf="@id/btnOneCase" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOneCase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quiz_mode_one_case"
+            android:textSize="@dimen/text_size_body"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnFullTable"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

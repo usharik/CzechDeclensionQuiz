@@ -34,6 +34,10 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="declension_pattern">like \"%s\"</string>
 
+    <string name="quiz_mode_title">Choose quiz mode</string>
+    <string name="quiz_mode_full_table">Full declension table</string>
+    <string name="quiz_mode_one_case">One case at a time</string>
+
     <string-array name="next_word_dialog">
         <item>Next word</item>
         <item>Stay here</item>

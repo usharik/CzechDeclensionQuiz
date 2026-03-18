@@ -3,7 +3,7 @@ package com.usharik.app.di;
 import com.usharik.app.MainActivity;
 import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
-
+import com.usharik.app.fragment.SingleCaseQuizFragment;
 import com.usharik.app.fragment.SettingsFragment;
 import com.usharik.app.fragment.WordsWithErrorsFragment;
 
@@ -30,4 +30,7 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract WordsWithErrorsFragment contributeWordsWithErrorsFragment();
+
+    @ContributesAndroidInjector
+    abstract SingleCaseQuizFragment contributeSingleCaseQuizFragment();
 }
