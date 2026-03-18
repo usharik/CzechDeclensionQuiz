@@ -65,9 +65,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
-        if (appState.getWordInfo() == null) {
-            getViewModel().nextWord(false);
-        }
+        getViewModel().nextWord(false);
         setupWordDragRecyclerView();
         setListeners();
         return binding.getRoot();
