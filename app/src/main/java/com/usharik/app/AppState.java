@@ -27,6 +27,7 @@ public class AppState {
     private final MutableLiveData<Boolean> switchOffAnimationLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<Integer> currentNavigationItemLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> wordsCountSinceLastAdLiveData = new MutableLiveData<>(0);
+    private final MutableLiveData<String> selectedQuizModeLiveData = new MutableLiveData<>(null);
 
     // Constructor to initialize arrays
     public AppState() {
@@ -171,5 +172,13 @@ public class AppState {
 
     public void resetWordsCountSinceLastAd() {
         wordsCountSinceLastAdLiveData.setValue(0);
+    }
+
+    public String getSelectedQuizMode() {
+        return selectedQuizModeLiveData.getValue();
+    }
+
+    public void setSelectedQuizMode(String quizMode) {
+        selectedQuizModeLiveData.setValue(quizMode);
     }
 }
