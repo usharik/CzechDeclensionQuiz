@@ -147,8 +147,8 @@ public class UiTests {
     @Test
     public void testHubScreenShowsAllNavigationButtons() {
         assertHubVisible();
-        assertButtonText(ID_BTN_FULL_TABLE, "Full declension table");
-        assertButtonText(ID_BTN_ONE_CASE, "One case at a time");
+        assertButtonText(ID_BTN_FULL_TABLE, "Full declension table quiz");
+        assertButtonText(ID_BTN_ONE_CASE, "One case at a time quiz");
         assertButtonText(ID_BTN_WORDS_WITH_ERRORS, "Words with errors");
         assertButtonText(ID_BTN_HANDBOOK, "Handbook");
         assertButtonText(ID_BTN_SETTINGS, "Settings");
