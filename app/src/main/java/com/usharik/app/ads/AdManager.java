@@ -16,6 +16,11 @@ import com.usharik.app.BuildConfig;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Manages interstitial ads for the quiz application.
  * Shows ads after every 5 words completed.
@@ -24,8 +29,8 @@ import javax.inject.Singleton;
 public class AdManager {
     private static final String TAG = "AdManager";
 
-    private InterstitialAd interstitialAd;
-    private boolean isLoadingAd = false;
+    private final Map<String, InterstitialAd> interstitialAds = new HashMap<>();
+    private final Set<String> loadingAdUnitIds = new HashSet<>();
     private boolean isShowingAd = false;
     
     @Inject
@@ -37,21 +42,28 @@ public class AdManager {
      * Should be called after showing an ad or when the app starts.
      */
     public void loadAd(Activity activity) {
+        loadAd(activity, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID);
+    }
+
+    public void loadAd(Activity activity, String adUnitId) {
         if (activity == null) {
             Log.w(TAG, "Cannot load ad: activity is null");
             return;
         }
-        
-        if (isLoadingAd || interstitialAd != null) {
-            Log.d(TAG, "Ad already loaded or loading");
+
+        if (adUnitId == null || adUnitId.isBlank()) {
+            Log.w(TAG, "Cannot load ad: ad unit id is blank");
             return;
         }
-        
-        isLoadingAd = true;
+
+        if (loadingAdUnitIds.contains(adUnitId) || interstitialAds.containsKey(adUnitId)) {
+            Log.d(TAG, "Ad already loaded or loading for unit ID: " + adUnitId);
+            return;
+        }
+
+        loadingAdUnitIds.add(adUnitId);
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        // Use BuildConfig to get the correct ad unit ID for debug/release
-        String adUnitId = BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID;
         Log.d(TAG, "Loading ad with unit ID: " + adUnitId);
 
         InterstitialAd.load(
@@ -62,16 +74,15 @@ public class AdManager {
                 @Override
                 public void onAdLoaded(@NonNull InterstitialAd ad) {
                     Log.i(TAG, "Interstitial ad loaded successfully");
-                    interstitialAd = ad;
-                    isLoadingAd = false;
-                    setupAdCallbacks();
+                    interstitialAds.put(adUnitId, ad);
+                    loadingAdUnitIds.remove(adUnitId);
                 }
                 
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     Log.w(TAG, "Failed to load interstitial ad: " + loadAdError.getMessage());
-                    interstitialAd = null;
-                    isLoadingAd = false;
+                    interstitialAds.remove(adUnitId);
+                    loadingAdUnitIds.remove(adUnitId);
                 }
             }
         );
@@ -83,8 +94,20 @@ public class AdManager {
      * @param onAdClosed Callback to run after ad is closed
      */
     public void showAd(Activity activity, Runnable onAdClosed) {
+        showAd(activity, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID, onAdClosed);
+    }
+
+    public void showAd(Activity activity, String adUnitId, Runnable onAdClosed) {
         if (activity == null) {
             Log.w(TAG, "Cannot show ad: activity is null");
+            if (onAdClosed != null) {
+                onAdClosed.run();
+            }
+            return;
+        }
+
+        if (adUnitId == null || adUnitId.isBlank()) {
+            Log.w(TAG, "Cannot show ad: ad unit id is blank");
             if (onAdClosed != null) {
                 onAdClosed.run();
             }
@@ -98,7 +121,8 @@ public class AdManager {
             }
             return;
         }
-        
+
+        InterstitialAd interstitialAd = interstitialAds.get(adUnitId);
         if (interstitialAd != null) {
             isShowingAd = true;
             
@@ -106,11 +130,11 @@ public class AdManager {
                 @Override
                 public void onAdDismissedFullScreenContent() {
                     Log.i(TAG, "Ad was dismissed");
-                    interstitialAd = null;
+                    interstitialAds.remove(adUnitId);
                     isShowingAd = false;
                     
                     // Load next ad
-                    loadAd(activity);
+                    loadAd(activity, adUnitId);
                     
                     // Run callback
                     if (onAdClosed != null) {
@@ -121,8 +145,9 @@ public class AdManager {
                 @Override
                 public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                     Log.w(TAG, "Ad failed to show: " + adError.getMessage());
-                    interstitialAd = null;
+                    interstitialAds.remove(adUnitId);
                     isShowingAd = false;
+                    loadAd(activity, adUnitId);
                     
                     // Run callback even if ad failed
                     if (onAdClosed != null) {
@@ -138,8 +163,8 @@ public class AdManager {
             
             interstitialAd.show(activity);
         } else {
-            Log.d(TAG, "Ad not ready yet, loading...");
-            loadAd(activity);
+            Log.d(TAG, "Ad not ready yet for unit ID " + adUnitId + ", loading...");
+            loadAd(activity, adUnitId);
             
             // Run callback immediately if ad not ready
             if (onAdClosed != null) {
@@ -147,32 +172,16 @@ public class AdManager {
             }
         }
     }
-    
-    private void setupAdCallbacks() {
-        if (interstitialAd != null) {
-            interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    Log.i(TAG, "Ad dismissed");
-                    interstitialAd = null;
-                    isShowingAd = false;
-                }
-                
-                @Override
-                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                    Log.w(TAG, "Ad failed to show: " + adError.getMessage());
-                    interstitialAd = null;
-                    isShowingAd = false;
-                }
-            });
-        }
-    }
-    
+
     /**
      * Check if an ad is ready to be shown
      */
     public boolean isAdReady() {
-        return interstitialAd != null && !isShowingAd;
+        return isAdReady(BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID);
+    }
+
+    public boolean isAdReady(String adUnitId) {
+        return interstitialAds.containsKey(adUnitId) && !isShowingAd;
     }
 }
 

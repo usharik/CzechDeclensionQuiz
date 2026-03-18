@@ -11,17 +11,36 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
+import com.usharik.app.AppState;
+import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.inject.Inject;
 
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
 
+    private static final int PRESSES_PER_INTERSTITIAL_ATTEMPT = 5;
+    private static final double INTERSTITIAL_SHOW_PROBABILITY = 0.4d;
+
     private FragmentSingleCaseQuizBinding binding;
     private Observable.OnPropertyChangedCallback viewModelCallback;
+    private AdView adView;
+
+    @Inject
+    AppState appState;
+
+    @Inject
+    AdManager adManager;
 
     @Nullable
     @Override
@@ -54,13 +73,53 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupBannerAd();
+        adManager.loadAd(requireActivity(), BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
+            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
+                binding.adViewContainer.removeAllViews();
+                binding.adViewContainer.addView(adView);
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
     public void onDestroyView() {
+        if (adView != null) {
+            adView.destroy();
+            adView = null;
+        }
         super.onDestroyView();
         if (viewModelCallback != null) {
             getViewModel().removeOnPropertyChangedCallback(viewModelCallback);
             viewModelCallback = null;
         }
         binding = null;
+    }
+
+    private void setupBannerAd() {
+        adView = new AdView(requireContext());
+        adView.setAdUnitId(BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+        binding.adViewContainer.removeAllViews();
+        binding.adViewContainer.addView(adView);
+        adView.loadAd(new AdRequest.Builder().build());
     }
 
     private void setupAnswerButtons() {
@@ -72,11 +131,30 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
     private void setupNextCaseButton() {
         binding.btnNextCase.setEnabled(false);
-        binding.btnNextCase.setOnClickListener(v -> getViewModel().nextStep());
+        binding.btnNextCase.setOnClickListener(v -> continueWithPotentialInterstitial(getViewModel()::nextStep));
     }
 
     private void setupNextWordButton() {
-        binding.btnNextWord.setOnClickListener(v -> getViewModel().nextWord(false));
+        binding.btnNextWord.setOnClickListener(v -> continueWithPotentialInterstitial(() -> getViewModel().nextWord(false)));
+    }
+
+    private void continueWithPotentialInterstitial(Runnable action) {
+        int pressCount = appState.incrementSingleCaseNavigationPressCount();
+        if (shouldShowInterstitial(pressCount)) {
+            adManager.showAd(
+                    requireActivity(),
+                    BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID,
+                    action
+            );
+            return;
+        }
+
+        action.run();
+    }
+
+    private boolean shouldShowInterstitial(int pressCount) {
+        return pressCount % PRESSES_PER_INTERSTITIAL_ATTEMPT == 0
+                && ThreadLocalRandom.current().nextDouble() < INTERSTITIAL_SHOW_PROBABILITY;
     }
 
     private void refreshAnswerButtons() {

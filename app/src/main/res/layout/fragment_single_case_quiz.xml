@@ -142,14 +142,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lg"
-                android:layout_marginBottom="@dimen/spacing_md"
                 android:enabled="false"
                 android:text="@string/nextCase"
                 android:textSize="@dimen/text_size_body"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnAnswer4"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/btnAnswer4" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNextWord"
@@ -161,6 +159,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnNextCase" />
+
+            <FrameLayout
+                android:id="@+id/adViewContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:background="@color/colorSurfaceVariant"
+                android:minHeight="60dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnNextWord" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

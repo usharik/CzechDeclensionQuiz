@@ -68,8 +68,16 @@
                 android:id="@+id/btnAbout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/about"
                 android:textSize="@dimen/text_size_body" />
+
+            <FrameLayout
+                android:id="@+id/adViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSurfaceVariant"
+                android:minHeight="60dp" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

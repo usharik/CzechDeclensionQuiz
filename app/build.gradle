@@ -18,6 +18,9 @@ android {
         buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
         buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
         buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+        buildConfigField "String", "ADMOB_HUB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+        buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+        buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
     }
     buildFeatures {
         buildConfig = true
@@ -27,6 +30,9 @@ android {
             buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
             buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
             buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "ADMOB_HUB_BANNER_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""
         }
         release {
             minifyEnabled = false
@@ -35,6 +41,9 @@ android {
             buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-6420074467468909~9307588615\""
             buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/6041532532\""
             buildConfigField "String", "ADMOB_BANNER_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/3910193217\""
+            buildConfigField "String", "ADMOB_HUB_BANNER_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/6219783472\""
+            buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/1051217273\""
+            buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/9608497598\""
         }
     }
     compileOptions {
