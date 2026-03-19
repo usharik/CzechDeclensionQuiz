@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
+import com.usharik.database.DocumentRepository;
 import com.usharik.database.WordInfo;
-import com.usharik.database.dao.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +18,17 @@ import io.reactivex.rxjava3.core.Single;
 
 public class WordService {
 
-    private final DatabaseManager databaseManager;
+    private final DocumentRepository documentRepository;
     private final AppState appState;
     private final FirebaseAnalytics firebaseAnalytics;
     private final Random rnd = new Random();
 
-    public WordService(final DatabaseManager databaseManager,
+    public WordService(final DocumentRepository documentRepository,
                        final AppState appState,
                        final FirebaseAnalytics firebaseAnalytics) {
-        this.databaseManager = databaseManager;
+        this.documentRepository = documentRepository;
         this.appState = appState;
         this.firebaseAnalytics = firebaseAnalytics;
-    }
-
-    public Single<WordInfo> getNextWord() {
-        return Maybe.defer(() -> rnd.nextBoolean()
-                ? getRandomWordWithErrorAsync(null)
-                : Maybe.empty()
-        ).switchIfEmpty(
-                getRandomWordAsync(null)
-        ).doOnSuccess(doc -> {
-            Log.i(getClass().getName(), "New word is " + doc.word());
-            Bundle bundle = new Bundle();
-            bundle.putString("WORD", doc.word());
-            firebaseAnalytics.logEvent("NEXT_WORD", bundle);
-        });
     }
 
     public Single<WordInfo> getNextWord(WordInfo currentWord) {
@@ -69,7 +55,7 @@ public class WordService {
 
         List<String> keys = new ArrayList<>(wordsWithErrors.keySet());
         String wordKey = keys.get(rnd.nextInt(size));
-        return databaseManager.getDocumentDb().getWordInfoByWord(wordKey).flatMap(doc -> {
+        return documentRepository.getWordInfoByWord(wordKey).flatMap(doc -> {
             if (doc == null) {
                 appState.removeWordFromErrorMap(wordKey);
                 return Maybe.empty();
@@ -84,6 +70,6 @@ public class WordService {
         String declensionType = (currentWord == null || currentWord.declensionType() == null)
                 ? ""
                 : currentWord.declensionType();
-        return databaseManager.getDocumentDb().getRandomWordWithAnotherDeclensionType(declensionType);
+        return documentRepository.getRandomWordWithAnotherDeclensionType(declensionType);
     }
 }

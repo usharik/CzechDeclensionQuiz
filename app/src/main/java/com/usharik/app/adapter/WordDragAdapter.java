@@ -86,8 +86,8 @@ public class WordDragAdapter extends RecyclerView.Adapter<WordDragAdapter.WordVi
         return visibleIndices.size();
     }
 
-    static class WordViewHolder extends RecyclerView.ViewHolder {
-        final MaterialTextView wordView;
+    public static class WordViewHolder extends RecyclerView.ViewHolder {
+        private final MaterialTextView wordView;
 
         WordViewHolder(@NonNull MaterialTextView itemView) {
             super(itemView);

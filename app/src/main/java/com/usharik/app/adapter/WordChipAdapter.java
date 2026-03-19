@@ -80,8 +80,8 @@ public class WordChipAdapter extends RecyclerView.Adapter<WordChipAdapter.ChipVi
         return words.size();
     }
 
-    static class ChipViewHolder extends RecyclerView.ViewHolder {
-        final Chip chip;
+    public static class ChipViewHolder extends RecyclerView.ViewHolder {
+        private final Chip chip;
 
         ChipViewHolder(@NonNull Chip chip) {
             super(chip);

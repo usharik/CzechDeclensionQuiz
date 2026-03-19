@@ -1,21 +1,10 @@
 package com.usharik.database.dao;
 
-import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import androidx.room.migration.Migration;
 import android.content.Context;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.usharik.database.WordInfo;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 @Database(
         entities = {
@@ -29,131 +18,9 @@ public abstract class DocumentDatabase extends RoomDatabase {
 
     public abstract DocumentDao documentDao();
 
-    private static Context mContext;
-
-    static DocumentDatabase getDocumentDatabase(Context context) {
-        mContext = context;
+    public static DocumentDatabase getDocumentDatabase(Context context) {
         return Room.databaseBuilder(context.getApplicationContext(), DocumentDatabase.class, DB_NAME)
-                .allowMainThreadQueries()
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
-                .addMigrations(MIGRATION_3_4)
-                .addMigrations(MIGRATION_4_5)
+                .fallbackToDestructiveMigration(true)
                 .build();
-    }
-
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            Log.i("Migration1_2", "Database structure altering");
-            database.execSQL("DELETE FROM `DOCUMENT`;");
-            database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
-            database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `word` TEXT");
-            database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `gender` TEXT");
-            database.execSQL("CREATE  INDEX `index_DOCUMENT_word` ON `DOCUMENT` (`word`)");
-            database.execSQL("CREATE  INDEX `index_DOCUMENT_gender` ON `DOCUMENT` (`gender`)");
-            Log.i("Migration1_2", "Insert new data");
-            Gson gson = new Gson();
-            try {
-                try(InputStream inputStream = mContext.getAssets().open("data.jsonl");
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    String json;
-                    while ((json = reader.readLine()) != null) {
-                        WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
-                        database.execSQL("insert into DOCUMENT(word_id, word, gender, json) values(?, ?, ?, ?);",
-                                new Object[] {wordInfo.wordId(), wordInfo.word(), wordInfo.gender(), json});
-                    }
-                }
-            } catch (IOException e) {
-                Log.e("Exception", e.getClass().getName(), e);
-            }
-            Log.i("Migration1_2", "Migration completed");
-        }
-    };
-
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            Log.i("Migration2_3", "Removing all data");
-
-            database.execSQL("DELETE FROM `DOCUMENT`;");
-            database.execSQL("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='DOCUMENT'");
-
-            Log.i("Migration2_3", "Migration completed");
-        }
-    };
-
-    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            Log.i("Migration3_4", "Adding declension_type column");
-
-            database.execSQL("ALTER TABLE `DOCUMENT` ADD COLUMN `declension_type` TEXT");
-            database.execSQL("CREATE INDEX `index_DOCUMENT_declension_type` ON `DOCUMENT` (`declension_type`)");
-
-            Log.i("Migration3_4", "Migration completed");
-        }
-    };
-
-    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            Log.i("Migration4_5", "Starting migration 4->5");
-
-            // Check if database has any records
-            android.database.Cursor cursor = database.query("SELECT COUNT(*) FROM `DOCUMENT`");
-            int recordCount = 0;
-            if (cursor.moveToFirst()) {
-                recordCount = cursor.getInt(0);
-            }
-            cursor.close();
-
-            if (recordCount == 0) {
-                Log.i("Migration4_5", "Database is empty, skipping migration");
-                return;
-            }
-
-            Log.i("Migration4_5", "Database has " + recordCount + " records, updating all fields from data.jsonl");
-
-            Gson gson = new Gson();
-            int updatedCount = 0;
-
-            try {
-                try(InputStream inputStream = mContext.getAssets().open("data.jsonl");
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    String json;
-                    while ((json = reader.readLine()) != null) {
-                        WordInfo wordInfo = gson.fromJson(json, WordInfo.class);
-
-                        // Update all fields for this word
-                        database.execSQL(
-                            "UPDATE `DOCUMENT` SET " +
-                            "`word` = ?, " +
-                            "`gender` = ?, " +
-                            "`declension_type` = ?, " +
-                            "`json` = ? " +
-                            "WHERE `word_id` = ?",
-                            new Object[] {
-                                wordInfo.word(),
-                                wordInfo.gender(),
-                                wordInfo.declensionType(),
-                                json,
-                                wordInfo.wordId()
-                            }
-                        );
-                        updatedCount++;
-                    }
-                }
-                Log.i("Migration4_5", "Updated " + updatedCount + " records with all fields from data.jsonl");
-            } catch (IOException e) {
-                Log.e("Migration4_5", "Error reading data.jsonl", e);
-            }
-
-            Log.i("Migration4_5", "Migration completed");
-        }
-    };
-
-    static void setContext(Context pContext) {
-        mContext = pContext;
     }
 }

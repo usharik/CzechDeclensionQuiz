@@ -5,7 +5,8 @@ import android.app.Application;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.usharik.app.App;
-import com.usharik.database.dao.DatabaseManager;
+import com.usharik.database.DocumentRepository;
+import com.usharik.database.dao.DatabaseFactory;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.service.WordService;
@@ -32,16 +33,16 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    DatabaseManager provideDatabaseManager(Application application) {
-        return new DatabaseManager(application);
+    DocumentRepository provideDatabaseManager(Application application) {
+        return DatabaseFactory.provideDocumentDb(application);
     }
 
     @Provides
     @Singleton
-    WordService provideWordService(DatabaseManager databaseManager,
+    WordService provideWordService(DocumentRepository documentRepository,
                                    AppState appState,
                                    FirebaseAnalytics firebaseAnalytics) {
-        return new WordService(databaseManager, appState, firebaseAnalytics);
+        return new WordService(documentRepository, appState, firebaseAnalytics);
     }
 
     @Provides

@@ -9,7 +9,7 @@ import android.util.Log;
 import com.google.android.gms.ads.MobileAds;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.usharik.database.dao.DatabaseManager;
+import com.usharik.database.DocumentRepository;
 import com.usharik.app.di.DaggerAppComponent;
 
 import java.lang.reflect.Type;
@@ -38,7 +38,7 @@ public class App extends Application implements HasAndroidInjector {
     DispatchingAndroidInjector<Object> dispatchingAndroidInjector;
 
     @Inject
-    DatabaseManager databaseManager;
+    DocumentRepository documentRepository;
 
     @Inject
     AppState appState;
@@ -59,11 +59,11 @@ public class App extends Application implements HasAndroidInjector {
             Log.i(getClass().getName(), "Mobile Ads SDK initialized");
         });
 
-        databaseManager.getDocumentDb().getCount()
+        documentRepository.getCount()
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {
                         Log.i(getClass().getName(), "Populating empty database!!!");
-                        databaseManager.populateFromJsonStream(getAssets().open("data.jsonl"));
+                        documentRepository.populateFromJsonStream(getAssets().open("data.jsonl"));
                     }
                     return Completable.complete();
                 })

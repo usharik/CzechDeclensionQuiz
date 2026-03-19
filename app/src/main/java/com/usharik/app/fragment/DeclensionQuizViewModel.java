@@ -38,7 +38,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public static final String BEL = "bel";
     public static final String UKR = "ukr";
 
-    private static final Map<TextView, String> textView2value = new HashMap<>();
+    private static final Map<TextView, String> textView2value = new WeakHashMap<>();
 
     private final AppState appState;
     private final WordService wordService;

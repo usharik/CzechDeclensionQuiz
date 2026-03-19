@@ -1,7 +1,7 @@
 package com.usharik.app.fragment;
 
 import androidx.databinding.Bindable;
-import com.usharik.database.dao.DatabaseManager;
+import com.usharik.database.DocumentRepository;
 import com.usharik.app.BR;
 import com.usharik.app.R;
 
@@ -42,11 +42,11 @@ public class HandbookViewModel extends ViewModelObservable {
     );
 
 
-    private final DatabaseManager databaseManager;
+    private final DocumentRepository documentRepository;
 
     @Inject
-    public HandbookViewModel(final DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
+    public HandbookViewModel(final DocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
         this.cases = new String[2][7];
         this.selectedGender = DEFAULT_SELECTED_GENDER;
         this.selectedWordId = DEFAULT_SELECTED_WORD_ID;
@@ -74,7 +74,7 @@ public class HandbookViewModel extends ViewModelObservable {
 
     private void applySelectedWord(String selectedWord, boolean notify) {
         this.selectedWord = selectedWord;
-        databaseManager.getDocumentDb().getWordInfoByWord(selectedWord)
+        documentRepository.getWordInfoByWord(selectedWord)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {

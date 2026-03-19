@@ -172,16 +172,5 @@ public class AdManager {
             }
         }
     }
-
-    /**
-     * Check if an ad is ready to be shown
-     */
-    public boolean isAdReady() {
-        return isAdReady(BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID);
-    }
-
-    public boolean isAdReady(String adUnitId) {
-        return interstitialAds.containsKey(adUnitId) && !isShowingAd;
-    }
 }
 
