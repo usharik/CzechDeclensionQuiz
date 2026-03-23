@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
 import com.usharik.app.DeclensionQuizState;
@@ -118,7 +119,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                     quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
                     errorCount = 0;
                     update();
-                }, thr -> Log.e("Error", "Error", thr));
+                }, thr -> {
+                    Log.e("Error", "Error loading next word", thr);
+                    FirebaseCrashlytics.getInstance().recordException(thr);
+                });
     }
 
     public void update() {

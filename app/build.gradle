@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -53,6 +54,9 @@ android {
     dataBinding {
         enabled = true
     }
+    firebaseCrashlytics {
+        nativeSymbolUploadEnabled true
+    }
 }
 
 dependencies {
@@ -75,6 +79,8 @@ dependencies {
     implementation 'com.google.dagger:dagger-android:2.59.2'
     implementation 'com.google.dagger:dagger-android-support:2.59.2'
     implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics:19.4.2'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:19.4.2'
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.google.android.gms:play-services-ads:25.1.0'
     testImplementation 'junit:junit:4.13.2'

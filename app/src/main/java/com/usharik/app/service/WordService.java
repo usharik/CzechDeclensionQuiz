@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.usharik.app.AppState;
 import com.usharik.database.DocumentRepository;
 import com.usharik.database.WordInfo;
@@ -42,6 +43,9 @@ public class WordService {
             Bundle bundle = new Bundle();
             bundle.putString("WORD", doc.word());
             firebaseAnalytics.logEvent("NEXT_WORD", bundle);
+        }).doOnError(thr -> {
+            Log.e(getClass().getName(), "Error getting next word", thr);
+            FirebaseCrashlytics.getInstance().recordException(thr);
         });
     }
 

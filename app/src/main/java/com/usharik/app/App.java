@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.database.DocumentRepository;
@@ -53,6 +54,8 @@ public class App extends Application implements HasAndroidInjector {
 
         Log.i(getClass().getName(), "Application start!!!");
 
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
+
         // Initialize Mobile Ads SDK
         Log.i(getClass().getName(), "Initializing Mobile Ads SDK!!!");
         MobileAds.initialize(this, initializationStatus -> {
@@ -82,6 +85,7 @@ public class App extends Application implements HasAndroidInjector {
             appState.setWordsWithErrors(wordsWithErrors);
         } catch (Exception ex) {
             Log.e(getClass().getName(), "Exception", ex);
+            FirebaseCrashlytics.getInstance().recordException(ex);
             appState.setWordsWithErrors(new HashMap<>());
         }
     }
