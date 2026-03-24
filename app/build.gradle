@@ -5,14 +5,14 @@ plugins {
 }
 
 def getGitCommitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    def result = exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-        ignoreExitValue = true
+    try {
+        def process = ['git', 'rev-parse', '--short', 'HEAD'].execute()
+        process.waitFor()
+        def hash = process.text.trim()
+        return hash.isEmpty() || process.exitValue() != 0 ? 'unknown' : hash
+    } catch (Exception e) {
+        return 'unknown'
     }
-    def hash = stdout.toString().trim()
-    return hash.isEmpty() || result.exitValue != 0 ? 'unknown' : hash
 }
 
 android {
