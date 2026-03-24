@@ -286,9 +286,16 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     public void incrementWrongAttempts() {
         quizState.incrementWrongAttempts();
+        notifyPropertyChanged(BR.wrongAttemptsCounter);
     }
 
     public void resetWrongAttempts() {
         quizState.resetWrongAttempts();
+        notifyPropertyChanged(BR.wrongAttemptsCounter);
+    }
+
+    @Bindable
+    public String getWrongAttemptsCounter() {
+        return quizState.getWrongAttempts() + "/5";
     }
 }

@@ -97,9 +97,26 @@
                 android:textSize="12sp"
                 android:textColor="@color/colorOnSurfaceVariant"
                 app:layout_constraintStart_toStartOf="@id/word"
-                app:layout_constraintEnd_toEndOf="@id/gender"
+                app:layout_constraintEnd_toStartOf="@id/errorCounter"
                 app:layout_constraintTop_toBottomOf="@id/headerTextBottomBarrier"
                 tools:text="translation1, translation2, translation3, translation4, translation5, translation6, translation7"/>
+
+        <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/errorCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginEnd="@dimen/spacing_xxs"
+                android:paddingStart="@dimen/spacing_xxs"
+                android:paddingEnd="@dimen/spacing_xxs"
+                android:text="@{viewModel.wrongAttemptsCounter}"
+                android:textAppearance="@style/TextAppearance.App.Caption"
+                android:textSize="11sp"
+                android:textColor="@color/colorError"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@id/translation"
+                tools:text="1/5"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/wordsRecyclerView"

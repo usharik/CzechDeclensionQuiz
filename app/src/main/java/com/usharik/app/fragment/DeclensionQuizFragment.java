@@ -176,6 +176,16 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.case6.casePlural.setOnDragListener(this::onDrag);
         binding.case7.caseSingular.setOnDragListener(this::onDrag);
         binding.case7.casePlural.setOnDragListener(this::onDrag);
+
+        // Add observer for error counter changes to animate it
+        getViewModel().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (propertyId == com.usharik.app.BR.wrongAttemptsCounter) {
+                    animateErrorCounter();
+                }
+            }
+        });
     }
 
     // ─── Menu ────────────────────────────────────────────────────────────────
@@ -512,6 +522,22 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 long[] pattern = {0, 100, 100, 100, 100, 100};
                 vibrator.vibrate(pattern, -1);
             }
+        }
+    }
+
+    /**
+     * Animate error counter with a small bounce effect when it changes
+     */
+    private void animateErrorCounter() {
+        if (binding.errorCounter != null) {
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(binding.errorCounter, "scaleX", 1.0f, 1.3f, 1.0f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(binding.errorCounter, "scaleY", 1.0f, 1.3f, 1.0f);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(scaleX, scaleY);
+            animatorSet.setDuration(250);
+            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+            animatorSet.start();
         }
     }
 }
