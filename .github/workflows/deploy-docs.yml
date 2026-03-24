@@ -1,0 +1,42 @@
+name: Deploy Docs to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    tags-ignore:
+      - 'v*.*.*'
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout CzechDeclensionQuiz
+        uses: actions/checkout@v4
+        with:
+          path: quiz-repo
+
+      - name: Checkout usharik.github.io
+        uses: actions/checkout@v4
+        with:
+          repository: usharik/usharik.github.io
+          token: ${{ secrets.PAGES_TOKEN }}
+          path: pages-repo
+
+      - name: Replace CzechDeclensionQuiz directory
+        run: |
+          rm -rf pages-repo/CzechDeclensionQuiz
+          mkdir -p pages-repo/CzechDeclensionQuiz
+          cp -r quiz-repo/docs/. pages-repo/CzechDeclensionQuiz/
+
+      - name: Commit and push to usharik.github.io
+        run: |
+          cd pages-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --staged --quiet; then
+            git commit -m "Update CzechDeclensionQuiz docs from CzechDeclensionQuiz repo"
+            git push
+          fi
