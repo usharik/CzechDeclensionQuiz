@@ -63,30 +63,34 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/rateApp"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.App.Button.Gradient.Accent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_button_horizontal"
         android:layout_marginTop="@dimen/spacing_button_horizontal"
         android:layout_marginEnd="@dimen/spacing_button_horizontal"
         android:text="@string/rate_app"
+        android:textSize="@dimen/text_size_body"
         app:icon="@drawable/ic_star"
         app:iconPadding="@dimen/spacing_content"
+        app:iconTint="@color/button_text_on_gradient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appVersion" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/privacyPolicy"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/Widget.App.Button.Outlined.Modern"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_button_horizontal"
         android:layout_marginTop="@dimen/spacing_md_large"
         android:layout_marginEnd="@dimen/spacing_button_horizontal"
         android:text="@string/privacy_policy"
+        android:textSize="@dimen/text_size_body"
         app:icon="@drawable/ic_privacy_black_24dp"
         app:iconPadding="@dimen/spacing_content"
+        app:iconTint="@color/button_outline_stroke"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rateApp" />

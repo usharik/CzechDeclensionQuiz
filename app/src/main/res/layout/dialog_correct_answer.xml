@@ -22,26 +22,26 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNextWord"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.App.Button.Gradient.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/next_word" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStayHere"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/Widget.App.Button.Outlined.Modern"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/stay_here" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTryAgain"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/Widget.App.Button.Outlined.Modern"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:text="@string/try_again" />
 
     <com.google.android.material.button.MaterialButton
@@ -50,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
+        android:textColor="@color/button_outline_stroke"
         android:text="@string/rate_app" />
 
 </LinearLayout>

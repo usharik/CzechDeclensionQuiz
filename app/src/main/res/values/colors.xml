@@ -44,4 +44,16 @@
     <!-- Quiz answer state colors -->
     <color name="colorCorrect">#4CAF50</color>
     <color name="colorIncorrect">#F44336</color>
+
+    <!-- Modern button colors -->
+    <color name="button_primary_start">#5E35B1</color>
+    <color name="button_primary_end">#3F51B5</color>
+    <color name="button_secondary_start">#26A69A</color>
+    <color name="button_secondary_end">#00897B</color>
+    <color name="button_accent_start">#FF6F00</color>
+    <color name="button_accent_end">#F57C00</color>
+    <color name="button_neutral_start">#78909C</color>
+    <color name="button_neutral_end">#546E7A</color>
+    <color name="button_text_on_gradient">#FFFFFF</color>
+    <color name="button_outline_stroke">#3F51B5</color>
 </resources>

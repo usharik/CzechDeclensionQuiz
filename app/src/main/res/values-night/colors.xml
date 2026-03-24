@@ -44,4 +44,16 @@
     <!-- Quiz answer state colors (dark mode - slightly lighter/desaturated) -->
     <color name="colorCorrect">#66BB6A</color>
     <color name="colorIncorrect">#EF5350</color>
+
+    <!-- Modern button colors for dark theme (brighter, more vibrant) -->
+    <color name="button_primary_start">#7E57C2</color>
+    <color name="button_primary_end">#5E35B1</color>
+    <color name="button_secondary_start">#4DB6AC</color>
+    <color name="button_secondary_end">#26A69A</color>
+    <color name="button_accent_start">#FFA726</color>
+    <color name="button_accent_end">#FF8A65</color>
+    <color name="button_neutral_start">#90A4AE</color>
+    <color name="button_neutral_end">#78909C</color>
+    <color name="button_text_on_gradient">#FFFFFF</color>
+    <color name="button_outline_stroke">#9FA8DA</color>
 </resources>
