@@ -1,27 +1,45 @@
 ## Privacy Policy
 
-built the CechDeclensionQuiz app as a Free app. This SERVICE is provided by at no cost and is intended for use as is.
+**Last Updated: March 24, 2026**
+
+Built the CzechDeclensionQuiz app as a Free app. This SERVICE is provided at no cost and is intended for use as is.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
 
 If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.
 
-The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at CechDeclensionQuiz unless otherwise defined in this Privacy Policy.
+The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at CzechDeclensionQuiz unless otherwise defined in this Privacy Policy.
 
 **Information Collection and Use**
 
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way.
+The app stores the following information **locally on your device only**:
+* Your quiz settings (word gender filter, animation preferences)
+* Words you made errors on (to help you practice)
+* Quiz progress and statistics
 
-The app does use third party services that may collect information used to identify you.
+**This locally stored data is never transmitted to me or any third party.** It remains on your device and is deleted when you uninstall the app.
 
-Link to privacy policy of third party service providers used by the app
+The app does use third party services that may collect information used to identify you:
 
 *   [Google Play Services](https://www.google.com/policies/privacy/)
-*   [Firebase Analytics](https://firebase.google.com/policies/analytics)
+*   [Firebase Analytics](https://firebase.google.com/policies/analytics) - Collects anonymous usage statistics (e.g., which features you use, quiz completion rates)
+*   [Firebase Crashlytics](https://firebase.google.com/support/privacy) - Collects crash reports to help fix bugs
+*   [Google AdMob](https://support.google.com/admob/answer/6128543) - Displays advertisements and may collect advertising-related data
+
+**Important:** This app has **disabled** Google Advertising ID (ADID) collection. AdMob may still collect limited data for ad serving, but personalized advertising identifiers are not collected.
+
+**Permissions**
+
+The app requests the following permissions:
+* **VIBRATE** - Used to provide haptic feedback when you make correct or incorrect answers in the quiz
+
+No other permissions are requested. The app does not access your contacts, camera, microphone, location, or any other sensitive data.
 
 **Log Data**
 
-I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.
+I want to inform you that whenever you use my Service, in a case of an error in the app, data and information (through third party products) may be collected on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.
+
+This data is collected automatically by Firebase Crashlytics to help diagnose and fix crashes. No personally identifiable information is intentionally collected.
 
 **Cookies**
 
@@ -29,16 +47,24 @@ Cookies are files with a small amount of data that are commonly used as anonymou
 
 This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.
 
+**Advertising**
+
+This app displays advertisements through Google AdMob. AdMob may use cookies and similar technologies to:
+* Serve relevant advertisements
+* Measure ad performance
+* Limit the number of times you see an ad
+
+You can opt out of personalized advertising by visiting your device's ad settings or Google's ad settings at https://www.google.com/settings/ads.
+
 **Service Providers**
 
-I may employ third-party companies and individuals due to the following reasons:
+I employ third-party companies and services for the following reasons:
 
-*   To facilitate our Service;
-*   To provide the Service on our behalf;
-*   To perform Service-related services; or
-*   To assist us in analyzing how our Service is used.
+*   **Firebase Analytics** - To understand how users interact with the app
+*   **Firebase Crashlytics** - To detect and fix crashes
+*   **Google AdMob** - To display advertisements that support the free app
 
-I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.
+I want to inform users of this Service that these third parties have access to limited information as described above. They are obligated not to disclose or use the information for any other purpose beyond providing their services.
 
 **Security**
 
