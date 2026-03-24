@@ -1,17 +1,25 @@
 package com.usharik.app.fragment;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.lifecycle.Lifecycle;
 import android.view.*;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.CycleInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,10 +55,12 @@ import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
 public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel> {
 
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
+    private static final int WRONG_ATTEMPTS_BEFORE_AD = 5;
 
     private AdView adView;
     private WordDragAdapter wordDragAdapter;
     private Observable.OnPropertyChangedCallback wordModelCallback;
+    private Vibrator vibrator;
 
     private DeclensionQuizFragmentBinding binding;
 
@@ -65,6 +75,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
+        vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
         getViewModel().nextWord(false);
         setupWordDragRecyclerView();
         setListeners();
@@ -171,14 +182,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     private boolean handleMenuItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.action_check) {
-            if (getViewModel().checkAnswers()) {
-                showCorrectAnswerDialog();
-            } else {
-                Toast.makeText(getActivity(), R.string.toast_some_errors, Toast.LENGTH_LONG).show();
-            }
-            return true;
-        } else if (itemId == R.id.action_next) {
+        if (itemId == R.id.action_next) {
             checkAndShowAdThenNextWord(false);
             return true;
         }
@@ -321,6 +325,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
      * Handles:
      *   - word-pool item → case cell  (place word)
      *   - case cell      → case cell  (swap words)
+     * Now with instant validation, animations, and vibration feedback
      */
     public boolean onDrag(View v, DragEvent event) {
         if (event.getAction() == DragEvent.ACTION_DROP) {
@@ -336,6 +341,43 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 getViewModel().updateCaseModel(caseNum, numberCode, droppedWordNum);
                 getViewModel().updateWordTextModel(droppedWordNum, View.GONE);
                 dropTarget.setOnTouchListener(this::onTouch);
+
+                // Check if the answer is correct
+                boolean isCorrect = getViewModel().checkSingleAnswer(caseNum, numberCode, droppedWordNum);
+
+                if (isCorrect) {
+                    // Correct answer: bounce animation + single vibration
+                    animateBounce(dropTarget);
+                    vibrateSuccess();
+
+                    // Check if quiz is complete
+                    if (getViewModel().isQuizComplete()) {
+                        // Show success dialog after a short delay to let animation finish
+                        dropTarget.postDelayed(this::showCorrectAnswerDialog, 300);
+                    }
+                } else {
+                    // Wrong answer: shake animation + triple vibration + red color
+                    animateShake(dropTarget);
+                    vibrateError();
+                    getViewModel().incrementWrongAttempts();
+
+                    // Return word to pool
+                    dropTarget.postDelayed(() -> {
+                        getViewModel().updateCaseModel(caseNum, numberCode, -1);
+                        getViewModel().updateWordTextModel(droppedWordNum, View.VISIBLE);
+                        dropTarget.setOnTouchListener(null);
+                    }, 500);
+
+                    // Check if we need to show ad after 5 wrong attempts
+                    if (getViewModel().getWrongAttempts() >= WRONG_ATTEMPTS_BEFORE_AD) {
+                        getViewModel().resetWrongAttempts();
+                        dropTarget.postDelayed(() -> {
+                            adManager.showAd(getActivity(), () -> {
+                                // Ad closed, continue
+                            });
+                        }, 600);
+                    }
+                }
             } else {
                 // Swap two case cells.
                 String[] info1  = ((String) dropped.getTag()).split("_");
@@ -343,6 +385,40 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                 int caseNum1    = Integer.parseInt(info1[1]);
                 getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                 dropTarget.setOnTouchListener(this::onTouch);
+
+                // Check both swapped positions
+                int wordIx1 = getViewModel().getCaseModels()[numberCode][caseNum];
+                int wordIx2 = getViewModel().getCaseModels()[numberCode1][caseNum1];
+
+                boolean isCorrect1 = wordIx1 != -1 && getViewModel().checkSingleAnswer(caseNum, numberCode, wordIx1);
+                boolean isCorrect2 = wordIx2 != -1 && getViewModel().checkSingleAnswer(caseNum1, numberCode1, wordIx2);
+
+                if (isCorrect1 && isCorrect2) {
+                    // Both correct after swap
+                    animateBounce(dropTarget);
+                    vibrateSuccess();
+
+                    if (getViewModel().isQuizComplete()) {
+                        dropTarget.postDelayed(this::showCorrectAnswerDialog, 300);
+                    }
+                } else if (!isCorrect1 || !isCorrect2) {
+                    // At least one is wrong - swap back
+                    animateShake(dropTarget);
+                    vibrateError();
+                    getViewModel().incrementWrongAttempts();
+
+                    dropTarget.postDelayed(() -> {
+                        // Swap back
+                        getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
+                    }, 500);
+
+                    if (getViewModel().getWrongAttempts() >= WRONG_ATTEMPTS_BEFORE_AD) {
+                        getViewModel().resetWrongAttempts();
+                        dropTarget.postDelayed(() -> {
+                            adManager.showAd(getActivity(), () -> {});
+                        }, 600);
+                    }
+                }
             }
         }
         return true;
@@ -382,5 +458,60 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     protected Class<DeclensionQuizViewModel> getViewModelClass() {
         return DeclensionQuizViewModel.class;
+    }
+
+    // ─── Animation and Vibration ──────────────────────────────────────────────
+
+    /**
+     * Bounce animation for correct answer
+     * Animates scale from 1.0 -> 1.2 -> 1.0
+     */
+    private void animateBounce(View view) {
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 1.2f, 1.0f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 1.2f, 1.0f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(scaleX, scaleY);
+        animatorSet.setDuration(300);
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.start();
+    }
+
+    /**
+     * Shake animation for wrong answer
+     * Animates horizontal translation with 3 cycles
+     */
+    private void animateShake(View view) {
+        ObjectAnimator shake = ObjectAnimator.ofFloat(view, "translationX", 0f, 25f, -25f, 25f, -25f, 15f, -15f, 6f, -6f, 0f);
+        shake.setDuration(500);
+        shake.start();
+    }
+
+    /**
+     * Single short vibration for correct answer
+     */
+    private void vibrateSuccess() {
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(50);
+            }
+        }
+    }
+
+    /**
+     * Triple vibration for wrong answer
+     */
+    private void vibrateError() {
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                long[] pattern = {0, 100, 100, 100, 100, 100};
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
+            } else {
+                long[] pattern = {0, 100, 100, 100, 100, 100};
+                vibrator.vibrate(pattern, -1);
+            }
+        }
     }
 }

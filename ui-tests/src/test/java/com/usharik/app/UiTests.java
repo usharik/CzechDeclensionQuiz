@@ -232,7 +232,7 @@ public class UiTests {
         placeAllWordForms(wordCases, caseSingular, casePlural);
         helper.makeScreenshot(TIMESTAMP, "after_solution.png");
 
-        findElement(ID_ACTION_CHECK).click();
+        // Dialog should appear automatically after all correct answers are placed
         verifySuccessDialog();
     }
 
@@ -249,25 +249,32 @@ public class UiTests {
         String[][] wordCases = helper.getWordCases(currentWordText);
         helper.makeScreenshot(TIMESTAMP, "before_incorrect_solution.png");
 
+        // Try to place some words incorrectly
         List<String> initialPoolWords = getVisibleWordPoolWordTexts();
-        int wordsToPlace = Math.min(10, initialPoolWords.size());
-        for (int i = 0; i < wordsToPlace; i++) {
+        int wordsToTry = Math.min(3, initialPoolWords.size());
+        for (int i = 0; i < wordsToTry; i++) {
             String wordText = initialPoolWords.get(i);
             WebElement wordElement = findWordPoolWordByText(wordText);
-            WebElement targetCell = i < 6
-                    ? getProperCell(wordText, wordCases, caseSingular, casePlural)
-                    : getWrongCell(wordText, wordCases, caseSingular, casePlural);
+            // Try to place in wrong cell
+            WebElement targetCell = getWrongCell(wordText, wordCases, caseSingular, casePlural);
             performDragAndDrop(wordElement, targetCell);
             waitForUiUpdate();
+            // Wait for animation and word to return to pool
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
 
-        helper.makeScreenshot(TIMESTAMP, "after_incorrect_solution.png");
-        findElement(ID_ACTION_CHECK).click();
-        waitForUiUpdate();
+        helper.makeScreenshot(TIMESTAMP, "after_incorrect_attempts.png");
 
-        WebElement toast = wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Toast[1]")));
-        assertEquals("There're some errors.", toast.getAttribute("text"));
+        // Success dialog should NOT appear since quiz is not complete
         assertTrue(driver.findElements(AppiumBy.id(ID_DIALOG_TITLE)).isEmpty());
+
+        // Word pool should still have words (incorrect ones were returned)
+        List<WebElement> poolWords = findVisibleWordPoolItems();
+        assertTrue(poolWords.size() > 0);
     }
 
     @Test
@@ -361,7 +368,6 @@ public class UiTests {
 
     private void assertDeclensionQuizVisible() {
         assertNotNull(waitForVisibleElement(ID_CURRENT_WORD));
-        assertNotNull(waitForVisibleElement(ID_ACTION_CHECK));
         assertNotNull(waitForVisibleElement(ID_ACTION_NEXT));
     }
 
@@ -403,7 +409,7 @@ public class UiTests {
             if (poolItems.isEmpty()) {
                 break;
             }
-            WebElement wordElement = poolItems.getFirst();
+            WebElement wordElement = poolItems.get(0);
             WebElement targetCell = getProperCell(wordElement.getText(), wordCases, caseSingular, casePlural);
             performDragAndDrop(wordElement, targetCell);
             waitForUiUpdate();

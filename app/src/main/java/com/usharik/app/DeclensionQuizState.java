@@ -11,11 +11,13 @@ public class DeclensionQuizState {
     private WordTextModel[] wordTextModels;
     private final String[][] correctAnswers;
     private final int[][] actualAnswers;
+    private int wrongAttempts;
 
     public DeclensionQuizState() {
         wordTextModels = new WordTextModel[14];
         correctAnswers = new String[2][7];
         actualAnswers = new int[2][7];
+        wrongAttempts = 0;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 7; j++) {
                 actualAnswers[i][j] = -1;
@@ -45,6 +47,18 @@ public class DeclensionQuizState {
 
     public int[][] getActualAnswers() {
         return actualAnswers;
+    }
+
+    public int getWrongAttempts() {
+        return wrongAttempts;
+    }
+
+    public void incrementWrongAttempts() {
+        wrongAttempts++;
+    }
+
+    public void resetWrongAttempts() {
+        wrongAttempts = 0;
     }
 
     public static class WordTextModel {

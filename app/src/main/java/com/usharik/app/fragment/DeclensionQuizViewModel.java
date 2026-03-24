@@ -118,6 +118,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                     Collections.shuffle(words);
                     quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
                     errorCount = 0;
+                    quizState.resetWrongAttempts();
                     update();
                 }, thr -> {
                     Log.e("Error", "Error loading next word", thr);
@@ -234,5 +235,60 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     public int getErrorCount() {
         return errorCount;
+    }
+
+    /**
+     * Check if a single answer is correct when dropped
+     * @param caseNum case number (0-6)
+     * @param numberCode 0 for singular, 1 for plural
+     * @param wordIx index of the word in wordTextModels
+     * @return true if correct, false if incorrect
+     */
+    public boolean checkSingleAnswer(int caseNum, int numberCode, int wordIx) {
+        String[][] correctAnswers = quizState.getCorrectAnswers();
+        String correctAnswer = correctAnswers[numberCode][caseNum];
+        String actualAnswer = getWordByIndex(wordIx);
+        return correctAnswer.equals(actualAnswer);
+    }
+
+    /**
+     * Check if the quiz is complete (all non-empty cells are filled correctly)
+     * @return true if all answers are correct and placed
+     */
+    public boolean isQuizComplete() {
+        int[][] actualAnswers = quizState.getActualAnswers();
+        String[][] correctAnswers = quizState.getCorrectAnswers();
+
+        for (int i = 0; i < 7; i++) {
+            // Check singular
+            if (!correctAnswers[SINGULAR][i].isEmpty()) {
+                int actualAnswerIx = actualAnswers[SINGULAR][i];
+                if (actualAnswerIx == -1 || !correctAnswers[SINGULAR][i].equals(getWordByIndex(actualAnswerIx))) {
+                    return false;
+                }
+            }
+
+            // Check plural
+            if (!correctAnswers[PLURAL][i].isEmpty()) {
+                int actualAnswerIx = actualAnswers[PLURAL][i];
+                if (actualAnswerIx == -1 || !correctAnswers[PLURAL][i].equals(getWordByIndex(actualAnswerIx))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public int getWrongAttempts() {
+        return quizState.getWrongAttempts();
+    }
+
+    public void incrementWrongAttempts() {
+        quizState.incrementWrongAttempts();
+    }
+
+    public void resetWrongAttempts() {
+        quizState.resetWrongAttempts();
     }
 }
