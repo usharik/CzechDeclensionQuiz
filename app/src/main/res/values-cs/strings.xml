@@ -11,7 +11,7 @@
     <string name="stay_here">Zůstat zde</string>
     <string name="try_again">Zkusit znovu</string>
     <string name="toast_some_errors">Existuje několik chyb.</string>
-    <string name="version">Verze %s %s</string>
+    <string name="version">Verze %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Datum vytvoření %s</string>
     <string name="gender_of_noun">Rod podstatného jména</string>
     <string name="type_of_declension">Typ skloňování</string>

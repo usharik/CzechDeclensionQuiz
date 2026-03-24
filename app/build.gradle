@@ -4,6 +4,17 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
+def getGitCommitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    def result = exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+        ignoreExitValue = true
+    }
+    def hash = stdout.toString().trim()
+    return hash.isEmpty() || result.exitValue != 0 ? 'unknown' : hash
+}
+
 android {
     namespace = "com.usharik.app"
     compileSdkVersion = 36
@@ -15,6 +26,7 @@ android {
         versionName = "3.55"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
+        buildConfigField "String", "GIT_COMMIT_HASH", "\"${getGitCommitHash()}\""
 
         buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
         buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""

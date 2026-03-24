@@ -11,7 +11,7 @@
     <string name="stay_here">Заставацца</string>
     <string name="try_again">Паспрабаваць зноў</string>
     <string name="toast_some_errors">Некалькі памылак.</string>
-    <string name="version">Версія %s %s</string>
+    <string name="version">Версія %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Дата збору %s</string>
     <string name="gender_of_noun">Род іменніка</string>
     <string name="type_of_declension">Тып скланення</string>
