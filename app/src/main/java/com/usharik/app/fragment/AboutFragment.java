@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.utils.HapticFeedback;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -42,11 +43,13 @@ public class AboutFragment extends Fragment {
     }
 
     public void onRateAppClick(View view) {
+        HapticFeedback.light(requireContext());
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
     }
 
     private void onPrivacyPolicyClick(View view) {
+        HapticFeedback.light(requireContext());
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://github.com/usharik/CzechDeclensionQuiz/blob/master/privacy_policy.md")));
     }

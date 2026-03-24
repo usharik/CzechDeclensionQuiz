@@ -2,16 +2,12 @@ package com.usharik.app.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
@@ -19,7 +15,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.lifecycle.Lifecycle;
 import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.CycleInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +37,7 @@ import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.utils.HapticFeedback;
 import com.usharik.app.widget.CustomDragShadowBuilder;
 
 import javax.inject.Inject;
@@ -60,7 +56,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private AdView adView;
     private WordDragAdapter wordDragAdapter;
     private Observable.OnPropertyChangedCallback wordModelCallback;
-    private Vibrator vibrator;
 
     private DeclensionQuizFragmentBinding binding;
 
@@ -75,7 +70,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
-        vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
         getViewModel().nextWord(false);
         setupWordDragRecyclerView();
         setListeners();
@@ -211,20 +205,24 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         saveErrorsInfo();
 
         dialogView.findViewById(R.id.btnNextWord).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
             dialog.dismiss();
             checkAndShowAdThenNextWord(false);
             logAction("NEXT");
         });
         dialogView.findViewById(R.id.btnStayHere).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
             dialog.dismiss();
             logAction("STAY");
         });
         dialogView.findViewById(R.id.btnTryAgain).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
             dialog.dismiss();
             nextWord(true);
             logAction("TRY_AGAIN");
         });
         dialogView.findViewById(R.id.btnRateApp).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
             dialog.dismiss();
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
@@ -302,6 +300,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                     return false;
                 }
             }
+            // Light haptic feedback when picking up a word
+            HapticFeedback.medium(v.getContext());
             v.startDragAndDrop(null, new CustomDragShadowBuilder(v, 2f), v, 0);
             return true;
         }
@@ -501,28 +501,14 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
      * Single short vibration for correct answer
      */
     private void vibrateSuccess() {
-        if (vibrator != null && vibrator.hasVibrator()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                vibrator.vibrate(50);
-            }
-        }
+        HapticFeedback.success(requireContext());
     }
 
     /**
      * Triple vibration for wrong answer
      */
     private void vibrateError() {
-        if (vibrator != null && vibrator.hasVibrator()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                long[] pattern = {0, 100, 100, 100, 100, 100};
-                vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
-            } else {
-                long[] pattern = {0, 100, 100, 100, 100, 100};
-                vibrator.vibrate(pattern, -1);
-            }
-        }
+        HapticFeedback.error(requireContext());
     }
 
     /**

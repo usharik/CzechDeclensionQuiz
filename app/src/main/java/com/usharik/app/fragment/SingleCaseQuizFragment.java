@@ -21,6 +21,7 @@ import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.utils.HapticFeedback;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -123,19 +124,37 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     private void setupAnswerButtons() {
-        binding.btnAnswer1.setOnClickListener(v -> onAnswerSelected(0));
-        binding.btnAnswer2.setOnClickListener(v -> onAnswerSelected(1));
-        binding.btnAnswer3.setOnClickListener(v -> onAnswerSelected(2));
-        binding.btnAnswer4.setOnClickListener(v -> onAnswerSelected(3));
+        binding.btnAnswer1.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            onAnswerSelected(0);
+        });
+        binding.btnAnswer2.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            onAnswerSelected(1);
+        });
+        binding.btnAnswer3.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            onAnswerSelected(2);
+        });
+        binding.btnAnswer4.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            onAnswerSelected(3);
+        });
     }
 
     private void setupNextCaseButton() {
         binding.btnNextCase.setEnabled(false);
-        binding.btnNextCase.setOnClickListener(v -> continueWithPotentialInterstitial(getViewModel()::nextStep));
+        binding.btnNextCase.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            continueWithPotentialInterstitial(getViewModel()::nextStep);
+        });
     }
 
     private void setupNextWordButton() {
-        binding.btnNextWord.setOnClickListener(v -> continueWithPotentialInterstitial(() -> getViewModel().nextWord(false)));
+        binding.btnNextWord.setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            continueWithPotentialInterstitial(() -> getViewModel().nextWord(false));
+        });
     }
 
     private void continueWithPotentialInterstitial(Runnable action) {
@@ -188,11 +207,20 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         }
 
         String correct = getViewModel().getCorrectAnswer();
+        String selected = answers.get(index);
+        boolean isCorrect = selected.equals(correct);
         MaterialButton[] buttons = answerButtons();
 
         // Get colors from theme resources
         int colorCorrect = getResources().getColor(R.color.colorCorrect, null);
         int colorIncorrect = getResources().getColor(R.color.colorIncorrect, null);
+
+        // Haptic feedback based on answer correctness
+        if (isCorrect) {
+            HapticFeedback.success(requireContext());
+        } else {
+            HapticFeedback.error(requireContext());
+        }
 
         for (int i = 0; i < answers.size(); i++) {
             buttons[i].setEnabled(false);

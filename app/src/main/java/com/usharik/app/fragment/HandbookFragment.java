@@ -18,6 +18,7 @@ import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.utils.HapticFeedback;
 
 import javax.inject.Inject;
 
@@ -37,6 +38,10 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.handbook_fragment, container, false);
         binding.setViewModel(getViewModel());
+
+        // Add haptic feedback to gender selection
+        binding.genderGroup.setOnCheckedChangeListener(this::onGenderCheckedChangeListener);
+
         binding.wordGroupMasculine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
         binding.wordGroupFeminine.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
         binding.wordGroupNeuter.setOnCheckedChangeListener(this::onWordCheckedChangeListener);
@@ -56,6 +61,11 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         return binding.getRoot();
     }
 
+    private void onGenderCheckedChangeListener(RadioGroup group, int checkedId) {
+        // Light haptic feedback when selecting gender
+        HapticFeedback.light(requireContext());
+    }
+
     private void onWordCheckedChangeListener(RadioGroup group, int checkedId) {
         RadioButton checkedRadioButton = group.findViewById(checkedId);
         if (checkedRadioButton == null) {
@@ -63,6 +73,8 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
         }
         boolean isChecked = checkedRadioButton.isChecked();
         if (isChecked) {
+            // Light haptic feedback when selecting a word paradigm
+            HapticFeedback.light(requireContext());
             getViewModel().setSelectedWord(checkedRadioButton.getText().toString());
             getViewModel().setSelectedWordId(checkedId);
         }
