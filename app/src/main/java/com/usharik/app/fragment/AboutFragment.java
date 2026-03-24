@@ -35,7 +35,8 @@ public class AboutFragment extends Fragment {
         TextView tvDateOfBuild = getView().findViewById(R.id.appDateOfBuild);
         tvVersion.setText(getResources().getString(R.string.version,
                 BuildConfig.VERSION_NAME,
-                BuildConfig.BUILD_TYPE));
+                BuildConfig.BUILD_TYPE,
+                BuildConfig.GIT_COMMIT_HASH));
         String buildDateStr = DateFormat.getInstance().format(new Date(BuildConfig.TIMESTAMP));
         tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
         getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);

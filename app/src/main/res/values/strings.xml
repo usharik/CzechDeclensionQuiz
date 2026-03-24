@@ -10,7 +10,7 @@
     <string name="stay_here">Stay here</string>
     <string name="try_again">Try again</string>
     <string name="toast_some_errors">There\'re some errors.</string>
-    <string name="version">Version %s %s</string>
+    <string name="version">Version %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Date of build %s</string>
     <string name="gender_of_noun">Gender of noun</string>
     <string name="type_of_declension">Type of declension</string>

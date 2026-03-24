@@ -11,7 +11,7 @@
     <string name="stay_here">Ở lại đây</string>
     <string name="try_again">Thử lại</string>
     <string name="toast_some_errors">Có một số lỗi.</string>
-    <string name="version">Phiên bản %s %s</string>
+    <string name="version">Phiên bản %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Ngày xây dựng %s</string>
     <string name="gender_of_noun">Giới tính của danh từ</string>
     <string name="type_of_declension">Loại biến đổi</string>
