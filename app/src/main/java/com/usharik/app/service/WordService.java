@@ -76,4 +76,30 @@ public class WordService {
                 : currentWord.declensionType();
         return documentRepository.getRandomWordWithAnotherDeclensionType(declensionType);
     }
+
+    /**
+     * Returns a list of word forms from a randomly-selected word (with a different declension
+     * type than the current word) to use as distractor answers in the single-case quiz.
+     * This ensures that even indeclinable words always have enough wrong-answer options.
+     */
+    public Single<List<String>> getDistractorForms(WordInfo currentWord) {
+        String declensionType = (currentWord == null || currentWord.declensionType() == null)
+                ? ""
+                : currentWord.declensionType();
+        return documentRepository.getRandomWordWithAnotherDeclensionType(declensionType)
+                .map(distractor -> {
+                    List<String> forms = new ArrayList<>();
+                    // Collect all forms across both grammatical numbers (singular=0, plural=1)
+                    // and all 7 Czech grammatical cases (index 0–6).
+                    for (int numberIndex = 0; numberIndex < 2; numberIndex++) {
+                        for (int caseIndex = 0; caseIndex < 7; caseIndex++) {
+                            String form = distractor.cases(numberIndex, caseIndex);
+                            if (form != null && !form.isEmpty()) {
+                                forms.add(form);
+                            }
+                        }
+                    }
+                    return forms;
+                });
+    }
 }

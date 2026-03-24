@@ -16,6 +16,7 @@ public class SingleCaseQuizState {
     private List<String> answers = Collections.emptyList();
     private String correctAnswer = "";
     private boolean answered;
+    private List<String> distractorForms = Collections.emptyList();
 
     public WordInfo getWordInfo() {
         return wordInfo;
@@ -63,5 +64,13 @@ public class SingleCaseQuizState {
 
     public void setAnswered(boolean answered) {
         this.answered = answered;
+    }
+
+    public List<String> getDistractorForms() {
+        return distractorForms;
+    }
+
+    public void setDistractorForms(List<String> distractorForms) {
+        this.distractorForms = distractorForms == null ? Collections.emptyList() : distractorForms;
     }
 }

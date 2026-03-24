@@ -140,6 +140,20 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
             if (answers.size() >= 4) break;
             answers.add(s);
         }
+
+        // If there are still fewer than 4 answers, use pre-loaded distractor forms from
+        // another word (handles indeclinable words that have only one unique form).
+        if (answers.size() < 4) {
+            List<String> fallback = new ArrayList<>(state.getDistractorForms());
+            Collections.shuffle(fallback);
+            for (String s : fallback) {
+                if (answers.size() >= 4) break;
+                if (!s.isEmpty() && !s.equals(correct) && !answers.contains(s)) {
+                    answers.add(s);
+                }
+            }
+        }
+
         Collections.shuffle(answers);
         return answers;
     }
@@ -152,6 +166,11 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
             return;
         }
         wordService.getNextWord(state.getWordInfo())
+                .flatMap(wordInfo -> wordService.getDistractorForms(wordInfo)
+                        .map(distractors -> {
+                            state.setDistractorForms(distractors);
+                            return wordInfo;
+                        }))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
