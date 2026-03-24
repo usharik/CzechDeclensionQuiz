@@ -11,8 +11,8 @@ android {
         applicationId = "com.usharik.app"
         minSdkVersion = 28
         targetSdkVersion = 36
-        versionCode = 300
-        versionName = "3.00"
+        versionCode = 350
+        versionName = "3.50"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
 
@@ -48,8 +48,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     dataBinding {
         enabled = true
