@@ -2,14 +2,16 @@ plugins {
     id 'com.android.library'
 }
 
+apply from: "${rootProject.projectDir}/gradle/version.gradle"
+
 android {
     namespace = "com.usharik.database"
     compileSdkVersion = 36
     defaultConfig {
         minSdkVersion = 28
         targetSdkVersion = 36
-        versionCode = 355
-        versionName = "3.55"
+        versionCode = getVersionInfo().code
+        versionName = getVersionInfo().name
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
