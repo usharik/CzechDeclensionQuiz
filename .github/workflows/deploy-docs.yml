@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      PAGES_TOKEN: ${{ secrets.PAGES_TOKEN }}
     steps:
       - name: Checkout CzechDeclensionQuiz
         uses: actions/checkout@v4
@@ -18,6 +20,7 @@ jobs:
           path: quiz-repo
 
       - name: Checkout usharik.github.io
+        if: env.PAGES_TOKEN != ''
         uses: actions/checkout@v4
         with:
           repository: usharik/usharik.github.io
@@ -25,12 +28,14 @@ jobs:
           path: pages-repo
 
       - name: Replace CzechDeclensionQuiz directory
+        if: env.PAGES_TOKEN != ''
         run: |
           rm -rf pages-repo/CzechDeclensionQuiz
           mkdir -p pages-repo/CzechDeclensionQuiz
           cp -r quiz-repo/docs/. pages-repo/CzechDeclensionQuiz/
 
       - name: Commit and push to usharik.github.io
+        if: env.PAGES_TOKEN != ''
         run: |
           cd pages-repo
           git config user.name "github-actions[bot]"
