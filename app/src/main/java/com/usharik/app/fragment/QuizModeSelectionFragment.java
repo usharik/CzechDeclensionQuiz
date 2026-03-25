@@ -15,15 +15,21 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.MainActivity;
 import com.usharik.app.R;
 import com.usharik.app.databinding.FragmentQuizModeSelectionBinding;
 import com.usharik.app.utils.HapticFeedback;
 
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 
 public class QuizModeSelectionFragment extends Fragment {
+
+    @Inject
+    FirebaseAnalytics firebaseAnalytics;
 
     private FragmentQuizModeSelectionBinding binding;
     private AdView adView;
@@ -42,26 +48,32 @@ public class QuizModeSelectionFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz_mode_selection, container, false);
         binding.btnFullTable.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("FULL_TABLE");
             selectQuizMode(DeclensionQuizFragment.class);
         });
         binding.btnOneCase.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("ONE_CASE");
             selectQuizMode(SingleCaseQuizFragment.class);
         });
         binding.btnWordsWithErrors.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("WORDS_WITH_ERRORS");
             openPage(WordsWithErrorsFragment.class);
         });
         binding.btnHandbook.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("HANDBOOK");
             openPage(HandbookFragment.class);
         });
         binding.btnSettings.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("SETTINGS");
             openPage(SettingsFragment.class);
         });
         binding.btnAbout.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("ABOUT");
             openPage(AboutFragment.class);
         });
         return binding.getRoot();
@@ -126,5 +138,14 @@ public class QuizModeSelectionFragment extends Fragment {
         } else {
             Log.e(getClass().getName(), "Host activity does not support page navigation");
         }
+    }
+
+    /**
+     * Log button click to Firebase Analytics
+     */
+    private void logButtonClick(String buttonName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("BUTTON", buttonName);
+        firebaseAnalytics.logEvent("HUB_BUTTON_CLICK", bundle);
     }
 }
