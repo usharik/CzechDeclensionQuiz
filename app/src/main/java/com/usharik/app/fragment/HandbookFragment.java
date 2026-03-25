@@ -13,11 +13,11 @@ import androidx.databinding.DataBindingUtil;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
     @Inject
-    FirebaseAnalytics firebaseAnalytics;
+    FirebaseAnalyticsService analyticsService;
 
     private HandbookFragmentBinding binding;
     private AdView adView;
@@ -56,7 +56,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
 
         Bundle bundle = new Bundle();
         bundle.putString("HANDBOOK_FRAGMENT", "OPEN");
-        firebaseAnalytics.logEvent("HANDBOOK_FRAGMENT", bundle);
+        analyticsService.logEvent("HANDBOOK_FRAGMENT", bundle);
 
         return binding.getRoot();
     }
