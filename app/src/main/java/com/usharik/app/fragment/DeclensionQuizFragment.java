@@ -263,9 +263,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     }
 
     private void logAction(String actionName) {
-        Bundle bundle = new Bundle();
-        bundle.putString("NEXT_WORD_ACTION", actionName);
-        analyticsService.logEvent("NEXT_WORD_ACTION", bundle);
+        analyticsService.logNextWordAction(actionName);
     }
 
     private void saveErrorsInfo() {

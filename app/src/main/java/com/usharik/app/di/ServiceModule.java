@@ -9,6 +9,7 @@ import com.usharik.database.DocumentRepository;
 import com.usharik.database.dao.DatabaseFactory;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.service.WordService;
 
 import javax.inject.Singleton;
@@ -41,8 +42,8 @@ class ServiceModule {
     @Singleton
     WordService provideWordService(DocumentRepository documentRepository,
                                    AppState appState,
-                                   FirebaseAnalytics firebaseAnalytics) {
-        return new WordService(documentRepository, appState, firebaseAnalytics);
+                                   FirebaseAnalyticsService analyticsService) {
+        return new WordService(documentRepository, appState, analyticsService);
     }
 
     @Provides

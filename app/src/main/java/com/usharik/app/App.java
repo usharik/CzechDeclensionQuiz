@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.database.DocumentRepository;
@@ -49,7 +49,7 @@ public class App extends Application implements HasAndroidInjector {
     Gson gson;
 
     @Inject
-    FirebaseAnalytics firebaseAnalytics;
+    FirebaseAnalyticsService analyticsService;
 
     @Override
     public void onCreate() {
@@ -59,7 +59,7 @@ public class App extends Application implements HasAndroidInjector {
         Log.i(getClass().getName(), "Application start!!!");
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
-        firebaseAnalytics.setAnalyticsCollectionEnabled(!BuildConfig.DEBUG);
+        analyticsService.setCollectionEnabled(!BuildConfig.DEBUG);
 
         // Initialize Mobile Ads SDK
         Log.i(getClass().getName(), "Initializing Mobile Ads SDK!!!");

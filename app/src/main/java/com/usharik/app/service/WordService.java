@@ -1,9 +1,7 @@
 package com.usharik.app.service;
 
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.usharik.app.AppState;
 import com.usharik.database.DocumentRepository;
@@ -21,15 +19,15 @@ public class WordService {
 
     private final DocumentRepository documentRepository;
     private final AppState appState;
-    private final FirebaseAnalytics firebaseAnalytics;
+    private final FirebaseAnalyticsService analyticsService;
     private final Random rnd = new Random();
 
     public WordService(final DocumentRepository documentRepository,
                        final AppState appState,
-                       final FirebaseAnalytics firebaseAnalytics) {
+                       final FirebaseAnalyticsService analyticsService) {
         this.documentRepository = documentRepository;
         this.appState = appState;
-        this.firebaseAnalytics = firebaseAnalytics;
+        this.analyticsService = analyticsService;
     }
 
     public Single<WordInfo> getNextWord(WordInfo currentWord) {
@@ -40,9 +38,7 @@ public class WordService {
                 getRandomWordAsync(currentWord)
         ).doOnSuccess(doc -> {
             Log.i(getClass().getName(), "New word is " + doc.word());
-            Bundle bundle = new Bundle();
-            bundle.putString("WORD", doc.word());
-            firebaseAnalytics.logEvent("NEXT_WORD", bundle);
+            analyticsService.logNextWord(doc.word());
         }).doOnError(thr -> {
             Log.e(getClass().getName(), "Error getting next word", thr);
             FirebaseCrashlytics.getInstance().recordException(thr);
