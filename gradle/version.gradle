@@ -1,0 +1,23 @@
+// Reads the project version from the root VERSION file.
+// Format: MAJOR.MINOR (e.g. "3.55")
+// versionCode is computed as MAJOR * 100 + MINOR.
+def getVersionInfo = { ->
+    def versionFile = rootProject.file('VERSION')
+    if (!versionFile.exists()) {
+        throw new GradleException("VERSION file not found at ${versionFile.absolutePath}")
+    }
+    def versionStr = versionFile.text.trim()
+    def parts = versionStr.tokenize('.')
+    if (parts.size() != 2) {
+        throw new GradleException("Invalid VERSION file format '${versionStr}'. Expected MAJOR.MINOR (e.g. '3.55')")
+    }
+    try {
+        def major = parts[0].toInteger()
+        def minor = parts[1].toInteger()
+        return [code: major * 100 + minor, name: versionStr]
+    } catch (NumberFormatException e) {
+        throw new GradleException("Invalid VERSION file content '${versionStr}'. MAJOR and MINOR must be integers.")
+    }
+}
+
+ext.getVersionInfo = getVersionInfo
