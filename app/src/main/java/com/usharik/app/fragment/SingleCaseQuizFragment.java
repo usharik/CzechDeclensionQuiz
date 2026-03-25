@@ -15,13 +15,13 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     AdManager adManager;
 
     @Inject
-    FirebaseAnalytics firebaseAnalytics;
+    FirebaseAnalyticsService analyticsService;
 
     @Nullable
     @Override
@@ -261,7 +261,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         bundle.putString("CORRECT_ANSWER", correct);
         bundle.putString("WORD", getViewModel().getWord());
         bundle.putString("CASE", getViewModel().getCurrentCaseName());
-        firebaseAnalytics.logEvent("SINGLE_CASE_ANSWER", bundle);
+        analyticsService.logEvent("SINGLE_CASE_ANSWER", bundle);
     }
 
     /**
@@ -269,9 +269,9 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
      */
     private void logButtonClick(String buttonName) {
         Bundle bundle = new Bundle();
-        bundle.putString("BUTTON", buttonName);
+        bundle.putString(FirebaseAnalyticsService.KEY_BUTTON, buttonName);
         bundle.putString("WORD", getViewModel().getWord());
-        firebaseAnalytics.logEvent("SINGLE_CASE_NAVIGATION", bundle);
+        analyticsService.logEvent("SINGLE_CASE_NAVIGATION", bundle);
     }
 
     @Override

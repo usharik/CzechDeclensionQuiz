@@ -25,7 +25,6 @@ import com.google.android.flexbox.JustifyContent;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
@@ -37,6 +36,7 @@ import com.usharik.app.ads.AdManager;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
 import com.usharik.app.widget.CustomDragShadowBuilder;
 
@@ -60,7 +60,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private DeclensionQuizFragmentBinding binding;
 
     @Inject AppState appState;
-    @Inject FirebaseAnalytics firebaseAnalytics;
+    @Inject FirebaseAnalyticsService analyticsService;
     @Inject Gson gson;
     @Inject AdManager adManager;
 
@@ -265,7 +265,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void logAction(String actionName) {
         Bundle bundle = new Bundle();
         bundle.putString("NEXT_WORD_ACTION", actionName);
-        firebaseAnalytics.logEvent("NEXT_WORD_ACTION", bundle);
+        analyticsService.logEvent("NEXT_WORD_ACTION", bundle);
     }
 
     private void saveErrorsInfo() {

@@ -15,11 +15,11 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.MainActivity;
 import com.usharik.app.R;
 import com.usharik.app.databinding.FragmentQuizModeSelectionBinding;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ import dagger.android.support.AndroidSupportInjection;
 public class QuizModeSelectionFragment extends Fragment {
 
     @Inject
-    FirebaseAnalytics firebaseAnalytics;
+    FirebaseAnalyticsService analyticsService;
 
     private FragmentQuizModeSelectionBinding binding;
     private AdView adView;
@@ -144,8 +144,6 @@ public class QuizModeSelectionFragment extends Fragment {
      * Log button click to Firebase Analytics
      */
     private void logButtonClick(String buttonName) {
-        Bundle bundle = new Bundle();
-        bundle.putString("BUTTON", buttonName);
-        firebaseAnalytics.logEvent("HUB_BUTTON_CLICK", bundle);
+        analyticsService.logButtonClick("HUB_BUTTON_CLICK", buttonName);
     }
 }
