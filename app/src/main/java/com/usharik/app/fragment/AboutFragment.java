@@ -1,5 +1,6 @@
 package com.usharik.app.fragment;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,8 +46,12 @@ public class AboutFragment extends Fragment {
 
     public void onRateAppClick(View view) {
         HapticFeedback.light(requireContext());
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("market://details?id=" + this.getActivity().getPackageName())));
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + requireActivity().getPackageName())));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onPrivacyPolicyClick(View view) {
