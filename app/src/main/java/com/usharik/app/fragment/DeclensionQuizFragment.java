@@ -224,11 +224,17 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         dialogView.findViewById(R.id.btnRateApp).setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
             dialog.dismiss();
+            String packageName = requireActivity().getPackageName();
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + requireActivity().getPackageName())));
+                        Uri.parse("market://details?id=" + packageName)));
             } catch (android.content.ActivityNotFoundException e) {
-                Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

@@ -46,11 +46,17 @@ public class AboutFragment extends Fragment {
 
     public void onRateAppClick(View view) {
         HapticFeedback.light(requireContext());
+        String packageName = requireActivity().getPackageName();
         try {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=" + requireActivity().getPackageName())));
+                    Uri.parse("market://details?id=" + packageName)));
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+            } catch (ActivityNotFoundException ex) {
+                Toast.makeText(requireContext(), R.string.rate_app_unavailable, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
