@@ -1,27 +1,25 @@
 package com.usharik.app.fragment;
 
-import android.os.Bundle;
-
 import androidx.databinding.Bindable;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
 import com.usharik.app.Gender;
 import com.usharik.app.R;
 import com.usharik.app.framework.ViewModelObservable;
+import com.usharik.app.service.FirebaseAnalyticsService;
 
 import javax.inject.Inject;
 
 public class SettingsViewModel extends ViewModelObservable {
 
     private final AppState appState;
-    private final FirebaseAnalytics firebaseAnalytics;
+    private final FirebaseAnalyticsService analyticsService;
 
     @Inject
     SettingsViewModel(AppState appState,
-                      FirebaseAnalytics firebaseAnalytics) {
+                      FirebaseAnalyticsService analyticsService) {
         this.appState = appState;
-        this.firebaseAnalytics = firebaseAnalytics;
+        this.analyticsService = analyticsService;
     }
 
     @Bindable
@@ -51,12 +49,6 @@ public class SettingsViewModel extends ViewModelObservable {
     public void setSwitchOffAnimation(boolean switchOffAnimation) {
         appState.setSwitchOffAnimation(switchOffAnimation);
         notifyPropertyChanged(BR.switchOffAnimation);
-        logAction(switchOffAnimation);
-    }
-
-    private void logAction(boolean value) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("SWITCH_OFF_ANIMATION", value);
-        firebaseAnalytics.logEvent("SETTINGS", bundle);
+        analyticsService.logSettings(switchOffAnimation);
     }
 }

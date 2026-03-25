@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.databinding.Bindable;
 import androidx.databinding.BindingAdapter;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BR;
@@ -21,6 +20,7 @@ import java.util.*;
 import javax.inject.Inject;
 
 import com.usharik.app.service.WordService;
+import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.database.WordInfo;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -43,7 +43,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     private final AppState appState;
     private final WordService wordService;
-    private final FirebaseAnalytics firebaseAnalytics;
+    private final FirebaseAnalyticsService analyticsService;
     private final Locale locale;
 
     private final DeclensionQuizState quizState = new DeclensionQuizState();
@@ -52,11 +52,11 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     @Inject
     public DeclensionQuizViewModel(final AppState appState,
                                    final WordService wordService,
-                                   final FirebaseAnalytics firebaseAnalytics,
+                                   final FirebaseAnalyticsService analyticsService,
                                    final Locale locale) {
         this.appState = appState;
         this.wordService = wordService;
-        this.firebaseAnalytics = firebaseAnalytics;
+        this.analyticsService = analyticsService;
         this.locale = locale;
     }
 
@@ -169,7 +169,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         notifyPropertyChanged(BR.caseModels);
         if (!bundle.isEmpty()) {
             bundle.putString("WORD", getWord());
-            firebaseAnalytics.logEvent("MISTAKE", bundle);
+            analyticsService.logMistake(bundle);
         }
         return res;
     }

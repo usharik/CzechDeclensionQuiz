@@ -255,23 +255,16 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
      * Log answer selection to Firebase Analytics
      */
     private void logAnswerSelection(boolean isCorrect, String selected, String correct) {
-        Bundle bundle = new Bundle();
-        bundle.putString("RESULT", isCorrect ? "CORRECT" : "INCORRECT");
-        bundle.putString("SELECTED_ANSWER", selected);
-        bundle.putString("CORRECT_ANSWER", correct);
-        bundle.putString("WORD", getViewModel().getWord());
-        bundle.putString("CASE", getViewModel().getCurrentCaseName());
-        analyticsService.logEvent("SINGLE_CASE_ANSWER", bundle);
+        analyticsService.logSingleCaseAnswer(
+                isCorrect, selected, correct,
+                getViewModel().getWord(), getViewModel().getCurrentCaseName());
     }
 
     /**
      * Log button click to Firebase Analytics
      */
     private void logButtonClick(String buttonName) {
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalyticsService.KEY_BUTTON, buttonName);
-        bundle.putString("WORD", getViewModel().getWord());
-        analyticsService.logEvent("SINGLE_CASE_NAVIGATION", bundle);
+        analyticsService.logSingleCaseNavigation(buttonName, getViewModel().getWord());
     }
 
     @Override

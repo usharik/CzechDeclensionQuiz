@@ -54,9 +54,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
             binding.wordGroupNeuter.check(getViewModel().getSelectedWordId());
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putString("HANDBOOK_FRAGMENT", "OPEN");
-        analyticsService.logEvent("HANDBOOK_FRAGMENT", bundle);
+        analyticsService.logHandbookOpen();
 
         return binding.getRoot();
     }
