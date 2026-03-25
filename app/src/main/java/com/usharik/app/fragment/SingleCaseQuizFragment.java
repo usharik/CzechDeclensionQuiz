@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.AppState;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
@@ -42,6 +43,9 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
     @Inject
     AdManager adManager;
+
+    @Inject
+    FirebaseAnalytics firebaseAnalytics;
 
     @Nullable
     @Override
@@ -146,6 +150,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         binding.btnNextCase.setEnabled(false);
         binding.btnNextCase.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("NEXT_CASE");
             continueWithPotentialInterstitial(getViewModel()::nextStep);
         });
     }
@@ -153,6 +158,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     private void setupNextWordButton() {
         binding.btnNextWord.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
+            logButtonClick("NEXT_WORD");
             continueWithPotentialInterstitial(() -> getViewModel().nextWord(false));
         });
     }
@@ -222,6 +228,8 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
             HapticFeedback.error(requireContext());
         }
 
+        logAnswerSelection(isCorrect, selected, correct);
+
         for (int i = 0; i < answers.size(); i++) {
             buttons[i].setEnabled(false);
             if (answers.get(i).equals(correct)) {
@@ -241,6 +249,29 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
                 binding.btnAnswer3,
                 binding.btnAnswer4
         };
+    }
+
+    /**
+     * Log answer selection to Firebase Analytics
+     */
+    private void logAnswerSelection(boolean isCorrect, String selected, String correct) {
+        Bundle bundle = new Bundle();
+        bundle.putString("RESULT", isCorrect ? "CORRECT" : "INCORRECT");
+        bundle.putString("SELECTED_ANSWER", selected);
+        bundle.putString("CORRECT_ANSWER", correct);
+        bundle.putString("WORD", getViewModel().getWord());
+        bundle.putString("CASE", getViewModel().getCurrentCaseName());
+        firebaseAnalytics.logEvent("SINGLE_CASE_ANSWER", bundle);
+    }
+
+    /**
+     * Log button click to Firebase Analytics
+     */
+    private void logButtonClick(String buttonName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("BUTTON", buttonName);
+        bundle.putString("WORD", getViewModel().getWord());
+        firebaseAnalytics.logEvent("SINGLE_CASE_NAVIGATION", bundle);
     }
 
     @Override

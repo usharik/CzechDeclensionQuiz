@@ -91,6 +91,10 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         return (getCurrentCaseIndex() + 1) + ". " + CzechCase.fromIndex(getCurrentCaseIndex()).name;
     }
 
+    public String getCurrentCaseName() {
+        return CzechCase.fromIndex(getCurrentCaseIndex()).name;
+    }
+
     @Bindable
     public String getNumberLabel() {
         return getCurrentNumber() == SINGULAR ? "Singular" : "Plural";
