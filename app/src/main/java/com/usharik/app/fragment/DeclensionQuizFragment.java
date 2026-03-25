@@ -208,18 +208,18 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             HapticFeedback.light(requireContext());
             dialog.dismiss();
             checkAndShowAdThenNextWord(false);
-            logAction("NEXT");
+            analyticsService.logNextWordAction("NEXT");
         });
         dialogView.findViewById(R.id.btnStayHere).setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
             dialog.dismiss();
-            logAction("STAY");
+            analyticsService.logNextWordAction("STAY");
         });
         dialogView.findViewById(R.id.btnTryAgain).setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
             dialog.dismiss();
             nextWord(true);
-            logAction("TRY_AGAIN");
+            analyticsService.logNextWordAction("TRY_AGAIN");
         });
         dialogView.findViewById(R.id.btnRateApp).setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
@@ -260,10 +260,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void nextWord(boolean tryAgain) {
         getViewModel().nextWord(tryAgain);
         setListeners();
-    }
-
-    private void logAction(String actionName) {
-        analyticsService.logNextWordAction(actionName);
     }
 
     private void saveErrorsInfo() {

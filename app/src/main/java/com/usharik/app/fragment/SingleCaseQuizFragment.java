@@ -150,7 +150,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         binding.btnNextCase.setEnabled(false);
         binding.btnNextCase.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
-            logButtonClick("NEXT_CASE");
+            analyticsService.logSingleCaseNavigation("NEXT_CASE", getViewModel().getWord());
             continueWithPotentialInterstitial(getViewModel()::nextStep);
         });
     }
@@ -158,7 +158,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     private void setupNextWordButton() {
         binding.btnNextWord.setOnClickListener(v -> {
             HapticFeedback.light(requireContext());
-            logButtonClick("NEXT_WORD");
+            analyticsService.logSingleCaseNavigation("NEXT_WORD", getViewModel().getWord());
             continueWithPotentialInterstitial(() -> getViewModel().nextWord(false));
         });
     }
@@ -228,7 +228,9 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
             HapticFeedback.error(requireContext());
         }
 
-        logAnswerSelection(isCorrect, selected, correct);
+        analyticsService.logSingleCaseAnswer(
+                isCorrect, selected, correct,
+                getViewModel().getWord(), getViewModel().getCurrentCaseName());
 
         for (int i = 0; i < answers.size(); i++) {
             buttons[i].setEnabled(false);
@@ -249,22 +251,6 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
                 binding.btnAnswer3,
                 binding.btnAnswer4
         };
-    }
-
-    /**
-     * Log answer selection to Firebase Analytics
-     */
-    private void logAnswerSelection(boolean isCorrect, String selected, String correct) {
-        analyticsService.logSingleCaseAnswer(
-                isCorrect, selected, correct,
-                getViewModel().getWord(), getViewModel().getCurrentCaseName());
-    }
-
-    /**
-     * Log button click to Firebase Analytics
-     */
-    private void logButtonClick(String buttonName) {
-        analyticsService.logSingleCaseNavigation(buttonName, getViewModel().getWord());
     }
 
     @Override
