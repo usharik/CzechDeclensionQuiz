@@ -8,24 +8,25 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.app.MainActivity;
 import com.usharik.app.R;
+import com.usharik.app.service.FirebaseAnalyticsService;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
- * Centralises notification channel creation and posting.
- * Call {@link #createChannel(Context)} once on app start (idempotent).
+ * Centralizes notification channel creation and posting.
+ *
+ * Dependencies are injected via Dagger to support testability and analytics integration.
  */
-public final class NotificationHelper {
-
-    private static final String TAG = "NotificationHelper";
+@Singleton
+public class NotificationHelper {
 
     /**
      * The notification channel ID. This is a programmatic constant — it must
@@ -42,10 +43,15 @@ public final class NotificationHelper {
     /** Flag persisted after the welcome notification has been shown once. */
     private static final String PREF_WELCOME_SHOWN = "welcome_notification_shown";
 
-    private NotificationHelper() {}
+    private final FirebaseAnalyticsService analyticsService;
+
+    @Inject
+    public NotificationHelper(FirebaseAnalyticsService analyticsService) {
+        this.analyticsService = analyticsService;
+    }
 
     /** Creates the notification channel (safe to call multiple times). */
-    public static void createChannel(Context context) {
+    public void createChannel(Context context) {
         CharSequence name = context.getString(R.string.notification_channel_name);
         String description = context.getString(R.string.notification_channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -71,8 +77,8 @@ public final class NotificationHelper {
      * @param wordsYesterday     words completed yesterday (for analytics)
      * @param exercisesYesterday exercises completed yesterday (for analytics)
      */
-    public static void showDailyReminder(Context context, boolean isActive,
-                                         int inactivityStreak, int wordsYesterday, int exercisesYesterday) {
+    public void showDailyReminder(Context context, boolean isActive,
+                                  int inactivityStreak, int wordsYesterday, int exercisesYesterday) {
         // Android 13+ POST_NOTIFICATIONS permission check
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(context,
@@ -126,22 +132,14 @@ public final class NotificationHelper {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
 
         // Analytics — logged here so callers never duplicate this event.
-        try {
-            Bundle bundle = new Bundle();
-            bundle.putInt("inactivity_streak", inactivityStreak);
-            bundle.putInt("words_completed_yesterday", wordsYesterday);
-            bundle.putInt("exercises_completed_yesterday", exercisesYesterday);
-            FirebaseAnalytics.getInstance(context).logEvent("daily_reminder_shown", bundle);
-        } catch (Exception e) {
-            Log.w(TAG, "Analytics logging failed", e);
-        }
+        analyticsService.logDailyReminderShown(inactivityStreak, wordsYesterday, exercisesYesterday);
     }
 
     /**
      * Shows a one-time welcome notification after the user first grants POST_NOTIFICATIONS.
      * Checks and sets a flag in SharedPreferences to ensure it fires only once.
      */
-    public static void showWelcomeNotificationIfNeeded(Context context) {
+    public void showWelcomeNotificationIfNeeded(Context context) {
         android.content.SharedPreferences prefs =
                 context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         if (prefs.getBoolean(PREF_WELCOME_SHOWN, false)) {
@@ -185,11 +183,6 @@ public final class NotificationHelper {
 
         prefs.edit().putBoolean(PREF_WELCOME_SHOWN, true).apply();
 
-        try {
-            FirebaseAnalytics.getInstance(context).logEvent("welcome_notification_shown", null);
-        } catch (Exception e) {
-            Log.w(TAG, "Analytics logging failed for welcome notification", e);
-        }
+        analyticsService.logEvent("welcome_notification_shown", null);
     }
 }
-

@@ -28,10 +28,15 @@ import com.usharik.app.fragment.WordsWithErrorsFragment;
 import com.usharik.app.notification.NotificationHelper;
 import dagger.android.AndroidInjection;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "czech_declension_quiz";
     private static final String PREF_RATIONALE_SHOWN = "notification_rationale_shown";
+
+    @Inject
+    NotificationHelper notificationHelper;
 
     /**
      * Launcher for the POST_NOTIFICATIONS runtime permission (Android 13+).
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                                 "POST_NOTIFICATIONS permission " + (granted ? "granted" : "denied"));
                         if (granted) {
                             // Show a one-time welcome notification on the very first grant.
-                            NotificationHelper.showWelcomeNotificationIfNeeded(getApplicationContext());
+                            notificationHelper.showWelcomeNotificationIfNeeded(getApplicationContext());
                         }
                     });
 

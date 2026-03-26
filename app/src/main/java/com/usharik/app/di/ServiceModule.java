@@ -16,6 +16,7 @@ import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.ads.RandomProvider;
 import com.usharik.app.ads.ThreadLocalRandomProvider;
+import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.service.WordService;
 
@@ -105,5 +106,19 @@ class ServiceModule {
     @Singleton
     AdsPolicy provideAdsPolicy(InterstitialAdPolicy policy) {
         return policy;
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAnalyticsService provideFirebaseAnalyticsService(FirebaseAnalytics firebaseAnalytics) {
+        return new FirebaseAnalyticsService(firebaseAnalytics);
+    }
+
+    @Provides
+    @Singleton
+    AppWorkerFactory provideWorkerFactory(
+            TrainingStatsRepository statsRepository,
+            NotificationHelper notificationHelper) {
+        return new AppWorkerFactory(() -> statsRepository, () -> notificationHelper);
     }
 }

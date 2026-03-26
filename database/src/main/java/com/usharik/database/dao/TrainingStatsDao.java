@@ -15,9 +15,6 @@ public interface TrainingStatsDao {
     @Query("SELECT * FROM daily_training_stats WHERE date = :date")
     Maybe<DailyTrainingStatsEntity> getStatsByDate(String date);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertOrReplaceStats(DailyTrainingStatsEntity stats);
-
     // ── Atomic increment support (INSERT OR IGNORE + UPDATE in one transaction) ──
 
     /** Creates a zero-value row for the given date if none exists yet. */
@@ -63,4 +60,3 @@ public interface TrainingStatsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertOrReplaceRecentWords(RecentWordsEntity entity);
 }
-

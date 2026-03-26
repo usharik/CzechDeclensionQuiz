@@ -1,6 +1,7 @@
 package com.usharik.app.di;
 
 import com.usharik.app.MainActivity;
+import com.usharik.app.fragment.AboutFragment;
 import com.usharik.app.fragment.DeclensionQuizFragment;
 import com.usharik.app.fragment.HandbookFragment;
 import com.usharik.app.fragment.QuizModeSelectionFragment;
@@ -37,4 +38,7 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract QuizModeSelectionFragment contributeQuizModeSelectionFragment();
+
+    @ContributesAndroidInjector
+    abstract AboutFragment contributeAboutFragment();
 }

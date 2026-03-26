@@ -38,12 +38,6 @@ public abstract class ViewFragment<T extends ViewModel> extends Fragment impleme
         return null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
     public T getViewModel() {
         return viewModel;
     }

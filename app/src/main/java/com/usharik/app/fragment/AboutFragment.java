@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.notification.NotificationHelper;
@@ -21,7 +20,14 @@ import com.usharik.app.utils.HapticFeedback;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class AboutFragment extends Fragment {
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerFragment;
+
+public class AboutFragment extends DaggerFragment {
+
+    @Inject
+    NotificationHelper notificationHelper;
 
     @Nullable
     @Override
@@ -78,7 +84,7 @@ public class AboutFragment extends Fragment {
 
     private void onTestNotificationClick(View view) {
         HapticFeedback.light(requireContext());
-        NotificationHelper.showDailyReminder(requireContext(), false, 1, 0, 0);
+        notificationHelper.showDailyReminder(requireContext(), false, 1, 0, 0);
         Toast.makeText(requireContext(), R.string.test_notification_sent, Toast.LENGTH_SHORT).show();
     }
 }

@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 
 import android.util.Log;
 
+import androidx.work.Configuration;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.usharik.app.di.AppWorkerFactory;
 import com.usharik.app.notification.DailyReminderWorker;
 import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.service.FirebaseAnalyticsService;
@@ -59,10 +61,24 @@ public class App extends Application implements HasAndroidInjector {
     @Inject
     FirebaseAnalyticsService analyticsService;
 
+    @Inject
+    AppWorkerFactory workerFactory;
+
+    @Inject
+    NotificationHelper notificationHelper;
+
     @Override
     public void onCreate() {
         super.onCreate();
         DaggerAppComponent.factory().create(this).inject(this);
+
+        // Configure WorkManager with custom WorkerFactory for DI support
+        WorkManager.initialize(
+                this,
+                new Configuration.Builder()
+                        .setWorkerFactory(workerFactory)
+                        .build()
+        );
 
         Log.i(getClass().getName(), "Application start!!!");
 
@@ -76,7 +92,7 @@ public class App extends Application implements HasAndroidInjector {
         });
 
         // Set up the daily reminder notification channel and schedule the worker
-        NotificationHelper.createChannel(this);
+        notificationHelper.createChannel(this);
         scheduleDailyReminderWorker();
 
         documentRepository.getCount()
