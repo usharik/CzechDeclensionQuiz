@@ -20,18 +20,24 @@ import com.usharik.app.R;
  */
 public final class NotificationHelper {
 
+    /**
+     * The notification channel ID. This is a programmatic constant — it must
+     * never be a translated string resource, as that would create duplicate
+     * orphan channels per locale.
+     */
+    public static final String CHANNEL_ID = "daily_reminder";
+
     private static final int NOTIFICATION_ID = 1001;
 
     private NotificationHelper() {}
 
     /** Creates the notification channel (safe to call multiple times). */
     public static void createChannel(Context context) {
-        String channelId = context.getString(R.string.notification_channel_id);
         CharSequence name = context.getString(R.string.notification_channel_name);
         String description = context.getString(R.string.notification_channel_description);
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
-        NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.setDescription(description);
 
         NotificationManager manager = context.getSystemService(NotificationManager.class);
@@ -56,7 +62,6 @@ public final class NotificationHelper {
             }
         }
 
-        String channelId = context.getString(R.string.notification_channel_id);
         String title = context.getString(R.string.notification_title);
         String body = context.getString(isActive
                 ? R.string.notification_body_active
@@ -68,8 +73,10 @@ public final class NotificationHelper {
                 context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                // Use a monochrome vector drawable — launcher icons render as a
+                // white blob on the status bar and are not allowed as small icons.
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

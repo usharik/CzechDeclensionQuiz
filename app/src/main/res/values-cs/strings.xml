@@ -35,6 +35,13 @@
     <string name="privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="declension_pattern">jako \"%s\"</string>
 
+    <!-- Daily reminder notifications -->
+    <string name="notification_channel_name">Denní připomínka</string>
+    <string name="notification_channel_description">Denní připomínka pro procvičování českého skloňování</string>
+    <string name="notification_title">Čas procvičovat! 🇨🇿</string>
+    <string name="notification_body_active">Udrž sérii — rychlý kvíz dnes!</string>
+    <string name="notification_body_inactive">Už to bylo dlouho. Vrať se a procvičuj české skloňování!</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Pokračuj! 💪</string>
     <string name="quit_quiz_message">Dnes děláš skvělé pokroky. Opravdu chceš odejít?</string>

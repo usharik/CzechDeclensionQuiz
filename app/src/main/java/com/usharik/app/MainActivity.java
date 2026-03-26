@@ -1,7 +1,13 @@
 package com.usharik.app;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.Fragment;
@@ -20,6 +26,16 @@ import com.usharik.app.fragment.WordsWithErrorsFragment;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Launcher for the POST_NOTIFICATIONS runtime permission (Android 13+).
+     * Must be registered before onCreate returns.
+     */
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    granted -> Log.i(getClass().getName(),
+                            "POST_NOTIFICATIONS permission " + (granted ? "granted" : "denied")));
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +73,19 @@ public class MainActivity extends AppCompatActivity {
             openHubFragment();
         } else {
             updateTitleForCurrentFragment();
+        }
+
+        // Android 13+ requires a runtime permission to post notifications.
+        // We request it here so the user sees the dialog on first launch.
+        requestNotificationPermissionIfNeeded();
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
         }
     }
 
