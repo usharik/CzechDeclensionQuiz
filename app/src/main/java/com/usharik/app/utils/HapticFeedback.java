@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.view.View;
 
 /**
  * Utility class for providing haptic feedback throughout the app
@@ -48,30 +47,6 @@ public class HapticFeedback {
                 long[] pattern = {0, 100, 100, 100, 100, 100};
                 vibrator.vibrate(pattern, -1);
             }
-        }
-    }
-
-    /**
-     * Add light haptic feedback to a view's click listener
-     */
-    public static void addToView(View view) {
-        if (view == null) return;
-        
-        view.setOnClickListener(v -> {
-            light(v.getContext());
-            // Call the original click listener if it exists
-            if (v.hasOnClickListeners()) {
-                v.callOnClick();
-            }
-        });
-    }
-
-    /**
-     * Perform light haptic feedback on a view
-     */
-    public static void performOnView(View view) {
-        if (view != null) {
-            light(view.getContext());
         }
     }
 

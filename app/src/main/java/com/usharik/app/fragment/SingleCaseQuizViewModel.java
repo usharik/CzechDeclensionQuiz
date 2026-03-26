@@ -31,15 +31,18 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     private final WordService wordService;
     private final SingleCaseQuizState state;
+    private final Locale locale;
 
     @Inject
-    public SingleCaseQuizViewModel(final WordService wordService) {
-        this(wordService, new SingleCaseQuizState());
+    public SingleCaseQuizViewModel(final WordService wordService, final Locale locale) {
+        this(wordService, locale, new SingleCaseQuizState());
     }
 
     SingleCaseQuizViewModel(final WordService wordService,
+                            final Locale locale,
                             final SingleCaseQuizState state) {
         this.wordService = wordService;
+        this.locale = locale;
         this.state = state;
     }
 
@@ -76,14 +79,14 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         if (wordInfo == null) {
             return "";
         }
-        
-        // Check if system language is Russian
-        String systemLanguage = Locale.getDefault().getLanguage();
-        if ("ru".equals(systemLanguage)) {
-            return wordInfo.translation_ru();
-        }
-        
-        return wordInfo.translation_en();
+
+        String language = locale.getISO3Language();
+        return switch (language) {
+            case DeclensionQuizViewModel.RUS,
+                 DeclensionQuizViewModel.BEL,
+                 DeclensionQuizViewModel.UKR -> wordInfo.translation_ru();
+            default -> wordInfo.translation_en();
+        };
     }
 
     @Bindable

@@ -54,6 +54,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private BannerAdController bannerAdController;
     private WordDragAdapter wordDragAdapter;
     private Observable.OnPropertyChangedCallback wordModelCallback;
+    private Observable.OnPropertyChangedCallback errorCounterCallback;
 
     private DeclensionQuizFragmentBinding binding;
 
@@ -97,6 +98,17 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
         };
         getViewModel().addOnPropertyChangedCallback(wordModelCallback);
+
+        // Animate error counter on change — registered once here, removed in onDestroyView.
+        errorCounterCallback = new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (propertyId == BR.wrongAttemptsCounter) {
+                    animateErrorCounter();
+                }
+            }
+        };
+        getViewModel().addOnPropertyChangedCallback(errorCounterCallback);
     }
 
     @Override
@@ -104,6 +116,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         if (wordModelCallback != null) {
             getViewModel().removeOnPropertyChangedCallback(wordModelCallback);
             wordModelCallback = null;
+        }
+        if (errorCounterCallback != null) {
+            getViewModel().removeOnPropertyChangedCallback(errorCounterCallback);
+            errorCounterCallback = null;
         }
         bannerAdController.onDestroyView();
         bannerAdController = null;
@@ -165,16 +181,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.case6.casePlural.setOnDragListener(this::onDrag);
         binding.case7.caseSingular.setOnDragListener(this::onDrag);
         binding.case7.casePlural.setOnDragListener(this::onDrag);
-
-        // Add observer for error counter changes to animate it
-        getViewModel().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                if (propertyId == com.usharik.app.BR.wrongAttemptsCounter) {
-                    animateErrorCounter();
-                }
-            }
-        });
     }
 
     // ─── Menu ────────────────────────────────────────────────────────────────
@@ -241,7 +247,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void checkAndShowAdThenNextWord(boolean tryAgain) {
         adManager.showAdIfNeeded(
                 adPolicy.onDeclensionWordCompleted(),
-                getActivity(),
+                requireActivity(),
                 BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID,
                 () -> nextWord(tryAgain));
     }
@@ -371,7 +377,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                     if (adPolicy.onDeclensionWrongAnswer()) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
-                            adManager.showAd(getActivity(), () -> {
+                            adManager.showAd(requireActivity(), () -> {
                                 // Ad closed, continue
                             });
                         }, 600);
@@ -414,7 +420,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                     if (adPolicy.onDeclensionWrongAnswer()) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
-                            adManager.showAd(getActivity(), () -> {});
+                            adManager.showAd(requireActivity(), () -> {});
                         }, 600);
                     }
                 }
@@ -430,7 +436,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onPause();
         bannerAdController.onPause();
         SharedPreferences.Editor editor =
-                getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
+                requireContext().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
         editor.putString(WORDS_WITH_ERRORS, gson.toJson(appState.getWordsWithErrors(), type));
         editor.apply();
