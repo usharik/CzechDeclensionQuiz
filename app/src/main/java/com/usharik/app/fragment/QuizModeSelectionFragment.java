@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.MainActivity;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
-import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.FragmentQuizModeSelectionBinding;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
@@ -31,7 +31,7 @@ public class QuizModeSelectionFragment extends Fragment {
     FirebaseAnalyticsService analyticsService;
 
     @Inject
-    InterstitialAdPolicy adPolicy;
+    AdsPolicy adPolicy;
 
     private FragmentQuizModeSelectionBinding binding;
     private BannerAdController bannerAdController;

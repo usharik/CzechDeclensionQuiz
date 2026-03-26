@@ -10,6 +10,7 @@ import com.usharik.database.dao.DatabaseFactory;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.AdSessionState;
+import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.ads.RandomProvider;
 import com.usharik.app.ads.ThreadLocalRandomProvider;
@@ -84,5 +85,11 @@ class ServiceModule {
     @Singleton
     InterstitialAdPolicy provideInterstitialAdPolicy(AdSessionState sessionState, RandomProvider random) {
         return new InterstitialAdPolicy(sessionState, random);
+    }
+
+    @Provides
+    @Singleton
+    AdsPolicy provideAdsPolicy(InterstitialAdPolicy policy) {
+        return policy;
     }
 }

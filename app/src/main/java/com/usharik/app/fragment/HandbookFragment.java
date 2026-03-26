@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
-import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
@@ -27,7 +27,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     FirebaseAnalyticsService analyticsService;
 
     @Inject
-    InterstitialAdPolicy adPolicy;
+    AdsPolicy adPolicy;
 
     private HandbookFragmentBinding binding;
     private BannerAdController bannerAdController;

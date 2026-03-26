@@ -18,7 +18,7 @@ import javax.inject.Singleton;
  * graph to suppress ads without touching any fragment code.
  */
 @Singleton
-public class InterstitialAdPolicy {
+public class InterstitialAdPolicy implements AdsPolicy {
 
     static final int WORDS_PER_AD = 10;
     static final int WRONG_ATTEMPTS_PER_AD = 5;
@@ -40,6 +40,7 @@ public class InterstitialAdPolicy {
      * <p>Returns {@code true} by default.  Replace the singleton binding in the DI
      * graph (or subclass and override) to disable all ads after a purchase.
      */
+    @Override
     public boolean areAdsEnabled() {
         return true;
     }
@@ -50,6 +51,7 @@ public class InterstitialAdPolicy {
      * @return {@code true} if an interstitial should be shown now
      */
     public boolean onDeclensionWordCompleted() {
+        if (!areAdsEnabled()) return false;
         int wordCount = sessionState.incrementWordsCount();
         if (wordCount >= WORDS_PER_AD) {
             sessionState.resetWordsCount();
@@ -64,6 +66,7 @@ public class InterstitialAdPolicy {
      * @return {@code true} if an interstitial should be shown now
      */
     public boolean onDeclensionWrongAnswer() {
+        if (!areAdsEnabled()) return false;
         int wrongAttempts = sessionState.incrementWrongAttemptsCount();
         if (wrongAttempts >= WRONG_ATTEMPTS_PER_AD) {
             sessionState.resetWrongAttemptsCount();
@@ -78,6 +81,7 @@ public class InterstitialAdPolicy {
      * @return {@code true} if an interstitial should be shown now
      */
     public boolean onSingleCaseNavigation() {
+        if (!areAdsEnabled()) return false;
         int navCount = sessionState.incrementNavigationCount();
         if (navCount >= NAVIGATIONS_PER_AD_ATTEMPT) {
             sessionState.resetNavigationCount();

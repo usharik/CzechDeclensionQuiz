@@ -17,6 +17,55 @@ public class InterstitialAdPolicyTest {
         return new InterstitialAdPolicy(new AdSessionState(), randomProvider);
     }
 
+    /**
+     * Subclass that disables ads so we can verify the areAdsEnabled() guard in isolation.
+     */
+    private InterstitialAdPolicy buildDisabledPolicy(RandomProvider randomProvider) {
+        return new InterstitialAdPolicy(new AdSessionState(), randomProvider) {
+            @Override
+            public boolean areAdsEnabled() {
+                return false;
+            }
+        };
+    }
+
+    // ─── areAdsEnabled() guard ────────────────────────────────────────────────
+
+    @Test
+    public void adsDisabled_wordCompleted_returnsFalseWithoutMutatingCounter() {
+        InterstitialAdPolicy policy = buildDisabledPolicy(ALWAYS_SHOW);
+        // Fire well past the threshold — counters must NOT be incremented
+        for (int i = 0; i < InterstitialAdPolicy.WORDS_PER_AD * 2; i++) {
+            assertFalse("Should always return false when ads disabled",
+                    policy.onDeclensionWordCompleted());
+        }
+        // Re-enable ads by building a fresh policy that reuses the same AdSessionState.
+        // Counter must be zero, so first (WORDS_PER_AD - 1) calls still return false.
+        InterstitialAdPolicy enabled = buildPolicy(ALWAYS_SHOW);
+        for (int i = 1; i < InterstitialAdPolicy.WORDS_PER_AD; i++) {
+            assertFalse("Counter should be clean after ads-disabled calls; i=" + i,
+                    enabled.onDeclensionWordCompleted());
+        }
+    }
+
+    @Test
+    public void adsDisabled_wrongAnswer_returnsFalseWithoutMutatingCounter() {
+        InterstitialAdPolicy policy = buildDisabledPolicy(ALWAYS_SHOW);
+        for (int i = 0; i < InterstitialAdPolicy.WRONG_ATTEMPTS_PER_AD * 2; i++) {
+            assertFalse("Should always return false when ads disabled",
+                    policy.onDeclensionWrongAnswer());
+        }
+    }
+
+    @Test
+    public void adsDisabled_singleCaseNavigation_returnsFalseWithoutMutatingCounter() {
+        InterstitialAdPolicy policy = buildDisabledPolicy(ALWAYS_SHOW);
+        for (int i = 0; i < InterstitialAdPolicy.NAVIGATIONS_PER_AD_ATTEMPT * 2; i++) {
+            assertFalse("Should always return false when ads disabled",
+                    policy.onSingleCaseNavigation());
+        }
+    }
+
     // ─── onDeclensionWordCompleted ────────────────────────────────────────────
 
     @Test
