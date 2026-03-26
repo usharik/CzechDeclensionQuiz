@@ -42,6 +42,8 @@
     <string name="notification_body_active">Не прерывай серию — быстрый тест сегодня!</string>
     <string name="notification_body_inactive">Давно не заходил. Вернись и повтори чешские склонения!</string>
     <string name="notification_action_start_quiz">Начать квиз</string>
+    <string name="notification_welcome_title">Уведомления включены! 🎉</string>
+    <string name="notification_welcome_body">Вы будете получать ежедневные напоминания, чтобы не забывать тренироваться.</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Продолжай! 💪</string>

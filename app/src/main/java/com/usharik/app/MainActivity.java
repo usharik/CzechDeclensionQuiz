@@ -23,6 +23,7 @@ import com.usharik.app.fragment.QuizModeSelectionFragment;
 import com.usharik.app.fragment.SettingsFragment;
 import com.usharik.app.fragment.SingleCaseQuizFragment;
 import com.usharik.app.fragment.WordsWithErrorsFragment;
+import com.usharik.app.notification.NotificationHelper;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,8 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> notificationPermissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(),
-                    granted -> Log.i(getClass().getName(),
-                            "POST_NOTIFICATIONS permission " + (granted ? "granted" : "denied")));
+                    granted -> {
+                        Log.i(getClass().getName(),
+                                "POST_NOTIFICATIONS permission " + (granted ? "granted" : "denied"));
+                        if (granted) {
+                            // Show a one-time welcome notification on the very first grant.
+                            NotificationHelper.showWelcomeNotificationIfNeeded(getApplicationContext());
+                        }
+                    });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

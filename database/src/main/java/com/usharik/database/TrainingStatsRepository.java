@@ -38,46 +38,25 @@ public class TrainingStatsRepository {
         return LocalDate.now().format(DATE_FMT);
     }
 
-    /** Returns today's stats, creating a blank row if none exists yet. */
-    private DailyTrainingStatsEntity getOrCreateToday(String date) {
-        DailyTrainingStatsEntity entity = dao.getStatsByDate(date).blockingGet();
-        if (entity == null) {
-            entity = new DailyTrainingStatsEntity();
-            entity.date = date;
-        }
-        return entity;
-    }
-
     // ── reactive increment API (call from ViewModel / IO thread) ─────────────
+    // Uses atomic SQL (INSERT OR IGNORE + UPDATE) — no read-modify-write race.
 
     public Completable incrementWordsCompleted() {
-        return Completable.fromAction(() -> {
-            String date = today();
-            DailyTrainingStatsEntity e = getOrCreateToday(date);
-            e.wordsCompleted++;
-            e.updatedAt = System.currentTimeMillis();
-            dao.insertOrReplaceStats(e).blockingAwait();
-        }).subscribeOn(Schedulers.io());
+        return Completable.fromAction(() ->
+                dao.atomicIncrementWordsCompleted(today(), System.currentTimeMillis())
+        ).subscribeOn(Schedulers.io());
     }
 
     public Completable incrementExercisesCompleted() {
-        return Completable.fromAction(() -> {
-            String date = today();
-            DailyTrainingStatsEntity e = getOrCreateToday(date);
-            e.exercisesCompleted++;
-            e.updatedAt = System.currentTimeMillis();
-            dao.insertOrReplaceStats(e).blockingAwait();
-        }).subscribeOn(Schedulers.io());
+        return Completable.fromAction(() ->
+                dao.atomicIncrementExercisesCompleted(today(), System.currentTimeMillis())
+        ).subscribeOn(Schedulers.io());
     }
 
     public Completable incrementErrorsCount() {
-        return Completable.fromAction(() -> {
-            String date = today();
-            DailyTrainingStatsEntity e = getOrCreateToday(date);
-            e.errorsCount++;
-            e.updatedAt = System.currentTimeMillis();
-            dao.insertOrReplaceStats(e).blockingAwait();
-        }).subscribeOn(Schedulers.io());
+        return Completable.fromAction(() ->
+                dao.atomicIncrementErrorsCount(today(), System.currentTimeMillis())
+        ).subscribeOn(Schedulers.io());
     }
 
     // ── reactive reads (call from main/IO thread) ─────────────────────────────
@@ -116,7 +95,9 @@ public class TrainingStatsRepository {
                     if (entity.words == null || entity.words.isEmpty()) {
                         return Collections.emptyList();
                     }
-                    return new ArrayList<>(Arrays.asList(entity.words.split(WORD_SEPARATOR, -1)));
+                    return Arrays.stream(entity.words.split(java.util.regex.Pattern.quote(WORD_SEPARATOR), -1))
+                            .filter(w -> !w.isEmpty())
+                            .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
                 })
                 .subscribeOn(Schedulers.io());
     }

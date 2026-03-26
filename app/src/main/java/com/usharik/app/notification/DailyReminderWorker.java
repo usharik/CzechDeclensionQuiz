@@ -1,14 +1,12 @@
 package com.usharik.app.notification;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.dao.DailyTrainingStatsEntity;
 import com.usharik.database.dao.DocumentDatabase;
@@ -80,9 +78,13 @@ public class DailyReminderWorker extends Worker {
             }
 
             if (shouldNotify) {
-                NotificationHelper.showDailyReminder(context, wasActiveYesterday);
+                int wordsYesterday = yesterdayStats != null ? yesterdayStats.wordsCompleted : 0;
+                int exercisesYesterday = yesterdayStats != null ? yesterdayStats.exercisesCompleted : 0;
+                // showDailyReminder is the single entry point: posts notification + logs analytics.
+                NotificationHelper.showDailyReminder(
+                        context, wasActiveYesterday,
+                        state.inactivityStreak, wordsYesterday, exercisesYesterday);
                 state.lastNotificationDate = today;
-                logAnalyticsEvent(context, state, yesterdayStats);
             }
 
             repo.saveReminderStateBlocking(state);
@@ -96,23 +98,6 @@ public class DailyReminderWorker extends Worker {
 
     private static boolean isPowerOfTwo(int n) {
         return n > 0 && (n & (n - 1)) == 0;
-    }
-
-    private static void logAnalyticsEvent(Context context,
-                                          ReminderStateEntity state,
-                                          DailyTrainingStatsEntity stats) {
-        try {
-            Bundle bundle = new Bundle();
-            bundle.putInt("inactivity_streak", state.inactivityStreak);
-            if (stats != null) {
-                bundle.putInt("words_completed_yesterday", stats.wordsCompleted);
-                bundle.putInt("exercises_completed_yesterday", stats.exercisesCompleted);
-                bundle.putInt("errors_yesterday", stats.errorsCount);
-            }
-            FirebaseAnalytics.getInstance(context).logEvent("daily_reminder_shown", bundle);
-        } catch (Exception e) {
-            Log.w(TAG, "Analytics logging failed", e);
-        }
     }
 }
 

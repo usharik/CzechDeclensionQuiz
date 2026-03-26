@@ -195,17 +195,17 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     }
 
     public void nextStep() {
+        // Each answered case = one exercise (visible increment in the quit dialog)
+        if (statsRepository != null) {
+            statsRepository.incrementExercisesCompleted()
+                    .subscribe(() -> {}, thr -> Log.w(TAG, "Stats error", thr));
+        }
         if (state.getCurrentCase() < 6) {
             state.setCurrentCase(state.getCurrentCase() + 1);
         } else if (!state.isPlural()) {
             state.setPlural(true);
             state.setCurrentCase(0);
         } else {
-            // Completed all cases (singular + plural) for this word → count as one exercise
-            if (statsRepository != null) {
-                statsRepository.incrementExercisesCompleted()
-                        .subscribe(() -> {}, thr -> Log.w(TAG, "Stats error", thr));
-            }
             nextWord(false);
             return;
         }

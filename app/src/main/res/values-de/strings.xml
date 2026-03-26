@@ -42,6 +42,8 @@
     <string name="notification_body_active">Halt deine Serie aufrecht — ein kurzes Quiz heute!</string>
     <string name="notification_body_inactive">Es ist schon eine Weile her. Komm zurück und übe tschechische Deklinationen!</string>
     <string name="notification_action_start_quiz">Quiz starten</string>
+    <string name="notification_welcome_title">Benachrichtigungen aktiv! 🎉</string>
+    <string name="notification_welcome_body">Du erhältst täglich Erinnerungen, um dein Tschechisch-Training am Laufen zu halten.</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Weiter so! 💪</string>
