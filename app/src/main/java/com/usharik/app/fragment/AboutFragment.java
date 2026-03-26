@@ -40,18 +40,18 @@ public class AboutFragment extends DaggerFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tvVersion = getView().findViewById(R.id.appVersion);
-        TextView tvDateOfBuild = getView().findViewById(R.id.appDateOfBuild);
+        TextView tvVersion = requireView().findViewById(R.id.appVersion);
+        TextView tvDateOfBuild = requireView().findViewById(R.id.appDateOfBuild);
         tvVersion.setText(getResources().getString(R.string.version,
                 BuildConfig.VERSION_NAME,
                 BuildConfig.BUILD_TYPE,
                 BuildConfig.GIT_COMMIT_HASH));
         String buildDateStr = DateFormat.getInstance().format(new Date(BuildConfig.TIMESTAMP));
         tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
-        getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
-        getView().findViewById(R.id.privacyPolicy).setOnClickListener(this::onPrivacyPolicyClick);
+        requireView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
+        requireView().findViewById(R.id.privacyPolicy).setOnClickListener(this::onPrivacyPolicyClick);
 
-        View testNotificationButton = getView().findViewById(R.id.testNotification);
+        View testNotificationButton = requireView().findViewById(R.id.testNotification);
         if (BuildConfig.DEBUG) {
             testNotificationButton.setVisibility(View.VISIBLE);
             testNotificationButton.setOnClickListener(this::onTestNotificationClick);
@@ -79,7 +79,7 @@ public class AboutFragment extends DaggerFragment {
     private void onPrivacyPolicyClick(View view) {
         HapticFeedback.light(requireContext());
         startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/usharik/CzechDeclensionQuiz/blob/master/privacy_policy.md")));
+                Uri.parse("https://raw.githubusercontent.com/usharik/CzechDeclensionQuiz/refs/heads/main/privacy_policy.md")));
     }
 
     private void onTestNotificationClick(View view) {

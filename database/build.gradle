@@ -12,7 +12,7 @@ android {
         targetSdkVersion = 36
         versionCode = getVersionInfo().code
         versionName = getVersionInfo().name
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
