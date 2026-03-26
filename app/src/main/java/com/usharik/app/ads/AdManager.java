@@ -89,9 +89,29 @@ public class AdManager {
     }
     
     /**
-     * Show the interstitial ad if it's loaded.
-     * @param activity The activity to show the ad in
-     * @param onAdClosed Callback to run after ad is closed
+     * Shows an interstitial ad if {@code condition} is {@code true}, otherwise runs {@code action}
+     * immediately. This merges the policy-condition check and the ad-show call into one entry point,
+     * so callers never need an explicit {@code if/else} around {@link #showAd}.
+     *
+     * @param condition  result of the ad-policy check (e.g. {@code adPolicy.onDeclensionWordCompleted()})
+     * @param activity   host activity
+     * @param adUnitId   interstitial ad unit ID to use when showing
+     * @param action     callback to run after the ad is dismissed (or immediately when not shown)
+     */
+    public void showAdIfNeeded(boolean condition, Activity activity, String adUnitId, Runnable action) {
+        if (condition) {
+            showAd(activity, adUnitId, action);
+        } else {
+            if (action != null) {
+                action.run();
+            }
+        }
+    }
+
+    /**
+     * Show the interstitial ad if it's loaded, using the default ad unit ID.
+     * @param activity    The activity to show the ad in
+     * @param onAdClosed  Callback to run after ad is closed
      */
     public void showAd(Activity activity, Runnable onAdClosed) {
         showAd(activity, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID, onAdClosed);
