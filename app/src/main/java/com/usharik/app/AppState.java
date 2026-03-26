@@ -15,8 +15,6 @@ public class AppState {
     private final MutableLiveData<String> genderFilterStrLiveData = new MutableLiveData<>(Gender.ALL);
     private final MutableLiveData<Integer> genderFilterIdLiveData = new MutableLiveData<>(-1);
     private final MutableLiveData<Boolean> switchOffAnimationLiveData = new MutableLiveData<>(false);
-    private final MutableLiveData<Integer> wordsCountSinceLastAdLiveData = new MutableLiveData<>(0);
-    private final MutableLiveData<Integer> singleCaseNavigationPressCountLiveData = new MutableLiveData<>(0);
 
     public Map<String, Integer> getWordsWithErrors() {
         Map<String, Integer> value = wordsWithErrorsLiveData.getValue();
@@ -36,16 +34,6 @@ public class AppState {
     public boolean getSwitchOffAnimation() {
         Boolean value = switchOffAnimationLiveData.getValue();
         return value != null ? value : false;
-    }
-
-    public int getWordsCountSinceLastAd() {
-        Integer value = wordsCountSinceLastAdLiveData.getValue();
-        return value != null ? value : 0;
-    }
-
-    public int getSingleCaseNavigationPressCount() {
-        Integer value = singleCaseNavigationPressCountLiveData.getValue();
-        return value != null ? value : 0;
     }
 
     public void setWordsWithErrors(Map<String, Integer> wordsWithErrors) {
@@ -83,24 +71,5 @@ public class AppState {
             newMap.remove(word);
             wordsWithErrorsLiveData.setValue(newMap);
         }
-    }
-
-    public void incrementWordsCountSinceLastAd() {
-        int currentCount = getWordsCountSinceLastAd();
-        wordsCountSinceLastAdLiveData.setValue(currentCount + 1);
-    }
-
-    public void resetWordsCountSinceLastAd() {
-        wordsCountSinceLastAdLiveData.setValue(0);
-    }
-
-    public int incrementSingleCaseNavigationPressCount() {
-        int updatedCount = getSingleCaseNavigationPressCount() + 1;
-        singleCaseNavigationPressCountLiveData.setValue(updatedCount);
-        return updatedCount;
-    }
-
-    public void resetSingleCaseNavigationPressCount() {
-        singleCaseNavigationPressCountLiveData.setValue(0);
     }
 }

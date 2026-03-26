@@ -15,7 +15,6 @@ public class AppStateTest {
         assertEquals(Gender.ALL, appState.getGenderFilterStr());
         assertEquals(-1, appState.getGenderFilterId());
         assertFalse(appState.getSwitchOffAnimation());
-        assertEquals(0, appState.getWordsCountSinceLastAd());
         assertTrue(appState.getWordsWithErrors().isEmpty());
     }
 }

@@ -15,34 +15,31 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
-import com.usharik.app.AppState;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdEvent;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
-
-    private static final int PRESSES_PER_INTERSTITIAL_ATTEMPT = 5;
-    private static final double INTERSTITIAL_SHOW_PROBABILITY = 0.4d;
 
     private FragmentSingleCaseQuizBinding binding;
     private Observable.OnPropertyChangedCallback viewModelCallback;
     private AdView adView;
 
     @Inject
-    AppState appState;
+    AdManager adManager;
 
     @Inject
-    AdManager adManager;
+    InterstitialAdPolicy adPolicy;
 
     @Inject
     FirebaseAnalyticsService analyticsService;
@@ -164,8 +161,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     private void continueWithPotentialInterstitial(Runnable action) {
-        int pressCount = appState.incrementSingleCaseNavigationPressCount();
-        if (shouldShowInterstitial(pressCount)) {
+        if (adPolicy.shouldShowInterstitial(AdEvent.SINGLE_CASE_NAVIGATION)) {
             adManager.showAd(
                     requireActivity(),
                     BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID,
@@ -175,11 +171,6 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         }
 
         action.run();
-    }
-
-    private boolean shouldShowInterstitial(int pressCount) {
-        return pressCount % PRESSES_PER_INTERSTITIAL_ATTEMPT == 0
-                && ThreadLocalRandom.current().nextDouble() < INTERSTITIAL_SHOW_PROBABILITY;
     }
 
     private void refreshAnswerButtons() {

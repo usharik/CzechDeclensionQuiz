@@ -32,7 +32,9 @@ import com.usharik.app.BR;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.adapter.WordDragAdapter;
+import com.usharik.app.ads.AdEvent;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
@@ -51,7 +53,6 @@ import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
 public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel> {
 
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
-    private static final int WRONG_ATTEMPTS_BEFORE_AD = 5;
 
     private AdView adView;
     private WordDragAdapter wordDragAdapter;
@@ -63,6 +64,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Inject FirebaseAnalyticsService analyticsService;
     @Inject Gson gson;
     @Inject AdManager adManager;
+    @Inject InterstitialAdPolicy adPolicy;
 
     @Nullable
     @Override
@@ -244,9 +246,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     // ─── Word flow / navigation ───────────────────────────────────────────────
 
     private void checkAndShowAdThenNextWord(boolean tryAgain) {
-        appState.incrementWordsCountSinceLastAd();
-        if (appState.getWordsCountSinceLastAd() >= 10) {
-            appState.resetWordsCountSinceLastAd();
+        if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WORD_COMPLETED)) {
             showAdThenNextWord(tryAgain);
         } else {
             nextWord(tryAgain);
@@ -378,8 +378,8 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                         dropTarget.setOnTouchListener(null);
                     }, 500);
 
-                    // Check if we need to show ad after 5 wrong attempts
-                    if (getViewModel().getWrongAttempts() >= WRONG_ATTEMPTS_BEFORE_AD) {
+                    // Check if we need to show ad after wrong answers
+                    if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WRONG_ANSWER)) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
                             adManager.showAd(getActivity(), () -> {
@@ -422,7 +422,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                         getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                     }, 500);
 
-                    if (getViewModel().getWrongAttempts() >= WRONG_ATTEMPTS_BEFORE_AD) {
+                    if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WRONG_ANSWER)) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
                             adManager.showAd(getActivity(), () -> {});
