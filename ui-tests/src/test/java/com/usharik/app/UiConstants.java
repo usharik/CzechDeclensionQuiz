@@ -17,6 +17,10 @@ public final class UiConstants {
     static final String ID_BTN_TRY_AGAIN = "com.usharik.app:id/btnTryAgain";
     static final String ID_BTN_RATE_APP = "com.usharik.app:id/btnRateApp";
 
+    // UI element IDs - Quit Quiz Dialog
+    static final String ID_BTN_KEEP_GOING = "com.usharik.app:id/btnKeepGoing";
+    static final String ID_BTN_LEAVE_QUIZ = "com.usharik.app:id/btnLeaveQuiz";
+
     // UI element IDs - Navigation
     static final String ID_TOOLBAR = "com.usharik.app:id/toolbar";
 

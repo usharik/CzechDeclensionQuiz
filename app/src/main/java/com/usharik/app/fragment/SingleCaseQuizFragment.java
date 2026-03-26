@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
@@ -21,10 +25,13 @@ import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
+import com.usharik.database.dao.DailyTrainingStatsEntity;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel> {
 
@@ -78,6 +85,57 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID);
         adManager.loadAd(requireActivity(), BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID);
+
+        OnBackPressedCallback quitCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showQuitOverlay(this);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), quitCallback);
+    }
+
+    private void showQuitOverlay(OnBackPressedCallback callback) {
+        getViewModel().getTodayStats()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        stats -> displayQuitDialog(stats, callback),
+                        err  -> displayQuitDialog(null, callback),
+                        ()   -> displayQuitDialog(null, callback)
+                );
+    }
+
+    private void displayQuitDialog(@Nullable DailyTrainingStatsEntity stats,
+                                   OnBackPressedCallback callback) {
+        if (!isAdded() || getContext() == null) return;
+
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_quit_quiz, null, false);
+
+        int words     = stats != null ? stats.wordsCompleted     : 0;
+        int exercises = stats != null ? stats.exercisesCompleted : 0;
+
+        ((TextView) dialogView.findViewById(R.id.tvWordsValue)).setText(String.valueOf(words));
+        ((TextView) dialogView.findViewById(R.id.tvExercisesValue)).setText(String.valueOf(exercises));
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialogView.findViewById(R.id.btnKeepGoing).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            dialog.dismiss();
+        });
+
+        dialogView.findViewById(R.id.btnLeaveQuiz).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            dialog.dismiss();
+            callback.setEnabled(false);
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        dialog.show();
     }
 
     @Override

@@ -21,7 +21,10 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import com.usharik.database.dao.DailyTrainingStatsEntity;
 
 public class SingleCaseQuizViewModel extends ViewModelObservable {
 
@@ -36,9 +39,8 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     @Inject
     public SingleCaseQuizViewModel(final WordService wordService,
-                                   final Locale locale,
                                    final TrainingStatsRepository statsRepository) {
-        this(wordService, locale, statsRepository, new SingleCaseQuizState());
+        this(wordService, statsRepository, new SingleCaseQuizState());
     }
 
     SingleCaseQuizViewModel(final WordService wordService,
@@ -213,6 +215,10 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         state.setCorrectAnswer(correct);
         state.setAnswers(buildAnswers(wordInfo, state.getCorrectAnswer()));
         state.setAnswered(false);
+    }
+
+    public Maybe<DailyTrainingStatsEntity> getTodayStats() {
+        return statsRepository != null ? statsRepository.getTodayStats() : Maybe.empty();
     }
 
     private void update() {

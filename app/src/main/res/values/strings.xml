@@ -33,6 +33,14 @@
     <string name="words_with_errors">Words with errors</string>
     <string name="privacy_policy">Privacy policy</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Keep going! 💪</string>
+    <string name="quit_quiz_message">You\'re making great progress today. Are you sure you want to leave?</string>
+    <string name="quit_quiz_words_label">words studied</string>
+    <string name="quit_quiz_exercises_label">exercises done</string>
+    <string name="quit_quiz_keep_going">Keep going</string>
+    <string name="quit_quiz_leave">Leave quiz</string>
+
     <!-- Daily reminder notifications -->
     <string name="notification_channel_id">daily_reminder</string>
     <string name="notification_channel_name">Daily Reminder</string>

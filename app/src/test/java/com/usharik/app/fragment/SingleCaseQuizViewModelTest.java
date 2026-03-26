@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+
 public class SingleCaseQuizViewModelTest {
 
     @Test
@@ -22,7 +23,7 @@ public class SingleCaseQuizViewModelTest {
         state.setPlural(true);
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), Locale.ENGLISH, null, state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), null, state);
 
         viewModel.nextWord(true);
 
@@ -43,7 +44,7 @@ public class SingleCaseQuizViewModelTest {
         state.setAnswers(List.of("word-sg-6", "word-sg-1", "word-pl-1", "word-pl-2"));
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), Locale.ENGLISH, null, state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), null, state);
 
         viewModel.nextStep();
 
