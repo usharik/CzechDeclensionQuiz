@@ -43,7 +43,7 @@
     <string name="quit_quiz_recent_words_label">RECENTLY STUDIED</string>
 
     <!-- Daily reminder notifications -->
-    <string name="notification_channel_id">daily_reminder</string>
+    <string name="notification_channel_id" translatable="false">daily_reminder</string>
     <string name="notification_channel_name">Daily Reminder</string>
     <string name="notification_channel_description">Daily reminder to practice Czech declensions</string>
     <string name="notification_title">Time to practice Czech! 🇨🇿</string>

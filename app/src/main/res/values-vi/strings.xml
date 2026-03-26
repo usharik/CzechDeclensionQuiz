@@ -35,6 +35,13 @@
     <string name="privacy_policy">Chính sách bảo mật</string>
     <string name="declension_pattern">như \"%s\"</string>
 
+    <!-- Daily reminder notifications -->
+    <string name="notification_channel_name">Nhắc nhở hàng ngày</string>
+    <string name="notification_channel_description">Nhắc nhở hàng ngày để luyện tập cách chia danh từ tiếng Séc</string>
+    <string name="notification_title">Đến giờ luyện tập rồi! 🇨🇿</string>
+    <string name="notification_body_active">Duy trì chuỗi của bạn — làm một bài kiểm tra nhanh hôm nay!</string>
+    <string name="notification_body_inactive">Đã lâu rồi. Quay lại và luyện tập cách chia danh từ tiếng Séc!</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Tiếp tục nào! 💪</string>
     <string name="quit_quiz_message">Hôm nay bạn đang tiến bộ rất tốt. Bạn có chắc muốn rời đi không?</string>

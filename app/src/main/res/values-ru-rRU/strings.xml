@@ -35,6 +35,13 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="declension_pattern">как \"%s\"</string>
 
+    <!-- Daily reminder notifications -->
+    <string name="notification_channel_name">Ежедневное напоминание</string>
+    <string name="notification_channel_description">Ежедневное напоминание о тренировке чешских склонений</string>
+    <string name="notification_title">Время тренироваться! 🇨🇿</string>
+    <string name="notification_body_active">Не прерывай серию — быстрый тест сегодня!</string>
+    <string name="notification_body_inactive">Давно не заходил. Вернись и повтори чешские склонения!</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Продолжай! 💪</string>
     <string name="quit_quiz_message">Сегодня ты отлично справляешься. Ты уверен, что хочешь уйти?</string>

@@ -35,6 +35,13 @@
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="declension_pattern">wie \"%s\"</string>
 
+    <!-- Daily reminder notifications -->
+    <string name="notification_channel_name">Tägliche Erinnerung</string>
+    <string name="notification_channel_description">Tägliche Erinnerung zum Üben tschechischer Deklinationen</string>
+    <string name="notification_title">Zeit zum Üben! 🇨🇿</string>
+    <string name="notification_body_active">Halt deine Serie aufrecht — ein kurzes Quiz heute!</string>
+    <string name="notification_body_inactive">Es ist schon eine Weile her. Komm zurück und übe tschechische Deklinationen!</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Weiter so! 💪</string>
     <string name="quit_quiz_message">Du machst heute tolle Fortschritte. Bist du sicher, dass du gehen möchtest?</string>
