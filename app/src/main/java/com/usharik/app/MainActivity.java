@@ -1,6 +1,7 @@
 package com.usharik.app;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.ActionBar;
@@ -27,6 +29,9 @@ import com.usharik.app.notification.NotificationHelper;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME = "czech_declension_quiz";
+    private static final String PREF_RATIONALE_SHOWN = "notification_rationale_shown";
 
     /**
      * Launcher for the POST_NOTIFICATIONS runtime permission (Android 13+).
@@ -88,12 +93,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) return;
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        if (prefs.getBoolean(PREF_RATIONALE_SHOWN, false)) {
+            // User has already seen our rationale dialog; go straight to the system prompt
+            // (handles the case where the app was reinstalled or the OS reset the permission).
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            return;
         }
+
+        // Show our custom rationale dialog first so the user understands why we need the permission.
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.notification_rationale_title)
+                .setMessage(R.string.notification_rationale_body)
+                .setPositiveButton(R.string.notification_rationale_enable, (dialog, which) -> {
+                    prefs.edit().putBoolean(PREF_RATIONALE_SHOWN, true).apply();
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                })
+                .setNegativeButton(R.string.notification_rationale_not_now, (dialog, which) -> {
+                    prefs.edit().putBoolean(PREF_RATIONALE_SHOWN, true).apply();
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
     }
 
     public void openHubFragment() {

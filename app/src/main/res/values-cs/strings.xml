@@ -45,6 +45,12 @@
     <string name="notification_welcome_title">Oznámení jsou zapnutá! 🎉</string>
     <string name="notification_welcome_body">Budete dostávat denní připomínky, abyste pokračovali v procvičování češtiny.</string>
 
+    <!-- Notification permission rationale dialog -->
+    <string name="notification_rationale_title">Zůstaň na správné cestě! 🔔</string>
+    <string name="notification_rationale_body">Chceš dostávat denní připomínky pro procvičování češtiny? Malý impuls každý den pomáhá budovat návyk a udržuje motivaci — abys nikdy nezapomněl na rychlý kvíz.</string>
+    <string name="notification_rationale_enable">Ano, připomínej mi!</string>
+    <string name="notification_rationale_not_now">Teď ne</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Pokračuj! 💪</string>
     <string name="quit_quiz_message">Dnes děláš skvělé pokroky. Opravdu chceš odejít?</string>

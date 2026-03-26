@@ -45,6 +45,12 @@
     <string name="notification_welcome_title">Апавяшчэнні ўключаны! 🎉</string>
     <string name="notification_welcome_body">Вы будзеце атрымліваць штодзённыя напамінанні для трэніроўкі чэшскіх скланенняў.</string>
 
+    <!-- Notification permission rationale dialog -->
+    <string name="notification_rationale_title">Не забывай трэніравацца! 🔔</string>
+    <string name="notification_rationale_body">Ці хочаш атрымліваць штодзённыя напамінанні аб трэніроўцы? Невялікі штуршок кожны дзень дапамагае выпрацаваць звычку і падтрымлівае матывацыю — каб ты ніколі не забыў пра хуткі квіз.</string>
+    <string name="notification_rationale_enable">Так, нагадвай мне!</string>
+    <string name="notification_rationale_not_now">Не зараз</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Працягвай! 💪</string>
     <string name="quit_quiz_message">Сёння ты выдатна спраўляешся. Ці ты ўпэўнены, што хочаш сысці?</string>

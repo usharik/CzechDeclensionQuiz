@@ -45,6 +45,12 @@
     <string name="notification_welcome_title">Сповіщення увімкнено! 🎉</string>
     <string name="notification_welcome_body">Ви отримуватимете щоденні нагадування, щоб не забувати тренуватися.</string>
 
+    <!-- Notification permission rationale dialog -->
+    <string name="notification_rationale_title">Тримайся курсу! 🔔</string>
+    <string name="notification_rationale_body">Бажаєш отримувати щоденні нагадування про тренування? Маленький поштовх щодня допомагає виробити звичку і підтримує мотивацію — щоб ти ніколи не забув про швидкий квіз.</string>
+    <string name="notification_rationale_enable">Так, нагадуй мені!</string>
+    <string name="notification_rationale_not_now">Не зараз</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Продовжуй! 💪</string>
     <string name="quit_quiz_message">Сьогодні ти чудово справляєшся. Ти впевнений, що хочеш піти?</string>

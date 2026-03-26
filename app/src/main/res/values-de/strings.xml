@@ -45,6 +45,12 @@
     <string name="notification_welcome_title">Benachrichtigungen aktiv! 🎉</string>
     <string name="notification_welcome_body">Du erhältst täglich Erinnerungen, um dein Tschechisch-Training am Laufen zu halten.</string>
 
+    <!-- Notification permission rationale dialog -->
+    <string name="notification_rationale_title">Bleib am Ball! 🔔</string>
+    <string name="notification_rationale_body">Möchtest du tägliche Erinnerungen zum Üben erhalten? Ein kleiner Anstoß jeden Tag hilft dir, eine Gewohnheit aufzubauen und motiviert zu bleiben — damit du kein schnelles Quiz verpasst.</string>
+    <string name="notification_rationale_enable">Ja, erinnere mich!</string>
+    <string name="notification_rationale_not_now">Nicht jetzt</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Weiter so! 💪</string>
     <string name="quit_quiz_message">Du machst heute tolle Fortschritte. Bist du sicher, dass du gehen möchtest?</string>
