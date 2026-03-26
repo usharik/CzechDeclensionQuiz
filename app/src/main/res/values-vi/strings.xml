@@ -45,6 +45,12 @@
     <string name="notification_welcome_title">Thông báo đã bật! 🎉</string>
     <string name="notification_welcome_body">Bạn sẽ nhận được nhắc nhở hàng ngày để duy trì việc luyện tập tiếng Séc.</string>
 
+    <!-- Notification permission rationale dialog -->
+    <string name="notification_rationale_title">Duy trì thói quen! 🔔</string>
+    <string name="notification_rationale_body">Bạn có muốn nhận nhắc nhở hàng ngày để luyện tập không? Một cú hích nhỏ mỗi ngày giúp bạn xây dựng thói quen và duy trì động lực — để không bao giờ quên làm một bài kiểm tra nhanh.</string>
+    <string name="notification_rationale_enable">Có, hãy nhắc tôi!</string>
+    <string name="notification_rationale_not_now">Không phải bây giờ</string>
+
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Tiếp tục nào! 💪</string>
     <string name="quit_quiz_message">Hôm nay bạn đang tiến bộ rất tốt. Bạn có chắc muốn rời đi không?</string>

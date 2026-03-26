@@ -50,7 +50,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             database.execSQL(
                 "CREATE TABLE IF NOT EXISTS `recent_words` (" +
                 "`id` INTEGER NOT NULL, " +
-                "`words` TEXT NOT NULL DEFAULT '', " +
+                "`words` TEXT, " +
                 "PRIMARY KEY(`id`))"
             );
         }
@@ -63,7 +63,7 @@ public abstract class DocumentDatabase extends RoomDatabase {
             database.execSQL(
                 "CREATE TABLE IF NOT EXISTS `recent_words` (" +
                 "`id` INTEGER NOT NULL, " +
-                "`words` TEXT NOT NULL DEFAULT '', " +
+                "`words` TEXT, " +
                 "PRIMARY KEY(`id`))"
             );
         }
