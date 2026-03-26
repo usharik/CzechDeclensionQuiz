@@ -94,13 +94,13 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
     @Override
     public void onDestroyView() {
-        bannerAdController.onDestroyView();
-        bannerAdController = null;
-        super.onDestroyView();
         if (viewModelCallback != null) {
             getViewModel().removeOnPropertyChangedCallback(viewModelCallback);
             viewModelCallback = null;
         }
+        bannerAdController.onDestroyView();
+        bannerAdController = null;
+        super.onDestroyView();
         binding = null;
     }
 

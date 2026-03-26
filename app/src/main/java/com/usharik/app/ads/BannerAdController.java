@@ -24,15 +24,15 @@ import com.google.android.gms.ads.AdView;
  *   // onResume / onPause / onDestroyView delegate to the controller
  * </pre>
  *
- * <p>If {@link InterstitialAdPolicy#areAdsEnabled()} returns {@code false} the
+ * <p>If {@link AdsPolicy#areAdsEnabled()} returns {@code false} the
  * container is hidden and no AdView is created or loaded — the ad SDK is never touched.
  */
 public class BannerAdController {
 
-    private final InterstitialAdPolicy adPolicy;
+    private final AdsPolicy adPolicy;
     private AdView adView;
 
-    public BannerAdController(InterstitialAdPolicy adPolicy) {
+    public BannerAdController(AdsPolicy adPolicy) {
         this.adPolicy = adPolicy;
     }
 

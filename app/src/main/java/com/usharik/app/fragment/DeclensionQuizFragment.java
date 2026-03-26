@@ -79,7 +79,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
-        adManager.loadAd(getActivity());
+        adManager.loadAd(requireActivity());
         bannerAdController = new BannerAdController(adPolicy);
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
