@@ -4,6 +4,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 import android.net.Uri;
@@ -13,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.lifecycle.Lifecycle;
+import com.usharik.database.dao.DailyTrainingStatsEntity;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
@@ -97,6 +101,59 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
         };
         getViewModel().addOnPropertyChangedCallback(wordModelCallback);
+
+        OnBackPressedCallback quitCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showQuitOverlay(this);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), quitCallback);
+    }
+
+    private void showQuitOverlay(OnBackPressedCallback callback) {
+        getViewModel().getTodayStats()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        stats -> displayQuitDialog(stats, callback),
+                        err  -> displayQuitDialog(null, callback),
+                        ()   -> displayQuitDialog(null, callback)
+                );
+    }
+
+    private void displayQuitDialog(@Nullable DailyTrainingStatsEntity stats,
+                                   OnBackPressedCallback callback) {
+        if (!isAdded() || getContext() == null) return;
+
+        android.view.View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_quit_quiz, null, false);
+
+        int words     = stats != null ? stats.wordsCompleted     : 0;
+        int exercises = stats != null ? stats.exercisesCompleted : 0;
+
+        ((android.widget.TextView) dialogView.findViewById(R.id.tvWordsValue))
+                .setText(String.valueOf(words));
+        ((android.widget.TextView) dialogView.findViewById(R.id.tvExercisesValue))
+                .setText(String.valueOf(exercises));
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        dialogView.findViewById(R.id.btnKeepGoing).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            dialog.dismiss();
+        });
+
+        dialogView.findViewById(R.id.btnLeaveQuiz).setOnClickListener(v -> {
+            HapticFeedback.light(requireContext());
+            dialog.dismiss();
+            callback.setEnabled(false);
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        });
+
+        dialog.show();
     }
 
     @Override

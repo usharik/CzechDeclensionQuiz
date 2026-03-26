@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> openHubFragment());
+        // Route the toolbar home button through the back-pressed dispatcher so that
+        // quiz fragments can intercept it with their OnBackPressedCallback.
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            openHubFragment();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

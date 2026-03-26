@@ -1,11 +1,18 @@
 package com.usharik.app;
 
-import com.usharik.app.helpers.TestHelper;
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.options.UiAutomator2Options;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.time.Duration;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,13 +26,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.time.Duration;
-import java.util.List;
-
 import static com.usharik.app.Parameters.APPIUM_URL;
 import static com.usharik.app.Parameters.APP_PATH;
 import static com.usharik.app.Parameters.DATA_JSON_PATH;
@@ -35,7 +35,6 @@ import static com.usharik.app.Parameters.IMPLICIT_WAIT;
 import static com.usharik.app.Parameters.SCREEN_STABILITY_DELAY;
 import static com.usharik.app.Parameters.UI_UPDATE_DELAY;
 import static com.usharik.app.UiConstants.APP_PACKAGE;
-import static com.usharik.app.UiConstants.ID_ACTION_CHECK;
 import static com.usharik.app.UiConstants.ID_ACTION_NEXT;
 import static com.usharik.app.UiConstants.ID_APP_LOGO;
 import static com.usharik.app.UiConstants.ID_APP_NAME;
@@ -47,6 +46,7 @@ import static com.usharik.app.UiConstants.ID_BTN_ANSWER_3;
 import static com.usharik.app.UiConstants.ID_BTN_ANSWER_4;
 import static com.usharik.app.UiConstants.ID_BTN_FULL_TABLE;
 import static com.usharik.app.UiConstants.ID_BTN_HANDBOOK;
+import static com.usharik.app.UiConstants.ID_BTN_LEAVE_QUIZ;
 import static com.usharik.app.UiConstants.ID_BTN_NEXT_CASE;
 import static com.usharik.app.UiConstants.ID_BTN_NEXT_WORD;
 import static com.usharik.app.UiConstants.ID_BTN_ONE_CASE;
@@ -72,10 +72,11 @@ import static com.usharik.app.UiConstants.ID_TV_CASE_QUESTION;
 import static com.usharik.app.UiConstants.ID_TV_NUMBER_LABEL;
 import static com.usharik.app.UiConstants.ID_TV_WORD;
 import static com.usharik.app.UiConstants.ID_WORDS_RECYCLER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.usharik.app.helpers.TestHelper;
+
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.options.UiAutomator2Options;
 
 public class UiTests {
 
@@ -160,12 +161,12 @@ public class UiTests {
         openFullQuizFromHub();
         assertDeclensionQuizVisible();
 
-        driver.navigate().back();
+        navigateBackFromQuiz();
         waitForHubScreen();
 
         openFullQuizFromHub();
         assertDeclensionQuizVisible();
-        driver.navigate().back();
+        navigateBackFromQuiz();
         waitForHubScreen();
     }
 
@@ -292,7 +293,7 @@ public class UiTests {
         assertNotNull(waitForVisibleElement(ID_BTN_ANSWER_4));
         assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled());
 
-        driver.navigate().back();
+        navigateBackFromQuiz();
         waitForHubScreen();
     }
 
@@ -316,7 +317,7 @@ public class UiTests {
         assertTrue(waitForVisibleElement(ID_BTN_ANSWER_1).isEnabled());
         assertFalse(waitForVisibleElement(ID_BTN_NEXT_CASE).isEnabled());
 
-        driver.navigate().back();
+        navigateBackFromQuiz();
         waitForHubScreen();
     }
 
@@ -333,6 +334,7 @@ public class UiTests {
             if (isElementVisible(ID_TOOLBAR, Duration.ofSeconds(1))) {
                 try {
                     clickToolbarHome();
+                    dismissQuitOverlayIfVisible();
                     if (isElementVisible(ID_TITLE_QUIZ_MODE, Duration.ofSeconds(2))) {
                         return;
                     }
@@ -341,6 +343,7 @@ public class UiTests {
             }
 
             driver.navigate().back();
+            dismissQuitOverlayIfVisible();
             waitForScreenStability();
         }
 
@@ -381,6 +384,26 @@ public class UiTests {
     private void waitForHubScreen() {
         waitForScreenStability();
         assertHubVisible();
+    }
+
+    /** Press back from a quiz screen and dismiss the quit-confirmation overlay if it appears. */
+    private void navigateBackFromQuiz() {
+        driver.navigate().back();
+        dismissQuitOverlayIfVisible();
+    }
+
+    /**
+     * If the quit-quiz dialog is visible (identified by the "Leave quiz" button),
+     * click that button so navigation proceeds to the hub.
+     */
+    private void dismissQuitOverlayIfVisible() {
+        if (isElementVisible(ID_BTN_LEAVE_QUIZ, Duration.ofSeconds(3))) {
+            try {
+                waitForVisibleElement(ID_BTN_LEAVE_QUIZ).click();
+                waitForScreenStability();
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     private void clickToolbarHome() {

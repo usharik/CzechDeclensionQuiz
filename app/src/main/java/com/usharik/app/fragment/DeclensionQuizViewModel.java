@@ -25,8 +25,11 @@ import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.WordInfo;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import com.usharik.database.dao.DailyTrainingStatsEntity;
 
 /**
  * Created by macbook on 07/03/2018.
@@ -308,5 +311,9 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     @Bindable
     public String getWrongAttemptsCounter() {
         return quizState.getWrongAttempts() + "/5";
+    }
+
+    public Maybe<DailyTrainingStatsEntity> getTodayStats() {
+        return statsRepository != null ? statsRepository.getTodayStats() : Maybe.empty();
     }
 }
