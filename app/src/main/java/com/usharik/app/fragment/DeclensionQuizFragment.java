@@ -22,9 +22,6 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.usharik.app.AppState;
@@ -33,6 +30,8 @@ import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.adapter.WordDragAdapter;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.ads.AdsPolicy;
+import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
 import com.usharik.app.DeclensionQuizState.WordTextModel;
@@ -53,7 +52,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
 
-    private AdView adView;
+    private BannerAdController bannerAdController;
     private WordDragAdapter wordDragAdapter;
     private Observable.OnPropertyChangedCallback wordModelCallback;
 
@@ -64,6 +63,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Inject Gson gson;
     @Inject AdManager adManager;
     @Inject InterstitialAdPolicy adPolicy;
+    @Inject AdsPolicy adsPolicy;
 
     @Nullable
     @Override
@@ -82,7 +82,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
         adManager.loadAd(getActivity());
-        setupBannerAd();
+        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController.bind(requireContext(), binding.adViewContainer,
+                BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
 
         // Keep the RecyclerView in sync whenever the ViewModel updates wordTextModels.
         wordModelCallback = new Observable.OnPropertyChangedCallback() {
@@ -105,7 +107,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             getViewModel().removeOnPropertyChangedCallback(wordModelCallback);
             wordModelCallback = null;
         }
+        bannerAdController.onDestroyView();
+        bannerAdController = null;
         super.onDestroyView();
+        binding = null;
     }
 
     // ─── Setup ───────────────────────────────────────────────────────────────
@@ -128,15 +133,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         if (existing != null) {
             wordDragAdapter.updateItems(existing);
         }
-    }
-
-    private void setupBannerAd() {
-        adView = new AdView(requireContext());
-        adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
-        adView.setAdSize(AdSize.BANNER);
-        binding.adViewContainer.removeAllViews();
-        binding.adViewContainer.addView(adView);
-        adView.loadAd(new AdRequest.Builder().build());
     }
 
     private void setupMenu() {
@@ -434,7 +430,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     public void onPause() {
         super.onPause();
-        if (adView != null) adView.pause();
+        bannerAdController.onPause();
         SharedPreferences.Editor editor =
                 getActivity().getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE).edit();
         Type type = new TypeToken<HashMap<String, Integer>>() {}.getType();
@@ -445,19 +441,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Override
     public void onResume() {
         super.onResume();
-        if (adView != null) {
-            adView.resume();
-            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
-                binding.adViewContainer.removeAllViews();
-                binding.adViewContainer.addView(adView);
-            }
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (adView != null) adView.destroy();
-        super.onDestroy();
+        bannerAdController.onResume();
     }
 
     @Override

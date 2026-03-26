@@ -10,11 +10,10 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdsPolicy;
+import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
@@ -27,8 +26,11 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     @Inject
     FirebaseAnalyticsService analyticsService;
 
+    @Inject
+    AdsPolicy adsPolicy;
+
     private HandbookFragmentBinding binding;
-    private AdView adView;
+    private BannerAdController bannerAdController;
 
     @Nullable
     @Override
@@ -82,51 +84,29 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Load banner ad
-        setupBannerAd();
-    }
-
-    private void setupBannerAd() {
-        // Create AdView programmatically to set adUnitId from BuildConfig
-        adView = new AdView(requireContext());
-        adView.setAdUnitId(BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
-        adView.setAdSize(AdSize.BANNER);
-
-        // Add AdView to container
-        binding.adViewContainer.removeAllViews();
-        binding.adViewContainer.addView(adView);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController.bind(requireContext(), binding.adViewContainer,
+                BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adView != null) {
-            adView.resume();
-            // Ensure AdView is in the container when fragment becomes visible
-            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
-                binding.adViewContainer.removeAllViews();
-                binding.adViewContainer.addView(adView);
-            }
-        }
+        bannerAdController.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (adView != null) {
-            adView.pause();
-        }
+        bannerAdController.onPause();
     }
 
     @Override
-    public void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
-        super.onDestroy();
+    public void onDestroyView() {
+        bannerAdController.onDestroyView();
+        bannerAdController = null;
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override

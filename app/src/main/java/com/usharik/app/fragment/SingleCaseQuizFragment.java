@@ -11,13 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.Observable;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.ads.AdsPolicy;
+import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
 import com.usharik.app.framework.ViewFragment;
@@ -32,13 +31,16 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
     private FragmentSingleCaseQuizBinding binding;
     private Observable.OnPropertyChangedCallback viewModelCallback;
-    private AdView adView;
+    private BannerAdController bannerAdController;
 
     @Inject
     AdManager adManager;
 
     @Inject
     InterstitialAdPolicy adPolicy;
+
+    @Inject
+    AdsPolicy adsPolicy;
 
     @Inject
     FirebaseAnalyticsService analyticsService;
@@ -76,51 +78,34 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupBannerAd();
+        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController.bind(requireContext(), binding.adViewContainer,
+                BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID);
         adManager.loadAd(requireActivity(), BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adView != null) {
-            adView.resume();
-            if (binding != null && binding.adViewContainer != null && adView.getParent() == null) {
-                binding.adViewContainer.removeAllViews();
-                binding.adViewContainer.addView(adView);
-            }
-        }
+        bannerAdController.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (adView != null) {
-            adView.pause();
-        }
+        bannerAdController.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        if (adView != null) {
-            adView.destroy();
-            adView = null;
-        }
+        bannerAdController.onDestroyView();
+        bannerAdController = null;
         super.onDestroyView();
         if (viewModelCallback != null) {
             getViewModel().removeOnPropertyChangedCallback(viewModelCallback);
             viewModelCallback = null;
         }
         binding = null;
-    }
-
-    private void setupBannerAd() {
-        adView = new AdView(requireContext());
-        adView.setAdUnitId(BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID);
-        adView.setAdSize(AdSize.BANNER);
-        binding.adViewContainer.removeAllViews();
-        binding.adViewContainer.addView(adView);
-        adView.loadAd(new AdRequest.Builder().build());
     }
 
     private void setupAnswerButtons() {
