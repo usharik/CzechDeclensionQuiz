@@ -1,5 +1,7 @@
 package com.usharik.app.ads;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -10,35 +12,35 @@ import javax.inject.Singleton;
 @Singleton
 public class AdSessionState {
 
-    private int wordsCount = 0;
-    private int wrongAttemptsCount = 0;
-    private int navigationCount = 0;
+    private final AtomicInteger wordsCount = new AtomicInteger(0);
+    private final AtomicInteger wrongAttemptsCount = new AtomicInteger(0);
+    private final AtomicInteger navigationCount = new AtomicInteger(0);
 
     @Inject
     public AdSessionState() {
     }
 
     public int incrementWordsCount() {
-        return ++wordsCount;
+        return wordsCount.incrementAndGet();
     }
 
     public void resetWordsCount() {
-        wordsCount = 0;
+        wordsCount.set(0);
     }
 
     public int incrementWrongAttemptsCount() {
-        return ++wrongAttemptsCount;
+        return wrongAttemptsCount.incrementAndGet();
     }
 
     public void resetWrongAttemptsCount() {
-        wrongAttemptsCount = 0;
+        wrongAttemptsCount.set(0);
     }
 
     public int incrementNavigationCount() {
-        return ++navigationCount;
+        return navigationCount.incrementAndGet();
     }
 
     public void resetNavigationCount() {
-        navigationCount = 0;
+        navigationCount.set(0);
     }
 }

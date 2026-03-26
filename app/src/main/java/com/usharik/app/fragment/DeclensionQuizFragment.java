@@ -32,7 +32,6 @@ import com.usharik.app.BR;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.adapter.WordDragAdapter;
-import com.usharik.app.ads.AdEvent;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
@@ -246,7 +245,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     // ─── Word flow / navigation ───────────────────────────────────────────────
 
     private void checkAndShowAdThenNextWord(boolean tryAgain) {
-        if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WORD_COMPLETED)) {
+        if (adPolicy.onDeclensionWordCompleted()) {
             showAdThenNextWord(tryAgain);
         } else {
             nextWord(tryAgain);
@@ -379,7 +378,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                     }, 500);
 
                     // Check if we need to show ad after wrong answers
-                    if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WRONG_ANSWER)) {
+                    if (adPolicy.onDeclensionWrongAnswer()) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
                             adManager.showAd(getActivity(), () -> {
@@ -422,7 +421,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
                         getViewModel().swapCaseModels(caseNum, numberCode, caseNum1, numberCode1);
                     }, 500);
 
-                    if (adPolicy.shouldShowInterstitial(AdEvent.DECLENSION_WRONG_ANSWER)) {
+                    if (adPolicy.onDeclensionWrongAnswer()) {
                         getViewModel().resetWrongAttempts();
                         dropTarget.postDelayed(() -> {
                             adManager.showAd(getActivity(), () -> {});
