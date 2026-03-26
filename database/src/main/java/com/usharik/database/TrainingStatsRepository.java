@@ -2,11 +2,16 @@ package com.usharik.database;
 
 import com.usharik.database.dao.DailyTrainingStatsEntity;
 import com.usharik.database.dao.DocumentDatabase;
+import com.usharik.database.dao.RecentWordsEntity;
 import com.usharik.database.dao.ReminderStateEntity;
 import com.usharik.database.dao.TrainingStatsDao;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
@@ -95,6 +100,34 @@ public class TrainingStatsRepository {
 
     public void saveReminderStateBlocking(ReminderStateEntity state) {
         dao.insertOrReplaceReminderState(state).blockingAwait();
+    }
+
+    // ── recent words ──────────────────────────────────────────────────────────
+
+    /**
+     * Returns the persisted list of recent words (oldest→newest order),
+     * or completes empty if none saved yet.
+     */
+    public Maybe<List<String>> getRecentWords() {
+        return dao.getRecentWords()
+                .<List<String>>map(entity -> {
+                    if (entity.words == null || entity.words.isEmpty()) {
+                        return Collections.emptyList();
+                    }
+                    return new ArrayList<>(Arrays.asList(entity.words.split(",", -1)));
+                })
+                .subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * Persists the recent words list. Words should be in oldest→newest order.
+     */
+    public Completable saveRecentWords(List<String> words) {
+        return Completable.fromAction(() -> {
+            RecentWordsEntity entity = new RecentWordsEntity();
+            entity.words = String.join(",", words);
+            dao.insertOrReplaceRecentWords(entity).blockingAwait();
+        }).subscribeOn(Schedulers.io());
     }
 }
 

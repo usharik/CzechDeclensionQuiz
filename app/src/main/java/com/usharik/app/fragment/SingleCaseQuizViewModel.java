@@ -15,6 +15,7 @@ import com.usharik.database.WordInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -33,9 +34,12 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     private static final String TAG = "SingleCaseQuizVM";
 
+    private static final int MAX_RECENT_WORDS = 3;
+
     private final WordService wordService;
     private final SingleCaseQuizState state;
     private final TrainingStatsRepository statsRepository;
+    private final LinkedHashSet<String> recentWords = new LinkedHashSet<>();
 
     @Inject
     public SingleCaseQuizViewModel(final WordService wordService,
@@ -49,6 +53,18 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         this.wordService = wordService;
         this.statsRepository = statsRepository;
         this.state = state;
+        loadRecentWordsFromDb();
+    }
+
+    @SuppressLint("CheckResult")
+    private void loadRecentWordsFromDb() {
+        if (statsRepository == null) return;
+        statsRepository.getRecentWords()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(words -> {
+                    recentWords.clear();
+                    recentWords.addAll(words); // oldest→newest, preserving insertion order
+                }, thr -> Log.w(TAG, "Failed to load recent words", thr));
     }
 
     public boolean hasCurrentWord() {
@@ -168,6 +184,7 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wordInfo -> {
                     state.setWordInfo(wordInfo);
+                    addRecentWord(wordInfo.word());
                     resetRound();
                     if (statsRepository != null) {
                         statsRepository.incrementWordsCompleted()
@@ -219,6 +236,25 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     public Maybe<DailyTrainingStatsEntity> getTodayStats() {
         return statsRepository != null ? statsRepository.getTodayStats() : Maybe.empty();
+    }
+
+    public List<String> getRecentWords() {
+        List<String> result = new ArrayList<>(recentWords);
+        Collections.reverse(result);
+        return result;
+    }
+
+    @SuppressLint("CheckResult")
+    private void addRecentWord(String word) {
+        recentWords.remove(word); // move to end if already present
+        recentWords.add(word);
+        if (recentWords.size() > MAX_RECENT_WORDS) {
+            recentWords.remove(recentWords.iterator().next()); // remove oldest (first)
+        }
+        if (statsRepository != null) {
+            statsRepository.saveRecentWords(new ArrayList<>(recentWords))
+                    .subscribe(() -> {}, thr -> Log.w(TAG, "Failed to save recent words", thr));
+        }
     }
 
     private void update() {

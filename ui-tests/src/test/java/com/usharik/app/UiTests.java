@@ -69,6 +69,7 @@ import static com.usharik.app.UiConstants.ID_TITLE_QUIZ_MODE;
 import static com.usharik.app.UiConstants.ID_TOOLBAR;
 import static com.usharik.app.UiConstants.ID_TV_CASE_NAME;
 import static com.usharik.app.UiConstants.ID_TV_CASE_QUESTION;
+import static com.usharik.app.UiConstants.ID_TV_EXERCISES_VALUE;
 import static com.usharik.app.UiConstants.ID_TV_NUMBER_LABEL;
 import static com.usharik.app.UiConstants.ID_TV_WORD;
 import static com.usharik.app.UiConstants.ID_WORDS_RECYCLER;
@@ -276,6 +277,41 @@ public class UiTests {
         // Word pool should still have words (incorrect ones were returned)
         List<WebElement> poolWords = findVisibleWordPoolItems();
         assertTrue(poolWords.size() > 0);
+    }
+
+    @Test
+    public void testFullQuizExerciseCounterIsPositiveInQuitDialog() {
+        // Complete one word in the full declension quiz, then open the quit
+        // dialog and verify the "exercises done" counter is greater than zero.
+        openFullQuizFromHub();
+        clickNextWord();
+
+        List<WebElement> caseSingular = findElements(ID_CASE_SINGULAR);
+        List<WebElement> casePlural = findElements(ID_CASE_PLURAL);
+        String currentWordText = findElement(ID_CURRENT_WORD).getText();
+        String[][] wordCases = helper.getWordCases(currentWordText);
+
+        placeAllWordForms(wordCases, caseSingular, casePlural);
+
+        // Success dialog confirms the exercise completed
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.id(ID_DIALOG_TITLE)));
+        findElement(ID_BTN_NEXT_WORD).click();
+        waitForScreenStability();
+
+        // Press back to open the quit overlay
+        driver.navigate().back();
+
+        // Read the exercises counter from the quit dialog
+        WebElement exercisesValue = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(AppiumBy.id(ID_TV_EXERCISES_VALUE)));
+        helper.makeScreenshot(TIMESTAMP, "quit_dialog_exercises_counter.png");
+        int exercises = Integer.parseInt(exercisesValue.getText().trim());
+        assertTrue(exercises > 0,
+                "Expected exercises done > 0 after completing a word, but got: " + exercises);
+
+        // Clean up — leave the quiz
+        findElement(ID_BTN_LEAVE_QUIZ).click();
+        waitForHubScreen();
     }
 
     @Test

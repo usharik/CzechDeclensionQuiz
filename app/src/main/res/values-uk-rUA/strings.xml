@@ -35,6 +35,15 @@
     <string name="privacy_policy">Політика конфіденційності</string>
     <string name="declension_pattern">як \"%s\"</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Продовжуй! 💪</string>
+    <string name="quit_quiz_message">Сьогодні ти чудово справляєшся. Ти впевнений, що хочеш піти?</string>
+    <string name="quit_quiz_words_label">слів вивчено</string>
+    <string name="quit_quiz_exercises_label">вправ виконано</string>
+    <string name="quit_quiz_keep_going">Продовжити</string>
+    <string name="quit_quiz_leave">Покинути квіз</string>
+    <string name="quit_quiz_recent_words_label">НЕЩОДАВНО ВИВЧЕНІ</string>
+
     <string name="quiz_mode_title">Виберіть режим тесту</string>
     <string name="hub_title">Відкрити сторінку</string>
     <string name="quiz_mode_full_table">Тест повної таблиці схилення</string>

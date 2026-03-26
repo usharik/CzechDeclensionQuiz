@@ -22,5 +22,11 @@ public interface TrainingStatsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertOrReplaceReminderState(ReminderStateEntity state);
+
+    @Query("SELECT * FROM recent_words WHERE id = 1")
+    Maybe<RecentWordsEntity> getRecentWords();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Completable insertOrReplaceRecentWords(RecentWordsEntity entity);
 }
 

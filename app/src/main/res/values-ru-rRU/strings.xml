@@ -35,6 +35,15 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="declension_pattern">как \"%s\"</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Продолжай! 💪</string>
+    <string name="quit_quiz_message">Сегодня ты отлично справляешься. Ты уверен, что хочешь уйти?</string>
+    <string name="quit_quiz_words_label">слов изучено</string>
+    <string name="quit_quiz_exercises_label">упражнений выполнено</string>
+    <string name="quit_quiz_keep_going">Продолжить</string>
+    <string name="quit_quiz_leave">Покинуть квиз</string>
+    <string name="quit_quiz_recent_words_label">НЕДАВНО ИЗУЧЕННЫЕ</string>
+
     <string name="quiz_mode_title">Выберите режим теста</string>
     <string name="hub_title">Открыть страницу</string>
     <string name="quiz_mode_full_table">Тест полной таблицы склонения</string>

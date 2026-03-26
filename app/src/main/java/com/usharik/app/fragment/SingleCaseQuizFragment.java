@@ -118,6 +118,19 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         ((TextView) dialogView.findViewById(R.id.tvWordsValue)).setText(String.valueOf(words));
         ((TextView) dialogView.findViewById(R.id.tvExercisesValue)).setText(String.valueOf(exercises));
 
+        // Populate recent words chips
+        List<String> recent = getViewModel().getRecentWords();
+        int[] wordIds = {R.id.tvRecentWord1, R.id.tvRecentWord2, R.id.tvRecentWord3};
+        for (int i = 0; i < wordIds.length; i++) {
+            TextView chip = dialogView.findViewById(wordIds[i]);
+            if (i < recent.size()) {
+                chip.setText(recent.get(i));
+                chip.setVisibility(View.VISIBLE);
+            } else {
+                chip.setVisibility(View.GONE);
+            }
+        }
+
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogView)
                 .setCancelable(true)
