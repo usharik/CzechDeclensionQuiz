@@ -17,7 +17,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
-import com.usharik.app.ads.AdEvent;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
@@ -161,7 +160,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     private void continueWithPotentialInterstitial(Runnable action) {
-        if (adPolicy.shouldShowInterstitial(AdEvent.SINGLE_CASE_NAVIGATION)) {
+        if (adPolicy.onSingleCaseNavigation()) {
             adManager.showAd(
                     requireActivity(),
                     BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID,
