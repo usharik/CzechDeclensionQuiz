@@ -22,7 +22,7 @@ public class SingleCaseQuizViewModelTest {
         state.setPlural(true);
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), Locale.ENGLISH, null, state);
 
         viewModel.nextWord(true);
 
@@ -43,7 +43,7 @@ public class SingleCaseQuizViewModelTest {
         state.setAnswers(List.of("word-sg-6", "word-sg-1", "word-pl-1", "word-pl-2"));
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), Locale.ENGLISH, null, state);
 
         viewModel.nextStep();
 

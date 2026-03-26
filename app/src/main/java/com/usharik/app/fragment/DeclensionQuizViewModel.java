@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.usharik.app.service.WordService;
 import com.usharik.app.service.FirebaseAnalyticsService;
+import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.WordInfo;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -45,6 +46,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     private final WordService wordService;
     private final FirebaseAnalyticsService analyticsService;
     private final Locale locale;
+    private final TrainingStatsRepository statsRepository;
 
     private final DeclensionQuizState quizState = new DeclensionQuizState();
     private int errorCount;
@@ -53,11 +55,13 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     public DeclensionQuizViewModel(final AppState appState,
                                    final WordService wordService,
                                    final FirebaseAnalyticsService analyticsService,
-                                   final Locale locale) {
+                                   final Locale locale,
+                                   final TrainingStatsRepository statsRepository) {
         this.appState = appState;
         this.wordService = wordService;
         this.analyticsService = analyticsService;
         this.locale = locale;
+        this.statsRepository = statsRepository;
     }
 
     @Bindable
@@ -99,6 +103,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         } else {
             wordInfoSingle = Single.just(currentWordInfo);
         }
+        final boolean trackWord = !tryAgain;
         wordInfoSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -119,6 +124,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                     quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
                     errorCount = 0;
                     quizState.resetWrongAttempts();
+                    if (trackWord) {
+                        statsRepository.incrementWordsCompleted()
+                                .subscribe(() -> {}, thr2 -> Log.w("DeclensionQuizVM", "Stats error", thr2));
+                    }
                     update();
                 }, thr -> {
                     Log.e("Error", "Error loading next word", thr);
@@ -170,6 +179,8 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         if (!bundle.isEmpty()) {
             bundle.putString("WORD", getWord());
             analyticsService.logMistake(bundle);
+            statsRepository.incrementErrorsCount()
+                    .subscribe(() -> {}, thr -> Log.w("DeclensionQuizVM", "Stats error", thr));
         }
         return res;
     }

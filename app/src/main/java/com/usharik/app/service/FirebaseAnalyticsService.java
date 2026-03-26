@@ -80,6 +80,14 @@ public class FirebaseAnalyticsService {
         firebaseAnalytics.logEvent("HANDBOOK_FRAGMENT", bundle);
     }
 
+    public void logDailyReminderShown(int inactivityStreak, int wordsYesterday, int exercisesYesterday) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("inactivity_streak", inactivityStreak);
+        bundle.putInt("words_completed_yesterday", wordsYesterday);
+        bundle.putInt("exercises_completed_yesterday", exercisesYesterday);
+        firebaseAnalytics.logEvent("daily_reminder_shown", bundle);
+    }
+
     public void logEvent(String eventName, Bundle bundle) {
         if (eventName == null) {
             return;
