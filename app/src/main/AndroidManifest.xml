@@ -16,10 +16,10 @@
 
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
 
-        <!-- AdMob App ID (Replace with your actual AdMob App ID) -->
+        <!-- AdMob App ID - set per build type via manifestPlaceholders in build.gradle -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6420074467468909~9307588615"/>
+            android:value="${admobAppId}"/>
 
         <activity
             android:name="com.usharik.app.MainActivity"
