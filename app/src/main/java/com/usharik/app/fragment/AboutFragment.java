@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
+import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.utils.HapticFeedback;
 
 import java.text.DateFormat;
@@ -43,6 +44,14 @@ public class AboutFragment extends Fragment {
         tvDateOfBuild.setText(getResources().getString(R.string.date_of_build, buildDateStr));
         getView().findViewById(R.id.rateApp).setOnClickListener(this::onRateAppClick);
         getView().findViewById(R.id.privacyPolicy).setOnClickListener(this::onPrivacyPolicyClick);
+
+        View testNotificationButton = getView().findViewById(R.id.testNotification);
+        if (BuildConfig.DEBUG) {
+            testNotificationButton.setVisibility(View.VISIBLE);
+            testNotificationButton.setOnClickListener(this::onTestNotificationClick);
+        } else {
+            testNotificationButton.setVisibility(View.GONE);
+        }
     }
 
     public void onRateAppClick(View view) {
@@ -65,5 +74,11 @@ public class AboutFragment extends Fragment {
         HapticFeedback.light(requireContext());
         startActivity(new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://github.com/usharik/CzechDeclensionQuiz/blob/master/privacy_policy.md")));
+    }
+
+    private void onTestNotificationClick(View view) {
+        HapticFeedback.light(requireContext());
+        NotificationHelper.showDailyReminder(requireContext(), false, 1, 0, 0);
+        Toast.makeText(requireContext(), R.string.test_notification_sent, Toast.LENGTH_SHORT).show();
     }
 }

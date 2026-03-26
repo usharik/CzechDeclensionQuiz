@@ -95,4 +95,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rateApp" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/testNotification"
+        style="@style/Widget.App.Button.Outlined.Modern"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_button_horizontal"
+        android:layout_marginTop="@dimen/spacing_md_large"
+        android:layout_marginEnd="@dimen/spacing_button_horizontal"
+        android:text="@string/test_notification"
+        android:textSize="@dimen/text_size_body"
+        android:visibility="gone"
+        app:icon="@drawable/ic_notifications_black_24dp"
+        app:iconPadding="@dimen/spacing_content"
+        app:iconTint="@color/button_outline_stroke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/privacyPolicy" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
