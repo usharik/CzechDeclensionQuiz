@@ -160,16 +160,11 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     }
 
     private void continueWithPotentialInterstitial(Runnable action) {
-        if (adPolicy.onSingleCaseNavigation()) {
-            adManager.showAd(
-                    requireActivity(),
-                    BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID,
-                    action
-            );
-            return;
-        }
-
-        action.run();
+        adManager.showAdIfNeeded(
+                adPolicy.onSingleCaseNavigation(),
+                requireActivity(),
+                BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID,
+                action);
     }
 
     private void refreshAnswerButtons() {

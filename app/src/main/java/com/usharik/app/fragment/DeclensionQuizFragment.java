@@ -245,15 +245,11 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     // ─── Word flow / navigation ───────────────────────────────────────────────
 
     private void checkAndShowAdThenNextWord(boolean tryAgain) {
-        if (adPolicy.onDeclensionWordCompleted()) {
-            showAdThenNextWord(tryAgain);
-        } else {
-            nextWord(tryAgain);
-        }
-    }
-
-    private void showAdThenNextWord(boolean tryAgain) {
-        adManager.showAd(getActivity(), () -> nextWord(tryAgain));
+        adManager.showAdIfNeeded(
+                adPolicy.onDeclensionWordCompleted(),
+                getActivity(),
+                BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID,
+                () -> nextWord(tryAgain));
     }
 
     private void nextWord(boolean tryAgain) {
