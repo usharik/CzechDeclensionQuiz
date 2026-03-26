@@ -26,7 +26,7 @@
         </header>
         
         <div class="main-content privacy-content">
-            <p><strong>Last Updated: March 24, 2026</strong></p>
+            <p><strong>Last Updated: March 26, 2026</strong></p>
 
             <p>Built the CzechDeclensionQuiz app as a Free app. This SERVICE is provided at no cost and is intended for use as is.</p>
 
@@ -43,6 +43,7 @@
                 <li>Your quiz settings (word gender filter, animation preferences)</li>
                 <li>Words you made errors on (to help you practice)</li>
                 <li>Quiz progress and statistics</li>
+                <li>Notification preferences (e.g., whether the welcome notification has been shown)</li>
             </ul>
 
             <p><strong>This locally stored data is never transmitted to me or any third party.</strong> It remains on your device and is deleted when you uninstall the app.</p>
@@ -51,7 +52,7 @@
 
             <ul>
                 <li><a href="https://www.google.com/policies/privacy/" target="_blank">Google Play Services</a></li>
-                <li><a href="https://firebase.google.com/policies/analytics" target="_blank">Firebase Analytics</a> - Collects anonymous usage statistics (e.g., which features you use, quiz completion rates)</li>
+                <li><a href="https://firebase.google.com/policies/analytics" target="_blank">Firebase Analytics</a> - Collects anonymous usage statistics (e.g., which features you use, quiz completion rates, notification interaction events such as <code>daily_reminder_shown</code> and <code>welcome_notification_shown</code>)</li>
                 <li><a href="https://firebase.google.com/support/privacy" target="_blank">Firebase Crashlytics</a> - Collects crash reports to help fix bugs</li>
                 <li><a href="https://support.google.com/admob/answer/6128543" target="_blank">Google AdMob</a> - Displays advertisements and may collect advertising-related data</li>
             </ul>
@@ -63,9 +64,10 @@
             <p>The app requests the following permissions:</p>
             <ul>
                 <li><strong>VIBRATE</strong> - Used to provide haptic feedback when you make correct or incorrect answers in the quiz</li>
+                <li><strong>POST_NOTIFICATIONS</strong> (Android 13+ only) - Used to send daily practice reminders. You will be prompted to grant this permission on first launch; it is entirely optional and the app works fully without it.</li>
             </ul>
 
-            <p>No other permissions are requested. The app does not access your contacts, camera, microphone, location, or any other sensitive data.</p>
+            <p>The app does not access your contacts, camera, microphone, location, or any other sensitive data.</p>
 
             <h2>Log Data</h2>
 

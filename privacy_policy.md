@@ -1,6 +1,6 @@
 ## Privacy Policy
 
-**Last Updated: March 24, 2026**
+**Last Updated: March 26, 2026**
 
 Built the CzechDeclensionQuiz app as a Free app. This SERVICE is provided at no cost and is intended for use as is.
 
@@ -16,13 +16,14 @@ The app stores the following information **locally on your device only**:
 * Your quiz settings (word gender filter, animation preferences)
 * Words you made errors on (to help you practice)
 * Quiz progress and statistics
+* Notification preferences (e.g., whether the welcome notification has been shown)
 
 **This locally stored data is never transmitted to me or any third party.** It remains on your device and is deleted when you uninstall the app.
 
 The app does use third party services that may collect information used to identify you:
 
 *   [Google Play Services](https://www.google.com/policies/privacy/)
-*   [Firebase Analytics](https://firebase.google.com/policies/analytics) - Collects anonymous usage statistics (e.g., which features you use, quiz completion rates)
+*   [Firebase Analytics](https://firebase.google.com/policies/analytics) - Collects anonymous usage statistics (e.g., which features you use, quiz completion rates, notification interaction events such as `daily_reminder_shown` and `welcome_notification_shown`)
 *   [Firebase Crashlytics](https://firebase.google.com/support/privacy) - Collects crash reports to help fix bugs
 *   [Google AdMob](https://support.google.com/admob/answer/6128543) - Displays advertisements and may collect advertising-related data
 
@@ -32,8 +33,9 @@ The app does use third party services that may collect information used to ident
 
 The app requests the following permissions:
 * **VIBRATE** - Used to provide haptic feedback when you make correct or incorrect answers in the quiz
+* **POST_NOTIFICATIONS** (Android 13+ only) - Used to send daily practice reminders. You will be prompted to grant this permission on first launch; it is entirely optional and the app works fully without it.
 
-No other permissions are requested. The app does not access your contacts, camera, microphone, location, or any other sensitive data.
+The app does not access your contacts, camera, microphone, location, or any other sensitive data.
 
 **Log Data**
 
