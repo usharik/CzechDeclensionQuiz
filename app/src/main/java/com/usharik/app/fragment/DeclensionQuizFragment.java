@@ -30,7 +30,6 @@ import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.adapter.WordDragAdapter;
 import com.usharik.app.ads.AdManager;
-import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
@@ -63,7 +62,6 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     @Inject Gson gson;
     @Inject AdManager adManager;
     @Inject InterstitialAdPolicy adPolicy;
-    @Inject AdsPolicy adsPolicy;
 
     @Nullable
     @Override
@@ -82,7 +80,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onViewCreated(view, savedInstanceState);
         setupMenu();
         adManager.loadAd(getActivity());
-        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController = new BannerAdController(adPolicy);
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
 

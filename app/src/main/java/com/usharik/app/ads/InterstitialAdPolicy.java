@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Centralises all rules for when an interstitial ad should be shown.
+ * Centralises all rules for when an ad should be shown.
  *
  * <p>Fragments call the dedicated method for each event type.  Each method
  * maintains its own counter in {@link AdSessionState} and returns whether
@@ -12,6 +12,10 @@ import javax.inject.Singleton;
  *
  * <p>Probability-based gating (Single-Case Quiz) is isolated behind
  * {@link RandomProvider} so that unit tests can inject a deterministic value.
+ *
+ * <p>{@link #areAdsEnabled()} is the single point to disable all ads (e.g. after
+ * a purchase).  Override this method or replace the singleton binding in the DI
+ * graph to suppress ads without touching any fragment code.
  */
 @Singleton
 public class InterstitialAdPolicy {
@@ -28,6 +32,16 @@ public class InterstitialAdPolicy {
     public InterstitialAdPolicy(AdSessionState sessionState, RandomProvider random) {
         this.sessionState = sessionState;
         this.random = random;
+    }
+
+    /**
+     * @return {@code true} if ads are allowed to be shown.
+     *
+     * <p>Returns {@code true} by default.  Replace the singleton binding in the DI
+     * graph (or subclass and override) to disable all ads after a purchase.
+     */
+    public boolean areAdsEnabled() {
+        return true;
     }
 
     /**

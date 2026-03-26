@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
-import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
+import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.HandbookFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
@@ -27,7 +27,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     FirebaseAnalyticsService analyticsService;
 
     @Inject
-    AdsPolicy adsPolicy;
+    InterstitialAdPolicy adPolicy;
 
     private HandbookFragmentBinding binding;
     private BannerAdController bannerAdController;
@@ -84,7 +84,7 @@ public class HandbookFragment extends ViewFragment<HandbookViewModel> {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController = new BannerAdController(adPolicy);
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
     }
