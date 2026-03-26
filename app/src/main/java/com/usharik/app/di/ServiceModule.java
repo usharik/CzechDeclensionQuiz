@@ -6,7 +6,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.usharik.app.App;
 import com.usharik.database.DocumentRepository;
+import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.dao.DatabaseFactory;
+import com.usharik.database.dao.DocumentDatabase;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.AdSessionState;
@@ -39,8 +41,20 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    DocumentRepository provideDatabaseManager(Application application) {
-        return DatabaseFactory.provideDocumentDb(application);
+    DocumentDatabase provideDocumentDatabase(Application application) {
+        return DatabaseFactory.provideDocumentDatabase(application);
+    }
+
+    @Provides
+    @Singleton
+    DocumentRepository provideDatabaseManager(DocumentDatabase db) {
+        return new DocumentRepository(db);
+    }
+
+    @Provides
+    @Singleton
+    TrainingStatsRepository provideTrainingStatsRepository(DocumentDatabase db) {
+        return new TrainingStatsRepository(db);
     }
 
     @Provides

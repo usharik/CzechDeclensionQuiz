@@ -9,6 +9,7 @@ import com.usharik.app.CzechCase;
 import com.usharik.app.SingleCaseQuizState;
 import com.usharik.app.framework.ViewModelObservable;
 import com.usharik.app.service.WordService;
+import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.WordInfo;
 
 import java.util.ArrayList;
@@ -31,15 +32,20 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     private final WordService wordService;
     private final SingleCaseQuizState state;
+    private final TrainingStatsRepository statsRepository;
 
     @Inject
-    public SingleCaseQuizViewModel(final WordService wordService) {
-        this(wordService, new SingleCaseQuizState());
+    public SingleCaseQuizViewModel(final WordService wordService,
+                                   final Locale locale,
+                                   final TrainingStatsRepository statsRepository) {
+        this(wordService, locale, statsRepository, new SingleCaseQuizState());
     }
 
     SingleCaseQuizViewModel(final WordService wordService,
+                            final TrainingStatsRepository statsRepository,
                             final SingleCaseQuizState state) {
         this.wordService = wordService;
+        this.statsRepository = statsRepository;
         this.state = state;
     }
 
@@ -161,6 +167,10 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
                 .subscribe(wordInfo -> {
                     state.setWordInfo(wordInfo);
                     resetRound();
+                    if (statsRepository != null) {
+                        statsRepository.incrementWordsCompleted()
+                                .subscribe(() -> {}, thr2 -> Log.w(TAG, "Stats error", thr2));
+                    }
                     update();
                 }, thr -> Log.e(TAG, "Error loading word", thr));
     }
@@ -172,6 +182,11 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
             state.setPlural(true);
             state.setCurrentCase(0);
         } else {
+            // Completed all cases (singular + plural) for this word → count as one exercise
+            if (statsRepository != null) {
+                statsRepository.incrementExercisesCompleted()
+                        .subscribe(() -> {}, thr -> Log.w(TAG, "Stats error", thr));
+            }
             nextWord(false);
             return;
         }

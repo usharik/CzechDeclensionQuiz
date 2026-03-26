@@ -6,8 +6,14 @@ import android.content.SharedPreferences;
 
 import android.util.Log;
 
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.usharik.app.notification.DailyReminderWorker;
+import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,7 +21,9 @@ import com.usharik.database.DocumentRepository;
 import com.usharik.app.di.DaggerAppComponent;
 
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -67,6 +75,10 @@ public class App extends Application implements HasAndroidInjector {
             Log.i(getClass().getName(), "Mobile Ads SDK initialized");
         });
 
+        // Set up the daily reminder notification channel and schedule the worker
+        NotificationHelper.createChannel(this);
+        scheduleDailyReminderWorker();
+
         documentRepository.getCount()
                 .flatMapCompletable(cnt -> {
                     if (cnt == 0) {
@@ -98,5 +110,28 @@ public class App extends Application implements HasAndroidInjector {
     @Override
     public AndroidInjector<Object> androidInjector() {
         return dispatchingAndroidInjector;
+    }
+
+    private void scheduleDailyReminderWorker() {
+        // Calculate how many hours until the next 9:00 AM
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next9am = now.toLocalDate().atTime(9, 0);
+        if (!now.isBefore(next9am)) {
+            next9am = next9am.plusDays(1);
+        }
+        long initialDelayMinutes = java.time.Duration.between(now, next9am).toMinutes();
+
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
+                DailyReminderWorker.class, 24, TimeUnit.HOURS)
+                .setInitialDelay(initialDelayMinutes, TimeUnit.MINUTES)
+                .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "daily_reminder",
+                ExistingPeriodicWorkPolicy.KEEP,
+                request);
+
+        Log.i(getClass().getName(), "Daily reminder worker scheduled, first run in ~"
+                + initialDelayMinutes + " minutes");
     }
 }

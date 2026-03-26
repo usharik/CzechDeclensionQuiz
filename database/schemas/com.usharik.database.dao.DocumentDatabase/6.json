@@ -1,0 +1,160 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "e79c6b86565bbe2ed1d4f1ed8e49d034",
+    "entities": [
+      {
+        "tableName": "DOCUMENT",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `word_id` INTEGER, `word` TEXT, `gender` TEXT, `declension_type` TEXT, `json` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "wordId",
+            "columnName": "word_id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "word",
+            "columnName": "word",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gender",
+            "columnName": "gender",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "declensionType",
+            "columnName": "declension_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "json",
+            "columnName": "json",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_DOCUMENT_word",
+            "unique": false,
+            "columnNames": [
+              "word"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DOCUMENT_word` ON `${TABLE_NAME}` (`word`)"
+          },
+          {
+            "name": "index_DOCUMENT_gender",
+            "unique": false,
+            "columnNames": [
+              "gender"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DOCUMENT_gender` ON `${TABLE_NAME}` (`gender`)"
+          },
+          {
+            "name": "index_DOCUMENT_declension_type",
+            "unique": false,
+            "columnNames": [
+              "declension_type"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DOCUMENT_declension_type` ON `${TABLE_NAME}` (`declension_type`)"
+          }
+        ]
+      },
+      {
+        "tableName": "daily_training_stats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `words_completed` INTEGER NOT NULL, `exercises_completed` INTEGER NOT NULL, `errors_count` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`date`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wordsCompleted",
+            "columnName": "words_completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "exercisesCompleted",
+            "columnName": "exercises_completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "errorsCount",
+            "columnName": "errors_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "date"
+          ]
+        }
+      },
+      {
+        "tableName": "reminder_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `last_active_date` TEXT, `last_notification_date` TEXT, `inactivity_streak` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastActiveDate",
+            "columnName": "last_active_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastNotificationDate",
+            "columnName": "last_notification_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "inactivityStreak",
+            "columnName": "inactivity_streak",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e79c6b86565bbe2ed1d4f1ed8e49d034')"
+    ]
+  }
+}
