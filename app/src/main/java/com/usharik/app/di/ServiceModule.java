@@ -9,6 +9,10 @@ import com.usharik.database.DocumentRepository;
 import com.usharik.database.dao.DatabaseFactory;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
+import com.usharik.app.ads.AdSessionState;
+import com.usharik.app.ads.InterstitialAdPolicy;
+import com.usharik.app.ads.RandomProvider;
+import com.usharik.app.ads.ThreadLocalRandomProvider;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.service.WordService;
 
@@ -68,5 +72,17 @@ class ServiceModule {
     @Singleton
     AdManager provideAdManager() {
         return new AdManager();
+    }
+
+    @Provides
+    @Singleton
+    RandomProvider provideRandomProvider() {
+        return new ThreadLocalRandomProvider();
+    }
+
+    @Provides
+    @Singleton
+    InterstitialAdPolicy provideInterstitialAdPolicy(AdSessionState sessionState, RandomProvider random) {
+        return new InterstitialAdPolicy(sessionState, random);
     }
 }
