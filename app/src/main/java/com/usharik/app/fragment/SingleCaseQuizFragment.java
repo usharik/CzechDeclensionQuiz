@@ -15,7 +15,6 @@ import com.google.android.material.button.MaterialButton;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.ads.AdManager;
-import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.FragmentSingleCaseQuizBinding;
@@ -38,9 +37,6 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
     @Inject
     InterstitialAdPolicy adPolicy;
-
-    @Inject
-    AdsPolicy adsPolicy;
 
     @Inject
     FirebaseAnalyticsService analyticsService;
@@ -78,7 +74,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController = new BannerAdController(adPolicy);
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID);
         adManager.loadAd(requireActivity(), BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID);

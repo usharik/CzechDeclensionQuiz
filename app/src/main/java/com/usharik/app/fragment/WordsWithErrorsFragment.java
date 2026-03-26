@@ -17,8 +17,8 @@ import com.usharik.app.AppState;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.R;
 import com.usharik.app.adapter.WordChipAdapter;
-import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.BannerAdController;
+import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.WordsWithErrorsFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
 
@@ -33,7 +33,7 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     AppState appState;
 
     @Inject
-    AdsPolicy adsPolicy;
+    InterstitialAdPolicy adPolicy;
 
     private WordsWithErrorsFragmentBinding binding;
     private WordChipAdapter chipAdapter;
@@ -54,7 +54,7 @@ public class WordsWithErrorsFragment extends ViewFragment<WordsWithErrorsViewMod
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupWordChips();
-        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController = new BannerAdController(adPolicy);
         bannerAdController.bind(requireContext(), binding.adViewContainer,
                 BuildConfig.ADMOB_BANNER_AD_UNIT_ID);
     }

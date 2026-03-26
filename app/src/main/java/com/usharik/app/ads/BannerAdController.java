@@ -18,22 +18,22 @@ import com.google.android.gms.ads.AdView;
  *   private BannerAdController bannerAdController;
  *
  *   // onViewCreated
- *   bannerAdController = new BannerAdController(adsPolicy);
+ *   bannerAdController = new BannerAdController(adPolicy);
  *   bannerAdController.bind(requireContext(), binding.adViewContainer, adUnitId);
  *
  *   // onResume / onPause / onDestroyView delegate to the controller
  * </pre>
  *
- * <p>If {@link AdsPolicy#areAdsEnabled()} returns {@code false} the container is
- * hidden and no AdView is created or loaded — the ad SDK is never touched.
+ * <p>If {@link InterstitialAdPolicy#areAdsEnabled()} returns {@code false} the
+ * container is hidden and no AdView is created or loaded — the ad SDK is never touched.
  */
 public class BannerAdController {
 
-    private final AdsPolicy adsPolicy;
+    private final InterstitialAdPolicy adPolicy;
     private AdView adView;
 
-    public BannerAdController(AdsPolicy adsPolicy) {
-        this.adsPolicy = adsPolicy;
+    public BannerAdController(InterstitialAdPolicy adPolicy) {
+        this.adPolicy = adPolicy;
     }
 
     /**
@@ -47,7 +47,7 @@ public class BannerAdController {
      * @param adUnitId  AdMob banner ad-unit ID (from {@code BuildConfig})
      */
     public void bind(Context context, ViewGroup container, String adUnitId) {
-        if (!adsPolicy.areAdsEnabled()) {
+        if (!adPolicy.areAdsEnabled()) {
             container.setVisibility(View.GONE);
             return;
         }
