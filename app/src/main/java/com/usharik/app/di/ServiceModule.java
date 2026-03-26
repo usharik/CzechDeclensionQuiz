@@ -10,6 +10,7 @@ import com.usharik.database.dao.DatabaseFactory;
 import com.usharik.app.AppState;
 import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.AdSessionState;
+import com.usharik.app.ads.AdsPolicy;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.ads.RandomProvider;
 import com.usharik.app.ads.ThreadLocalRandomProvider;
@@ -66,6 +67,12 @@ class ServiceModule {
     @Singleton
     Locale provideLocale(Application application) {
         return application.getResources().getConfiguration().getLocales().get(0);
+    }
+
+    @Provides
+    @Singleton
+    AdsPolicy provideAdsPolicy() {
+        return () -> true;
     }
 
     @Provides

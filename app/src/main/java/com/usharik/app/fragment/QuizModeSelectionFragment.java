@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.usharik.app.BuildConfig;
 import com.usharik.app.MainActivity;
 import com.usharik.app.R;
+import com.usharik.app.ads.AdsPolicy;
+import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.databinding.FragmentQuizModeSelectionBinding;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.utils.HapticFeedback;
@@ -31,8 +30,11 @@ public class QuizModeSelectionFragment extends Fragment {
     @Inject
     FirebaseAnalyticsService analyticsService;
 
+    @Inject
+    AdsPolicy adsPolicy;
+
     private FragmentQuizModeSelectionBinding binding;
-    private AdView adView;
+    private BannerAdController bannerAdController;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -82,46 +84,29 @@ public class QuizModeSelectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupBannerAd();
+        bannerAdController = new BannerAdController(adsPolicy);
+        bannerAdController.bind(requireContext(), binding.adViewContainer,
+                BuildConfig.ADMOB_HUB_BANNER_AD_UNIT_ID);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (adView != null) {
-            adView.resume();
-            if (binding != null && adView.getParent() == null) {
-                binding.adViewContainer.removeAllViews();
-                binding.adViewContainer.addView(adView);
-            }
-        }
+        bannerAdController.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (adView != null) {
-            adView.pause();
-        }
+        bannerAdController.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        if (adView != null) {
-            adView.destroy();
-            adView = null;
-        }
+        bannerAdController.onDestroyView();
+        bannerAdController = null;
         super.onDestroyView();
         binding = null;
-    }
-
-    private void setupBannerAd() {
-        adView = new AdView(requireContext());
-        adView.setAdUnitId(BuildConfig.ADMOB_HUB_BANNER_AD_UNIT_ID);
-        adView.setAdSize(AdSize.BANNER);
-        binding.adViewContainer.removeAllViews();
-        binding.adViewContainer.addView(adView);
-        adView.loadAd(new AdRequest.Builder().build());
     }
 
     private void selectQuizMode(Class<? extends Fragment> quizClass) {
