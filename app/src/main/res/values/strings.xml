@@ -49,6 +49,7 @@
     <string name="notification_title">Time to practice Czech! 🇨🇿</string>
     <string name="notification_body_active">Keep your streak going — a quick quiz today!</string>
     <string name="notification_body_inactive">It\'s been a while. Come back and practice Czech declensions!</string>
+    <string name="notification_action_start_quiz">Start Quiz</string>
     <string name="declension_pattern">like \"%s\"</string>
 
     <string name="quiz_mode_title">Choose quiz mode</string>

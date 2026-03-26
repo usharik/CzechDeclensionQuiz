@@ -41,6 +41,7 @@
     <string name="notification_title">Đến giờ luyện tập rồi! 🇨🇿</string>
     <string name="notification_body_active">Duy trì chuỗi của bạn — làm một bài kiểm tra nhanh hôm nay!</string>
     <string name="notification_body_inactive">Đã lâu rồi. Quay lại và luyện tập cách chia danh từ tiếng Séc!</string>
+    <string name="notification_action_start_quiz">Bắt đầu bài kiểm tra</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Tiếp tục nào! 💪</string>

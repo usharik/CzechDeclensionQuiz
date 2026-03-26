@@ -67,11 +67,21 @@ public final class NotificationHelper {
                 ? R.string.notification_body_active
                 : R.string.notification_body_inactive);
 
+        // Main intent - opens app when notification is tapped
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Action button intent - same as main intent but with different request code
+        Intent actionIntent = new Intent(context, MainActivity.class);
+        actionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent actionPendingIntent = PendingIntent.getActivity(
+                context, 1, actionIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        String actionText = context.getString(R.string.notification_action_start_quiz);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 // Use a monochrome vector drawable — launcher icons render as a
@@ -81,7 +91,9 @@ public final class NotificationHelper {
                 .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                // Add action button to start quiz
+                .addAction(R.drawable.ic_notifications_black_24dp, actionText, actionPendingIntent);
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }

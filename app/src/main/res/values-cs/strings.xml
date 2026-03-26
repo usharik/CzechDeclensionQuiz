@@ -41,6 +41,7 @@
     <string name="notification_title">Čas procvičovat! 🇨🇿</string>
     <string name="notification_body_active">Udrž sérii — rychlý kvíz dnes!</string>
     <string name="notification_body_inactive">Už to bylo dlouho. Vrať se a procvičuj české skloňování!</string>
+    <string name="notification_action_start_quiz">Začít kvíz</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Pokračuj! 💪</string>
