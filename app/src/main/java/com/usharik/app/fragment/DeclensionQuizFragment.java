@@ -47,6 +47,7 @@ import javax.inject.Inject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
@@ -131,21 +132,21 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         int words     = stats != null ? stats.wordsCompleted     : 0;
         int exercises = stats != null ? stats.exercisesCompleted : 0;
 
-        ((android.widget.TextView) dialogView.findViewById(R.id.tvWordsValue))
+        ((TextView) dialogView.findViewById(R.id.tvWordsValue))
                 .setText(String.valueOf(words));
-        ((android.widget.TextView) dialogView.findViewById(R.id.tvExercisesValue))
+        ((TextView) dialogView.findViewById(R.id.tvExercisesValue))
                 .setText(String.valueOf(exercises));
 
         // Populate recent words chips
-        java.util.List<String> recent = getViewModel().getRecentWords();
+        List<String> recent = getViewModel().getRecentWords();
         int[] wordIds = {R.id.tvRecentWord1, R.id.tvRecentWord2, R.id.tvRecentWord3};
         for (int i = 0; i < wordIds.length; i++) {
-            android.widget.TextView chip = dialogView.findViewById(wordIds[i]);
+            TextView chip = dialogView.findViewById(wordIds[i]);
             if (i < recent.size()) {
                 chip.setText(recent.get(i));
-                chip.setVisibility(android.view.View.VISIBLE);
+                chip.setVisibility(View.VISIBLE);
             } else {
-                chip.setVisibility(android.view.View.GONE);
+                chip.setVisibility(View.GONE);
             }
         }
 

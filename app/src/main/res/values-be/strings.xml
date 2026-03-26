@@ -41,6 +41,7 @@
     <string name="notification_title">Час трэніравацца! 🇨🇿</string>
     <string name="notification_body_active">Не страць серыю — хуткі тэст сёння!</string>
     <string name="notification_body_inactive">Даўно не займаўся. Вяртайся і паўтары чэшскія скланенні!</string>
+    <string name="notification_action_start_quiz">Пачаць квіз</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Працягвай! 💪</string>

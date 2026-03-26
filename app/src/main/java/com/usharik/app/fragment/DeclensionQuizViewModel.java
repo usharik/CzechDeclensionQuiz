@@ -27,6 +27,7 @@ import com.usharik.database.WordInfo;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import com.usharik.database.dao.DailyTrainingStatsEntity;
@@ -55,7 +56,8 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     private final DeclensionQuizState quizState = new DeclensionQuizState();
     private int errorCount;
-    private final LinkedHashSet<String> recentWords = new LinkedHashSet<>();
+    private final LinkedList<String> recentWords = new LinkedList<>();
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
     public DeclensionQuizViewModel(final AppState appState,
@@ -71,15 +73,16 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         loadRecentWordsFromDb();
     }
 
-    @SuppressLint("CheckResult")
     private void loadRecentWordsFromDb() {
         if (statsRepository == null) return;
-        statsRepository.getRecentWords()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(words -> {
-                    recentWords.clear();
-                    recentWords.addAll(words); // oldest→newest, preserving insertion order
-                }, thr -> Log.w("DeclensionQuizVM", "Failed to load recent words", thr));
+        disposables.add(
+            statsRepository.getRecentWords()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(words -> {
+                        recentWords.clear();
+                        recentWords.addAll(words); // oldest→newest, preserving insertion order
+                    }, thr -> Log.w("DeclensionQuizVM", "Failed to load recent words", thr))
+        );
     }
 
     @Bindable
@@ -312,8 +315,10 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
 
     public void onExerciseCompleted() {
         if (statsRepository != null) {
-            statsRepository.incrementExercisesCompleted()
-                    .subscribe(() -> {}, thr -> Log.w("DeclensionQuizVM", "Stats error", thr));
+            disposables.add(
+                statsRepository.incrementExercisesCompleted()
+                        .subscribe(() -> {}, thr -> Log.w("DeclensionQuizVM", "Stats error", thr))
+            );
         }
     }
 
@@ -346,16 +351,23 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         return result;
     }
 
-    @SuppressLint("CheckResult")
     private void addRecentWord(String word) {
         recentWords.remove(word); // move to end if already present
-        recentWords.add(word);
+        recentWords.addLast(word);
         if (recentWords.size() > MAX_RECENT_WORDS) {
-            recentWords.remove(recentWords.iterator().next()); // remove oldest (first)
+            recentWords.removeFirst(); // remove oldest
         }
         if (statsRepository != null) {
-            statsRepository.saveRecentWords(new ArrayList<>(recentWords))
-                    .subscribe(() -> {}, thr -> Log.w("DeclensionQuizVM", "Failed to save recent words", thr));
+            disposables.add(
+                statsRepository.saveRecentWords(new ArrayList<>(recentWords))
+                        .subscribe(() -> {}, thr -> Log.w("DeclensionQuizVM", "Failed to save recent words", thr))
+            );
         }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposables.clear();
     }
 }

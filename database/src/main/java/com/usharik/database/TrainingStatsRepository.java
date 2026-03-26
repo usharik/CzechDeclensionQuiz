@@ -104,6 +104,8 @@ public class TrainingStatsRepository {
 
     // ── recent words ──────────────────────────────────────────────────────────
 
+    private static final String WORD_SEPARATOR = "|||";
+
     /**
      * Returns the persisted list of recent words (oldest→newest order),
      * or completes empty if none saved yet.
@@ -114,7 +116,7 @@ public class TrainingStatsRepository {
                     if (entity.words == null || entity.words.isEmpty()) {
                         return Collections.emptyList();
                     }
-                    return new ArrayList<>(Arrays.asList(entity.words.split(",", -1)));
+                    return new ArrayList<>(Arrays.asList(entity.words.split(WORD_SEPARATOR, -1)));
                 })
                 .subscribeOn(Schedulers.io());
     }
@@ -125,7 +127,7 @@ public class TrainingStatsRepository {
     public Completable saveRecentWords(List<String> words) {
         return Completable.fromAction(() -> {
             RecentWordsEntity entity = new RecentWordsEntity();
-            entity.words = String.join(",", words);
+            entity.words = String.join(WORD_SEPARATOR, words);
             dao.insertOrReplaceRecentWords(entity).blockingAwait();
         }).subscribeOn(Schedulers.io());
     }
