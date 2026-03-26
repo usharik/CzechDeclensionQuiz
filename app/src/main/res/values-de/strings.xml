@@ -70,10 +70,10 @@
         <item>Nominativ</item>
         <item>Genitiv</item>
         <item>Dativ</item>
-        <item>Akkusativ</item>
+        <item>Akuzativ</item>
         <item>Vokativ</item>
         <item>Lokativ</item>
-        <item>Instrumental</item>
+        <item>Instrumentál</item>
     </array>
 
     <array name="caseQuestion">

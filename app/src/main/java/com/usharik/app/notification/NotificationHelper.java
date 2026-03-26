@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -100,13 +102,22 @@ public final class NotificationHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         String actionText = context.getString(R.string.notification_action_start_quiz);
+        String appName = context.getString(R.string.app_name);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(
+                context.getResources(), R.mipmap.ic_launcher_round);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                // Use a monochrome vector drawable — launcher icons render as a
-                // white blob on the status bar and are not allowed as small icons.
+                // Small icon must be monochrome white-on-transparent for the status bar.
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                // Large icon shows the app icon inside the notification card.
+                .setLargeIcon(largeIcon)
+                // SubText adds the app name to the notification header line.
+                .setSubText(appName)
                 .setContentTitle(title)
                 .setContentText(body)
+                // BigTextStyle makes the card expandable and shows the full body text.
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
@@ -154,10 +165,18 @@ public final class NotificationHelper {
                 context, 2, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        String appName = context.getString(R.string.app_name);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(
+                context.getResources(), R.mipmap.ic_launcher_round);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setLargeIcon(largeIcon)
+                .setSubText(appName)
                 .setContentTitle(title)
                 .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
