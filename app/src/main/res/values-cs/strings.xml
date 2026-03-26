@@ -35,6 +35,15 @@
     <string name="privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="declension_pattern">jako \"%s\"</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Pokračuj! 💪</string>
+    <string name="quit_quiz_message">Dnes děláš skvělé pokroky. Opravdu chceš odejít?</string>
+    <string name="quit_quiz_words_label">studovaných slov</string>
+    <string name="quit_quiz_exercises_label">splněných cvičení</string>
+    <string name="quit_quiz_keep_going">Pokračovat</string>
+    <string name="quit_quiz_leave">Opustit kvíz</string>
+    <string name="quit_quiz_recent_words_label">NEDÁVNO STUDOVANÁ</string>
+
     <string name="quiz_mode_title">Vyberte režim testu</string>
     <string name="hub_title">Otevřít stránku</string>
     <string name="quiz_mode_full_table">Test úplné tabulky skloňování</string>

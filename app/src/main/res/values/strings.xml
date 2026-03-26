@@ -40,6 +40,7 @@
     <string name="quit_quiz_exercises_label">exercises done</string>
     <string name="quit_quiz_keep_going">Keep going</string>
     <string name="quit_quiz_leave">Leave quiz</string>
+    <string name="quit_quiz_recent_words_label">RECENTLY STUDIED</string>
 
     <!-- Daily reminder notifications -->
     <string name="notification_channel_id">daily_reminder</string>

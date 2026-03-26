@@ -13,9 +13,10 @@ import android.content.Context;
         entities = {
             DocumentEntity.class,
             DailyTrainingStatsEntity.class,
-            ReminderStateEntity.class
+            ReminderStateEntity.class,
+            RecentWordsEntity.class
         },
-        version = 6
+        version = 7
 )
 @TypeConverters({Converters.class})
 public abstract class DocumentDatabase extends RoomDatabase {
@@ -25,7 +26,8 @@ public abstract class DocumentDatabase extends RoomDatabase {
 
     public abstract TrainingStatsDao trainingStatsDao();
 
-    static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+    // Direct upgrade from v5 to v7 (squashed migration — covers all schema changes at once)
+    static final Migration MIGRATION_5_7 = new Migration(5, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL(
@@ -45,12 +47,31 @@ public abstract class DocumentDatabase extends RoomDatabase {
                 "`inactivity_streak` INTEGER NOT NULL DEFAULT 0, " +
                 "PRIMARY KEY(`id`))"
             );
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS `recent_words` (" +
+                "`id` INTEGER NOT NULL, " +
+                "`words` TEXT NOT NULL DEFAULT '', " +
+                "PRIMARY KEY(`id`))"
+            );
+        }
+    };
+
+    // Incremental upgrade from v6 to v7 (for users already on v6)
+    static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL(
+                "CREATE TABLE IF NOT EXISTS `recent_words` (" +
+                "`id` INTEGER NOT NULL, " +
+                "`words` TEXT NOT NULL DEFAULT '', " +
+                "PRIMARY KEY(`id`))"
+            );
         }
     };
 
     public static DocumentDatabase getDocumentDatabase(Context context) {
         return Room.databaseBuilder(context.getApplicationContext(), DocumentDatabase.class, DB_NAME)
-                .addMigrations(MIGRATION_5_6)
+                .addMigrations(MIGRATION_5_7, MIGRATION_6_7)
                 .fallbackToDestructiveMigration(true)
                 .build();
     }

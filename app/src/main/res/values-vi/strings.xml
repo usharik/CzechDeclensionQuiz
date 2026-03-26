@@ -35,6 +35,15 @@
     <string name="privacy_policy">Chính sách bảo mật</string>
     <string name="declension_pattern">như \"%s\"</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Tiếp tục nào! 💪</string>
+    <string name="quit_quiz_message">Hôm nay bạn đang tiến bộ rất tốt. Bạn có chắc muốn rời đi không?</string>
+    <string name="quit_quiz_words_label">từ đã học</string>
+    <string name="quit_quiz_exercises_label">bài tập đã hoàn thành</string>
+    <string name="quit_quiz_keep_going">Tiếp tục</string>
+    <string name="quit_quiz_leave">Rời khỏi bài kiểm tra</string>
+    <string name="quit_quiz_recent_words_label">MỚI HỌC GẦN ĐÂY</string>
+
     <string name="quiz_mode_title">Chọn chế độ bài kiểm tra</string>
     <string name="hub_title">Mở trang</string>
     <string name="quiz_mode_full_table">Bài kiểm tra bảng biến đổi đầy đủ</string>

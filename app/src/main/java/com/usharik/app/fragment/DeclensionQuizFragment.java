@@ -136,6 +136,19 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         ((android.widget.TextView) dialogView.findViewById(R.id.tvExercisesValue))
                 .setText(String.valueOf(exercises));
 
+        // Populate recent words chips
+        java.util.List<String> recent = getViewModel().getRecentWords();
+        int[] wordIds = {R.id.tvRecentWord1, R.id.tvRecentWord2, R.id.tvRecentWord3};
+        for (int i = 0; i < wordIds.length; i++) {
+            android.widget.TextView chip = dialogView.findViewById(wordIds[i]);
+            if (i < recent.size()) {
+                chip.setText(recent.get(i));
+                chip.setVisibility(android.view.View.VISIBLE);
+            } else {
+                chip.setVisibility(android.view.View.GONE);
+            }
+        }
+
         AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogView)
                 .setCancelable(true)
@@ -408,6 +421,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
 
                     // Check if quiz is complete
                     if (getViewModel().isQuizComplete()) {
+                        getViewModel().onExerciseCompleted();
                         // Show success dialog after a short delay to let animation finish
                         dropTarget.postDelayed(this::showCorrectAnswerDialog, 300);
                     }

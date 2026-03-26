@@ -35,6 +35,15 @@
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="declension_pattern">wie \"%s\"</string>
 
+    <!-- Quit quiz overlay -->
+    <string name="quit_quiz_title">Weiter so! 💪</string>
+    <string name="quit_quiz_message">Du machst heute tolle Fortschritte. Bist du sicher, dass du gehen möchtest?</string>
+    <string name="quit_quiz_words_label">gelernte Wörter</string>
+    <string name="quit_quiz_exercises_label">erledigte Übungen</string>
+    <string name="quit_quiz_keep_going">Weitermachen</string>
+    <string name="quit_quiz_leave">Quiz verlassen</string>
+    <string name="quit_quiz_recent_words_label">ZULETZT GELERNT</string>
+
     <string name="quiz_mode_title">Wählen Sie den Testmodus</string>
     <string name="hub_title">Seite öffnen</string>
     <string name="quiz_mode_full_table">Test der vollständigen Deklinationstabelle</string>
