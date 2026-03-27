@@ -29,6 +29,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         buildConfigField "String", "GIT_COMMIT_HASH", "\"${getGitCommitHash()}\""
+        buildConfigField "boolean", "SUBSCRIPTIONS_ENABLED", "false"
+        buildConfigField "String", "PLAY_SUBSCRIPTION_PRODUCT_ID", "\"premium_monthly\""
 
         buildConfigField "String", "ADMOB_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\""
         buildConfigField "String", "ADMOB_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-3940256099942544/1033173712\""

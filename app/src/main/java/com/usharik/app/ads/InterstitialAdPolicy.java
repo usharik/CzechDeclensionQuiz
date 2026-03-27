@@ -1,5 +1,7 @@
 package com.usharik.app.ads;
 
+import com.usharik.app.subscription.PremiumAccess;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -27,11 +29,15 @@ public class InterstitialAdPolicy implements AdsPolicy {
 
     private final AdSessionState sessionState;
     private final RandomProvider random;
+    private final PremiumAccess premiumAccess;
 
     @Inject
-    public InterstitialAdPolicy(AdSessionState sessionState, RandomProvider random) {
+    public InterstitialAdPolicy(AdSessionState sessionState,
+                                RandomProvider random,
+                                PremiumAccess premiumAccess) {
         this.sessionState = sessionState;
         this.random = random;
+        this.premiumAccess = premiumAccess;
     }
 
     /**
@@ -42,7 +48,7 @@ public class InterstitialAdPolicy implements AdsPolicy {
      */
     @Override
     public boolean areAdsEnabled() {
-        return true;
+        return !premiumAccess.hasPremiumAccess();
     }
 
     /**

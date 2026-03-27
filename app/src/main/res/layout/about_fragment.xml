@@ -61,6 +61,37 @@
             app:layout_constraintTop_toBottomOf="@id/appVersion"
             tools:text="Date of build: 27.07.2018 15:07" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/subscriptionStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_content"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:textColor="@color/colorOnSurfaceVariant"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appDateOfBuild"
+        tools:text="Current plan: Premium" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/manageSubscription"
+        style="@style/Widget.App.Button.Outlined.Modern"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_button_horizontal"
+        android:layout_marginTop="@dimen/spacing_button_horizontal"
+        android:layout_marginEnd="@dimen/spacing_button_horizontal"
+        android:text="@string/premium_subscription"
+        android:textSize="@dimen/text_size_body"
+        android:visibility="gone"
+        app:icon="@drawable/ic_star"
+        app:iconPadding="@dimen/spacing_content"
+        app:iconTint="@color/button_outline_stroke"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subscriptionStatus" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/rateApp"
         style="@style/Widget.App.Button.Gradient.Accent"
@@ -76,7 +107,7 @@
         app:iconTint="@color/button_text_on_gradient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appVersion" />
+        app:layout_constraintTop_toBottomOf="@id/manageSubscription" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/privacyPolicy"

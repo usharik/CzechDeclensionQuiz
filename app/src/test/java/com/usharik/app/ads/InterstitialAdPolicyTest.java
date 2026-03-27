@@ -1,5 +1,9 @@
 package com.usharik.app.ads;
 
+import com.usharik.app.subscription.SubscriptionStatus;
+import com.usharik.app.subscription.PremiumAccess;
+import com.usharik.app.subscription.SubscriptionSource;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -13,20 +17,33 @@ public class InterstitialAdPolicyTest {
     /** RandomProvider that always returns a value above the probability threshold. */
     private static final RandomProvider NEVER_SHOW = () -> 1.0;
 
+    private static final PremiumAccess FREE_ACCESS = new FixedPremiumAccess(false);
+    private static final PremiumAccess PREMIUM_ACCESS = new FixedPremiumAccess(true);
+
     private InterstitialAdPolicy buildPolicy(RandomProvider randomProvider) {
-        return new InterstitialAdPolicy(new AdSessionState(), randomProvider);
+        return new InterstitialAdPolicy(new AdSessionState(), randomProvider, FREE_ACCESS);
     }
 
-    /**
-     * Subclass that disables ads so we can verify the areAdsEnabled() guard in isolation.
-     */
     private InterstitialAdPolicy buildDisabledPolicy(RandomProvider randomProvider) {
-        return new InterstitialAdPolicy(new AdSessionState(), randomProvider) {
-            @Override
-            public boolean areAdsEnabled() {
-                return false;
-            }
-        };
+        return new InterstitialAdPolicy(new AdSessionState(), randomProvider, PREMIUM_ACCESS);
+    }
+
+    private static final class FixedPremiumAccess implements PremiumAccess {
+        private final boolean premium;
+
+        private FixedPremiumAccess(boolean premium) {
+            this.premium = premium;
+        }
+
+        @Override
+        public boolean hasPremiumAccess() {
+            return premium;
+        }
+
+        @Override
+        public SubscriptionStatus getStatus() {
+            return premium ? SubscriptionStatus.premium(SubscriptionSource.DEBUG, "") : SubscriptionStatus.free();
+        }
     }
 
     // ─── areAdsEnabled() guard ────────────────────────────────────────────────

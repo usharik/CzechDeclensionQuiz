@@ -19,6 +19,8 @@ import com.usharik.app.ads.ThreadLocalRandomProvider;
 import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.service.FirebaseAnalyticsService;
 import com.usharik.app.service.WordService;
+import com.usharik.app.subscription.PremiumAccess;
+import com.usharik.app.subscription.SubscriptionManager;
 
 import javax.inject.Singleton;
 
@@ -97,8 +99,22 @@ class ServiceModule {
 
     @Provides
     @Singleton
-    InterstitialAdPolicy provideInterstitialAdPolicy(AdSessionState sessionState, RandomProvider random) {
-        return new InterstitialAdPolicy(sessionState, random);
+    SubscriptionManager provideSubscriptionManager(Application application) {
+        return new SubscriptionManager(application);
+    }
+
+    @Provides
+    @Singleton
+    PremiumAccess providePremiumAccess(SubscriptionManager subscriptionManager) {
+        return subscriptionManager;
+    }
+
+    @Provides
+    @Singleton
+    InterstitialAdPolicy provideInterstitialAdPolicy(AdSessionState sessionState,
+                                                     RandomProvider random,
+                                                     PremiumAccess premiumAccess) {
+        return new InterstitialAdPolicy(sessionState, random, premiumAccess);
     }
 
     @Provides

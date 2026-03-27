@@ -35,6 +35,15 @@
     <string name="use_device_language">Use device language</string>
     <string name="words_with_errors">Words with errors</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="premium_subscription">Premium subscription</string>
+    <string name="subscription_status_free">Current plan: Free</string>
+    <string name="subscription_status_premium">Current plan: Premium</string>
+    <string name="subscription_coming_soon_message">Subscription infrastructure is ready, but Google Play Billing is not enabled in this build yet.</string>
+    <string name="subscription_debug_message">Debug premium is enabled. Ads should stay hidden while this flag is active.</string>
+    <string name="subscription_active_message">Premium subscription is active. Ads should remain disabled.</string>
+    <string name="subscription_inactive_message">Premium subscription is not active yet.</string>
+    <string name="enable_debug_premium">Enable debug premium</string>
+    <string name="disable_debug_premium">Disable debug premium</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Keep going! 💪</string>
