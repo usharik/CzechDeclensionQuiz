@@ -3,6 +3,7 @@ package com.usharik.app.fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.util.Log;
 import android.content.SharedPreferences;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
@@ -54,6 +55,7 @@ import static com.usharik.app.fragment.SettingsFragment.SHARED_PREFERENCES;
 
 public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel> {
 
+    private static final String TAG = "DeclensionQuizFragment";
     public static final String WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS";
 
     private BannerAdController bannerAdController;
@@ -336,6 +338,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
      * false when it is a case cell (tag is "numberCode_caseNum").
      */
     private boolean isWordPoolItem(View v) {
+        if (v == null) return false;
         Object tag = v.getTag();
         return tag instanceof String && !((String) tag).contains("_");
     }
@@ -376,6 +379,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private boolean onRecyclerViewDrag(View v, DragEvent event) {
         if (event.getAction() == DragEvent.ACTION_DROP) {
             View dropped = (View) event.getLocalState();
+            if (dropped == null) {
+                Log.w(TAG, "onRecyclerViewDrag: localState is null, ignoring drop event");
+                return true;
+            }
             if (isWordPoolItem(dropped)) {
                 return true; // already in pool — no-op
             }
@@ -400,6 +407,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     public boolean onDrag(View v, DragEvent event) {
         if (event.getAction() == DragEvent.ACTION_DROP) {
             View dropped     = (View) event.getLocalState();
+            if (dropped == null) {
+                Log.w(TAG, "onDrag: localState is null, ignoring drop event");
+                return true;
+            }
             TextView dropTarget = (TextView) v;
             String[] info    = ((String) dropTarget.getTag()).split("_");
             int numberCode   = Integer.parseInt(info[0]);
