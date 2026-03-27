@@ -31,6 +31,9 @@
     <string name="additional_settings">Дополнительные настройки</string>
     <string name="turn_off_animation">Отключить анимацию</string>
     <string name="settings">Настройки</string>
+    <string name="ui_language">Язык приложения</string>
+    <string name="choose_app_language">Выберите язык приложения</string>
+    <string name="use_device_language">Язык устройства</string>
     <string name="words_with_errors">Слова с ошибками</string>
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="declension_pattern">как \"%s\"</string>

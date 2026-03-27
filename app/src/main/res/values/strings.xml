@@ -30,6 +30,9 @@
     <string name="additional_settings">Additional settings</string>
     <string name="turn_off_animation">Turn off animation</string>
     <string name="settings">Settings</string>
+    <string name="ui_language">App language</string>
+    <string name="choose_app_language">Choose app language</string>
+    <string name="use_device_language">Use device language</string>
     <string name="words_with_errors">Words with errors</string>
     <string name="privacy_policy">Privacy policy</string>
 

@@ -31,6 +31,9 @@
     <string name="additional_settings">Zusätzliche Einstellungen</string>
     <string name="turn_off_animation">Animation ausschalten</string>
     <string name="settings">Einstellungen</string>
+    <string name="ui_language">App-Sprache</string>
+    <string name="choose_app_language">App-Sprache auswählen</string>
+    <string name="use_device_language">Gerätesprache</string>
     <string name="words_with_errors">Wörter mit Fehlern</string>
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="declension_pattern">wie \"%s\"</string>

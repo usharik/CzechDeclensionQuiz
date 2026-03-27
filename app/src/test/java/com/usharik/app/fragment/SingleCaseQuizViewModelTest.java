@@ -7,6 +7,7 @@ import com.usharik.database.WordInfo;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,7 +24,8 @@ public class SingleCaseQuizViewModelTest {
         state.setPlural(true);
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), null, state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(
+                new FakeWordService(), null, Locale.ENGLISH, state);
 
         viewModel.nextWord(true);
 
@@ -44,7 +46,8 @@ public class SingleCaseQuizViewModelTest {
         state.setAnswers(List.of("word-sg-6", "word-sg-1", "word-pl-1", "word-pl-2"));
         state.setAnswered(true);
 
-        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(new FakeWordService(), null, state);
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(
+                new FakeWordService(), null, Locale.ENGLISH, state);
 
         viewModel.nextStep();
 
@@ -55,12 +58,23 @@ public class SingleCaseQuizViewModelTest {
         assertTrue(viewModel.getAnswers().contains("word-pl-0"));
     }
 
+    @Test
+    public void getTranslation_usesInjectedAppLocale() {
+        SingleCaseQuizState state = new SingleCaseQuizState();
+        state.setWordInfo(createWordInfo());
+
+        SingleCaseQuizViewModel viewModel = new SingleCaseQuizViewModel(
+                new FakeWordService(), null, Locale.forLanguageTag("ru-RU"), state);
+
+        assertEquals("роза", viewModel.getTranslation());
+    }
+
     private WordInfo createWordInfo() {
         String[][] cases = new String[][]{
                 {"word-sg-0", "word-sg-1", "word-sg-2", "word-sg-3", "word-sg-4", "word-sg-5", "word-sg-6"},
                 {"word-pl-0", "word-pl-1", "word-pl-2", "word-pl-3", "word-pl-4", "word-pl-5", "word-pl-6"}
         };
-        return new WordInfo(1L, "word", cases, "", "", "f", "rose");
+        return new WordInfo(1L, "word", cases, "роза", "rose", "f", "noun");
     }
 
     private static final class FakeWordService extends WordService {

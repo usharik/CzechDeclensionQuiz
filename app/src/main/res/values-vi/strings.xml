@@ -31,6 +31,9 @@
     <string name="additional_settings">Cài đặt bổ sung</string>
     <string name="turn_off_animation">Tắt hoạt ảnh</string>
     <string name="settings">Cài đặt</string>
+    <string name="ui_language">Ngôn ngữ ứng dụng</string>
+    <string name="choose_app_language">Chọn ngôn ngữ ứng dụng</string>
+    <string name="use_device_language">Ngôn ngữ thiết bị</string>
     <string name="words_with_errors">Từ có lỗi</string>
     <string name="privacy_policy">Chính sách bảo mật</string>
     <string name="declension_pattern">như \"%s\"</string>

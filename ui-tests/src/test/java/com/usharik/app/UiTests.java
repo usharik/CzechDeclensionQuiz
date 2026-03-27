@@ -358,6 +358,7 @@ public class UiTests {
     }
 
     private void ensureHubScreen() {
+        dismissInitialLanguageDialogIfVisible();
         if (isElementVisible(ID_TITLE_QUIZ_MODE, Duration.ofSeconds(2))) {
             return;
         }
@@ -384,7 +385,19 @@ public class UiTests {
         }
 
         driver.activateApp(APP_PACKAGE);
+        dismissInitialLanguageDialogIfVisible();
         waitForHubScreen();
+    }
+
+    private void dismissInitialLanguageDialogIfVisible() {
+        try {
+            WebElement englishOption = new WebDriverWait(driver, Duration.ofSeconds(2))
+                    .until(ExpectedConditions.elementToBeClickable(
+                            AppiumBy.androidUIAutomator("new UiSelector().text(\"English\")")));
+            englishOption.click();
+            waitForScreenStability();
+        } catch (Exception ignored) {
+        }
     }
 
     private void openFullQuizFromHub() {

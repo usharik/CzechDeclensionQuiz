@@ -39,19 +39,23 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     private final WordService wordService;
     private final SingleCaseQuizState state;
     private final TrainingStatsRepository statsRepository;
+    private final Locale locale;
     private final LinkedHashSet<String> recentWords = new LinkedHashSet<>();
 
     @Inject
     public SingleCaseQuizViewModel(final WordService wordService,
-                                   final TrainingStatsRepository statsRepository) {
-        this(wordService, statsRepository, new SingleCaseQuizState());
+                                   final TrainingStatsRepository statsRepository,
+                                   final Locale locale) {
+        this(wordService, statsRepository, locale, new SingleCaseQuizState());
     }
 
     SingleCaseQuizViewModel(final WordService wordService,
                             final TrainingStatsRepository statsRepository,
+                            final Locale locale,
                             final SingleCaseQuizState state) {
         this.wordService = wordService;
         this.statsRepository = statsRepository;
+        this.locale = locale;
         this.state = state;
         loadRecentWordsFromDb();
     }
@@ -100,13 +104,14 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         if (wordInfo == null) {
             return "";
         }
-        
-        // Check if system language is Russian
-        String systemLanguage = Locale.getDefault().getLanguage();
-        if ("ru".equals(systemLanguage)) {
+
+        String language = locale.getISO3Language();
+        if (DeclensionQuizViewModel.RUS.equals(language)
+                || DeclensionQuizViewModel.BEL.equals(language)
+                || DeclensionQuizViewModel.UKR.equals(language)) {
             return wordInfo.translation_ru();
         }
-        
+
         return wordInfo.translation_en();
     }
 

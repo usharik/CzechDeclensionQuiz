@@ -11,8 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import com.usharik.app.AppState;
 import com.usharik.app.R;
+import com.usharik.app.UiLanguage;
+import com.usharik.app.UiLanguageManager;
 import com.usharik.app.databinding.SettingsFragmentBinding;
 import com.usharik.app.framework.ViewFragment;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import javax.inject.Inject;
 
@@ -37,6 +40,8 @@ public class SettingsFragment extends ViewFragment<SettingsViewModel> {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.settings_fragment, container, false);
         binding.setViewModel(getViewModel());
+        binding.btnUiLanguage.setOnClickListener(v -> showUiLanguageDialog());
+        binding.btnUiLanguage.setText(UiLanguageManager.getSelectedLanguageLabel(requireContext()));
         return binding.getRoot();
     }
 
@@ -52,5 +57,25 @@ public class SettingsFragment extends ViewFragment<SettingsViewModel> {
     @Override
     protected Class<SettingsViewModel> getViewModelClass() {
         return SettingsViewModel.class;
+    }
+
+    private void showUiLanguageDialog() {
+        UiLanguage[] options = UiLanguageManager.getAvailableLanguages();
+        UiLanguage currentLanguage = UiLanguageManager.getSelectedLanguage(requireContext());
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.choose_app_language)
+                .setSingleChoiceItems(
+                        UiLanguageManager.getLanguageLabels(requireContext()),
+                        UiLanguageManager.indexOf(currentLanguage),
+                        (dialog, which) -> {
+                            UiLanguage selectedLanguage = options[which];
+                            UiLanguageManager.saveAndApplyLanguage(requireContext(), selectedLanguage);
+                            binding.btnUiLanguage.setText(UiLanguageManager.getSelectedLanguageLabel(requireContext()));
+                            dialog.dismiss();
+                        }
+                )
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }

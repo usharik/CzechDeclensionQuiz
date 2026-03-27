@@ -92,9 +92,29 @@ public class MainActivity extends AppCompatActivity {
             updateTitleForCurrentFragment();
         }
 
-        // Android 13+ requires a runtime permission to post notifications.
-        // We request it here so the user sees the dialog on first launch.
-        requestNotificationPermissionIfNeeded();
+        if (UiLanguageManager.hasSavedLanguage(this)) {
+            // Android 13+ requires a runtime permission to post notifications.
+            // We request it here so the user sees the dialog on first launch.
+            requestNotificationPermissionIfNeeded();
+        } else {
+            showUiLanguageDialog(true);
+        }
+    }
+
+    private void showUiLanguageDialog(boolean requiredSelection) {
+        UiLanguage[] options = UiLanguageManager.getAvailableLanguages();
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.choose_app_language)
+                .setItems(UiLanguageManager.getLanguageLabels(this), (dialog, which) -> {
+                    UiLanguage selectedLanguage = options[which];
+                    boolean languageChanged = UiLanguageManager.saveAndApplyLanguage(this, selectedLanguage);
+                    if (requiredSelection && !languageChanged) {
+                        requestNotificationPermissionIfNeeded();
+                    }
+                })
+                .setCancelable(!requiredSelection)
+                .show();
     }
 
     private void requestNotificationPermissionIfNeeded() {

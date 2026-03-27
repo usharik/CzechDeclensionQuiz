@@ -79,7 +79,6 @@ class ServiceModule {
     }
 
     @Provides
-    @Singleton
     Locale provideLocale(Application application) {
         return application.getResources().getConfiguration().getLocales().get(0);
     }

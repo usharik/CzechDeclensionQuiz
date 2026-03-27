@@ -31,6 +31,9 @@
     <string name="additional_settings">Додаткові параметри</string>
     <string name="turn_off_animation">Вимкнути анімацію</string>
     <string name="settings">Параметри</string>
+    <string name="ui_language">Мова застосунку</string>
+    <string name="choose_app_language">Виберіть мову застосунку</string>
+    <string name="use_device_language">Мова пристрою</string>
     <string name="words_with_errors">Слова з помилками</string>
     <string name="privacy_policy">Політика конфіденційності</string>
     <string name="declension_pattern">як \"%s\"</string>

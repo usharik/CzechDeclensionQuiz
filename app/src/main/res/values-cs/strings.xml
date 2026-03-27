@@ -31,6 +31,9 @@
     <string name="additional_settings">Další nastavení</string>
     <string name="turn_off_animation">Vypnout animaci</string>
     <string name="settings">Nastavení</string>
+    <string name="ui_language">Jazyk aplikace</string>
+    <string name="choose_app_language">Vyberte jazyk aplikace</string>
+    <string name="use_device_language">Jazyk zařízení</string>
     <string name="words_with_errors">Slova s chybami</string>
     <string name="privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="declension_pattern">jako \"%s\"</string>

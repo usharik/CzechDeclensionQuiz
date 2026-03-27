@@ -70,6 +70,7 @@ public class App extends Application implements HasAndroidInjector {
     @Override
     public void onCreate() {
         super.onCreate();
+        UiLanguageManager.applySavedLanguage(this);
         DaggerAppComponent.factory().create(this).inject(this);
 
         // Configure WorkManager with custom WorkerFactory for DI support
