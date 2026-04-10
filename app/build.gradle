@@ -62,6 +62,9 @@ android {
             buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/1051217273\""
             buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/9608497598\""
             manifestPlaceholders = [admobAppId: "ca-app-pub-6420074467468909~9307588615"]
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+            }
         }
     }
     compileOptions {
@@ -70,9 +73,6 @@ android {
     }
     dataBinding {
         enabled = true
-    }
-    firebaseCrashlytics {
-        nativeSymbolUploadEnabled true
     }
 }
 
