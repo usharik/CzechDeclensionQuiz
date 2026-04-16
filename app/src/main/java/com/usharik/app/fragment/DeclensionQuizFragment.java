@@ -61,6 +61,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private BannerAdController bannerAdController;
     private WordDragAdapter wordDragAdapter;
     private Observable.OnPropertyChangedCallback wordModelCallback;
+    private Observable.OnPropertyChangedCallback errorCounterCallback;
 
     private DeclensionQuizFragmentBinding binding;
 
@@ -178,6 +179,10 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             getViewModel().removeOnPropertyChangedCallback(wordModelCallback);
             wordModelCallback = null;
         }
+        if (errorCounterCallback != null) {
+            getViewModel().removeOnPropertyChangedCallback(errorCounterCallback);
+            errorCounterCallback = null;
+        }
         bannerAdController.onDestroyView();
         bannerAdController = null;
         super.onDestroyView();
@@ -240,14 +245,15 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         binding.case7.casePlural.setOnDragListener(this::onDrag);
 
         // Add observer for error counter changes to animate it
-        getViewModel().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+        errorCounterCallback = new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 if (propertyId == com.usharik.app.BR.wrongAttemptsCounter) {
                     animateErrorCounter();
                 }
             }
-        });
+        };
+        getViewModel().addOnPropertyChangedCallback(errorCounterCallback);
     }
 
     // ─── Menu ────────────────────────────────────────────────────────────────
@@ -575,7 +581,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
      * Animate error counter with a small bounce effect when it changes
      */
     private void animateErrorCounter() {
-        if (binding.errorCounter != null) {
+        if (binding != null && binding.errorCounter != null) {
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(binding.errorCounter, "scaleX", 1.0f, 1.3f, 1.0f);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(binding.errorCounter, "scaleY", 1.0f, 1.3f, 1.0f);
 
