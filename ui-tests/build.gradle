@@ -14,7 +14,7 @@ dependencies {
     testImplementation 'io.appium:java-client:10.1.1'
 
     // JSON parsing
-    testImplementation 'com.google.code.gson:gson:2.13.2'
+    testImplementation 'com.google.code.gson:gson:2.14.0'
 
     // Logging
     testImplementation 'org.slf4j:slf4j-api:2.0.17'
