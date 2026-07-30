@@ -85,7 +85,7 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.2.0'
     implementation 'androidx.media:media:1.8.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.11.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.11.0'
