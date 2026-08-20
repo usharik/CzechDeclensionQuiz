@@ -63,7 +63,7 @@ android {
             buildConfigField "String", "ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID", "\"ca-app-pub-6420074467468909/9608497598\""
             manifestPlaceholders = [admobAppId: "ca-app-pub-6420074467468909~9307588615"]
             firebaseCrashlytics {
-                nativeSymbolUploadEnabled true
+                nativeSymbolUploadEnabled = true
             }
         }
     }
@@ -71,14 +71,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':database')
+    implementation(project.getDependencyFactory().createProjectDependency(':database'))
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'com.google.android.material:material:1.14.0'
     implementation 'androidx.browser:browser:1.10.0'
