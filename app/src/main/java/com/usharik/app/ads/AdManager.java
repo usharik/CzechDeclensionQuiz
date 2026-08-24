@@ -145,7 +145,12 @@ public class AdManager {
         InterstitialAd interstitialAd = interstitialAds.get(adUnitId);
         if (interstitialAd != null) {
             isShowingAd = true;
-            
+
+            // Hide the system bars while the full-screen ad is visible. Under edge-to-edge
+            // enforcement (targetSdk 35+) the ad's close/skip controls can otherwise render
+            // beneath the status bar, display cutout, or navigation bar and become untappable.
+            interstitialAd.setImmersiveMode(true);
+
             interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {

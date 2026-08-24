@@ -7,8 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.fragment.app.FragmentManager;
@@ -60,7 +65,14 @@ public class MainActivity extends AppCompatActivity {
         AndroidInjection.inject(this);
         Log.i(getClass().getName(), "Start main activity!!!");
 
+        // Opt into edge-to-edge on every supported version so inset handling is consistent.
+        // On Android 15+ (targetSdk 35+) edge-to-edge is enforced regardless; here we make it
+        // explicit and then apply the insets ourselves below.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.main_activity);
+
+        setupWindowInsets();
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
 
@@ -99,6 +111,26 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showUiLanguageDialog(true);
         }
+    }
+
+    /**
+     * Applies window insets so content is never obscured by the system bars or a display cutout.
+     * The status-bar inset is added as top padding to the colored {@link com.google.android.material.appbar.AppBarLayout}
+     * (its background still fills behind the status bar), while the navigation-bar inset plus any
+     * horizontal cutout/side-bar insets are applied to the fragment container so the bottom banner
+     * ads and action buttons stay above the navigation bar in every orientation.
+     */
+    private void setupWindowInsets() {
+        View appBar = findViewById(R.id.appBarLayout);
+        View fragmentContainer = findViewById(R.id.fragmentContainer);
+        View root = findViewById(R.id.rootLayout);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            appBar.setPadding(bars.left, bars.top, bars.right, appBar.getPaddingBottom());
+            fragmentContainer.setPadding(bars.left, 0, bars.right, bars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     private void showUiLanguageDialog(boolean requiredSelection) {
