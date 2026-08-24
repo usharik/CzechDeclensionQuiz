@@ -8,6 +8,7 @@ import androidx.databinding.Bindable;
 import com.usharik.app.CzechCase;
 import com.usharik.app.SingleCaseQuizState;
 import com.usharik.app.framework.ViewModelObservable;
+import com.usharik.app.service.LastWordStore;
 import com.usharik.app.service.WordService;
 import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.WordInfo;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import com.usharik.database.dao.DailyTrainingStatsEntity;
@@ -40,23 +42,35 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
     private final SingleCaseQuizState state;
     private final TrainingStatsRepository statsRepository;
     private final Locale locale;
+    private final LastWordStore lastWordStore;
     private final LinkedHashSet<String> recentWords = new LinkedHashSet<>();
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
     public SingleCaseQuizViewModel(final WordService wordService,
                                    final TrainingStatsRepository statsRepository,
-                                   final Locale locale) {
-        this(wordService, statsRepository, locale, new SingleCaseQuizState());
+                                   final Locale locale,
+                                   final LastWordStore lastWordStore) {
+        this(wordService, statsRepository, locale, new SingleCaseQuizState(), lastWordStore);
     }
 
     SingleCaseQuizViewModel(final WordService wordService,
                             final TrainingStatsRepository statsRepository,
                             final Locale locale,
                             final SingleCaseQuizState state) {
+        this(wordService, statsRepository, locale, state, LastWordStore.NO_OP);
+    }
+
+    SingleCaseQuizViewModel(final WordService wordService,
+                            final TrainingStatsRepository statsRepository,
+                            final Locale locale,
+                            final SingleCaseQuizState state,
+                            final LastWordStore lastWordStore) {
         this.wordService = wordService;
         this.statsRepository = statsRepository;
         this.locale = locale;
         this.state = state;
+        this.lastWordStore = lastWordStore;
         loadRecentWordsFromDb();
     }
 
@@ -177,26 +191,58 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
         return answers;
     }
 
-    @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
         if (tryAgain && state.getWordInfo() != null) {
             resetRound();
             update();
             return;
         }
-        wordService.getNextWord(state.getWordInfo())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(wordInfo -> {
-                    state.setWordInfo(wordInfo);
-                    addRecentWord(wordInfo.word());
-                    resetRound();
-                    if (statsRepository != null) {
-                        statsRepository.incrementWordsCompleted()
-                                .subscribe(() -> {}, thr2 -> Log.w(TAG, "Stats error", thr2));
-                    }
-                    update();
-                }, thr -> Log.e(TAG, "Error loading word", thr));
+        disposables.add(
+            wordService.getNextWord(state.getWordInfo())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(wordInfo -> applyWord(wordInfo, true),
+                            thr -> Log.e(TAG, "Error loading word", thr))
+        );
+    }
+
+    /**
+     * Restores the word shown before the app was closed instead of generating a
+     * new random one. Only acts on a fresh view model (no current word); on a
+     * config change / back-navigation the survived word is kept as-is. Falls
+     * back to a random word when nothing is saved or the saved word is missing.
+     */
+    public void restoreOrNextWord() {
+        if (hasCurrentWord()) {
+            return;
+        }
+        String saved = lastWordStore.getLastWord(LastWordStore.MODE_SINGLE_CASE);
+        if (saved == null || saved.isBlank()) {
+            nextWord(false);
+            return;
+        }
+        disposables.add(
+            wordService.getWordByName(saved)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            wordInfo -> applyWord(wordInfo, false),
+                            thr -> nextWord(false),
+                            () -> nextWord(false))
+        );
+    }
+
+    private void applyWord(WordInfo wordInfo, boolean countStats) {
+        state.setWordInfo(wordInfo);
+        lastWordStore.saveLastWord(LastWordStore.MODE_SINGLE_CASE, wordInfo.word());
+        if (countStats) {
+            addRecentWord(wordInfo.word());
+        }
+        resetRound();
+        if (countStats && statsRepository != null) {
+            statsRepository.incrementWordsCompleted()
+                    .subscribe(() -> {}, thr2 -> Log.w(TAG, "Stats error", thr2));
+        }
+        update();
     }
 
     public void nextStep() {
@@ -264,5 +310,11 @@ public class SingleCaseQuizViewModel extends ViewModelObservable {
 
     private void update() {
         notifyChange();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        disposables.clear();
     }
 }

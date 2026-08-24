@@ -38,6 +38,7 @@ import com.usharik.app.ads.AdManager;
 import com.usharik.app.ads.BannerAdController;
 import com.usharik.app.ads.InterstitialAdPolicy;
 import com.usharik.app.databinding.DeclensionQuizFragmentBinding;
+import com.usharik.app.databinding.RowCaseBinding;
 import com.usharik.app.DeclensionQuizState.WordTextModel;
 import com.usharik.app.framework.ViewFragment;
 import com.usharik.app.service.FirebaseAnalyticsService;
@@ -77,7 +78,7 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
         super.onCreateView(inflater, container, savedInstanceState);
         binding = DataBindingUtil.inflate(inflater, R.layout.declension_quiz_fragment, container, false);
         binding.setViewModel(getViewModel());
-        getViewModel().nextWord(false);
+        getViewModel().restoreOrNextWord();
         setupWordDragRecyclerView();
         setListeners();
         return binding.getRoot();
@@ -229,20 +230,13 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void setListeners() {
         getViewModel().update();
 
-        binding.case1.caseSingular.setOnDragListener(this::onDrag);
-        binding.case1.casePlural.setOnDragListener(this::onDrag);
-        binding.case2.caseSingular.setOnDragListener(this::onDrag);
-        binding.case2.casePlural.setOnDragListener(this::onDrag);
-        binding.case3.caseSingular.setOnDragListener(this::onDrag);
-        binding.case3.casePlural.setOnDragListener(this::onDrag);
-        binding.case4.caseSingular.setOnDragListener(this::onDrag);
-        binding.case4.casePlural.setOnDragListener(this::onDrag);
-        binding.case5.caseSingular.setOnDragListener(this::onDrag);
-        binding.case5.casePlural.setOnDragListener(this::onDrag);
-        binding.case6.caseSingular.setOnDragListener(this::onDrag);
-        binding.case6.casePlural.setOnDragListener(this::onDrag);
-        binding.case7.caseSingular.setOnDragListener(this::onDrag);
-        binding.case7.casePlural.setOnDragListener(this::onDrag);
+        setupRowDragListeners(binding.case1);
+        setupRowDragListeners(binding.case2);
+        setupRowDragListeners(binding.case3);
+        setupRowDragListeners(binding.case4);
+        setupRowDragListeners(binding.case5);
+        setupRowDragListeners(binding.case6);
+        setupRowDragListeners(binding.case7);
 
         // Add observer for error counter changes to animate it
         errorCounterCallback = new Observable.OnPropertyChangedCallback() {
@@ -254,6 +248,22 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             }
         };
         getViewModel().addOnPropertyChangedCallback(errorCounterCallback);
+    }
+
+    /**
+     * Wires drag-and-drop for one case row. In addition to the two word cells,
+     * the header views above each cell act as extended drop zones so the target
+     * is easier to hit: the left-side headers (number / name / hint) forward to
+     * the singular cell, and the question header forwards to the plural cell.
+     */
+    private void setupRowDragListeners(RowCaseBinding row) {
+        row.caseSingular.setOnDragListener(this::onDrag);
+        row.casePlural.setOnDragListener(this::onDrag);
+
+        row.caseNum.setOnDragListener((v, event) -> onDrag(row.caseSingular, event));
+        row.caseName.setOnDragListener((v, event) -> onDrag(row.caseSingular, event));
+        row.caseHint.setOnDragListener((v, event) -> onDrag(row.caseSingular, event));
+        row.caseQuestion.setOnDragListener((v, event) -> onDrag(row.casePlural, event));
     }
 
     // ─── Menu ────────────────────────────────────────────────────────────────

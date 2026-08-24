@@ -30,6 +30,10 @@ public class WordService {
         this.analyticsService = analyticsService;
     }
 
+    public Maybe<WordInfo> getWordByName(String word) {
+        return documentRepository.getWordInfoByWord(word);
+    }
+
     public Single<WordInfo> getNextWord(WordInfo currentWord) {
         return Maybe.defer(() -> rnd.nextBoolean()
                 ? getRandomWordWithErrorAsync(currentWord)

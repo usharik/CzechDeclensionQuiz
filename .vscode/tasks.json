@@ -1,0 +1,182 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Android: Build Debug APK",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [
+        ":app:assembleDebug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Start Emulator",
+      "type": "shell",
+      "command": "./ui-tests/start-emulator.sh",
+      "args": [
+        "test_emulator"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Install Debug APK",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "adb install -r -t -g \"${workspaceFolder}/app/build/outputs/apk/debug/app-debug.apk\""
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "dependsOn": "Android: Build Debug APK",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Launch App",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "adb shell monkey -p com.usharik.app -c android.intent.category.LAUNCHER 1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: Run App",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Android: Install Debug APK",
+        "Android: Launch App"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UI Tests: Check Prerequisites",
+      "type": "shell",
+      "command": "./ui-tests/run-ui-tests.sh",
+      "args": [
+        "--check-only"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UI Tests: Run",
+      "type": "shell",
+      "command": "./ui-tests/run-ui-tests.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UI Tests: Full Setup + Run",
+      "type": "shell",
+      "command": "./ui-tests/run-all.sh",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+          "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/openjdk-25.0.1/Contents/Home",
+          "PATH": "/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+        }
+      },
+      "test": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

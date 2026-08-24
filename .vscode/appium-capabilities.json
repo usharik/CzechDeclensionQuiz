@@ -1,0 +1,12 @@
+{
+  "android": {
+    "platformName": "Android",
+    "appium:automationName": "UiAutomator2",
+    "appium:app": "/Users/aleks/dev/CzechDeclensionQuiz/app/build/outputs/apk/debug/app-debug.apk",
+    "appium:appPackage": "com.usharik.app",
+    "appium:appWaitActivity": "*",
+    "appium:autoGrantPermissions": true,
+    "appium:newCommandTimeout": 300,
+    "appium:noReset": false
+  }
+}

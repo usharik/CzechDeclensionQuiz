@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Android: Run App",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bash -lc 'cd \"${workspaceFolder}\" && ./gradlew :app:assembleDebug && ANDROID_HOME=\"${ANDROID_HOME:-$HOME/Library/Android/sdk}\" && export ANDROID_HOME ANDROID_SDK_ROOT=\"$ANDROID_HOME\" PATH=\"$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH\" && adb install -r -t -g \"${workspaceFolder}/app/build/outputs/apk/debug/app-debug.apk\" && adb shell monkey -p com.usharik.app -c android.intent.category.LAUNCHER 1'"
+    },
+    {
+      "name": "UI Tests: Full Setup + Run",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bash -lc 'cd \"${workspaceFolder}\" && ./ui-tests/run-all.sh'"
+    }
+  ]
+}

@@ -70,7 +70,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         getViewModel().addOnPropertyChangedCallback(viewModelCallback);
 
         if (!getViewModel().hasCurrentWord()) {
-            getViewModel().nextWord(false);
+            getViewModel().restoreOrNextWord();
         } else {
             refreshAnswerButtons();
         }

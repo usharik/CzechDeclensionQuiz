@@ -27,6 +27,17 @@ on:
 permissions:
   contents: write  # Needed for creating GitHub releases
 
+env:
+  PACKAGE_NAME: com.usharik.app
+  # Shared across apps that use the same keystore
+  KEYSTORE_SECRET_NAME: KEYSTORE_BASE64
+  KEYSTORE_PASSWORD_SECRET_NAME: KEYSTORE_PASSWORD
+  # App-specific secrets for this application
+  GOOGLE_SERVICES_SECRET_NAME: GOOGLE_SERVICES_JSON_CZECH_DECLENSION_QUIZ
+  KEY_ALIAS_SECRET_NAME: KEY_ALIAS_CZECH_DECLENSION_QUIZ
+  KEY_PASSWORD_SECRET_NAME: KEY_PASSWORD_CZECH_DECLENSION_QUIZ
+  PLAY_SERVICE_ACCOUNT_SECRET_NAME: GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_CZECH_DECLENSION_QUIZ
+
 jobs:
   deploy:
     name: Deploy to Google Play
@@ -48,21 +59,21 @@ jobs:
       
       - name: Decode keystore
         env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_BASE64: ${{ secrets[env.KEYSTORE_SECRET_NAME] }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > release-keystore.jks
       
       - name: Decode google-services.json
         env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GOOGLE_SERVICES_JSON: ${{ secrets[env.GOOGLE_SERVICES_SECRET_NAME] }}
         run: |
           echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
       
       - name: Build Release APK
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets[env.KEYSTORE_PASSWORD_SECRET_NAME] }}
+          KEY_ALIAS: ${{ secrets[env.KEY_ALIAS_SECRET_NAME] }}
+          KEY_PASSWORD: ${{ secrets[env.KEY_PASSWORD_SECRET_NAME] }}
         run: |
           ./gradlew :app:assembleRelease \
             -Pandroid.injected.signing.store.file=${{ github.workspace }}/release-keystore.jks \
@@ -85,8 +96,8 @@ jobs:
       - name: Upload APK to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.usharik.app
+          serviceAccountJsonPlainText: ${{ secrets[env.PLAY_SERVICE_ACCOUNT_SECRET_NAME] }}
+          packageName: ${{ env.PACKAGE_NAME }}
           releaseFiles: app/build/outputs/apk/release/app-release.apk
           track: ${{ steps.track.outputs.track }}
           status: completed

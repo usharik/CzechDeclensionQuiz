@@ -1,0 +1,63 @@
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "google-developer-knowledge-api-key",
+      "description": "Google Developer Knowledge API key",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "google-analytics-credentials-path",
+      "description": "Path to Google Analytics Application Default Credentials JSON"
+    },
+    {
+      "type": "promptString",
+      "id": "google-analytics-project-id",
+      "description": "Google Cloud project ID for Google Analytics MCP"
+    }
+  ],
+  "servers": {
+    "google-developer-knowledge": {
+      "type": "http",
+      "url": "https://developerknowledge.googleapis.com/mcp",
+      "headers": {
+        "X-Goog-Api-Key": "${input:google-developer-knowledge-api-key}"
+      }
+    },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "firebase-tools@latest",
+        "mcp"
+      ]
+    },
+    "google-analytics": {
+      "type": "stdio",
+      "command": "pipx",
+      "args": [
+        "run",
+        "analytics-mcp"
+      ],
+      "env": {
+        "GOOGLE_APPLICATION_CREDENTIALS": "${input:google-analytics-credentials-path}",
+        "GOOGLE_PROJECT_ID": "${input:google-analytics-project-id}"
+      }
+    },
+    "appium-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "appium-mcp@latest"
+      ],
+      "env": {
+        "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+        "CAPABILITIES_CONFIG": "/Users/aleks/dev/CzechDeclensionQuiz/.vscode/appium-capabilities.json",
+        "SCREENSHOTS_DIR": "/Users/aleks/dev/CzechDeclensionQuiz/.artifacts/appium-screenshots"
+      }
+    }
+  }
+}

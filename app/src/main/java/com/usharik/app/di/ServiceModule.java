@@ -18,6 +18,8 @@ import com.usharik.app.ads.RandomProvider;
 import com.usharik.app.ads.ThreadLocalRandomProvider;
 import com.usharik.app.notification.NotificationHelper;
 import com.usharik.app.service.FirebaseAnalyticsService;
+import com.usharik.app.service.LastWordStore;
+import com.usharik.app.service.SharedPreferencesLastWordStore;
 import com.usharik.app.service.WordService;
 
 import javax.inject.Singleton;
@@ -56,6 +58,12 @@ class ServiceModule {
     @Singleton
     TrainingStatsRepository provideTrainingStatsRepository(DocumentDatabase db) {
         return new TrainingStatsRepository(db);
+    }
+
+    @Provides
+    @Singleton
+    LastWordStore provideLastWordStore(Application application) {
+        return new SharedPreferencesLastWordStore(application);
     }
 
     @Provides

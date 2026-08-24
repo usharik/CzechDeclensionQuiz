@@ -1,0 +1,33 @@
+{
+  "java.import.gradle.enabled": true,
+  "java.import.gradle.java.home": "/Users/aleks/Library/Java/JavaVirtualMachines/corretto-21.0.6/Contents/Home",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "gradle.nestedProjects": true,
+  "terminal.integrated.defaultProfile.osx": "zsh (login)",
+  "terminal.integrated.profiles.osx": {
+    "zsh (login)": {
+      "path": "zsh",
+      "args": [
+        "-l"
+      ]
+    }
+  },
+  "terminal.integrated.env.osx": {
+    "ANDROID_HOME": "/Users/aleks/Library/Android/sdk",
+    "ANDROID_SDK_ROOT": "/Users/aleks/Library/Android/sdk",
+    "JAVA_HOME": "/Users/aleks/Library/Java/JavaVirtualMachines/corretto-21.0.6/Contents/Home",
+    "PATH": "/Users/aleks/.nvm/versions/node/v24.12.0/bin:/Users/aleks/Library/Android/sdk/platform-tools:/Users/aleks/Library/Android/sdk/emulator:/Users/aleks/Library/Android/sdk/cmdline-tools/latest/bin:${env:PATH}"
+  },
+  "search.exclude": {
+    "**/.gradle": true,
+    "**/build": true
+  },
+  "files.watcherExclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true
+  },
+  "files.exclude": {
+    "**/.gradle": true,
+    "**/build": true
+  }
+}

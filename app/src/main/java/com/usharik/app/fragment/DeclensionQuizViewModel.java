@@ -1,6 +1,5 @@
 package com.usharik.app.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,12 +20,12 @@ import javax.inject.Inject;
 
 import com.usharik.app.service.WordService;
 import com.usharik.app.service.FirebaseAnalyticsService;
+import com.usharik.app.service.LastWordStore;
 import com.usharik.database.TrainingStatsRepository;
 import com.usharik.database.WordInfo;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -51,6 +50,7 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
     private final FirebaseAnalyticsService analyticsService;
     private final Locale locale;
     private final TrainingStatsRepository statsRepository;
+    private final LastWordStore lastWordStore;
 
     private static final int MAX_RECENT_WORDS = 3;
 
@@ -64,12 +64,14 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
                                    final WordService wordService,
                                    final FirebaseAnalyticsService analyticsService,
                                    final Locale locale,
-                                   final TrainingStatsRepository statsRepository) {
+                                   final TrainingStatsRepository statsRepository,
+                                   final LastWordStore lastWordStore) {
         this.appState = appState;
         this.wordService = wordService;
         this.analyticsService = analyticsService;
         this.locale = locale;
         this.statsRepository = statsRepository;
+        this.lastWordStore = lastWordStore;
         loadRecentWordsFromDb();
     }
 
@@ -115,46 +117,74 @@ public class DeclensionQuizViewModel extends ViewModelObservable {
         };
     }
 
-    @SuppressLint("CheckResult")
     public void nextWord(boolean tryAgain) {
-        Single<WordInfo> wordInfoSingle;
         WordInfo currentWordInfo = quizState.getWordInfo();
-        if (currentWordInfo == null || !tryAgain) {
-            wordInfoSingle = wordService.getNextWord(currentWordInfo);
-        } else {
-            wordInfoSingle = Single.just(currentWordInfo);
+        if (currentWordInfo != null && tryAgain) {
+            applyWord(currentWordInfo, false);
+            return;
         }
-        final boolean trackWord = !tryAgain;
-        wordInfoSingle
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(wordInfo -> {
-                    quizState.setWordInfo(wordInfo);
-                    addRecentWord(wordInfo.word());
-                    List<WordTextModel> words = new ArrayList<>();
-                    for (int i = 0; i < 7; i++) {
-                        String singular = wordInfo.cases(SINGULAR, i);
-                        String plural = wordInfo.cases(PLURAL, i);
-                        words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
-                        words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
-                        quizState.getCorrectAnswers()[SINGULAR][i] = singular;
-                        quizState.getCorrectAnswers()[PLURAL][i] = plural;
-                        quizState.getActualAnswers()[SINGULAR][i] = -1;
-                        quizState.getActualAnswers()[PLURAL][i] = -1;
-                    }
-                    Collections.shuffle(words);
-                    quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
-                    errorCount = 0;
-                    quizState.resetWrongAttempts();
-                    if (trackWord) {
-                        statsRepository.incrementWordsCompleted()
-                                .subscribe(() -> {}, thr2 -> Log.w("DeclensionQuizVM", "Stats error", thr2));
-                    }
-                    update();
-                }, thr -> {
-                    Log.e("Error", "Error loading next word", thr);
-                    FirebaseCrashlytics.getInstance().recordException(thr);
-                });
+        disposables.add(
+            wordService.getNextWord(currentWordInfo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(wordInfo -> applyWord(wordInfo, true), thr -> {
+                        Log.e("Error", "Error loading next word", thr);
+                        FirebaseCrashlytics.getInstance().recordException(thr);
+                    })
+        );
+    }
+
+    /**
+     * Restores the word shown before the app was closed instead of generating a
+     * new random one. Only acts on a fresh view model (no current word); on a
+     * config change / back-navigation the survived word is kept as-is. Falls
+     * back to a random word when nothing is saved or the saved word is missing.
+     */
+    public void restoreOrNextWord() {
+        if (quizState.getWordInfo() != null) {
+            return;
+        }
+        String saved = lastWordStore.getLastWord(LastWordStore.MODE_FULL_DECLENSION);
+        if (saved == null || saved.isBlank()) {
+            nextWord(false);
+            return;
+        }
+        disposables.add(
+            wordService.getWordByName(saved)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            wordInfo -> applyWord(wordInfo, false),
+                            thr -> nextWord(false),
+                            () -> nextWord(false))
+        );
+    }
+
+    private void applyWord(WordInfo wordInfo, boolean countStats) {
+        quizState.setWordInfo(wordInfo);
+        lastWordStore.saveLastWord(LastWordStore.MODE_FULL_DECLENSION, wordInfo.word());
+        if (countStats) {
+            addRecentWord(wordInfo.word());
+        }
+        List<WordTextModel> words = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            String singular = wordInfo.cases(SINGULAR, i);
+            String plural = wordInfo.cases(PLURAL, i);
+            words.add(new WordTextModel(singular, singular.isEmpty() ? View.GONE : View.VISIBLE));
+            words.add(new WordTextModel(plural, plural.isEmpty() ? View.GONE : View.VISIBLE));
+            quizState.getCorrectAnswers()[SINGULAR][i] = singular;
+            quizState.getCorrectAnswers()[PLURAL][i] = plural;
+            quizState.getActualAnswers()[SINGULAR][i] = -1;
+            quizState.getActualAnswers()[PLURAL][i] = -1;
+        }
+        Collections.shuffle(words);
+        quizState.setWordTextModels(words.toArray(new WordTextModel[0]));
+        errorCount = 0;
+        quizState.resetWrongAttempts();
+        if (countStats) {
+            statsRepository.incrementWordsCompleted()
+                    .subscribe(() -> {}, thr2 -> Log.w("DeclensionQuizVM", "Stats error", thr2));
+        }
+        update();
     }
 
     public void update() {
