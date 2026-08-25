@@ -17,7 +17,6 @@ class AppState {
 
     fun getWordsWithErrors(): Map<String, Int> = _wordsWithErrors.value
     fun getGenderFilterStr(): String = _genderFilter.value
-    fun getGenderFilterId(): Int = genderFilterId(_genderFilter.value)
     fun getSwitchOffAnimation(): Boolean = _switchOffAnimation.value
     fun setWordsWithErrors(value: Map<String, Int>?) { _wordsWithErrors.value = value?.toMap().orEmpty() }
     fun setSwitchOffAnimation(value: Boolean) { _switchOffAnimation.value = value }
@@ -28,7 +27,4 @@ class AppState {
     fun removeWordFromErrorMap(word: String?) {
         if (!word.isNullOrBlank()) _wordsWithErrors.value = _wordsWithErrors.value - word
     }
-
-    /** XML radio-button ids no longer exist in Compose; callers use the string filter directly. */
-    private fun genderFilterId(value: String): Int = -1
 }

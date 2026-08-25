@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +37,7 @@ import com.usharik.app.ui.components.RowCase
 import com.usharik.app.ui.components.WordBank
 import com.usharik.app.ui.components.WordChip
 import com.usharik.app.ui.components.WordModel
+import com.usharik.app.ui.components.localizedTranslation
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.database.WordInfo
 
@@ -93,9 +93,7 @@ fun DeclensionQuizContent(
 
 @Composable
 private fun QuizHeader(word: WordInfo, wrongAttempts: Int) {
-    // The app-selected locale (not the device default) drives the translation choice.
-    val lang = LocalConfiguration.current.locales[0].isO3Language
-    val translation = if (lang in setOf("rus", "bel", "ukr")) word.translation_ru() else word.translation_en()
+    val translation = localizedTranslation(word)
     Row(Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs), verticalAlignment = Alignment.Bottom) {
         Text(word.word(), Modifier.testTag(TestTags.FULL_WORD), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 19.sp)
         Text(

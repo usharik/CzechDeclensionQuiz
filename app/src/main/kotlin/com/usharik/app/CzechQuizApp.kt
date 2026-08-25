@@ -36,6 +36,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.usharik.app.ui.screens.AboutScreen
+import com.usharik.app.ui.screens.DeclensionQuizScreen
+import com.usharik.app.ui.screens.HandbookScreen
+import com.usharik.app.ui.screens.HubScreen
+import com.usharik.app.ui.screens.SettingsScreen
+import com.usharik.app.ui.screens.SingleCaseQuizScreen
+import com.usharik.app.ui.screens.WordsWithErrorsScreen
+import com.usharik.app.ui.theme.Dimens
 
 private enum class Destination(@StringRes val titleRes: Int) {
     HUB(R.string.hub_title),
@@ -45,42 +53,6 @@ private enum class Destination(@StringRes val titleRes: Int) {
     HANDBOOK(R.string.handbook),
     SETTINGS(R.string.settings),
     ABOUT(R.string.about),
-}
-
-/** Stable test tag constants used by both production composables and androidTest code. */
-object TestTags {
-    // App bar
-    const val APP_BAR_TITLE = "app_bar_title"
-    const val NAV_HOME_BTN = "nav_home"
-    // Hub screen
-    const val HUB_SCREEN = "hub_screen"
-    const val BTN_FULL = "btn_full"
-    const val BTN_SINGLE = "btn_single"
-    const val BTN_ERRORS = "btn_errors"
-    const val BTN_HANDBOOK = "btn_handbook"
-    const val BTN_SETTINGS = "btn_settings"
-    const val BTN_ABOUT = "btn_about"
-    // Single-case quiz
-    const val SC_SCREEN = "sc_screen"
-    const val SC_WORD = "sc_word"
-    const val SC_CASE_NAME = "sc_case_name"
-    const val SC_NUMBER_LABEL = "sc_number_label"
-    const val SC_QUESTION = "sc_case_question"
-    const val SC_ANSWER_PREFIX = "sc_answer_" // append 0..3
-    const val SC_NEXT_CASE = "sc_next_case"
-    const val SC_NEXT_WORD = "sc_next_word"
-    // Full declension quiz
-    const val FULL_WORD = "full_word"
-    const val FULL_ERROR_COUNTER = "full_error_counter"
-    const val FULL_POOL_WORD_PREFIX = "full_pool_word_" // append the shuffled word-model index
-    const val FULL_CELL_PREFIX = "full_cell_" // append "<number>_<case>", number: 0 singular / 1 plural
-    const val FULL_COMPLETION_DIALOG = "full_completion_dialog"
-    const val FULL_DIALOG_NEXT_WORD = "full_dialog_next_word"
-    const val FULL_DIALOG_STAY_HERE = "full_dialog_stay_here"
-    const val FULL_DIALOG_TRY_AGAIN = "full_dialog_try_again"
-    const val FULL_QUIT_DIALOG = "full_quit_dialog"
-    const val FULL_QUIT_EXERCISES = "full_quit_exercises"
-    const val FULL_QUIT_LEAVE = "full_quit_leave"
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -107,7 +79,7 @@ fun CzechQuizApp(app: App) {
             contentAlignment = Alignment.BottomStart,
         ) {
             Row(
-                Modifier.fillMaxWidth().height(com.usharik.app.ui.theme.Dimens.toolbarHeightDefault),
+                Modifier.fillMaxWidth().height(Dimens.toolbarHeightDefault),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // Routed through the back dispatcher exactly like the original toolbar home
@@ -133,7 +105,7 @@ fun CzechQuizApp(app: App) {
         }
         Box(Modifier.weight(1f).navigationBarsPadding()) {
             when (destination) {
-                Destination.HUB -> com.usharik.app.ui.screens.HubScreen(
+                Destination.HUB -> HubScreen(
                     app = app,
                     onOpenFullTable = { destination = Destination.FULL },
                     onOpenOneCase = { destination = Destination.SINGLE },
@@ -142,19 +114,19 @@ fun CzechQuizApp(app: App) {
                     onOpenSettings = { destination = Destination.SETTINGS },
                     onOpenAbout = { destination = Destination.ABOUT },
                 )
-                Destination.FULL -> com.usharik.app.ui.screens.DeclensionQuizScreen(
+                Destination.FULL -> DeclensionQuizScreen(
                     app = app,
                     onQuit = { destination = Destination.HUB },
                     registerNext = { nextAction = it },
                 )
-                Destination.SINGLE -> com.usharik.app.ui.screens.SingleCaseQuizScreen(
+                Destination.SINGLE -> SingleCaseQuizScreen(
                     app = app,
                     onQuit = { destination = Destination.HUB },
                 )
-                Destination.ERRORS -> com.usharik.app.ui.screens.WordsWithErrorsScreen(app)
-                Destination.HANDBOOK -> com.usharik.app.ui.screens.HandbookScreen(app)
-                Destination.SETTINGS -> com.usharik.app.ui.screens.SettingsScreen(app)
-                Destination.ABOUT -> com.usharik.app.ui.screens.AboutScreen(app)
+                Destination.ERRORS -> WordsWithErrorsScreen(app)
+                Destination.HANDBOOK -> HandbookScreen(app)
+                Destination.SETTINGS -> SettingsScreen(app)
+                Destination.ABOUT -> AboutScreen(app)
             }
         }
     }

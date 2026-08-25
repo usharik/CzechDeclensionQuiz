@@ -9,7 +9,6 @@ class AppStateTest {
     @Test fun defaultsAreSafeForANewInstallation() {
         AppState().also { state ->
             assertEquals(Gender.ALL, state.getGenderFilterStr())
-            assertEquals(-1, state.getGenderFilterId())
             assertFalse(state.getSwitchOffAnimation())
             assertTrue(state.getWordsWithErrors().isEmpty())
         }

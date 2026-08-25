@@ -20,7 +20,7 @@ import com.usharik.app.TestTags
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 
-/** Immutable pool item; mirrors DeclensionQuizState.WordTextModel (word + shown/hidden flag). */
+/** Immutable pool item: one declined form and whether it is still available in the bank. */
 data class WordModel(val word: String, val visible: Boolean)
 
 /** Key used to register the word pool as a drop target so placed forms can be returned to it. */
