@@ -1,6 +1,8 @@
 # Czech Declension Quiz - UI Tests
 
-✅ **Comprehensive UI test suite!** Automated UI tests for the Czech Declension Quiz Android app using Appium.
+Appium **smoke tests** for the Czech Declension Quiz Android app. Functional coverage (drag-and-drop, dialogs, counters, per-screen behavior) lives in the Compose instrumentation tests (`app/src/androidTest`, run with `./gradlew :app:connectedDebugAndroidTest`). This suite only verifies that the built APK installs, launches, and the main navigation flows work end to end through the real UiAutomator2 accessibility surface.
+
+The tests locate Compose elements by their `testTag` values (see `TestTags` in `CzechQuizApp.kt`), which the app exposes as `resource-id`s via `testTagsAsResourceId`.
 
 ## Configure Appium
 
@@ -25,23 +27,12 @@ cd ui-tests
 
 That's it! The script handles everything automatically.
 
-## Test Results
+## Test Cases
 
-**Current Status: 8/8 tests passing (100% pass rate)** 🎉
-
-### Navigation Tests ✅
-All navigation tests now include **rotation testing** (landscape/portrait) to ensure screens handle orientation changes correctly.
-
-- ✅ **testNavigateToQuizScreen** - Verifies Quiz screen displays with word and action buttons + rotation test
-- ✅ **testNavigateToWordsWithErrorsScreen** - Verifies Words with Errors screen displays cases container + rotation test
-- ✅ **testNavigateToHandbookScreen** - Verifies Handbook screen displays gender selection with correct header text + rotation test
-- ✅ **testNavigateToSettingsScreen** - Verifies Settings screen displays filter options and additional settings + rotation test
-- ✅ **testNavigateToAboutScreen** - Verifies About screen displays app name, logo, and version + rotation test
-- ✅ **testScreenRotation** - Legacy rotation test for Quiz screen (kept for backwards compatibility)
-
-### Quiz Functionality Tests ✅
-- ✅ **testCorrectQuizSolution** - Tests complete quiz workflow with drag-and-drop, verifies success dialog
-- ✅ **testIncorrectQuizSolution** - Tests error handling with mixed mistakes: 6 words correct, 4 words in wrong positions (swapped singular/plural), 4 words missing. Verifies error toast appears and success dialog does NOT appear
+- **testHubScreenShowsAllNavigationButtons** - Hub shows all six navigation buttons with correct labels
+- **testNavigateToPagesAndBack** - Opens Words with errors, Handbook, Settings and About; verifies the app bar title and returns to the hub
+- **testFullDeclensionQuizOpensAndQuitsViaDialog** - Full-table quiz shows a word and the word bank; back opens the quit dialog and "Leave quiz" returns to the hub
+- **testSingleCaseQuizAnswerFlow** - Single-case quiz answer locks the answers and unlocks "Next case"; advancing resets the state; quit via the dialog
 
 ## What It Does
 
@@ -51,10 +42,8 @@ The test script automatically:
 3. ✅ **Always rebuilds the APK** to ensure latest code changes
 4. ✅ **Reinstalls the APK** on the emulator for fresh testing
 5. ✅ **Cleans test results** to force tests to re-run (no caching)
-6. ✅ Loads test data directly from JSON (no database needed!)
-7. ✅ Runs all UI tests
-8. ✅ Generates detailed HTML reports
-9. ✅ **Saves screenshots** to `ui-tests/screenshots/` (using project root from Gradle)
+6. ✅ Runs all UI tests
+7. ✅ Generates detailed HTML reports
 
 ## Technology Stack
 
@@ -122,8 +111,7 @@ All timeouts and delays are configurable via Gradle system properties. You can o
   -Dtest.timeout.default=15 \
   -Dtest.timeout.implicit=3 \
   -Dtest.delay.screen.stability=200 \
-  -Dtest.delay.ui.update=150 \
-  -Dtest.delay.drag.duration=200
+  -Dtest.delay.ui.update=150
 ```
 
 ### Available Configuration Properties
@@ -132,9 +120,8 @@ All timeouts and delays are configurable via Gradle system properties. You can o
 |----------|---------|------|-------------|
 | `test.timeout.default` | `10` | seconds | Default timeout for element waits |
 | `test.timeout.implicit` | `2` | seconds | Implicit wait for driver |
-| `test.delay.screen.stability` | `100` | milliseconds | Wait after navigation/rotation |
-| `test.delay.ui.update` | `100` | milliseconds | Wait after drag-and-drop |
-| `test.delay.drag.duration` | `100` | milliseconds | Duration of drag gesture |
+| `test.delay.screen.stability` | `100` | milliseconds | Wait after navigation |
+| `test.delay.ui.update` | `100` | milliseconds | Wait after UI interaction |
 
 ### When to Adjust
 
@@ -142,42 +129,6 @@ All timeouts and delays are configurable via Gradle system properties. You can o
 - **Faster devices**: Decrease delays for faster test execution
 - **Flaky tests**: Increase `screen.stability` and `ui.update` delays
 - **Network issues**: Increase `timeout.default`
-
-### Example: Slow Device Configuration
-
-```bash
-./gradlew :ui-tests:test \
-  -Dtest.timeout.default=20 \
-  -Dtest.timeout.implicit=5 \
-  -Dtest.delay.screen.stability=300 \
-  -Dtest.delay.ui.update=300 \
-  -Dtest.delay.drag.duration=300
-```
-
-## Test Data
-
-Tests use JSON data directly - **no database needed!**
-
-- **Source**: `../database/src/main/assets/data.jsonl`
-- **Format**: JSON Lines (one word per line)
-- **Records**: 902 Czech words with declensions
-- **Size**: ~200KB
-- **Loading**: Loaded into memory at test startup
-
-### How It Works
-
-1. **Test startup**: Reads `data.jsonl` and loads all words into a HashMap
-2. **During tests**: Looks up word cases from the in-memory cache
-3. **Fast**: No database queries, no SQL, no external dependencies
-4. **Simple**: Just Java standard library + JSON parsing
-
-### Benefits
-
-✅ **No database setup** - No SQLite, no schema, no migrations
-✅ **Faster** - In-memory lookups are instant
-✅ **Simpler** - Fewer dependencies, less code
-✅ **Portable** - Works anywhere Java runs
-✅ **Easy to debug** - Just read the JSON file
 
 ## Test Reports
 
@@ -201,8 +152,9 @@ ui-tests/
 ├── start-emulator.sh                  # Emulator starter script
 ├── build.gradle                       # Gradle build configuration
 └── src/test/java/com/usharik/app/
-    ├── UiTests.java                   # Main test class
-    └── helpers/TestHelper.java        # Test utilities (JSON parser)
+    ├── UiTests.java                   # Smoke test class
+    ├── UiConstants.java               # Compose testTag values used as locators
+    └── Parameters.java                # Timeouts/paths from system properties
 ```
 
 ## Key Features
@@ -211,7 +163,6 @@ ui-tests/
 - Auto-detects and sets `ANDROID_HOME`
 - Auto-starts Appium server if not running
 - **Always rebuilds APK** to ensure latest code
-- Auto-loads test data from JSON
 
 ### Comprehensive Checks
 - Java version compatibility
@@ -219,7 +170,7 @@ ui-tests/
 - Appium installation and version
 - Android SDK and tools
 - Emulator/device connectivity
-- APK and database existence
+- APK existence
 
 ### Smart Error Handling
 - Clear, color-coded output
@@ -247,36 +198,14 @@ Start the emulator:
 ```
 
 ### Tests fail with "element not found"
-This is expected for `testCorrectQuizSolution` - the test needs updating to match current app UI.
-
-### Data JSON not found
-Make sure the data.jsonl file exists:
-```bash
-ls -lh database/src/main/assets/data.jsonl
-```
+Element locators are Compose `testTag` values exposed as resource-ids. If a tag was renamed in the app, update `UiConstants.java` to match `TestTags` in `CzechQuizApp.kt`.
 
 ## Migration Notes
 
-This test suite has been updated from Appium 7.x to 10.x:
-- ✅ `MobileBy` → `AppiumBy`
-- ✅ `TouchAction` → W3C `PointerInput`
-- ✅ `DesiredCapabilities` → `UiAutomator2Options`
-- ✅ SQLite database → **Direct JSON loading**
-
-### Database Removal
-
-The tests previously used a SQLite database built from `data.jsonl`. This has been **completely removed** in favor of:
-- **Direct JSON parsing** - Loads `data.jsonl` directly into memory
-- **No database dependencies** - Removed `sqlite-jdbc` and all SQL code
-- **Faster startup** - No database creation or connection overhead
-- **Simpler code** - Just HashMap lookups instead of SQL queries
-
-## Files Created
-
-- **run-ui-tests.sh** - Main test runner with automatic setup
-- **setup-android-emulator.sh** - Creates and configures Android emulator
-- **start-emulator.sh** - Starts the test emulator
-- **TestHelper.java** - Refactored to use JSON directly (no database)
+After the Jetpack Compose migration, this suite was reduced to a smoke test set:
+- ✅ View-id locators (`com.usharik.app:id/...`) → Compose `testTag` resource-ids
+- ✅ Drag-and-drop, dialog and counter coverage moved to `app/src/androidTest` instrumentation tests
+- ✅ `data.jsonl` loading, `TestHelper`/`WordInfo` helpers and the `gson` dependency removed
 
 ### Firebase Configuration
 
@@ -292,25 +221,12 @@ cp utils/google-services.json.dummy app/google-services.json
 
 See `utils/README.md` for more details.
 
-## Issues Resolved
-
-1. ✅ Java version compatibility (VERSION_25 → VERSION_21)
-2. ✅ Missing google-services.json file
-3. ✅ APK path correction (app-release-unsigned.apk)
-4. ✅ ANDROID_HOME environment variable propagation
-5. ✅ Emulator architecture (arm64-v8a for M-series Mac, x86_64 for GitHub Actions)
-6. ✅ Appium auto-start with proper environment
-7. ✅ **Removed database dependency** - Direct JSON loading
-8. ✅ **Optimized test data loading** - In-memory HashMap cache
-9. ✅ **Simplified dependencies** - Only JUnit + Appium needed
-
 ## Support
 
 For issues or questions:
 - **Test Reports**: `build/reports/tests/test/index.html`
 - **Appium Logs**: `/tmp/appium.log`
 - **Gradle Output**: Run with `--info` flag for detailed logging
-- **Screenshots**: Saved to `screenshots/` directory during test execution
 
 ## CI/CD Integration
 

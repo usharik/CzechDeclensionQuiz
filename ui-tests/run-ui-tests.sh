@@ -12,11 +12,9 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Default paths
 DEFAULT_APK_PATH="$PROJECT_ROOT/app/build/outputs/apk/debug/app-debug.apk"
-DEFAULT_DATA_JSON_PATH="$PROJECT_ROOT/database/src/main/assets/data.jsonl"
 
 # Allow overriding via environment variables or arguments
 APK_PATH="${APK_PATH:-$DEFAULT_APK_PATH}"
-DATA_JSON_PATH="${DATA_JSON_PATH:-$DEFAULT_DATA_JSON_PATH}"
 
 # Parse command line arguments
 SKIP_BUILD=false
@@ -41,10 +39,6 @@ while [[ $# -gt 0 ]]; do
             APK_PATH="$2"
             shift 2
             ;;
-        --data-json-path)
-            DATA_JSON_PATH="$2"
-            shift 2
-            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
@@ -53,12 +47,10 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-checks        Skip prerequisite checks"
             echo "  --check-only         Only check prerequisites, don't run tests"
             echo "  --apk-path PATH      Custom APK path"
-            echo "  --data-json-path PATH Custom data.jsonl path"
             echo "  --help               Show this help message"
             echo ""
             echo "Environment variables:"
             echo "  APK_PATH             Override default APK path"
-            echo "  DATA_JSON_PATH       Override default data.jsonl path"
             echo ""
             echo "Note: By default, the APK is always rebuilt to ensure latest code changes."
             echo "      Use --skip-build only if you're sure the APK is up to date."
@@ -216,17 +208,6 @@ check_prerequisites() {
         fi
     fi
 
-    # Check data.jsonl file
-    if [ -f "$DATA_JSON_PATH" ]; then
-        JSON_SIZE=$(du -h "$DATA_JSON_PATH" | cut -f1)
-        JSON_LINES=$(wc -l < "$DATA_JSON_PATH" | tr -d ' ')
-        print_status "success" "Data JSON found: $DATA_JSON_PATH ($JSON_SIZE, $JSON_LINES words)"
-    else
-        print_status "error" "Data JSON not found: $DATA_JSON_PATH"
-        echo "  This file is required for tests"
-        all_good=false
-    fi
-
     echo ""
 
     if [ "$all_good" = false ]; then
@@ -309,7 +290,6 @@ run_tests() {
 
     print_status "info" "Test configuration:"
     echo "  APK Path: $APK_PATH"
-    echo "  Data JSON Path: $DATA_JSON_PATH"
     echo "  Appium URL: $appium_url"
     echo "  ANDROID_HOME: $ANDROID_HOME"
     echo ""
@@ -321,7 +301,6 @@ run_tests() {
     # with system properties and environment variables
     if ANDROID_HOME="$ANDROID_HOME" ./gradlew :ui-tests:cleanTest :ui-tests:test \
         -Dapp.path="$APK_PATH" \
-        -Ddata.jsonl.path="$DATA_JSON_PATH" \
         -Dappium.url="$appium_url" \
         --info; then
         print_status "success" "Tests completed successfully"
@@ -392,7 +371,6 @@ main() {
     print_header "✓ All Tests Completed Successfully!"
 
     echo "Test artifacts:"
-    echo "  Screenshots: $PROJECT_ROOT/ui-tests/screenshots/"
     echo "  Test reports: $PROJECT_ROOT/ui-tests/build/reports/tests/test/index.html"
     echo ""
 }

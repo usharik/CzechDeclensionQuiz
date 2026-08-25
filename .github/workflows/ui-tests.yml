@@ -85,7 +85,6 @@ jobs:
           path: |
             ui-tests/build/reports/tests/
             ui-tests/build/test-results/
-            ui-tests/screenshots/
           retention-days: 30
 
       - name: Upload UI test logs

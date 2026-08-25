@@ -15,9 +15,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +33,7 @@ import com.usharik.app.TestTags
 import com.usharik.app.ui.theme.AppColors
 
 /** Compose port of dialog_correct_answer.xml. Non-cancelable, shown when the table is complete. */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CorrectAnswerDialog(
     onNextWord: () -> Unit,
@@ -39,7 +43,8 @@ fun CorrectAnswerDialog(
 ) {
     Dialog(onDismissRequest = {}, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
         Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
-            Column(Modifier.fillMaxWidth().testTag(TestTags.FULL_COMPLETION_DIALOG).padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp)) {
+            // Dialogs are separate windows, so the resource-id flag must be re-enabled for their tree.
+            Column(Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag(TestTags.FULL_COMPLETION_DIALOG).padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp)) {
                 Text(
                     stringResource(R.string.correct_answer),
                     Modifier.fillMaxWidth().padding(bottom = 20.dp),
@@ -58,6 +63,7 @@ fun CorrectAnswerDialog(
 }
 
 /** Compose port of dialog_quit_quiz.xml: today's stats, recent-word chips and two actions. */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun QuitQuizDialog(
     words: Int,
@@ -69,7 +75,7 @@ fun QuitQuizDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
-            Column(Modifier.fillMaxWidth().testTag(TestTags.FULL_QUIT_DIALOG).padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
+            Column(Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag(TestTags.FULL_QUIT_DIALOG).padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
                 Text(stringResource(R.string.quit_quiz_title), Modifier.fillMaxWidth().padding(bottom = 6.dp), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
                 Text(stringResource(R.string.quit_quiz_message), Modifier.fillMaxWidth().padding(bottom = 20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, textAlign = TextAlign.Center)
                 StatsCard(words, exercises)
