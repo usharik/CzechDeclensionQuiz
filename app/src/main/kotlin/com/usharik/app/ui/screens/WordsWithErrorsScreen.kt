@@ -71,14 +71,14 @@ fun WordsWithErrorsScreen(app: App) {
                 )
             }
         }
-        // ScrollView with the packed-to-bottom chain of the seven case rows.
+        // The seven case rows share the remaining height so the whole table is always
+        // on screen without scrolling, matching the full declension table quiz.
         Column(
             Modifier
                 .weight(0.67f)
-                .verticalScroll(rememberScrollState())
                 .padding(horizontal = Dimens.spacingXxs)
                 .padding(top = Dimens.spacingXs, bottom = Dimens.spacingXxs),
-            verticalArrangement = Arrangement.Bottom,
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent),
         ) {
             for (i in 0 until 7) {
                 RowCase(
@@ -86,9 +86,10 @@ fun WordsWithErrorsScreen(app: App) {
                     dnd = null,
                     singularText = cases[0][i],
                     pluralText = cases[1][i],
+                    fillHeight = true,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = Dimens.spacingContent, bottom = if (i == 6) Dimens.spacingSmLarge else 0.dp),
+                        .weight(1f),
                 )
             }
         }
