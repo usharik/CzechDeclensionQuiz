@@ -5,16 +5,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +70,7 @@ private val otherNouns = mapOf(
  * handbook_fragment.xml: gender radio row, per-gender paradigm radio row, the "other nouns"
  * hint and a bottom-anchored table of the seven case rows (reusing the row_case cells).
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HandbookScreen(app: App) {
     val context = LocalContext.current
@@ -122,12 +127,13 @@ fun HandbookScreen(app: App) {
             fontSize = Dimens.textBody,
             textAlign = TextAlign.Center,
         )
-        Row(
+        // Natural-width items wrapping onto extra lines so every paradigm word is fully visible.
+        FlowRow(
             Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
             horizontalArrangement = Arrangement.Center,
         ) {
             gender.paradigms.forEach { word ->
-                HandbookRadio(word, checked[gender] == word, Modifier.weight(1f)) { selectWord(word) }
+                HandbookRadio(word, checked[gender] == word) { selectWord(word) }
             }
         }
         Row(Modifier.fillMaxWidth().padding(top = Dimens.spacingSm, bottom = Dimens.spacingSm)) {
@@ -189,12 +195,15 @@ private fun HandbookRadio(text: String, selected: Boolean, modifier: Modifier = 
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RadioButton(
-            selected = selected,
-            onClick = onClick,
-            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
-            modifier = Modifier.padding(0.dp),
-        )
+        // Drop the 48dp minimum touch target so the radio doesn't eat the label's width.
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
+            RadioButton(
+                selected = selected,
+                onClick = onClick,
+                colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.padding(end = 2.dp),
+            )
+        }
         Text(
             text,
             color = MaterialTheme.colorScheme.onSurface,
