@@ -1,0 +1,205 @@
+package com.usharik.app.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.usharik.app.App
+import com.usharik.app.BuildConfig
+import com.usharik.app.R
+import com.usharik.app.ui.components.BannerAd
+import com.usharik.app.ui.components.RowCase
+import com.usharik.app.ui.theme.Dimens
+import com.usharik.app.utils.HapticFeedback
+import kotlinx.coroutines.launch
+
+private enum class HandbookGender(val paradigms: List<String>) {
+    MASCULINE(listOf("pán", "hrad", "muž", "stroj", "předseda", "soudce")),
+    NEUTER(listOf("město", "moře", "kuře", "stavení")),
+    FEMININE(listOf("žena", "růže", "píseň", "kost")),
+}
+
+// Mirrors HandbookViewModel.otherNouns.
+private val otherNouns = mapOf(
+    "pán" to "syn, pes, doktor",
+    "hrad" to "dům, rok, hotel",
+    "muž" to "lékař, řidič, strýc",
+    "stroj" to "konec, čaj, nůž",
+    "předseda" to "děda, Jirka, Honza",
+    "soudce" to "poradce",
+    "město" to "auto, okno, jablko, zrcadlo",
+    "moře" to "pole, nebe",
+    "kuře" to "dítě, štěně, kotě, tele",
+    "stavení" to "nádraží, náměstí, září, umění",
+    "žena" to "kniha, matka, třída, houska",
+    "růže" to "večeře, historie",
+    "píseň" to "povodeň, pláž, loď",
+    "kost" to "radost, starost",
+)
+
+/**
+ * Declension handbook. Faithful Compose port of HandbookFragment/ViewModel +
+ * handbook_fragment.xml: gender radio row, per-gender paradigm radio row, the "other nouns"
+ * hint and a bottom-anchored table of the seven case rows (reusing the row_case cells).
+ */
+@Composable
+fun HandbookScreen(app: App) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    var gender by remember { mutableStateOf(HandbookGender.MASCULINE) }
+    // Each gender group keeps its own checked paradigm, like the three XML RadioGroups.
+    var checked by remember { mutableStateOf(mapOf<HandbookGender, String>(HandbookGender.MASCULINE to "pán")) }
+    var shownWord by remember { mutableStateOf("pán") }
+    var cases by remember { mutableStateOf(Array(2) { Array(7) { "" } }) }
+
+    fun selectWord(word: String) {
+        HapticFeedback.light(context)
+        checked = checked + (gender to word)
+        shownWord = word
+        scope.launch { app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
+    }
+
+    LaunchedEffect(Unit) {
+        app.analyticsService.logHandbookOpen()
+        app.documentRepository.wordInfoByWord(shownWord)?.cases()?.let { cases = it }
+    }
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(start = Dimens.spacingXxs, top = Dimens.spacingSm, end = Dimens.spacingXxs),
+    ) {
+        Text(
+            stringResource(R.string.gender_of_noun),
+            Modifier.fillMaxWidth().padding(top = Dimens.spacingContent),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = Dimens.textTitle,
+            textAlign = TextAlign.Center,
+        )
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
+        ) {
+            HandbookRadio(stringResource(R.string.masculine), gender == HandbookGender.MASCULINE, Modifier.weight(1f)) {
+                HapticFeedback.light(context); gender = HandbookGender.MASCULINE
+            }
+            HandbookRadio(stringResource(R.string.neuter), gender == HandbookGender.NEUTER, Modifier.weight(1f)) {
+                HapticFeedback.light(context); gender = HandbookGender.NEUTER
+            }
+            HandbookRadio(stringResource(R.string.feminine), gender == HandbookGender.FEMININE, Modifier.weight(1f)) {
+                HapticFeedback.light(context); gender = HandbookGender.FEMININE
+            }
+        }
+        Text(
+            stringResource(R.string.type_of_declension),
+            Modifier.fillMaxWidth().padding(top = Dimens.spacingSm),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = Dimens.textBody,
+            textAlign = TextAlign.Center,
+        )
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            gender.paradigms.forEach { word ->
+                HandbookRadio(word, checked[gender] == word, Modifier.weight(1f)) { selectWord(word) }
+            }
+        }
+        Row(Modifier.fillMaxWidth().padding(top = Dimens.spacingSm, bottom = Dimens.spacingSm)) {
+            Text(
+                stringResource(R.string.other_nouns),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = Dimens.textLabel,
+            )
+            Text(
+                otherNouns[shownWord].orEmpty(),
+                Modifier.padding(start = Dimens.spacingXxs),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = Dimens.textSmall,
+            )
+        }
+        // The seven case rows share the remaining height so the whole table is always
+        // on screen without scrolling.
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(horizontal = Dimens.spacingXxs)
+                .padding(bottom = Dimens.spacingSm),
+        ) {
+            for (i in 0 until 7) {
+                RowCase(
+                    num = i,
+                    dnd = null,
+                    singularText = cases[0][i],
+                    pluralText = cases[1][i],
+                    fillHeight = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = Dimens.spacingContent),
+                )
+            }
+        }
+        BannerAd(
+            app,
+            BuildConfig.ADMOB_BANNER_AD_UNIT_ID,
+            Modifier
+                .fillMaxWidth()
+                .padding(top = Dimens.spacingSm)
+                .heightIn(min = 60.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        )
+    }
+}
+
+/** One MaterialRadioButton in the HandbookRadioButton style (body-size label, centered). */
+@Composable
+private fun HandbookRadio(text: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val interaction = remember { MutableInteractionSource() }
+    Row(
+        modifier
+            .padding(Dimens.spacingXxs)
+            .clickable(interactionSource = interaction, indication = null) { onClick() }
+            .padding(vertical = Dimens.spacingXs),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick,
+            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.padding(0.dp),
+        )
+        Text(
+            text,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = Dimens.textBody,
+            maxLines = 1,
+        )
+    }
+}

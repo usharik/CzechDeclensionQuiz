@@ -1,0 +1,110 @@
+package com.usharik.app.ui.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.usharik.app.R
+import com.usharik.app.TestTags
+import com.usharik.app.ui.theme.AppColors
+
+/** Compose port of dialog_correct_answer.xml. Non-cancelable, shown when the table is complete. */
+@Composable
+fun CorrectAnswerDialog(
+    onNextWord: () -> Unit,
+    onStayHere: () -> Unit,
+    onTryAgain: () -> Unit,
+    onRateApp: () -> Unit,
+) {
+    Dialog(onDismissRequest = {}, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
+            Column(Modifier.fillMaxWidth().testTag(TestTags.FULL_COMPLETION_DIALOG).padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp)) {
+                Text(
+                    stringResource(R.string.correct_answer),
+                    Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                    color = AppColors.successText,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                )
+                GradientButton(stringResource(R.string.next_word), AppColors.gradientPrimary, Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_NEXT_WORD).padding(bottom = 12.dp)) { onNextWord() }
+                OutlinedModernButton(stringResource(R.string.stay_here), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_STAY_HERE).padding(bottom = 12.dp)) { onStayHere() }
+                OutlinedModernButton(stringResource(R.string.try_again), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_TRY_AGAIN).padding(bottom = 12.dp)) { onTryAgain() }
+                StrokeTextButton(stringResource(R.string.rate_app), Modifier.fillMaxWidth().padding(bottom = 4.dp)) { onRateApp() }
+            }
+        }
+    }
+}
+
+/** Compose port of dialog_quit_quiz.xml: today's stats, recent-word chips and two actions. */
+@Composable
+fun QuitQuizDialog(
+    words: Int,
+    exercises: Int,
+    recentWords: List<String>,
+    onKeepGoing: () -> Unit,
+    onLeave: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
+            Column(Modifier.fillMaxWidth().testTag(TestTags.FULL_QUIT_DIALOG).padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
+                Text(stringResource(R.string.quit_quiz_title), Modifier.fillMaxWidth().padding(bottom = 6.dp), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
+                Text(stringResource(R.string.quit_quiz_message), Modifier.fillMaxWidth().padding(bottom = 20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, textAlign = TextAlign.Center)
+                StatsCard(words, exercises)
+                if (recentWords.isNotEmpty()) {
+                    Text(stringResource(R.string.quit_quiz_recent_words_label), Modifier.fillMaxWidth().padding(bottom = 8.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.Center)
+                    Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)) {
+                        recentWords.take(3).forEach { WordChip(it) }
+                    }
+                }
+                GradientButton(stringResource(R.string.quit_quiz_keep_going), AppColors.gradientPrimary, Modifier.fillMaxWidth().padding(bottom = 12.dp)) { onKeepGoing() }
+                OutlinedModernButton(stringResource(R.string.quit_quiz_leave), Modifier.fillMaxWidth().testTag(TestTags.FULL_QUIT_LEAVE).padding(bottom = 12.dp)) { onLeave() }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatsCard(words: Int, exercises: Int) {
+    Surface(
+        Modifier.fillMaxWidth().padding(bottom = 20.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Row(Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+            StatColumn(words, stringResource(R.string.quit_quiz_words_label), Modifier.weight(1f))
+            Box(Modifier.width(1.dp).height(56.dp).background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f)))
+            StatColumn(exercises, stringResource(R.string.quit_quiz_exercises_label), Modifier.weight(1f).testTag(TestTags.FULL_QUIT_EXERCISES))
+        }
+    }
+}
+
+@Composable
+private fun StatColumn(value: Int, label: String, modifier: Modifier) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("$value", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 40.sp)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+    }
+}
