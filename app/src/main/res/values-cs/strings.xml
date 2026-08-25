@@ -64,7 +64,6 @@
     <string name="quit_quiz_recent_words_label">NEDÁVNO STUDOVANÁ</string>
 
     <string name="quiz_mode_title">Vyberte režim testu</string>
-    <string name="hub_title">Otevřít stránku</string>
     <string name="quiz_mode_full_table">Test úplné tabulky skloňování</string>
     <string name="quiz_mode_one_case">Test jednoho pádu</string>
 

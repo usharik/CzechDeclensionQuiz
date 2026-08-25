@@ -257,6 +257,7 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
         // Get colors from theme resources
         int colorCorrect = getResources().getColor(R.color.colorCorrect, null);
         int colorIncorrect = getResources().getColor(R.color.colorIncorrect, null);
+        int colorNeutral = requireContext().getColor(R.color.colorSurfaceVariant);
 
         // Haptic feedback based on answer correctness
         if (isCorrect) {
@@ -271,14 +272,51 @@ public class SingleCaseQuizFragment extends ViewFragment<SingleCaseQuizViewModel
 
         for (int i = 0; i < answers.size(); i++) {
             buttons[i].setEnabled(false);
+            int targetColor;
             if (answers.get(i).equals(correct)) {
-                buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorCorrect));
+                targetColor = colorCorrect;
             } else if (i == index) {
-                buttons[i].setBackgroundTintList(ColorStateList.valueOf(colorIncorrect));
+                targetColor = colorIncorrect;
+            } else {
+                continue; // leave non-selected wrong buttons as-is
             }
+            animateButtonColor(buttons[i], colorNeutral, targetColor);
         }
+
+        // Scale pulse on the selected button for extra tactile feel
+        pulseButton(buttons[index]);
+
         getViewModel().markAnswered();
         binding.btnNextCase.setEnabled(true);
+    }
+
+    /**
+     * Smoothly animates a MaterialButton's background tint from {@code fromColor} to
+     * {@code toColor} over 250 ms using ARGB interpolation.
+     */
+    private void animateButtonColor(MaterialButton button, int fromColor, int toColor) {
+        android.animation.ValueAnimator animator = android.animation.ValueAnimator.ofObject(
+                new android.animation.ArgbEvaluator(), fromColor, toColor);
+        animator.setDuration(250);
+        animator.addUpdateListener(anim ->
+                button.setBackgroundTintList(
+                        android.content.res.ColorStateList.valueOf((int) anim.getAnimatedValue())));
+        animator.start();
+    }
+
+    /**
+     * Quick scale pulse (1 → 1.06 → 1) on the tapped button for tactile confirmation.
+     */
+    private void pulseButton(MaterialButton button) {
+        android.animation.ObjectAnimator scaleX =
+                android.animation.ObjectAnimator.ofFloat(button, "scaleX", 1f, 1.06f, 1f);
+        android.animation.ObjectAnimator scaleY =
+                android.animation.ObjectAnimator.ofFloat(button, "scaleY", 1f, 1.06f, 1f);
+        android.animation.AnimatorSet set = new android.animation.AnimatorSet();
+        set.playTogether(scaleX, scaleY);
+        set.setDuration(200);
+        set.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        set.start();
     }
 
     private MaterialButton[] answerButtons() {

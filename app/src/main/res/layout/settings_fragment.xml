@@ -10,7 +10,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 android:background="@color/colorSurface">
+                                                 android:background="@color/colorSurface"
+                                                 android:paddingTop="@dimen/spacing_md"
+                                                 android:paddingStart="@dimen/spacing_md"
+                                                 android:paddingEnd="@dimen/spacing_md">
         <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/radioGroupHeader"
                 android:text="@string/word_filter"

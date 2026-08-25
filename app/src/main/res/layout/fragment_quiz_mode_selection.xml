@@ -6,12 +6,14 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context="com.usharik.app.MainActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
+            android:gravity="center_vertical"
             android:padding="@dimen/spacing_md">
 
             <com.google.android.material.textview.MaterialTextView
@@ -20,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginBottom="@dimen/spacing_xl"
-                android:text="@string/hub_title"
+                android:text="@string/quiz_mode_title"
                 android:textAppearance="@style/TextAppearance.App.Title"
                 android:textSize="@dimen/text_size_heading" />
 
@@ -31,7 +33,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/quiz_mode_full_table"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_quiz"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_text_on_gradient" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnOneCase"
@@ -40,34 +45,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/quiz_mode_one_case"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_quiz"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_text_on_gradient" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWordsWithErrors"
                 style="@style/Widget.App.Button.Gradient.Accent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_xl"
                 android:text="@string/words_with_errors"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_star"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_text_on_gradient" />
+
+            <!-- Divider between primary and secondary actions -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:background="@color/colorSurfaceVariant" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHandbook"
                 style="@style/Widget.App.Button.Outlined.Modern"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 android:text="@string/handbook"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_book"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_outline_stroke" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSettings"
                 style="@style/Widget.App.Button.Outlined.Modern"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 android:text="@string/settings"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_settings_black_24dp"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_outline_stroke" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAbout"
@@ -76,7 +100,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/about"
-                android:textSize="@dimen/text_size_body" />
+                android:textSize="@dimen/text_size_body"
+                app:icon="@drawable/ic_info"
+                app:iconPadding="@dimen/spacing_content"
+                app:iconTint="@color/button_outline_stroke" />
 
             <FrameLayout
                 android:id="@+id/adViewContainer"

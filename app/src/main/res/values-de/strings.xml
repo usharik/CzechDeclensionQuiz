@@ -64,7 +64,6 @@
     <string name="quit_quiz_recent_words_label">ZUletzt gelernt</string>
 
     <string name="quiz_mode_title">Wähle den Testmodus</string>
-    <string name="hub_title">Übersicht</string>
     <string name="quiz_mode_full_table">Test der gesamten Deklinationstabelle</string>
     <string name="quiz_mode_one_case">Test eines Falls</string>
 

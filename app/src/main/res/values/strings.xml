@@ -66,7 +66,7 @@
     <string name="declension_pattern">like \"%s\"</string>
 
     <string name="quiz_mode_title">Choose quiz mode</string>
-    <string name="hub_title">Open page</string>
+    <string name="hub_title" translatable="false">Czech Declension Quiz</string>
     <string name="quiz_mode_full_table">Full declension table quiz</string>
     <string name="quiz_mode_one_case">One case at a time quiz</string>
 

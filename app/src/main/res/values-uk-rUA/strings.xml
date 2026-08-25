@@ -64,7 +64,6 @@
     <string name="quit_quiz_recent_words_label">НЕЩОДАВНО ВИВЧЕНІ</string>
 
     <string name="quiz_mode_title">Виберіть режим тесту</string>
-    <string name="hub_title">Відкрити сторінку</string>
     <string name="quiz_mode_full_table">Тест повної таблиці схилення</string>
     <string name="quiz_mode_one_case">Тест одного відмінка</string>
 

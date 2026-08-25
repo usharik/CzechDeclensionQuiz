@@ -230,6 +230,9 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     private void setListeners() {
         getViewModel().update();
 
+        // Reset error counter color to neutral when a new word loads
+        updateErrorCounterColor();
+
         setupRowDragListeners(binding.case1);
         setupRowDragListeners(binding.case2);
         setupRowDragListeners(binding.case3);
@@ -588,10 +591,13 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
     }
 
     /**
-     * Animate error counter with a small bounce effect when it changes
+     * Animate error counter with a small bounce effect when it changes.
+     * Also updates the colour: neutral gray at 0 errors, red when errors > 0.
      */
     private void animateErrorCounter() {
         if (binding != null && binding.errorCounter != null) {
+            updateErrorCounterColor();
+
             ObjectAnimator scaleX = ObjectAnimator.ofFloat(binding.errorCounter, "scaleX", 1.0f, 1.3f, 1.0f);
             ObjectAnimator scaleY = ObjectAnimator.ofFloat(binding.errorCounter, "scaleY", 1.0f, 1.3f, 1.0f);
 
@@ -601,5 +607,17 @@ public class DeclensionQuizFragment extends ViewFragment<DeclensionQuizViewModel
             animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
             animatorSet.start();
         }
+    }
+
+    /**
+     * Colors the error counter gray (neutral) at 0 wrong attempts,
+     * and red (error) once the user has made at least one mistake.
+     */
+    private void updateErrorCounterColor() {
+        if (binding == null || binding.errorCounter == null) return;
+        int color = getViewModel().getWrongAttempts() > 0
+                ? requireContext().getColor(R.color.colorError)
+                : requireContext().getColor(R.color.colorOnSurfaceVariant);
+        binding.errorCounter.setTextColor(color);
     }
 }
