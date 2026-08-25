@@ -23,10 +23,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,6 +82,7 @@ object TestTags {
     const val FULL_QUIT_LEAVE = "full_quit_leave"
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CzechQuizApp(app: App) {
     var destination by remember { mutableStateOf(Destination.HUB) }
@@ -86,7 +90,8 @@ fun CzechQuizApp(app: App) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     // FULL and SINGLE own their back press (quit-quiz overlay); other pages return to the hub.
     BackHandler(enabled = destination != Destination.HUB && destination != Destination.FULL && destination != Destination.SINGLE) { destination = Destination.HUB }
-    Column(Modifier.fillMaxSize()) {
+    // testTagsAsResourceId exposes test tags as resource-ids so external Appium/UiAutomator2 tests can find them.
+    Column(Modifier.fillMaxSize().semantics { testTagsAsResourceId = true }) {
         // Port of main_activity.xml: AppBarLayout (colorPrimary, 4dp elevation, 68dp min height,
         // fills behind the status bar) hosting a 56dp bottom-aligned MaterialToolbar with the
         // white home navigation icon and, on the full quiz, the "Next case" menu action.

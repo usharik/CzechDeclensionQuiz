@@ -1,65 +1,36 @@
 package com.usharik.app;
 
+/**
+ * Compose testTag values used by the smoke tests. The app exposes them as
+ * resource-ids via {@code testTagsAsResourceId} (see TestTags in CzechQuizApp.kt).
+ */
 public final class UiConstants {
 
     static final String APP_PACKAGE = "com.usharik.app";
 
-    // UI element IDs - Quiz Screen
-    static final String ID_ACTION_NEXT = "com.usharik.app:id/action_next";
-    static final String ID_ACTION_CHECK = "com.usharik.app:id/action_check";
-    static final String ID_CURRENT_WORD = "com.usharik.app:id/word";
-    static final String ID_CASE_SINGULAR = "com.usharik.app:id/caseSingular";
-    static final String ID_CASE_PLURAL = "com.usharik.app:id/casePlural";
-    static final String ID_WORDS_RECYCLER = "com.usharik.app:id/wordsRecyclerView";
-    static final String ID_DIALOG_TITLE = "com.usharik.app:id/dialogTitle";
-    static final String ID_BTN_NEXT_WORD = "com.usharik.app:id/btnNextWord";
-    static final String ID_BTN_STAY_HERE = "com.usharik.app:id/btnStayHere";
-    static final String ID_BTN_TRY_AGAIN = "com.usharik.app:id/btnTryAgain";
-    static final String ID_BTN_RATE_APP = "com.usharik.app:id/btnRateApp";
+    // App bar
+    static final String TAG_APP_BAR_TITLE = "app_bar_title";
 
-    // UI element IDs - Quit Quiz Dialog
-    static final String ID_BTN_KEEP_GOING     = "com.usharik.app:id/btnKeepGoing";
-    static final String ID_BTN_LEAVE_QUIZ     = "com.usharik.app:id/btnLeaveQuiz";
-    static final String ID_TV_EXERCISES_VALUE = "com.usharik.app:id/tvExercisesValue";
+    // Hub screen
+    static final String TAG_HUB_SCREEN = "hub_screen";
+    static final String TAG_BTN_FULL = "btn_full";
+    static final String TAG_BTN_SINGLE = "btn_single";
+    static final String TAG_BTN_ERRORS = "btn_errors";
+    static final String TAG_BTN_HANDBOOK = "btn_handbook";
+    static final String TAG_BTN_SETTINGS = "btn_settings";
+    static final String TAG_BTN_ABOUT = "btn_about";
 
-    // UI element IDs - Navigation
-    static final String ID_TOOLBAR = "com.usharik.app:id/toolbar";
+    // Single-case quiz
+    static final String TAG_SC_WORD = "sc_word";
+    static final String TAG_SC_QUESTION = "sc_case_question";
+    static final String TAG_SC_ANSWER_0 = "sc_answer_0";
+    static final String TAG_SC_NEXT_CASE = "sc_next_case";
 
-    // UI element IDs - Quiz Mode Selection Screen
-    static final String ID_TITLE_QUIZ_MODE = "com.usharik.app:id/titleQuizMode";
-    static final String ID_BTN_FULL_TABLE = "com.usharik.app:id/btnFullTable";
-    static final String ID_BTN_ONE_CASE = "com.usharik.app:id/btnOneCase";
-    static final String ID_BTN_WORDS_WITH_ERRORS = "com.usharik.app:id/btnWordsWithErrors";
-    static final String ID_BTN_HANDBOOK = "com.usharik.app:id/btnHandbook";
-    static final String ID_BTN_SETTINGS = "com.usharik.app:id/btnSettings";
-    static final String ID_BTN_ABOUT = "com.usharik.app:id/btnAbout";
+    // Full declension quiz
+    static final String TAG_FULL_WORD = "full_word";
+    static final String TAG_FULL_POOL_WORD_PREFIX = "full_pool_word_";
 
-    // UI element IDs - Single Case Quiz Screen
-    static final String ID_TV_WORD = "com.usharik.app:id/tvWord";
-    static final String ID_TV_CASE_NAME = "com.usharik.app:id/tvCaseName";
-    static final String ID_TV_NUMBER_LABEL = "com.usharik.app:id/tvNumberLabel";
-    static final String ID_TV_CASE_QUESTION = "com.usharik.app:id/tvCaseQuestion";
-    static final String ID_BTN_ANSWER_1 = "com.usharik.app:id/btnAnswer1";
-    static final String ID_BTN_ANSWER_2 = "com.usharik.app:id/btnAnswer2";
-    static final String ID_BTN_ANSWER_3 = "com.usharik.app:id/btnAnswer3";
-    static final String ID_BTN_ANSWER_4 = "com.usharik.app:id/btnAnswer4";
-    static final String ID_BTN_NEXT_CASE = "com.usharik.app:id/btnNextCase";
-    static final String ID_BTN_NEXT_WORD_SINGLE_CASE = "com.usharik.app:id/btnNextWord";
-
-    // UI element IDs - Words with Errors Screen
-    static final String ID_CASES_CONTAINER = "com.usharik.app:id/casesContainer";
-
-    // UI element IDs - Handbook Screen
-    static final String ID_GENDER_HEADER = "com.usharik.app:id/genderHeader";
-    static final String ID_GENDER_GROUP = "com.usharik.app:id/genderGroup";
-
-    // UI element IDs - Settings Screen
-    static final String ID_RADIO_GROUP_HEADER = "com.usharik.app:id/radioGroupHeader";
-    static final String ID_RADIO_GROUP = "com.usharik.app:id/radioGroup";
-    static final String ID_CHECKBOX_HEADER = "com.usharik.app:id/checkBoxHeader";
-
-    // UI element IDs - About Screen
-    static final String ID_APP_NAME = "com.usharik.app:id/appName";
-    static final String ID_APP_LOGO = "com.usharik.app:id/appLogo";
-    static final String ID_APP_VERSION = "com.usharik.app:id/appVersion";
+    // Quit-quiz dialog (shared by both quizzes)
+    static final String TAG_QUIT_DIALOG = "full_quit_dialog";
+    static final String TAG_QUIT_LEAVE = "full_quit_leave";
 }

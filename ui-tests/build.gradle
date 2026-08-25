@@ -13,9 +13,6 @@ dependencies {
     // Appium and Selenium
     testImplementation 'io.appium:java-client:10.1.1'
 
-    // JSON parsing
-    testImplementation 'com.google.code.gson:gson:2.14.0'
-
     // Logging
     testImplementation 'org.slf4j:slf4j-api:2.0.18'
 }
@@ -25,18 +22,14 @@ test {
     useJUnitPlatform()
 
     // Set system properties for test execution
-    systemProperty 'project.root', project.rootDir.absolutePath
     systemProperty 'app.path', System.getProperty('app.path',
         "${project.rootDir}/app/build/outputs/apk/debug/app-debug.apk")
-    systemProperty 'data.jsonl.path', System.getProperty('data.jsonl.path',
-        "${project.rootDir}/database/src/main/assets/data.jsonl")
     systemProperty 'appium.url', System.getProperty('appium.url', '')
 
     systemProperty 'test.timeout.default', System.getProperty('test.timeout.default', '10')           // seconds
     systemProperty 'test.timeout.implicit', System.getProperty('test.timeout.implicit', '2')          // seconds
     systemProperty 'test.delay.screen.stability', System.getProperty('test.delay.screen.stability', '100')  // milliseconds
     systemProperty 'test.delay.ui.update', System.getProperty('test.delay.ui.update', '100')          // milliseconds
-    systemProperty 'test.delay.drag.duration', System.getProperty('test.delay.drag.duration', '100')  // milliseconds
 
     // Pass environment variables to test process
     environment 'ANDROID_HOME', System.getenv('ANDROID_HOME') ?: "${System.getProperty('user.home')}/Library/Android/sdk"
