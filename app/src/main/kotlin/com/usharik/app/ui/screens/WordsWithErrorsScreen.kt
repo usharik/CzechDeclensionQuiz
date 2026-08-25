@@ -1,7 +1,6 @@
 package com.usharik.app.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -26,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.ui.components.BannerAd
-import com.usharik.app.ui.components.RowCase
+import com.usharik.app.ui.components.CaseTable
 import com.usharik.app.ui.theme.Dimens
 import kotlinx.coroutines.launch
 
@@ -71,28 +70,13 @@ fun WordsWithErrorsScreen(app: App) {
                 )
             }
         }
-        // The seven case rows share the remaining height so the whole table is always
-        // on screen without scrolling, matching the full declension table quiz.
-        Column(
+        CaseTable(
+            cases,
             Modifier
                 .weight(0.67f)
                 .padding(horizontal = Dimens.spacingXxs)
                 .padding(top = Dimens.spacingXs, bottom = Dimens.spacingXxs),
-            verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent),
-        ) {
-            for (i in 0 until 7) {
-                RowCase(
-                    num = i,
-                    dnd = null,
-                    singularText = cases[0][i],
-                    pluralText = cases[1][i],
-                    fillHeight = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                )
-            }
-        }
+        )
         BannerAd(
             app,
             BuildConfig.ADMOB_BANNER_AD_UNIT_ID,

@@ -36,7 +36,7 @@ import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
 import com.usharik.app.ui.components.BannerAd
-import com.usharik.app.ui.components.RowCase
+import com.usharik.app.ui.components.CaseTable
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
@@ -158,28 +158,13 @@ fun HandbookScreen(app: App) {
                 fontSize = Dimens.textSmall,
             )
         }
-        // The seven case rows share the remaining height so the whole table is always
-        // on screen without scrolling.
-        Column(
+        CaseTable(
+            cases,
             Modifier
                 .weight(1f)
                 .padding(horizontal = Dimens.spacingXxs)
-                .padding(bottom = Dimens.spacingSm),
-        ) {
-            for (i in 0 until 7) {
-                RowCase(
-                    num = i,
-                    dnd = null,
-                    singularText = cases[0][i],
-                    pluralText = cases[1][i],
-                    fillHeight = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(top = Dimens.spacingContent),
-                )
-            }
-        }
+                .padding(top = Dimens.spacingContent, bottom = Dimens.spacingSm),
+        )
         BannerAd(
             app,
             BuildConfig.ADMOB_BANNER_AD_UNIT_ID,

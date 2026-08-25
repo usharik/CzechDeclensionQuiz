@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -46,6 +45,7 @@ import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.GradientButton
+import com.usharik.app.ui.components.localizedTranslation
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.database.WordInfo
@@ -72,10 +72,8 @@ fun SingleCaseQuizContent(
             Text("…", Modifier.padding(Dimens.spacingMd))
             return@Column
         }
-        // The app-selected locale (not the device default) drives the translation choice,
-        // and the localized case-name/hint/question arrays match what RowCase renders.
-        val lang = LocalConfiguration.current.locales[0].isO3Language
-        val translation = if (lang in setOf("rus", "bel", "ukr")) word.translation_ru() else word.translation_en()
+        // The localized case-name/hint/question arrays match what RowCase renders.
+        val translation = localizedTranslation(word)
         val caseName = stringArrayResource(R.array.caseName).getOrElse(caseIndex) { "" }
         val caseHint = stringArrayResource(R.array.caseHint).getOrElse(caseIndex) { "-" }
         val question = stringArrayResource(R.array.caseQuestion).getOrElse(caseIndex) { "" }
