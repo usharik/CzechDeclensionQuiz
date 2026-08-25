@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
@@ -19,7 +20,7 @@ def getGitCommitHash = { ->
 
 android {
     namespace = "com.usharik.app"
-    compileSdkVersion = 36
+    compileSdkVersion = 37
     defaultConfig {
         applicationId = "com.usharik.app"
         minSdkVersion = 28
@@ -40,6 +41,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        compose = true
     }
     buildTypes {
         debug {
@@ -71,9 +73,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    buildFeatures {
-        dataBinding = true
-    }
 }
 
 dependencies {
@@ -89,13 +88,9 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.11.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.11.0'
     implementation "androidx.lifecycle:lifecycle-common-java8:2.11.0"
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.12'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-    implementation 'com.google.dagger:dagger:2.60.1'
-    implementation 'com.google.dagger:dagger-android:2.60.1'
-    implementation 'com.google.dagger:dagger-android-support:2.60.1'
     implementation 'com.google.firebase:firebase-analytics:23.2.0'
     implementation 'com.google.firebase:firebase-crashlytics:20.1.0'
     implementation 'com.google.firebase:firebase-crashlytics-ndk:20.1.0'
@@ -103,9 +98,18 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:25.4.0'
     implementation 'androidx.work:work-runtime:2.11.2'
     implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+    implementation platform('androidx.compose:compose-bom:2026.08.00')
+    implementation 'androidx.activity:activity-compose:1.13.0'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test:core-ktx:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.60.1'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.60.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2026.08.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
