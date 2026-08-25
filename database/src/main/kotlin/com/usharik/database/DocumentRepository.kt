@@ -10,7 +10,15 @@ import java.io.InputStreamReader
 class DocumentRepository @JvmOverloads constructor(private val db: DocumentDatabase, private val gson: Gson = Gson()) {
     suspend fun count(): Int = db.documentDao().count()
     suspend fun wordInfoByWord(word: String): WordInfo? = db.documentDao().jsonForWord(word)?.let { gson.fromJson(it, WordInfo::class.java) }
-    suspend fun randomWordWithAnotherDeclensionType(type: String): WordInfo = gson.fromJson(db.documentDao().randomWordWithAnotherDeclensionType(type).json, WordInfo::class.java)
+    suspend fun randomWordWithAnotherDeclensionType(type: String, gender: String? = null): WordInfo {
+        val dao = db.documentDao()
+        // Fall back to any declension type within the gender, then to any gender, so a
+        // narrow filter can never leave the quiz without a word.
+        val entity = dao.randomWordWithAnotherDeclensionType(type, gender)
+            ?: dao.randomWordWithAnotherDeclensionType("", gender)
+            ?: requireNotNull(dao.randomWordWithAnotherDeclensionType(type, null)) { "Dictionary is empty" }
+        return gson.fromJson(entity.json, WordInfo::class.java)
+    }
     suspend fun populateFromJsonStream(stream: InputStream) {
         BufferedReader(InputStreamReader(stream)).use { reader ->
             db.runInTransaction {

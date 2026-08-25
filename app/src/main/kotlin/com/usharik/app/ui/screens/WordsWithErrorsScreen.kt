@@ -45,7 +45,7 @@ fun WordsWithErrorsScreen(app: App) {
 
     fun selectWord(word: String) {
         selectedWord = word
-        scope.launch { app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
+        scope.launch { app.dictionaryReady.await(); app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
     }
 
     Column(

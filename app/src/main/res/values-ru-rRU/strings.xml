@@ -21,6 +21,7 @@
     <string name="declension_quiz_1">Тест на склонение</string>
     <string name="handbook">Справочник</string>
     <string name="about">О приложении</string>
+    <string name="nav_home">Главная</string>
     <string name="other_nouns">Другие существительные:</string>
     <string name="rate_app">Оценить приложение</string>
     <string name="rate_app_unavailable">Магазин приложений не найден</string>

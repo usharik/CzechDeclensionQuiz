@@ -14,7 +14,8 @@ interface DocumentDao {
     @Query("""
         select * from DOCUMENT
         where declension_type != :declensionType
+          and (:gender is null or gender = :gender)
         order by random() limit 1
     """)
-    suspend fun randomWordWithAnotherDeclensionType(declensionType: String): DocumentEntity
+    suspend fun randomWordWithAnotherDeclensionType(declensionType: String, gender: String?): DocumentEntity?
 }

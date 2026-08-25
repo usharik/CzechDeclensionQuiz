@@ -146,6 +146,7 @@ fun DeclensionQuizScreen(
             } else {
                 mark(tn, tc, false); HapticFeedback.error(context)
                 wrongAttempts++; errorCount++
+                scope.launch { app.statsRepository.incrementErrorsCount() }
                 scope.launch { delay(500); if (actual[tIdx] == wordNum) { setActual(tIdx, -1); setVisible(wordNum, true) } }
                 wrongAnswerAd()
             }
@@ -155,14 +156,22 @@ fun DeclensionQuizScreen(
             val oldTarget = actual[tIdx]; val oldSource = actual[sIdx]
             setActual(tIdx, oldSource); setActual(sIdx, oldTarget)
             val ok1 = oldSource != -1 && correctAt(tn, tc) == wordFor(oldSource)
-            val ok2 = oldTarget != -1 && correctAt(sn, sc) == wordFor(oldTarget)
+            // A move into an empty counterpart cell is valid; only displacing a form into a
+            // cell where it is wrong counts as an error.
+            val ok2 = oldTarget == -1 || correctAt(sn, sc) == wordFor(oldTarget)
             if (ok1 && ok2) {
                 mark(tn, tc, true); HapticFeedback.success(context)
                 if (isComplete()) onComplete()
             } else {
                 mark(tn, tc, false); HapticFeedback.error(context)
                 wrongAttempts++; errorCount++
-                scope.launch { delay(500); val a = actual[tIdx]; val b = actual[sIdx]; setActual(tIdx, b); setActual(sIdx, a) }
+                scope.launch { app.statsRepository.incrementErrorsCount() }
+                scope.launch {
+                    delay(500)
+                    // Undo only if both cells still hold the swapped values; a user action in
+                    // the meantime must not be overwritten by stale swap data.
+                    if (actual[tIdx] == oldSource && actual[sIdx] == oldTarget) { setActual(tIdx, oldTarget); setActual(sIdx, oldSource) }
+                }
                 wrongAnswerAd()
             }
         }
@@ -172,6 +181,7 @@ fun DeclensionQuizScreen(
 
     LaunchedEffect(Unit) {
         activity?.let { app.adManager.loadAd(it, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) }
+        app.dictionaryReady.await()
         recent = app.statsRepository.recentWords()
         refreshStats()
         if (word == null) {

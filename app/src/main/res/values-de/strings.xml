@@ -21,6 +21,7 @@
     <string name="declension_quiz_1">Deklinationstest</string>
     <string name="handbook">Handbuch</string>
     <string name="about">Über die App</string>
+    <string name="nav_home">Startseite</string>
     <string name="other_nouns">Andere Substantive:</string>
     <string name="rate_app">App bewerten</string>
     <string name="rate_app_unavailable">Kein App Store gefunden</string>

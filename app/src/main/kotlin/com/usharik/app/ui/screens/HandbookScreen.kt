@@ -2,7 +2,6 @@ package com.usharik.app.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -86,11 +87,19 @@ fun HandbookScreen(app: App) {
         HapticFeedback.light(context)
         checked = checked + (gender to word)
         shownWord = word
-        scope.launch { app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
+        scope.launch { app.dictionaryReady.await(); app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
+    }
+
+    // Switching the gender re-selects that group's remembered (or default) paradigm so the
+    // table and "other nouns" hint always match the visible gender.
+    fun selectGender(g: HandbookGender) {
+        gender = g
+        selectWord(checked[g] ?: g.paradigms.first())
     }
 
     LaunchedEffect(Unit) {
         app.analyticsService.logHandbookOpen()
+        app.dictionaryReady.await()
         app.documentRepository.wordInfoByWord(shownWord)?.cases()?.let { cases = it }
     }
 
@@ -111,13 +120,13 @@ fun HandbookScreen(app: App) {
             Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
         ) {
             HandbookRadio(stringResource(R.string.masculine), gender == HandbookGender.MASCULINE, Modifier.weight(1f)) {
-                HapticFeedback.light(context); gender = HandbookGender.MASCULINE
+                selectGender(HandbookGender.MASCULINE)
             }
             HandbookRadio(stringResource(R.string.neuter), gender == HandbookGender.NEUTER, Modifier.weight(1f)) {
-                HapticFeedback.light(context); gender = HandbookGender.NEUTER
+                selectGender(HandbookGender.NEUTER)
             }
             HandbookRadio(stringResource(R.string.feminine), gender == HandbookGender.FEMININE, Modifier.weight(1f)) {
-                HapticFeedback.light(context); gender = HandbookGender.FEMININE
+                selectGender(HandbookGender.FEMININE)
             }
         }
         Text(
@@ -196,7 +205,8 @@ private fun HandbookRadio(text: String, selected: Boolean, modifier: Modifier = 
             .clip(shape)
             .background(if (selected) AppColors.answerNeutral else MaterialTheme.colorScheme.surface, shape)
             .border(Dimens.strokeThin, AppColors.stroke, shape)
-            .clickable { onClick() }
+            // selectable (not clickable) so TalkBack announces the radio role and checked state.
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .padding(
                 horizontal = Dimens.spacingSm + Dimens.shapeInnerPadding,
                 vertical = Dimens.spacingXs + Dimens.shapeInnerPadding,

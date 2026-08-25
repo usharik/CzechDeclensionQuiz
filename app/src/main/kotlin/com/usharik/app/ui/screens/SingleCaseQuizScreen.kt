@@ -69,6 +69,26 @@ fun SingleCaseQuizScreen(
         selectedIndex = -1
     }
 
+    // Advances caseIndex/plural to the next position; false once the word is exhausted.
+    fun advance(): Boolean {
+        when {
+            caseIndex < 6 -> caseIndex++
+            !plural -> { plural = true; caseIndex = 0 }
+            else -> return false
+        }
+        return true
+    }
+
+    // Entries can have intentionally empty forms (e.g. plural-only words); those are skipped
+    // instead of being presented as blank answers.
+    fun currentFormIsEmpty(w: WordInfo) = w.cases(if (plural) 1 else 0, caseIndex).isEmpty()
+
+    fun resetToFirstQuestion(w: WordInfo) {
+        caseIndex = 0; plural = false
+        while (currentFormIsEmpty(w)) { if (!advance()) break }
+        prepareQuestion()
+    }
+
     suspend fun refreshStats() {
         val s = app.statsRepository.todayStats()
         todayWords = s?.wordsCompleted ?: 0
@@ -78,8 +98,7 @@ fun SingleCaseQuizScreen(
     fun applyWord(w: WordInfo, countStats: Boolean) {
         word = w
         app.lastWordStore.saveLastWord(LastWordStore.MODE_SINGLE_CASE, w.word())
-        caseIndex = 0; plural = false
-        prepareQuestion()
+        resetToFirstQuestion(w)
         if (countStats) {
             recent = (recent - w.word()) + w.word()
             if (recent.size > 3) recent = recent.takeLast(3)
@@ -89,18 +108,17 @@ fun SingleCaseQuizScreen(
 
     fun nextWord(tryAgain: Boolean) {
         val cur = word
-        if (tryAgain && cur != null) { caseIndex = 0; plural = false; prepareQuestion(); return }
+        if (tryAgain && cur != null) { resetToFirstQuestion(cur); return }
         scope.launch { applyWord(app.wordService.nextWord(cur), true) }
     }
 
     // Each answered case = one exercise (visible increment in the quit dialog).
     fun nextStep() {
         scope.launch { app.statsRepository.incrementExercisesCompleted(); refreshStats() }
-        when {
-            caseIndex < 6 -> caseIndex++
-            !plural -> { plural = true; caseIndex = 0 }
-            else -> { nextWord(false); return }
-        }
+        val w = word ?: return
+        var more = advance()
+        while (more && currentFormIsEmpty(w)) more = advance()
+        if (!more) { nextWord(false); return }
         prepareQuestion()
     }
 
@@ -109,6 +127,7 @@ fun SingleCaseQuizScreen(
         val selected = answers[index]
         val isCorrect = selected == correct
         if (isCorrect) HapticFeedback.success(context) else HapticFeedback.error(context)
+        if (!isCorrect) scope.launch { app.statsRepository.incrementErrorsCount() }
         app.analyticsService.logSingleCaseAnswer(
             isCorrect, selected, correct,
             word?.word().orEmpty(), CzechCase.fromIndex(caseIndex).displayName,
@@ -125,6 +144,7 @@ fun SingleCaseQuizScreen(
 
     LaunchedEffect(Unit) {
         activity?.let { app.adManager.loadAd(it, BuildConfig.ADMOB_SINGLE_CASE_QUIZ_INTERSTITIAL_AD_UNIT_ID) }
+        app.dictionaryReady.await()
         recent = app.statsRepository.recentWords()
         refreshStats()
         if (word == null) {

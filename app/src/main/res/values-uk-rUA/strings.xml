@@ -21,6 +21,7 @@
     <string name="declension_quiz_1">Тест схилення</string>
     <string name="handbook">Довідник</string>
     <string name="about">Про додаток</string>
+    <string name="nav_home">Головна</string>
     <string name="other_nouns">Інші іменники:</string>
     <string name="rate_app">Оцінити додаток</string>
     <string name="rate_app_unavailable">Магазин додатків не знайдено</string>
