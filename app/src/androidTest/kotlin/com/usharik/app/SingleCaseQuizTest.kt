@@ -39,10 +39,10 @@ class SingleCaseQuizTest : BaseComposeTest() {
         composeTestRule.onNodeWithTag(TestTags.SC_NUMBER_LABEL).assertIsDisplayed()
         composeTestRule.onNodeWithTag(TestTags.SC_QUESTION).assertIsDisplayed()
 
-        // Four answer buttons exist
-        for (i in 0..3) {
-            composeTestRule.onNodeWithTag("${TestTags.SC_ANSWER_PREFIX}$i").assertIsDisplayed()
-        }
+        // At least the first answer button exists. The word is random and indeclinable
+        // entries (e.g. "café") yield fewer than four unique forms, so only index 0 is
+        // guaranteed to be present.
+        composeTestRule.onNodeWithTag("${TestTags.SC_ANSWER_PREFIX}0").assertIsDisplayed()
 
         // "Next case" is shown but disabled before any answer is selected
         composeTestRule.onNodeWithTag(TestTags.SC_NEXT_CASE).assertIsDisplayed().assertIsNotEnabled()

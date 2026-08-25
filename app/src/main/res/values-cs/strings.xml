@@ -21,6 +21,7 @@
     <string name="declension_quiz_1">Test skloňování</string>
     <string name="handbook">Příručka</string>
     <string name="about">O aplikaci</string>
+    <string name="nav_home">Domů</string>
     <string name="other_nouns">Další podstatná jména:</string>
     <string name="rate_app">Hodnotit aplikaci</string>
     <string name="rate_app_unavailable">Obchod Play Store nebyl nalezen</string>

@@ -20,6 +20,7 @@
     <string name="declension_quiz_1">Declension quiz</string>
     <string name="handbook">Handbook</string>
     <string name="about">About</string>
+    <string name="nav_home">Home</string>
     <string name="other_nouns">Other nouns:</string>
     <string name="rate_app">Rate application</string>
     <string name="rate_app_unavailable">No app store found</string>

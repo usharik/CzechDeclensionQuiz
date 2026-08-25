@@ -23,8 +23,11 @@ import com.usharik.app.service.WordService
 import com.usharik.database.DocumentRepository
 import com.usharik.database.TrainingStatsRepository
 import com.usharik.database.dao.DatabaseFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
@@ -41,6 +44,11 @@ class App : Application() {
     lateinit var adPolicy: InterstitialAdPolicy; private set
     lateinit var wordService: WordService; private set
     lateinit var lastWordStore: SharedPreferencesLastWordStore; private set
+
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /** Completes once the first-launch dictionary import has finished; screens await it before querying words. */
+    lateinit var dictionaryReady: Deferred<Unit>; private set
 
     override fun onCreate() {
         super.onCreate()
@@ -62,7 +70,9 @@ class App : Application() {
         MobileAds.initialize(this) { Log.i("App", "Mobile Ads initialized") }
         notificationHelper.createChannel(this)
         scheduleDailyReminderWorker()
-        runBlocking(Dispatchers.IO) {
+        // The import runs off the main thread so a first launch renders immediately;
+        // word-loading screens show their loading state until dictionaryReady completes.
+        dictionaryReady = appScope.async {
             if (documentRepository.count() == 0) {
                 assets.open("data.jsonl").use { stream -> documentRepository.populateFromJsonStream(stream) }
             }

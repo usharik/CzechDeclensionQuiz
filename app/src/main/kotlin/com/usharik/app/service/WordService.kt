@@ -3,6 +3,7 @@ package com.usharik.app.service
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.usharik.app.AppState
+import com.usharik.app.Gender
 import com.usharik.database.DocumentRepository
 import com.usharik.database.WordInfo
 import kotlin.random.Random
@@ -17,8 +18,9 @@ class WordService(
     suspend fun nextWord(currentWord: WordInfo?): WordInfo {
         return try {
             val previous = currentWord?.word().orEmpty()
-            val fromErrors = if (Random.nextBoolean()) randomErrorWord(previous) else null
-            (fromErrors ?: documentRepository.randomWordWithAnotherDeclensionType(currentWord?.declensionType().orEmpty())).also {
+            val genderFilter = appState.getGenderFilterStr().takeIf { it != Gender.ALL }
+            val fromErrors = if (Random.nextBoolean()) randomErrorWord(previous, genderFilter) else null
+            (fromErrors ?: documentRepository.randomWordWithAnotherDeclensionType(currentWord?.declensionType().orEmpty(), genderFilter)).also {
                 Log.i(javaClass.name, "New word is ${it.word()}")
                 analyticsService.logNextWord(it.word())
             }
@@ -29,12 +31,13 @@ class WordService(
         }
     }
 
-    private suspend fun randomErrorWord(previous: String): WordInfo? {
+    private suspend fun randomErrorWord(previous: String, genderFilter: String?): WordInfo? {
         val key = appState.wordsWithErrorsFlow.value.keys.randomOrNull() ?: return null
         val word = documentRepository.wordInfoByWord(key)
         return when {
             word == null -> { appState.removeWordFromErrorMap(key); null }
             word.word() == previous -> null
+            genderFilter != null && word.gender() != genderFilter -> null
             else -> word
         }
     }

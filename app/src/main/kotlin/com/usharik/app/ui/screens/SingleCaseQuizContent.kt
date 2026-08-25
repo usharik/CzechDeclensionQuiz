@@ -31,7 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
-import com.usharik.app.CzechCase
 import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
@@ -48,7 +49,6 @@ import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.database.WordInfo
-import java.util.Locale
 
 /** Layout port of fragment_single_case_quiz.xml (scrollable word header + question + answers). */
 @Composable
@@ -72,10 +72,14 @@ fun SingleCaseQuizContent(
             Text("…", Modifier.padding(Dimens.spacingMd))
             return@Column
         }
-        val lang = Locale.getDefault().getISO3Language()
+        // The app-selected locale (not the device default) drives the translation choice,
+        // and the localized case-name/hint/question arrays match what RowCase renders.
+        val lang = LocalConfiguration.current.locales[0].isO3Language
         val translation = if (lang in setOf("rus", "bel", "ukr")) word.translation_ru() else word.translation_en()
-        val czechCase = CzechCase.fromIndex(caseIndex)
-        val caseQuestion = if (czechCase.helperWord.isBlank()) czechCase.question else "${czechCase.helperWord} - ${czechCase.question}"
+        val caseName = stringArrayResource(R.array.caseName).getOrElse(caseIndex) { "" }
+        val caseHint = stringArrayResource(R.array.caseHint).getOrElse(caseIndex) { "-" }
+        val question = stringArrayResource(R.array.caseQuestion).getOrElse(caseIndex) { "" }
+        val caseQuestion = if (caseHint.isBlank() || caseHint == "-") question else "$caseHint - $question"
 
         Text(
             word.word(),
@@ -106,7 +110,7 @@ fun SingleCaseQuizContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                "${caseIndex + 1}. ${czechCase.displayName}",
+                "${caseIndex + 1}. $caseName",
                 Modifier.testTag(TestTags.SC_CASE_NAME),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,

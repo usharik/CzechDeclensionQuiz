@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -85,7 +86,8 @@ object TestTags {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CzechQuizApp(app: App) {
-    var destination by remember { mutableStateOf(Destination.HUB) }
+    // Saveable so a configuration change (rotation, locale switch) keeps the current page.
+    var destination by rememberSaveable { mutableStateOf(Destination.HUB) }
     var nextAction by remember { mutableStateOf<(() -> Unit)?>(null) }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     // FULL and SINGLE own their back press (quit-quiz overlay); other pages return to the hub.
@@ -112,7 +114,7 @@ fun CzechQuizApp(app: App) {
                 // button: quizzes intercept it with their quit overlay, pages fall back to the
                 // hub, and on the hub itself the activity finishes.
                 IconButton(onClick = { backDispatcher?.onBackPressed() }, modifier = Modifier.testTag(TestTags.NAV_HOME_BTN)) {
-                    Icon(painterResource(R.drawable.ic_home_black_24dp), contentDescription = null, tint = Color.White)
+                    Icon(painterResource(R.drawable.ic_home_black_24dp), contentDescription = stringResource(R.string.nav_home), tint = Color.White)
                 }
                 Text(
                     stringResource(destination.titleRes),

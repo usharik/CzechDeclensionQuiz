@@ -75,8 +75,16 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
+            # Run both suites even when the first one fails so the aggregated
+            # report always covers instrumentation + Appium, then fail if either failed.
+            set +e
             ./gradlew :app:connectedDebugAndroidTest --no-daemon --stacktrace
+            instrumentation_status=$?
             .github/scripts/run-ui-tests.sh
+            appium_status=$?
+            set -e
+            echo "Instrumentation exit code: $instrumentation_status; Appium exit code: $appium_status"
+            if [ "$instrumentation_status" -ne 0 ] || [ "$appium_status" -ne 0 ]; then exit 1; fi
 
       - name: Upload instrumentation test reports
         id: upload_instrumentation_reports
