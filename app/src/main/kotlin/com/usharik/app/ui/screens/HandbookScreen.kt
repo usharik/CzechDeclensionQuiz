@@ -1,9 +1,10 @@
 package com.usharik.app.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,13 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +25,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +36,7 @@ import com.usharik.app.BuildConfig
 import com.usharik.app.R
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.RowCase
+import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
 import kotlinx.coroutines.launch
@@ -183,31 +183,31 @@ fun HandbookScreen(app: App) {
     }
 }
 
-/** One MaterialRadioButton in the HandbookRadioButton style (body-size label, centered). */
+/**
+ * One selector chip in the original HandbookRadioButton style: no radio circle, rounded-rect
+ * background (radio_button_background) — gray fill when checked, outlined surface otherwise.
+ */
 @Composable
 private fun HandbookRadio(text: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    val interaction = remember { MutableInteractionSource() }
-    Row(
+    val shape = RoundedCornerShape(Dimens.cornerLarge)
+    Box(
         modifier
             .padding(Dimens.spacingXxs)
-            .clickable(interactionSource = interaction, indication = null) { onClick() }
-            .padding(vertical = Dimens.spacingXs),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
+            .clip(shape)
+            .background(if (selected) AppColors.answerNeutral else MaterialTheme.colorScheme.surface, shape)
+            .border(Dimens.strokeThin, AppColors.stroke, shape)
+            .clickable { onClick() }
+            .padding(
+                horizontal = Dimens.spacingSm + Dimens.shapeInnerPadding,
+                vertical = Dimens.spacingXs + Dimens.shapeInnerPadding,
+            ),
+        contentAlignment = Alignment.Center,
     ) {
-        // Drop the 48dp minimum touch target so the radio doesn't eat the label's width.
-        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
-            RadioButton(
-                selected = selected,
-                onClick = onClick,
-                colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
-                modifier = Modifier.padding(end = 2.dp),
-            )
-        }
         Text(
             text,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = Dimens.textBody,
+            textAlign = TextAlign.Center,
             maxLines = 1,
         )
     }
