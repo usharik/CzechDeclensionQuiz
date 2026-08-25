@@ -17,7 +17,7 @@ permissions:
 jobs:
   ui-tests:
     runs-on: ubuntu-latest  # Linux with KVM acceleration - faster and more reliable
-    timeout-minutes: 30
+    timeout-minutes: 45
     
     steps:
       - name: Checkout code
@@ -65,7 +65,7 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       
-      - name: Run UI Tests with Emulator
+      - name: Run Instrumentation and UI Tests with Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -74,8 +74,21 @@ jobs:
           profile: pixel_5
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
-          script: .github/scripts/run-ui-tests.sh
-      
+          script: |
+            ./gradlew :app:connectedDebugAndroidTest --no-daemon --stacktrace
+            .github/scripts/run-ui-tests.sh
+
+      - name: Upload instrumentation test reports
+        id: upload_instrumentation_reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrumentation-test-reports
+          path: |
+            app/build/reports/androidTests/connected/
+            app/build/outputs/androidTest-results/connected/
+          retention-days: 30
+
       - name: Upload test reports
         id: upload_test_reports
         if: always()
@@ -102,23 +115,22 @@ jobs:
           if [ -f "ui-tests/build/test-results/logs/summary.md" ]; then
             cat ui-tests/build/test-results/logs/summary.md >> "$GITHUB_STEP_SUMMARY"
             echo >> "$GITHUB_STEP_SUMMARY"
-            echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
-            echo "- [test-reports](${{ steps.upload_test_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
-            echo "- [ui-test-logs](${{ steps.upload_ui_test_logs.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "## UI test debug logs" >> "$GITHUB_STEP_SUMMARY"
             echo "- Logs were not generated. Check the test runner output." >> "$GITHUB_STEP_SUMMARY"
             echo >> "$GITHUB_STEP_SUMMARY"
-            echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
-            echo "- [test-reports](${{ steps.upload_test_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
-            echo "- [ui-test-logs](${{ steps.upload_ui_test_logs.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
           fi
+          echo "### Artifacts" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [instrumentation-test-reports](${{ steps.upload_instrumentation_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [test-reports](${{ steps.upload_test_reports.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [ui-test-logs](${{ steps.upload_ui_test_logs.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
       
       - name: Check if test results exist
         id: check_results
         if: always()
         run: |
-          if [ -f "ui-tests/build/test-results/test/TEST-com.usharik.app.UiTests.xml" ]; then
+          if [ -f "ui-tests/build/test-results/test/TEST-com.usharik.app.UiTests.xml" ] || \
+             ls app/build/outputs/androidTest-results/connected/*/TEST-*.xml >/dev/null 2>&1; then
             echo "results_exist=true" >> $GITHUB_OUTPUT
           else
             echo "results_exist=false" >> $GITHUB_OUTPUT
@@ -128,8 +140,10 @@ jobs:
         if: always() && steps.check_results.outputs.results_exist == 'true'
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
         with:
-          files: ui-tests/build/test-results/test/*.xml
-          check_name: UI Test Results
+          files: |
+            ui-tests/build/test-results/test/*.xml
+            app/build/outputs/androidTest-results/connected/**/TEST-*.xml
+          check_name: Device Test Results
 
       - name: Comment test results on PR
         if: always() && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
@@ -137,35 +151,42 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = 'ui-tests/build/test-results/test/TEST-com.usharik.app.UiTests.xml';
+
+            const globber = await glob.create([
+              'ui-tests/build/test-results/test/TEST-*.xml',
+              'app/build/outputs/androidTest-results/connected/**/TEST-*.xml',
+            ].join('\n'));
+            const files = await globber.glob();
 
             let body = '';
 
-            if (fs.existsSync(path)) {
+            if (files.length > 0) {
               try {
-                const testResults = fs.readFileSync(path, 'utf8');
-                const testsMatch = testResults.match(/tests="(\d+)"/);
-                const failuresMatch = testResults.match(/failures="(\d+)"/);
-                const errorsMatch = testResults.match(/errors="(\d+)"/);
-
-                const tests = testsMatch ? parseInt(testsMatch[1]) : 0;
-                const failures = failuresMatch ? parseInt(failuresMatch[1]) : 0;
-                const errors = errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                let tests = 0, failures = 0, errors = 0;
+                for (const path of files) {
+                  const xml = fs.readFileSync(path, 'utf8');
+                  const testsMatch = xml.match(/tests="(\d+)"/);
+                  const failuresMatch = xml.match(/failures="(\d+)"/);
+                  const errorsMatch = xml.match(/errors="(\d+)"/);
+                  tests += testsMatch ? parseInt(testsMatch[1]) : 0;
+                  failures += failuresMatch ? parseInt(failuresMatch[1]) : 0;
+                  errors += errorsMatch ? parseInt(errorsMatch[1]) : 0;
+                }
                 const passed = tests - failures - errors;
 
                 const emoji = (failures === 0 && errors === 0) ? '✅' : '❌';
 
-                body = `${emoji} **UI Test Results**\n\n`;
+                body = `${emoji} **Device Test Results** (instrumentation + UI)\n\n`;
                 body += `- Total: ${tests}\n`;
                 body += `- ✅ Passed: ${passed}\n`;
                 body += `- ❌ Failed: ${failures}\n`;
                 body += `- ⚠️ Errors: ${errors}\n\n`;
                 body += `View detailed results in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
               } catch (error) {
-                body = `⚠️ UI Tests completed but results could not be parsed.\n\nError: ${error.message}\n\nView logs in the Actions tab.`;
+                body = `⚠️ Tests completed but results could not be parsed.\n\nError: ${error.message}\n\nView logs in the Actions tab.`;
               }
             } else {
-              body = `❌ **UI Tests Failed to Run**\n\nTest results file not found. The tests may have failed to execute.\n\nView logs in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
+              body = `❌ **Device Tests Failed to Run**\n\nNo test results files found. The tests may have failed to execute.\n\nView logs in the [Actions tab](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`;
             }
 
             try {
