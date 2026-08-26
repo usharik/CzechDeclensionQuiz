@@ -44,6 +44,30 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Validate required secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets[env.KEYSTORE_SECRET_NAME] }}
+          KEYSTORE_PASSWORD: ${{ secrets[env.KEYSTORE_PASSWORD_SECRET_NAME] }}
+          GOOGLE_SERVICES_JSON: ${{ secrets[env.GOOGLE_SERVICES_SECRET_NAME] }}
+          KEY_ALIAS: ${{ secrets[env.KEY_ALIAS_SECRET_NAME] }}
+          KEY_PASSWORD: ${{ secrets[env.KEY_PASSWORD_SECRET_NAME] }}
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets[env.PLAY_SERVICE_ACCOUNT_SECRET_NAME] }}
+        run: |
+          missing=()
+          [ -z "$KEYSTORE_BASE64" ]          && missing+=("$KEYSTORE_SECRET_NAME (KEYSTORE_BASE64)")
+          [ -z "$KEYSTORE_PASSWORD" ]        && missing+=("$KEYSTORE_PASSWORD_SECRET_NAME (KEYSTORE_PASSWORD)")
+          [ -z "$GOOGLE_SERVICES_JSON" ]     && missing+=("$GOOGLE_SERVICES_SECRET_NAME (GOOGLE_SERVICES_JSON_CZECH_DECLENSION_QUIZ)")
+          [ -z "$KEY_ALIAS" ]                && missing+=("$KEY_ALIAS_SECRET_NAME (KEY_ALIAS_CZECH_DECLENSION_QUIZ)")
+          [ -z "$KEY_PASSWORD" ]             && missing+=("$KEY_PASSWORD_SECRET_NAME (KEY_PASSWORD_CZECH_DECLENSION_QUIZ)")
+          [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ] && missing+=("$PLAY_SERVICE_ACCOUNT_SECRET_NAME (GOOGLE_PLAY_SERVICE_ACCOUNT_JSON_CZECH_DECLENSION_QUIZ)")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "##[error]The following required secrets are not set:"
+            for s in "${missing[@]}"; do echo "  - $s"; done
+            echo "Please add these secrets in the repository Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          echo "All required secrets are present."
+
       - name: Checkout code
         uses: actions/checkout@v4
       
