@@ -35,6 +35,10 @@ fun CaseTable(cases: Array<Array<String>>, modifier: Modifier = Modifier) {
 /**
  * The word's translation in the app-selected locale (not the device default): Russian for the
  * Russian/Belarusian/Ukrainian UI languages, English otherwise.
+ *
+ * Note: this reads [LocalConfiguration]'s resolved locale, which reflects the UI language the
+ * app applied via [com.usharik.app.UiLanguageManager] (AppCompatDelegate locales), not
+ * necessarily the device's default locale.
  */
 @Composable
 fun localizedTranslation(word: WordInfo): String {
