@@ -98,7 +98,7 @@ fun CzechQuizApp(app: App) {
                     maxLines = 1,
                 )
                 nextAction?.let { action ->
-                    IconButton(onClick = action) {
+                    IconButton(onClick = action, modifier = Modifier.testTag(TestTags.NAV_NEXT_BTN)) {
                         Icon(
                             painterResource(R.drawable.ic_arrow_forward_white_18dp),
                             contentDescription = stringResource(R.string.nextCase),

@@ -131,6 +131,47 @@ class DeclensionQuizTest : BaseComposeTest() {
         composeTestRule.onNodeWithTag(TestTags.FULL_DIALOG_TRY_AGAIN).assertIsDisplayed()
     }
 
+    /**
+     * Regression test for the bug where the error counter stayed stuck after the 90s timeout
+     * ad: any external advance to a new word (the toolbar "Next" action wired via `registerNext`,
+     * the same mechanism the timeout-ad callback uses) must reset the error counter for the
+     * freshly loaded word.
+     */
+    @Test
+    fun advancingToNextWordResetsErrorCounter() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+        val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
+        dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
+        assertEquals("1/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+
+        composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performClick()
+
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { taggedText(TestTags.FULL_ERROR_COUNTER) == "0/5" }
+        assertEquals("0/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+    }
+
+    /**
+     * Swiping right on the quiz reveals the handbook overlay (finger-tracked panel), and
+     * swiping left on it hides the overlay again, returning to the quiz underneath.
+     */
+    @Test
+    fun swipeRightOpensHandbookAndSwipeLeftCloses() {
+        openQuizAndWaitForWord()
+
+        composeTestRule.onNodeWithTag(TestTags.FULL_QUIZ_ROOT).performTouchInput {
+            swipe(start = centerLeft, end = centerRight, durationMillis = 300)
+        }
+        waitForTag(TestTags.FULL_HANDBOOK_OVERLAY)
+        composeTestRule.onNodeWithTag(TestTags.FULL_HANDBOOK_OVERLAY).assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag(TestTags.FULL_QUIZ_ROOT).performTouchInput {
+            swipe(start = centerRight, end = centerLeft, durationMillis = 300)
+        }
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(TestTags.FULL_HANDBOOK_OVERLAY) }
+        composeTestRule.onNodeWithTag(TestTags.FULL_WORD).assertIsDisplayed()
+    }
+
     /** The system back action opens the full-quiz exit dialog and its Leave action returns home. */
     @OptIn(ExperimentalTestApi::class)
     @Test

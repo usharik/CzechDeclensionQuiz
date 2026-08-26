@@ -117,6 +117,13 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
         scope.launch { progress.countError() }
     }
 
+    /**
+     * Resets the visible per-word error badge (but not [errorCount], which still feeds the
+     * word's overall error-map bookkeeping on completion). Used after the "wrong answer" ad
+     * interrupts the player, so the counter starts fresh again instead of accumulating past 5.
+     */
+    fun resetErrorCounter() { wrongAttempts = 0 }
+
     private fun isComplete(): Boolean {
         val w = word ?: return false
         for (i in 0..6) for (n in 0..1) {

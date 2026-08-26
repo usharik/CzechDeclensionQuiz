@@ -28,11 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
+import com.usharik.app.TestTags
 import com.usharik.app.ui.components.CorrectAnswerDialog
 import com.usharik.app.ui.components.QuitQuizDialog
 import com.usharik.app.ui.components.rememberDragAndDropState
@@ -71,15 +73,26 @@ fun DeclensionQuizScreen(
     var showQuit by remember { mutableStateOf(false) }
     var showHandbook by remember { mutableStateOf(false) }
     var remainingSeconds by remember { mutableStateOf(WORD_TIMEOUT_SECONDS) }
-    // Horizontal offset of the handbook panel, in px: screenWidthPx (fully off-screen, right) to
-    // 0 (fully covering the quiz). Follows the finger while dragging, then springs to whichever
-    // side it's closer to on release, so the reveal tracks the swipe gesture in real time.
+    // Horizontal offset of the handbook panel, in px: -screenWidthPx (fully off-screen, to the
+    // left - the same side the opening swipe starts from) to 0 (fully covering the quiz).
+    // Follows the finger while dragging, then springs to whichever side it's closer to on
+    // release, so the reveal tracks the swipe gesture in real time and enters from the same
+    // side the finger swiped from.
     var screenWidthPx by remember { mutableIntStateOf(0) }
     val handbookOffsetX = remember { Animatable(0f) }
-    LaunchedEffect(screenWidthPx) { if (!showHandbook) handbookOffsetX.snapTo(screenWidthPx.toFloat()) }
+    LaunchedEffect(screenWidthPx) { if (!showHandbook) handbookOffsetX.snapTo(-screenWidthPx.toFloat()) }
 
+    // Shown every WRONG_ATTEMPTS_PER_AD mistakes (across the whole app session, not per word).
+    // The error badge must reset once such an ad is actually dismissed, otherwise it keeps
+    // counting past 5 on the current word instead of starting fresh (e.g. showing "6/5").
     fun wrongAnswerAd() {
-        activity?.let { host -> scope.launch { delay(600); app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionWrongAnswer(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) {} } }
+        activity?.let { host ->
+            scope.launch {
+                delay(600)
+                val showAd = app.adPolicy.onDeclensionWrongAnswer()
+                app.adManager.showAdIfNeeded(showAd, host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { if (showAd) session.resetErrorCounter() }
+            }
+        }
     }
 
     SideEffect {
@@ -104,8 +117,9 @@ fun DeclensionQuizScreen(
         session.start()
     }
 
-    // 30s per-word countdown: if the player hasn't completed the table in time, show an ad. Any
-    // fresh word or a completed table bumps timerResetToken, restarting the countdown.
+    // 90s per-word countdown: if the player hasn't completed the table in time, show an ad and
+    // move on to a fresh word (which also resets the error counter). Any fresh word or a
+    // completed table bumps timerResetToken, restarting the countdown for the new word.
     LaunchedEffect(session.timerResetToken) {
         remainingSeconds = WORD_TIMEOUT_SECONDS
         while (remainingSeconds > 0) {
@@ -113,8 +127,8 @@ fun DeclensionQuizScreen(
             remainingSeconds--
         }
         activity?.let { host ->
-            app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) {}
-        }
+            app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.nextWord() }
+        } ?: session.nextWord()
     }
     DisposableEffect(Unit) {
         registerNext { session.nextWord() }
@@ -123,7 +137,7 @@ fun DeclensionQuizScreen(
     // Back closes the handbook overlay first, then falls through to the quit overlay.
     BackHandler(enabled = showHandbook) {
         showHandbook = false
-        scope.launch { handbookOffsetX.animateTo(screenWidthPx.toFloat(), spring(stiffness = Spring.StiffnessMediumLow)) }
+        scope.launch { handbookOffsetX.animateTo(-screenWidthPx.toFloat(), spring(stiffness = Spring.StiffnessMediumLow)) }
     }
     BackHandler(enabled = !showHandbook && !showQuit) { showQuit = true }
 
@@ -137,19 +151,23 @@ fun DeclensionQuizScreen(
     Box(
         Modifier
             .fillMaxSize()
+            .testTag(TestTags.FULL_QUIZ_ROOT)
             .onSizeChanged { screenWidthPx = it.width }
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = { scope.launch { handbookOffsetX.stop() } },
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
-                        val next = (handbookOffsetX.value + dragAmount).coerceIn(0f, screenWidthPx.toFloat())
+                        // Panel rests off-screen at -screenWidthPx (left) and covers at 0, so
+                        // dragging right (positive dragAmount) increases the offset to pull it
+                        // in from the left - the same side the finger swiped from.
+                        val next = (handbookOffsetX.value + dragAmount).coerceIn(-screenWidthPx.toFloat(), 0f)
                         scope.launch { handbookOffsetX.snapTo(next) }
                     },
                     onDragEnd = {
                         // Settle to whichever side the panel is closer to, so a partial swipe
                         // still completes the reveal/hide instead of freezing mid-way.
-                        val target = if (handbookOffsetX.value < screenWidthPx / 2f) 0f else screenWidthPx.toFloat()
+                        val target = if (handbookOffsetX.value > -screenWidthPx / 2f) 0f else -screenWidthPx.toFloat()
                         showHandbook = target == 0f
                         scope.launch { handbookOffsetX.animateTo(target, spring(stiffness = Spring.StiffnessMediumLow)) }
                     },
@@ -172,15 +190,20 @@ fun DeclensionQuizScreen(
             totalSeconds = WORD_TIMEOUT_SECONDS,
         )
         // Opaque surface behind the handbook so the quiz table underneath never shows through
-        // while dragging or once fully open.
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset { IntOffset(handbookOffsetX.value.roundToInt(), 0) },
-            color = MaterialTheme.colorScheme.background,
-            tonalElevation = 4.dp,
-        ) {
-            HandbookScreen(app)
+        // while dragging or once fully open. Only composed while at least partially visible so
+        // its cells (which share test tags with the quiz grid, e.g. "full_cell_0_0") don't linger
+        // in the semantics tree - and get matched by UI tests - while fully off-screen.
+        if (handbookOffsetX.value > -screenWidthPx.toFloat()) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset { IntOffset(handbookOffsetX.value.roundToInt(), 0) }
+                    .testTag(TestTags.FULL_HANDBOOK_OVERLAY),
+                color = MaterialTheme.colorScheme.background,
+                tonalElevation = 4.dp,
+            ) {
+                HandbookScreen(app)
+            }
         }
     }
 

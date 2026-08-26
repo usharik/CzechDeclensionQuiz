@@ -5,6 +5,7 @@ object TestTags {
     // App bar
     const val APP_BAR_TITLE = "app_bar_title"
     const val NAV_HOME_BTN = "nav_home"
+    const val NAV_NEXT_BTN = "nav_next"
     // Hub screen
     const val HUB_SCREEN = "hub_screen"
     const val BTN_FULL = "btn_full"
@@ -35,4 +36,6 @@ object TestTags {
     const val FULL_QUIT_DIALOG = "full_quit_dialog"
     const val FULL_QUIT_EXERCISES = "full_quit_exercises"
     const val FULL_QUIT_LEAVE = "full_quit_leave"
+    const val FULL_HANDBOOK_OVERLAY = "full_handbook_overlay"
+    const val FULL_QUIZ_ROOT = "full_quiz_root" // swipe gesture surface; spans the whole screen
 }
