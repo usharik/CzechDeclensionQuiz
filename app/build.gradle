@@ -75,35 +75,49 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    compilerOptions {
+        freeCompilerArgs.add('-Xannotation-default-target=param-property')
+    }
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Core
     implementation(project.getDependencyFactory().createProjectDependency(':database'))
-    implementation 'androidx.appcompat:appcompat:1.8.0'
-    implementation 'com.google.android.material:material:1.14.0'
-    implementation 'androidx.browser:browser:1.10.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.2.0'
-    implementation 'androidx.media:media:1.8.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
-    implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.11.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.11.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.11.0'
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.11.0"
-    implementation 'com.google.firebase:firebase-analytics:23.2.0'
-    implementation 'com.google.firebase:firebase-crashlytics:20.1.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ndk:20.1.0'
-    implementation 'com.google.code.gson:gson:2.14.0'
-    implementation 'com.google.android.gms:play-services-ads:25.4.0'
-    implementation 'androidx.work:work-runtime:2.11.2'
-    implementation 'androidx.room:room-runtime:2.8.4'
+
+    // Kotlin
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
+
+    // AndroidX Core
+    implementation 'androidx.appcompat:appcompat:1.8.0'  // Needed for AppCompatActivity & locale support
+    implementation 'com.google.android.material:material:1.14.0'  // Needed for XML theme resources
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
+    implementation 'androidx.work:work-runtime-ktx:2.11.2'
+
+    // Compose
     implementation platform('androidx.compose:compose-bom:2026.08.00')
     implementation 'androidx.activity:activity-compose:1.13.0'
     implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-analytics:23.2.0'
+    implementation 'com.google.firebase:firebase-crashlytics:20.1.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:20.1.0'
+
+    // Google Services
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
+    implementation 'com.google.code.gson:gson:2.14.0'
+
+    // Database
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-ktx:2.8.4'
+
+    // Testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.7.0'
     androidTestImplementation 'androidx.test:core-ktx:1.6.1'
@@ -111,5 +125,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     androidTestImplementation platform('androidx.compose:compose-bom:2026.08.00')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
