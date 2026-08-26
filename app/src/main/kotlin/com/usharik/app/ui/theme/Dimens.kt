@@ -29,6 +29,7 @@ object Dimens {
     val caseNameWidth = 100.dp
 
     val toolbarHeightDefault = 56.dp
+    val nextActionIconSize = 26.dp
 
     val draggableFontSize = 17.sp
     val staticFontSize = 13.sp

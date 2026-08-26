@@ -1,5 +1,6 @@
 package com.usharik.app.ui.screens
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -17,9 +18,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -38,6 +41,7 @@ import com.usharik.app.ui.components.WordBank
 import com.usharik.app.ui.components.WordChip
 import com.usharik.app.ui.components.WordModel
 import com.usharik.app.ui.components.localizedTranslation
+import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.database.WordInfo
 
@@ -52,13 +56,15 @@ fun DeclensionQuizContent(
     feedback: Map<String, CellFeedback>,
     wrongAttempts: Int,
     actual: List<Int>,
+    remainingSeconds: Int,
+    totalSeconds: Int,
 ) {
     Box(Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize().padding(horizontal = Dimens.spacingXxs, vertical = Dimens.spacingSm)) {
+        Column(Modifier.fillMaxSize().padding(horizontal = Dimens.spacingXxs, vertical = Dimens.spacingXs)) {
             if (word == null) {
                 Text("…", Modifier.padding(Dimens.spacingMd))
             } else {
-                QuizHeader(word, wrongAttempts)
+                QuizHeader(word, wrongAttempts, remainingSeconds, totalSeconds)
                 WordBank(
                     models = models,
                     dnd = dnd,
@@ -91,8 +97,11 @@ fun DeclensionQuizContent(
     }
 }
 
+/** Amber used for the "warning" mid-tier of the error/timer color scales; no theme slot fits it. */
+private val WarningYellow = Color(0xFFF9A825)
+
 @Composable
-private fun QuizHeader(word: WordInfo, wrongAttempts: Int) {
+private fun QuizHeader(word: WordInfo, wrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
     val translation = localizedTranslation(word)
     Row(Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs), verticalAlignment = Alignment.Bottom) {
         Text(word.word(), Modifier.testTag(TestTags.FULL_WORD), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 19.sp)
@@ -109,11 +118,13 @@ private fun QuizHeader(word: WordInfo, wrongAttempts: Int) {
         verticalAlignment = Alignment.Bottom,
     ) {
         Text(translation, Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+        TimerBadge(remainingSeconds, totalSeconds)
+        Text(" ", fontSize = 11.sp)
         ErrorCounter(wrongAttempts)
     }
 }
 
-/** "n/5" counter that bounces and turns red once the player has made a mistake. */
+/** "n/5" counter that bounces on each mistake and is color-coded: green(0) / yellow(1-2) / red(3+). */
 @Composable
 private fun ErrorCounter(wrongAttempts: Int) {
     val scale = remember { Animatable(1f) }
@@ -123,10 +134,34 @@ private fun ErrorCounter(wrongAttempts: Int) {
         scale.animateTo(1.3f, tween(125, easing = FastOutSlowInEasing))
         scale.animateTo(1f, tween(125, easing = FastOutSlowInEasing))
     }
+    val targetColor = when {
+        wrongAttempts <= 0 -> AppColors.correct
+        wrongAttempts < 3 -> WarningYellow
+        else -> AppColors.incorrect
+    }
+    val color by animateColorAsState(targetColor, label = "errorCounterColor")
     Text(
         "$wrongAttempts/5",
         Modifier.testTag(TestTags.FULL_ERROR_COUNTER).graphicsLayer { scaleX = scale.value; scaleY = scale.value },
-        color = if (wrongAttempts > 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+        color = color,
+        fontWeight = FontWeight.Bold,
+        fontSize = 11.sp,
+    )
+}
+
+/** Countdown badge color-coded: green(>20s) / yellow(10-20s) / red(<10s). */
+@Composable
+private fun TimerBadge(remainingSeconds: Int, totalSeconds: Int) {
+    val targetColor = when {
+        remainingSeconds > totalSeconds * 2 / 3 -> AppColors.correct
+        remainingSeconds > totalSeconds / 3 -> WarningYellow
+        else -> AppColors.incorrect
+    }
+    val color by animateColorAsState(targetColor, label = "timerColor")
+    Text(
+        "${remainingSeconds}s",
+        Modifier.testTag(TestTags.FULL_TIMER),
+        color = color,
         fontWeight = FontWeight.Bold,
         fontSize = 11.sp,
     )

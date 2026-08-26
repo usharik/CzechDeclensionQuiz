@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -98,7 +99,12 @@ fun CzechQuizApp(app: App) {
                 )
                 nextAction?.let { action ->
                     IconButton(onClick = action) {
-                        Icon(painterResource(R.drawable.ic_arrow_forward_white_18dp), contentDescription = stringResource(R.string.nextCase), tint = Color.White)
+                        Icon(
+                            painterResource(R.drawable.ic_arrow_forward_white_18dp),
+                            contentDescription = stringResource(R.string.nextCase),
+                            tint = Color.White,
+                            modifier = Modifier.size(Dimens.nextActionIconSize),
+                        )
                     }
                 }
             }

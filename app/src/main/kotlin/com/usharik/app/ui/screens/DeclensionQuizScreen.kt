@@ -34,6 +34,9 @@ import kotlinx.coroutines.launch
  * correct-answer dialog. Back shows the quit overlay with today's stats. Quiz logic and state
  * live in [DeclensionQuizSession]; this composable only wires UI concerns (haptics, ads, dialogs).
  */
+/** Per-word time budget (seconds) before an ad is shown if the table isn't completed yet. */
+private const val WORD_TIMEOUT_SECONDS = 90
+
 @Composable
 fun DeclensionQuizScreen(
     app: App,
@@ -47,6 +50,7 @@ fun DeclensionQuizScreen(
     val session = remember { DeclensionQuizSession(app, scope) }
     var showCorrect by remember { mutableStateOf(false) }
     var showQuit by remember { mutableStateOf(false) }
+    var remainingSeconds by remember { mutableStateOf(WORD_TIMEOUT_SECONDS) }
 
     fun wrongAnswerAd() {
         activity?.let { host -> scope.launch { delay(600); app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionWrongAnswer(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) {} } }
@@ -73,6 +77,19 @@ fun DeclensionQuizScreen(
         activity?.let { app.adManager.loadAd(it, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) }
         session.start()
     }
+
+    // 30s per-word countdown: if the player hasn't completed the table in time, show an ad. Any
+    // fresh word or a completed table bumps timerResetToken, restarting the countdown.
+    LaunchedEffect(session.timerResetToken) {
+        remainingSeconds = WORD_TIMEOUT_SECONDS
+        while (remainingSeconds > 0) {
+            delay(1_000)
+            remainingSeconds--
+        }
+        activity?.let { host ->
+            app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) {}
+        }
+    }
     DisposableEffect(Unit) {
         registerNext { session.nextWord() }
         onDispose { registerNext(null) }
@@ -96,6 +113,8 @@ fun DeclensionQuizScreen(
         feedback = session.feedback,
         wrongAttempts = session.wrongAttempts,
         actual = session.actual,
+        remainingSeconds = remainingSeconds,
+        totalSeconds = WORD_TIMEOUT_SECONDS,
     )
 
     if (showCorrect) {

@@ -25,6 +25,7 @@ object TestTags {
     // Full declension quiz
     const val FULL_WORD = "full_word"
     const val FULL_ERROR_COUNTER = "full_error_counter"
+    const val FULL_TIMER = "full_timer"
     const val FULL_POOL_WORD_PREFIX = "full_pool_word_" // append the shuffled word-model index
     const val FULL_CELL_PREFIX = "full_cell_" // append "<number>_<case>", number: 0 singular / 1 plural
     const val FULL_COMPLETION_DIALOG = "full_completion_dialog"

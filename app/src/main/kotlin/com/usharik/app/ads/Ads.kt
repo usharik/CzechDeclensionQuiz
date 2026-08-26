@@ -46,6 +46,8 @@ open class InterstitialAdPolicy(private val state: AdSessionState, private val r
         return true
     }
 
+    fun onDeclensionTimeout(): Boolean = areAdsEnabled()
+
     fun onSingleCaseNavigation(): Boolean {
         if (!areAdsEnabled()) return false
         val count = state.nextNavigation()

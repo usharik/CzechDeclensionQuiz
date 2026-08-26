@@ -31,6 +31,10 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
         private set
     var feedback by mutableStateOf<Map<String, CellFeedback>>(emptyMap())
         private set
+
+    /** Bumped whenever the per-word timer should restart: a fresh word or a completed table. */
+    var timerResetToken by mutableStateOf(0)
+        private set
     private var errorCount = 0
 
     fun wordFor(ix: Int) = if (ix < 0 || ix >= models.size) "" else models[ix].word
@@ -47,6 +51,7 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
         models = list
         actual = List(14) { -1 }
         wrongAttempts = 0; errorCount = 0; feedback = emptyMap()
+        timerResetToken++
     }
 
     /** Applies a drop (pool→cell, cell→cell swap or cell→pool return) and reports the outcome. */
@@ -131,5 +136,6 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
         if (errorCount == 0) app.appState.removeWordFromErrorMap(w.word())
         if (errorCount > 2) app.appState.putWordToErrorMap(w.word(), errorCount)
         app.persistWordsWithErrors()
+        timerResetToken++
     }
 }

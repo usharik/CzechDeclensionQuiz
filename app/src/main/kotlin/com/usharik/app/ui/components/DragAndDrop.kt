@@ -1,5 +1,8 @@
 package com.usharik.app.ui.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +21,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.zIndex
+import com.usharik.app.utils.HapticFeedback
 
 /**
  * Lightweight drag-and-drop controller mirroring the original View drag-and-drop.
@@ -78,12 +83,14 @@ fun Modifier.dragSource(
     onPickUp: () -> Unit = {},
 ): Modifier = composed {
     var itemRoot by remember { mutableStateOf(Offset.Zero) }
+    val context = LocalContext.current
     this
         .onGloballyPositioned { itemRoot = it.positionInRoot() }
         .pointerInput(tag, enabled) {
             if (!enabled) return@pointerInput
             detectDragGestures(
                 onDragStart = { local ->
+                    HapticFeedback.light(context)
                     onPickUp()
                     state.start(tag, text, itemRoot + local, size)
                 },
@@ -119,14 +126,21 @@ fun DragOverlay(state: DragAndDropState, chip: @Composable (String) -> Unit) {
     ) {
         val halfW = state.itemSize.width / 2f
         val halfH = state.itemSize.height / 2f
+        // Pops from 1x up to the drag scale right as the pointer picks the chip up, giving a
+        // springy "lift-off" feel rather than snapping straight to the enlarged size.
+        val scale by animateFloatAsState(
+            targetValue = 1.35f,
+            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+            label = "dragChipScale",
+        )
         // Translation, scale and alpha live in a single layer: the chip is composited at its
         // measured size and transformed as a whole, so scaling never clips its rounded border.
         Box(
             Modifier.graphicsLayer {
                 translationX = state.pointer.x - overlayRoot.x - halfW
                 translationY = state.pointer.y - overlayRoot.y - halfH
-                scaleX = 1.1f
-                scaleY = 1.1f
+                scaleX = scale
+                scaleY = scale
                 alpha = 0.85f
             },
         ) { chip(state.dragText) }
