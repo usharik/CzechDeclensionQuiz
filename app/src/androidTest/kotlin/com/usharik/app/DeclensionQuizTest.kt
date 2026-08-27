@@ -4,6 +4,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -170,6 +172,42 @@ class DeclensionQuizTest : BaseComposeTest() {
         }
         composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(TestTags.FULL_HANDBOOK_OVERLAY) }
         composeTestRule.onNodeWithTag(TestTags.FULL_WORD).assertIsDisplayed()
+    }
+
+    /**
+     * Regression test: selecting a paradigm in the handbook overlay, closing it with a
+     * swipe-left, and reopening it with a swipe-right must keep the selection instead of
+     * resetting to the masculine "pán" default.
+     */
+    @Test
+    fun handbookSelectionSurvivesSwipeCloseAndReopen() {
+        openQuizAndWaitForWord()
+
+        composeTestRule.onNodeWithTag(TestTags.FULL_QUIZ_ROOT).performTouchInput {
+            swipe(start = centerLeft, end = centerRight, durationMillis = 300)
+        }
+        waitForTag(TestTags.FULL_HANDBOOK_OVERLAY)
+
+        waitForText("Feminine")
+        composeTestRule.onNodeWithText("Feminine").performClick()
+        waitForText("růže")
+        composeTestRule.onNodeWithText("růže").performClick()
+
+        composeTestRule.onNodeWithTag(TestTags.FULL_QUIZ_ROOT).performTouchInput {
+            swipe(start = centerRight, end = centerLeft, durationMillis = 300)
+        }
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(TestTags.FULL_HANDBOOK_OVERLAY) }
+
+        composeTestRule.onNodeWithTag(TestTags.FULL_QUIZ_ROOT).performTouchInput {
+            swipe(start = centerLeft, end = centerRight, durationMillis = 300)
+        }
+        waitForTag(TestTags.FULL_HANDBOOK_OVERLAY)
+
+        waitForText("Feminine")
+        composeTestRule.onNodeWithText("Feminine").assertIsDisplayed()
+        // "růže" also appears in the case table itself, so just confirm the paradigm chip
+        // (and thus the whole selection) is still there rather than picking a unique node.
+        composeTestRule.onAllNodesWithText("růže").onFirst().assertIsDisplayed()
     }
 
     /** The system back action opens the full-quiz exit dialog and its Leave action returns home. */

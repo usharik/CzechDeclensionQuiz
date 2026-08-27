@@ -77,16 +77,22 @@ fun HandbookScreen(app: App) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    var gender by remember { mutableStateOf(HandbookGender.MASCULINE) }
+    // Selection is persisted in AppState (not just `remember`ed) so it survives this screen
+    // being torn down and recreated - e.g. swiping the quiz's handbook overlay closed and
+    // reopening it - instead of resetting to the masculine "pán" default every time.
+    var gender by remember { mutableStateOf(HandbookGender.valueOf(app.appState.getHandbookGender())) }
     // Each gender group keeps its own checked paradigm, like the three XML RadioGroups.
-    var checked by remember { mutableStateOf(mapOf<HandbookGender, String>(HandbookGender.MASCULINE to "pán")) }
-    var shownWord by remember { mutableStateOf("pán") }
+    var checked by remember {
+        mutableStateOf(app.appState.getHandbookParadigmByGender().mapKeys { (g, _) -> HandbookGender.valueOf(g) })
+    }
+    var shownWord by remember { mutableStateOf(checked[gender] ?: gender.paradigms.first()) }
     var cases by remember { mutableStateOf(Array(2) { Array(7) { "" } }) }
 
     fun selectWord(word: String) {
         HapticFeedback.light(context)
         checked = checked + (gender to word)
         shownWord = word
+        app.appState.setHandbookParadigm(gender.name, word)
         scope.launch { app.dictionaryReady.await(); app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
     }
 
@@ -94,6 +100,7 @@ fun HandbookScreen(app: App) {
     // table and "other nouns" hint always match the visible gender.
     fun selectGender(g: HandbookGender) {
         gender = g
+        app.appState.setHandbookGender(g.name)
         selectWord(checked[g] ?: g.paradigms.first())
     }
 
