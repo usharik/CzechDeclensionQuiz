@@ -100,6 +100,8 @@ fun DeclensionQuizContent(
 
 /** Amber used for the "warning" mid-tier of the error/timer color scales; no theme slot fits it. */
 private val WarningYellow = Color(0xFFF9A825)
+/** Orange used for the "danger" tier before the maximum is reached. */
+private val WarningOrange = Color(0xFFE65100)
 
 @Composable
 private fun QuizHeader(word: WordInfo, wrongAttempts: Int, maxWrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
@@ -137,7 +139,8 @@ private fun ErrorCounter(wrongAttempts: Int, maxWrongAttempts: Int) {
     }
     val targetColor = when {
         wrongAttempts <= 0 -> AppColors.correct
-        wrongAttempts < 3 -> WarningYellow
+        wrongAttempts < 4 -> WarningYellow
+        wrongAttempts < 7 -> WarningOrange
         else -> AppColors.incorrect
     }
     val color by animateColorAsState(targetColor, label = "errorCounterColor")
