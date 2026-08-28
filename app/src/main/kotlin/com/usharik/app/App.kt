@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken
 import com.usharik.app.ads.AdManager
 import com.usharik.app.ads.AdSessionState
 import com.usharik.app.ads.InterstitialAdPolicy
+import com.usharik.app.ads.RealAdManager
 import com.usharik.app.ads.ThreadLocalRandomProvider
 import com.usharik.app.notification.DailyReminderWorker
 import com.usharik.app.notification.NotificationHelper
@@ -33,7 +34,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 /** Application-owned dependency graph. It replaces the Dagger Android graph with explicit, typed wiring. */
-class App : Application() {
+open class App : Application() {
     lateinit var appState: AppState; private set
     lateinit var gson: Gson; private set
     lateinit var documentRepository: DocumentRepository; private set
@@ -60,7 +61,7 @@ class App : Application() {
         statsRepository = TrainingStatsRepository(database)
         analyticsService = FirebaseAnalyticsService(FirebaseAnalytics.getInstance(this))
         notificationHelper = NotificationHelper(analyticsService)
-        adManager = AdManager()
+        adManager = createAdManager()
         adPolicy = InterstitialAdPolicy(AdSessionState(), ThreadLocalRandomProvider())
         lastWordStore = SharedPreferencesLastWordStore(this)
         wordService = WordService(documentRepository, appState, analyticsService)
@@ -79,6 +80,9 @@ class App : Application() {
         }
         restorePreferences()
     }
+
+    /** Overridable so instrumented tests can inject a fake that never shows a real interstitial. */
+    open fun createAdManager(): AdManager = RealAdManager()
 
     private fun restorePreferences() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

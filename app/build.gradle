@@ -27,7 +27,7 @@ android {
         targetSdkVersion = 36
         versionCode = getVersionInfo().code
         versionName = getVersionInfo().name
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.usharik.app.TestAppRunner"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         buildConfigField "String", "GIT_COMMIT_HASH", "\"${getGitCommitHash()}\""
 

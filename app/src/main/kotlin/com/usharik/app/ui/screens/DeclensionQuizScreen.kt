@@ -146,7 +146,10 @@ fun DeclensionQuizScreen(
     SideEffect {
         registerNext(
             ToolbarAction(
-                onClick = { session.nextWord(skipped = true, expectedCurrentWord = toolbarWord) },
+                onClick = {
+                    val skipped = !session.isWordComplete()
+                    session.nextWord(skipped = skipped, expectedCurrentWord = toolbarWord)
+                },
                 enabled = toolbarWord != null && !session.isAdvancing,
             ),
         )

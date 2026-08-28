@@ -58,18 +58,23 @@ open class InterstitialAdPolicy(private val state: AdSessionState, private val r
     }
 }
 
-class AdManager {
+/**
+ * Manages interstitial ads. Injected via [App.createAdManager] so instrumented tests can supply a
+ * fake that never shows a real ad (a displayed interstitial has no automated way to be dismissed),
+ * keeping production code free of any test awareness.
+ */
+interface AdManager {
+    fun loadAd(activity: Activity, unitId: String)
+    fun showAdIfNeeded(condition: Boolean, activity: Activity, unitId: String, action: () -> Unit)
+}
+
+class RealAdManager : AdManager {
     private val ads = mutableMapOf<String, InterstitialAd>()
     // Tracks unit IDs with a load already in flight so a rapid succession of loadAd() calls
     // (e.g. re-entering a quiz screen) doesn't fire redundant concurrent network requests.
     private val loading = mutableSetOf<String>()
 
-    fun loadAd(activity: Activity, unitId: String) {
-        // Never load a real ad under instrumentation: an actually-displayed interstitial has no
-        // automated way to be dismissed (the test ad's close button isn't tapped), which would
-        // hang any test that crosses an ad-policy threshold. With nothing cached, showAdIfNeeded
-        // always falls through to its action() callback instead, keeping tests deterministic.
-        if (activity.isTestHarness()) return
+    override fun loadAd(activity: Activity, unitId: String) {
         if (unitId.isBlank() || ads.containsKey(unitId) || !loading.add(unitId)) return
         InterstitialAd.load(
             activity,
@@ -91,7 +96,7 @@ class AdManager {
      * initial load or transient load failure affects only this event, never all later ones.
      * [action] always fires exactly once regardless of the ad's outcome.
      */
-    fun showAdIfNeeded(condition: Boolean, activity: Activity, unitId: String, action: () -> Unit) {
+    override fun showAdIfNeeded(condition: Boolean, activity: Activity, unitId: String, action: () -> Unit) {
         if (!condition) return action()
         val ad = ads.remove(unitId) ?: run {
             loadAd(activity, unitId)
@@ -118,18 +123,6 @@ class AdManager {
     }
 
     private companion object {
-        const val TAG = "AdManager"
+        const val TAG = "RealAdManager"
     }
 }
-
-// Detects instrumented test runs by checking whether the androidTest APK's Espresso classes are
-// on the classpath. Unlike ActivityManager.isRunningInTestHarness(), which reflects a persistent
-// ro.test_harness device/emulator property (true for the whole life of a test AVD, including
-// manual use), this is only true while an actual instrumentation test package is installed and
-// running - so it never disables ads for a person manually using the app on a test emulator.
-private val isTestHarness: Boolean by lazy {
-    runCatching { Class.forName("androidx.test.espresso.Espresso") }.isSuccess
-}
-
-/** True only while an instrumentation test (e.g. connectedAndroidTest) is actually running. */
-internal fun Activity.isTestHarness(): Boolean = isTestHarness
