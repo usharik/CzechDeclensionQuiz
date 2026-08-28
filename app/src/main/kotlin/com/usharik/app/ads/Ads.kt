@@ -1,7 +1,6 @@
 package com.usharik.app.ads
 
 import android.app.Activity
-import android.app.ActivityManager
 import android.util.Log
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -123,5 +122,14 @@ class AdManager {
     }
 }
 
-/** True when the process was launched by an instrumentation test runner (e.g. connectedAndroidTest). */
-internal fun Activity.isTestHarness(): Boolean = ActivityManager.isRunningInTestHarness()
+// Detects instrumented test runs by checking whether the androidTest APK's Espresso classes are
+// on the classpath. Unlike ActivityManager.isRunningInTestHarness(), which reflects a persistent
+// ro.test_harness device/emulator property (true for the whole life of a test AVD, including
+// manual use), this is only true while an actual instrumentation test package is installed and
+// running - so it never disables ads for a person manually using the app on a test emulator.
+private val isTestHarness: Boolean by lazy {
+    runCatching { Class.forName("androidx.test.espresso.Espresso") }.isSuccess
+}
+
+/** True only while an instrumentation test (e.g. connectedAndroidTest) is actually running. */
+internal fun Activity.isTestHarness(): Boolean = isTestHarness
