@@ -226,6 +226,159 @@ class DeclensionQuizTest : BaseComposeTest() {
         waitForTag(TestTags.HUB_SCREEN)
     }
 
+    /**
+     * End-to-end scoring scenario: a wrong placement earns nothing, every correct placement
+     * immediately awards +3 points, and completing the table awards the +3 completion bonus but
+     * *not* the +6 perfect bonus once a mistake was made along the way. Reads the running total
+     * off the quit-overlay's score stat after each action, so it verifies against the real
+     * persisted `DailyTrainingStatsEntity.score` rather than in-memory state alone.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun scoringSystemAwardsAndAccumulatesPointsCorrectly() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+
+        var expectedScore = openQuitDialogAndReadScore()
+
+        // A wrong placement returns to the bank and must not change the score.
+        val (wrongPoolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
+        dragPoolWordToCell(wrongPoolIndex, number = 0, caseIndex = 0)
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$wrongPoolIndex")
+        }
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+
+        // Every correct placement immediately awards +3 points, one form at a time.
+        for (caseIndex in 0..6) {
+            for (number in 0..1) {
+                if (word.cases(number, caseIndex).isNotEmpty()) {
+                    val (poolIndex, _) = poolFormForTarget(word, number, caseIndex)
+                    dragPoolWordToCell(poolIndex, number, caseIndex)
+                    composeTestRule.waitUntil(timeoutMillis = 3_000) {
+                        !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+                    }
+                    expectedScore += 3
+                    assertEquals(expectedScore, openQuitDialogAndReadScore())
+                }
+            }
+        }
+
+        // The table is now complete. The completion (and any perfect) bonus is only awarded once
+        // the player actually leaves the word via "Next word" - not merely by finishing the
+        // table - so the earlier mistake means only the +3 completion bonus applies here.
+        composeTestRule.waitUntilAtLeastOneExists(
+            hasTestTag(TestTags.FULL_COMPLETION_DIALOG),
+            timeoutMillis = 5_000,
+        )
+        composeTestRule.onNodeWithTag(TestTags.FULL_DIALOG_NEXT_WORD).performClick()
+        waitForTag(TestTags.FULL_WORD)
+        expectedScore += 3
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
+    /**
+     * Completing a table without any mistakes awards both the completion bonus and the perfect
+     * bonus (+3 and +6), on top of the +3 earned per correct placement.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun perfectWordCompletionAwardsPerfectBonus() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+
+        var expectedScore = openQuitDialogAndReadScore()
+
+        for (caseIndex in 0..6) {
+            for (number in 0..1) {
+                if (word.cases(number, caseIndex).isNotEmpty()) {
+                    val (poolIndex, _) = poolFormForTarget(word, number, caseIndex)
+                    dragPoolWordToCell(poolIndex, number, caseIndex)
+                    composeTestRule.waitUntil(timeoutMillis = 3_000) {
+                        !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+                    }
+                    expectedScore += 3
+                }
+            }
+        }
+
+        composeTestRule.waitUntilAtLeastOneExists(
+            hasTestTag(TestTags.FULL_COMPLETION_DIALOG),
+            timeoutMillis = 5_000,
+        )
+        composeTestRule.onNodeWithTag(TestTags.FULL_DIALOG_NEXT_WORD).performClick()
+        waitForTag(TestTags.FULL_WORD)
+        expectedScore += 3 + 6 // completion bonus + perfect bonus
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
+    /**
+     * Advancing to a new word without finishing the current table (toolbar "Next" action) must
+     * dock a 1-point penalty instead of awarding the word/perfect bonuses.
+     */
+    @Test
+    fun skippingWordBeforeCompletionDeductsPenaltyPoint() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+
+        // Earn a couple of points first so the penalty has something to subtract from (the score
+        // is clamped at 0, which would otherwise mask the deduction).
+        val (poolIndex, _) = poolFormForTarget(word, number = 0, caseIndex = 0)
+        dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+        }
+        val expectedScore = openQuitDialogAndReadScore() - 1
+
+        composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performClick()
+        waitForTag(TestTags.FULL_WORD)
+
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
+    /**
+     * Five wrong placements trigger the "wrong answer" ad policy, which docks a 1-point penalty
+     * regardless of whether a real ad was actually shown.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun fiveMistakesDeductPenaltyPoint() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+        val expectedScore = openQuitDialogAndReadScore() - 1
+
+        repeat(5) {
+            val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
+            dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
+            // The 5th mistake may briefly show a real interstitial ad (if one happened to load),
+            // pausing the activity, so give this a longer timeout than a plain wrong-drop bounce.
+            composeTestRule.waitUntil(timeoutMillis = 8_000) {
+                tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+            }
+        }
+
+        // The ad-policy check runs on a short delay (see wrongAnswerAd's `delay(600)`); give it
+        // time to apply the penalty before reading the persisted score.
+        Thread.sleep(1_000)
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
+    /**
+     * Opens the quit overlay via the toolbar home button, reads the persisted score off the
+     * [TestTags.FULL_QUIT_SCORE] stat column, then dismisses the overlay with "Keep going" so the
+     * quiz resumes exactly where it was left.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    private fun openQuitDialogAndReadScore(): Int {
+        composeTestRule.onNodeWithTag(TestTags.NAV_HOME_BTN).performClick()
+        waitForTag(TestTags.FULL_QUIT_DIALOG)
+        val score = composeTestRule.onNodeWithTag(TestTags.FULL_QUIT_SCORE)
+            .fetchSemanticsNode().children.first().config[SemanticsProperties.Text].single().text.toInt()
+        composeTestRule.onNodeWithText("Keep going").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(TestTags.FULL_QUIT_DIALOG) }
+        return score
+    }
+
     private fun openQuizAndWaitForWord() {
         composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performClick()
         waitForTag(TestTags.FULL_WORD)

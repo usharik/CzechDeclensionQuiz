@@ -63,6 +63,10 @@
     <string name="quit_quiz_keep_going">Продолжить</string>
     <string name="quit_quiz_leave">Покинуть квиз</string>
     <string name="quit_quiz_recent_words_label">НЕДАВНО ИЗУЧЕННЫЕ</string>
+    <string name="quit_quiz_points_label">очков</string>
+    <string name="quit_quiz_daily_goal_progress">Цель на сегодня: %1$d / %2$d очков</string>
+    <string name="quit_quiz_daily_goal_one_away">Ещё немного очков до сегодняшней цели! 🎯</string>
+    <string name="quit_quiz_daily_goal_reached">Сегодняшняя цель достигнута! 🎉</string>
 
     <string name="quiz_mode_title">Выберите режим теста</string>
     <string name="quiz_mode_full_table">Тест полной таблицы склонения</string>

@@ -63,6 +63,10 @@
     <string name="quit_quiz_keep_going">Weitermachen</string>
     <string name="quit_quiz_leave">Quiz verlassen</string>
     <string name="quit_quiz_recent_words_label">ZUletzt gelernt</string>
+    <string name="quit_quiz_points_label">Punkte</string>
+    <string name="quit_quiz_daily_goal_progress">Tagesziel: %1$d / %2$d Punkte</string>
+    <string name="quit_quiz_daily_goal_one_away">Nur noch wenige Punkte bis zum Tagesziel! 🎯</string>
+    <string name="quit_quiz_daily_goal_reached">Tagesziel erreicht! 🎉</string>
 
     <string name="quiz_mode_title">Wähle den Testmodus</string>
     <string name="quiz_mode_full_table">Test der gesamten Deklinationstabelle</string>

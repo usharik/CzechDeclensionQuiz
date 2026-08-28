@@ -40,6 +40,8 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     fun wordFor(ix: Int) = if (ix < 0 || ix >= models.size) "" else models[ix].word
     fun cellIdx(number: Int, caseNum: Int) = number * 7 + caseNum
 
+    override fun isCurrentWordPerfect(): Boolean = errorCount == 0
+
     override fun onWordApplied(word: WordInfo) {
         val list = ArrayList<WordModel>(14)
         for (i in 0..6) {
@@ -103,6 +105,7 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
             }
         }
         if (!ok) return DropOutcome.WRONG
+        scope.launch { progress.countCorrectForm() }
         if (isComplete()) { onTableCompleted(); return DropOutcome.COMPLETED }
         return DropOutcome.CORRECT
     }
@@ -123,6 +126,13 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
      * interrupts the player, so the counter starts fresh again instead of accumulating past 5.
      */
     fun resetErrorCounter() { wrongAttempts = 0 }
+
+    /**
+     * Restarts the per-word countdown without touching the word or any cells the player has
+     * already placed. Used after the timeout ad is dismissed, so the player keeps their progress
+     * on the current word instead of being bumped to a fresh one.
+     */
+    fun resetTimer() { timerResetToken++ }
 
     private fun isComplete(): Boolean {
         val w = word ?: return false

@@ -63,6 +63,10 @@
     <string name="quit_quiz_keep_going">Працягнуць</string>
     <string name="quit_quiz_leave">Пакінуць квіз</string>
     <string name="quit_quiz_recent_words_label">НЯДАЎНА ВЫВУЧАНЫЯ</string>
+    <string name="quit_quiz_points_label">ачкоў</string>
+    <string name="quit_quiz_daily_goal_progress">Мэта на сёння: %1$d / %2$d ачкоў</string>
+    <string name="quit_quiz_daily_goal_one_away">Яшчэ трохі ачкоў да сённяшняй мэты! 🎯</string>
+    <string name="quit_quiz_daily_goal_reached">Сённяшняя мэта дасягнута! 🎉</string>
 
     <string name="quiz_mode_title">Выберыце рэжым тэста</string>
     <string name="quiz_mode_full_table">Тэст поўнай табліцы скланення</string>

@@ -63,6 +63,10 @@
     <string name="quit_quiz_keep_going">Продовжити</string>
     <string name="quit_quiz_leave">Покинути квіз</string>
     <string name="quit_quiz_recent_words_label">НЕЩОДАВНО ВИВЧЕНІ</string>
+    <string name="quit_quiz_points_label">балів</string>
+    <string name="quit_quiz_daily_goal_progress">Мета на сьогодні: %1$d / %2$d балів</string>
+    <string name="quit_quiz_daily_goal_one_away">Ще трохи балів до сьогоднішньої мети! 🎯</string>
+    <string name="quit_quiz_daily_goal_reached">Сьогоднішню мету досягнуто! 🎉</string>
 
     <string name="quiz_mode_title">Виберіть режим тесту</string>
     <string name="quiz_mode_full_table">Тест повної таблиці схилення</string>

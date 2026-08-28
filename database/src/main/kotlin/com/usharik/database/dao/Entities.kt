@@ -21,6 +21,7 @@ data class DailyTrainingStatsEntity(
     @ColumnInfo(name = "words_completed") var wordsCompleted: Int = 0,
     @ColumnInfo(name = "exercises_completed") var exercisesCompleted: Int = 0,
     @ColumnInfo(name = "errors_count") var errorsCount: Int = 0,
+    @ColumnInfo(name = "score") var score: Int = 0,
     @ColumnInfo(name = "updated_at") var updatedAt: Long = 0,
 )
 

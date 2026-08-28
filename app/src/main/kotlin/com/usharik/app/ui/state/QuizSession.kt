@@ -15,18 +15,32 @@ class QuizProgress(private val stats: TrainingStatsRepository) {
         private set
     var todayExercises by mutableStateOf(0)
         private set
+    var todayScore by mutableStateOf(0)
+        private set
     var recentWords by mutableStateOf<List<String>>(emptyList()) // oldest→newest
         private set
+
+    /** Today's progress towards the daily points goal, for the quit-quiz nudge. */
+    val dailyGoal: DailyGoal.Progress get() = DailyGoal.Progress(completed = todayScore)
 
     suspend fun load() {
         recentWords = stats.recentWords()
         refresh()
     }
 
-    suspend fun countWordCompleted(word: String) {
+    /** Awards points for a single correctly placed/answered form. */
+    suspend fun countCorrectForm() {
+        stats.addScorePoints(Scoring.POINTS_PER_CORRECT_FORM)
+        refresh()
+    }
+
+    /** Awards the word-completion bonus, plus the perfect-word bonus when there were no mistakes. */
+    suspend fun countWordCompleted(word: String, perfect: Boolean) {
         recentWords = ((recentWords - word) + word).takeLast(3)
         stats.saveRecentWords(recentWords)
         stats.incrementWordsCompleted()
+        val bonus = Scoring.POINTS_WORD_COMPLETED + if (perfect) Scoring.POINTS_PERFECT_BONUS else 0
+        stats.addScorePoints(bonus)
         refresh()
     }
 
@@ -37,10 +51,17 @@ class QuizProgress(private val stats: TrainingStatsRepository) {
 
     suspend fun countError() = stats.incrementErrorsCount()
 
+    /** Deducts a small penalty for negative behaviors (too many mistakes, timeout, skipping). */
+    suspend fun applyPenalty() {
+        stats.addScorePoints(-Scoring.POINTS_PENALTY)
+        refresh()
+    }
+
     private suspend fun refresh() {
         val s = stats.todayStats()
         todayWords = s?.wordsCompleted ?: 0
         todayExercises = s?.exercisesCompleted ?: 0
+        todayScore = s?.score ?: 0
     }
 }
 
@@ -62,6 +83,9 @@ abstract class QuizSession(
     /** Resets the per-mode question state for a freshly applied word. */
     protected abstract fun onWordApplied(word: WordInfo)
 
+    /** Whether the word being left behind was completed without any mistakes (perfect bonus). */
+    protected open fun isCurrentWordPerfect(): Boolean = true
+
     /** Restarts the current word for "try again"; defaults to a full re-apply (reshuffle). */
     protected open fun restart(word: WordInfo) = applyWord(word, countStats = false)
 
@@ -76,19 +100,30 @@ abstract class QuizSession(
         }
     }
 
-    fun nextWord(tryAgain: Boolean = false) {
+    /**
+     * Moves to a new word. [skipped] marks an explicit "next word" action taken before the
+     * current word was actually completed (e.g. the toolbar next button), which earns a small
+     * penalty instead of the word-completion bonus.
+     */
+    fun nextWord(tryAgain: Boolean = false, skipped: Boolean = false) {
         val current = word
         if (tryAgain && current != null) {
             restart(current)
             return
         }
-        scope.launch { applyWord(app.wordService.nextWord(current), countStats = true) }
+        scope.launch { applyWord(app.wordService.nextWord(current), countStats = true, skipped = skipped) }
     }
 
-    private fun applyWord(newWord: WordInfo, countStats: Boolean) {
+    private fun applyWord(newWord: WordInfo, countStats: Boolean, skipped: Boolean = false) {
+        // Captured before onWordApplied resets the per-word error state below.
+        val perfect = isCurrentWordPerfect()
         word = newWord
         app.lastWordStore.saveLastWord(lastWordMode, newWord.word())
         onWordApplied(newWord)
-        if (countStats) scope.launch { progress.countWordCompleted(newWord.word()) }
+        if (countStats) {
+            scope.launch {
+                if (skipped) progress.applyPenalty() else progress.countWordCompleted(newWord.word(), perfect)
+            }
+        }
     }
 }

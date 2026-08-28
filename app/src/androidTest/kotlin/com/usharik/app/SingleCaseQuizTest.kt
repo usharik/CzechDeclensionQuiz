@@ -1,12 +1,15 @@
 package com.usharik.app
 
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -105,5 +108,43 @@ class SingleCaseQuizTest : BaseComposeTest() {
         composeTestRule.onNodeWithTag(TestTags.SC_WORD).assertIsDisplayed()
 
         navigateHome()
+    }
+
+    /**
+     * "Next word" before reaching/answering the word's last question is a skip: it must dock a
+     * 1-point penalty instead of any completion/perfect bonus.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun skippingWordBeforeCompletionDeductsPenaltyPoint() {
+        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performClick()
+        waitForTag(TestTags.SC_WORD)
+
+        // Earn a point first so the penalty has something to subtract from (the score is
+        // clamped at 0, which would otherwise mask the deduction).
+        composeTestRule.onNodeWithTag("${TestTags.SC_ANSWER_PREFIX}0").performClick()
+        composeTestRule.waitForIdle()
+        val expectedScore = openQuitDialogAndReadScore() - 1
+
+        composeTestRule.onNodeWithTag(TestTags.SC_NEXT_WORD).performClick()
+        waitForTag(TestTags.SC_WORD, timeoutMillis = 8_000)
+
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
+    /**
+     * Opens the quit overlay via the toolbar home button, reads the persisted score off the
+     * [TestTags.FULL_QUIT_SCORE] stat column, then dismisses the overlay with "Keep going" so
+     * the quiz resumes exactly where it was left.
+     */
+    @OptIn(ExperimentalTestApi::class)
+    private fun openQuitDialogAndReadScore(): Int {
+        composeTestRule.onNodeWithTag(TestTags.NAV_HOME_BTN).performClick()
+        waitForTag(TestTags.FULL_QUIT_DIALOG)
+        val score = composeTestRule.onNodeWithTag(TestTags.FULL_QUIT_SCORE)
+            .fetchSemanticsNode().children.first().config[SemanticsProperties.Text].single().text.toInt()
+        composeTestRule.onNodeWithText("Keep going").performClick()
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(TestTags.FULL_QUIT_DIALOG) }
+        return score
     }
 }

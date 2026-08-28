@@ -56,7 +56,7 @@ import kotlin.math.roundToInt
  * session, timer and error counter keep running untouched); swiping left (or back) closes it.
  */
 /** Per-word time budget (seconds) before an ad is shown if the table isn't completed yet. */
-private const val WORD_TIMEOUT_SECONDS = 90
+private const val WORD_TIMEOUT_SECONDS = 120
 
 @Composable
 fun DeclensionQuizScreen(
@@ -90,6 +90,7 @@ fun DeclensionQuizScreen(
             scope.launch {
                 delay(600)
                 val showAd = app.adPolicy.onDeclensionWrongAnswer()
+                if (showAd) scope.launch { session.progress.applyPenalty() }
                 app.adManager.showAdIfNeeded(showAd, host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { if (showAd) session.resetErrorCounter() }
             }
         }
@@ -117,21 +118,22 @@ fun DeclensionQuizScreen(
         session.start()
     }
 
-    // 90s per-word countdown: if the player hasn't completed the table in time, show an ad and
-    // move on to a fresh word (which also resets the error counter). Any fresh word or a
-    // completed table bumps timerResetToken, restarting the countdown for the new word.
+    // Per-word countdown: if the player hasn't completed the table in time, show an ad and
+    // restart the countdown on the same word, keeping whatever cells they've already placed.
+    // A fresh word or a completed table also bumps timerResetToken, restarting the countdown.
     LaunchedEffect(session.timerResetToken) {
         remainingSeconds = WORD_TIMEOUT_SECONDS
         while (remainingSeconds > 0) {
             delay(1_000)
             remainingSeconds--
         }
+        scope.launch { session.progress.applyPenalty() }
         activity?.let { host ->
-            app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.nextWord() }
-        } ?: session.nextWord()
+            app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.resetTimer() }
+        } ?: session.resetTimer()
     }
     DisposableEffect(Unit) {
-        registerNext { session.nextWord() }
+        registerNext { session.nextWord(skipped = true) }
         onDispose { registerNext(null) }
     }
     // Back closes the handbook overlay first, then falls through to the quit overlay.
@@ -209,6 +211,7 @@ fun DeclensionQuizScreen(
 
     if (showCorrect) {
         CorrectAnswerDialog(
+            dailyGoal = session.progress.dailyGoal,
             onNextWord = { HapticFeedback.light(context); showCorrect = false; activity?.let { host -> app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionWordCompleted(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.nextWord() } } ?: session.nextWord() },
             onStayHere = { HapticFeedback.light(context); showCorrect = false },
             onTryAgain = { HapticFeedback.light(context); showCorrect = false; session.nextWord(tryAgain = true) },
@@ -219,7 +222,9 @@ fun DeclensionQuizScreen(
         QuitQuizDialog(
             words = session.progress.todayWords,
             exercises = session.progress.todayExercises,
+            score = session.progress.todayScore,
             recentWords = session.progress.recentWords.reversed(),
+            dailyGoal = session.progress.dailyGoal,
             onKeepGoing = { HapticFeedback.light(context); showQuit = false },
             onLeave = { HapticFeedback.light(context); showQuit = false; onQuit() },
             onDismiss = { showQuit = false },

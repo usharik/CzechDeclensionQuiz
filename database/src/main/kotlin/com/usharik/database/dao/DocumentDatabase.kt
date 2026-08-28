@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [DocumentEntity::class, DailyTrainingStatsEntity::class, ReminderStateEntity::class, RecentWordsEntity::class],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -61,10 +61,17 @@ abstract class DocumentDatabase : RoomDatabase() {
             }
         }
 
+        /** Adds the points-based score column backing the daily goal introduced after version 8. */
+        @JvmField val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `daily_training_stats` ADD COLUMN `score` INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         @JvmStatic
         fun getDocumentDatabase(context: Context): DocumentDatabase =
             Room.databaseBuilder(context.applicationContext, DocumentDatabase::class.java, DB_NAME)
-                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8)
+                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
                 .fallbackToDestructiveMigration(true)
                 .build()
     }

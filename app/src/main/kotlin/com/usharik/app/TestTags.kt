@@ -33,8 +33,11 @@ object TestTags {
     const val FULL_DIALOG_NEXT_WORD = "full_dialog_next_word"
     const val FULL_DIALOG_STAY_HERE = "full_dialog_stay_here"
     const val FULL_DIALOG_TRY_AGAIN = "full_dialog_try_again"
+    const val FULL_DIALOG_DAILY_GOAL = "full_dialog_daily_goal"
     const val FULL_QUIT_DIALOG = "full_quit_dialog"
     const val FULL_QUIT_EXERCISES = "full_quit_exercises"
+    const val FULL_QUIT_SCORE = "full_quit_score"
+    const val FULL_QUIT_DAILY_GOAL = "full_quit_daily_goal"
     const val FULL_QUIT_LEAVE = "full_quit_leave"
     const val FULL_HANDBOOK_OVERLAY = "full_handbook_overlay"
     const val FULL_QUIZ_ROOT = "full_quiz_root" // swipe gesture surface; spans the whole screen

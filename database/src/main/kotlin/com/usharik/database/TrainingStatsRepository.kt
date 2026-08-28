@@ -10,6 +10,7 @@ class TrainingStatsRepository(db: DocumentDatabase) {
     suspend fun incrementWordsCompleted() = dao.incrementWordsCompleted(today(), System.currentTimeMillis())
     suspend fun incrementExercisesCompleted() = dao.incrementExercisesCompleted(today(), System.currentTimeMillis())
     suspend fun incrementErrorsCount() = dao.incrementErrorsCount(today(), System.currentTimeMillis())
+    suspend fun addScorePoints(points: Int) = dao.addScorePoints(today(), points, System.currentTimeMillis())
     suspend fun todayStats(): DailyTrainingStatsEntity? = dao.statsByDate(today())
     suspend fun statsForDate(date: String): DailyTrainingStatsEntity? = dao.statsByDate(date)
     suspend fun reminderState(): ReminderStateEntity? = dao.reminderState()

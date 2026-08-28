@@ -69,7 +69,8 @@ fun SingleCaseQuizScreen(
         onNextWord = {
             HapticFeedback.light(context)
             app.analyticsService.logSingleCaseNavigation("NEXT_WORD", session.word?.word().orEmpty())
-            continueWithPotentialInterstitial { session.nextWord() }
+            val skipped = !session.isWordComplete()
+            continueWithPotentialInterstitial { session.nextWord(skipped = skipped) }
         },
     )
 
@@ -77,7 +78,9 @@ fun SingleCaseQuizScreen(
         QuitQuizDialog(
             words = session.progress.todayWords,
             exercises = session.progress.todayExercises,
+            score = session.progress.todayScore,
             recentWords = session.progress.recentWords.reversed(),
+            dailyGoal = session.progress.dailyGoal,
             onKeepGoing = { HapticFeedback.light(context); showQuit = false },
             onLeave = { HapticFeedback.light(context); showQuit = false; onQuit() },
             onDismiss = { showQuit = false },

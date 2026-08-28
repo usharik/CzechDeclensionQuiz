@@ -48,11 +48,20 @@ abstract class BaseComposeTest {
         composeTestRule.onNodeWithTag(TestTags.HUB_SCREEN).assertIsDisplayed()
     }
 
-    /** Whether a node with [tag] currently exists in the semantics tree. */
+    /**
+     * Whether a node with [tag] currently exists in the semantics tree.
+     *
+     * Also tolerates the transient [IllegalStateException] Compose throws when no hierarchy is
+     * attached at all (e.g. while a real interstitial ad activity is briefly in the foreground
+     * and [MainActivity] is paused) - callers polling with [tagExists] should just keep waiting
+     * rather than crash on that window.
+     */
     protected fun tagExists(tag: String): Boolean = try {
         composeTestRule.onNodeWithTag(tag).fetchSemanticsNode()
         true
     } catch (_: AssertionError) {
+        false
+    } catch (_: IllegalStateException) {
         false
     }
 

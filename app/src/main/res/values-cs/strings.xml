@@ -63,6 +63,10 @@
     <string name="quit_quiz_keep_going">Pokračovat</string>
     <string name="quit_quiz_leave">Opustit kvíz</string>
     <string name="quit_quiz_recent_words_label">NEDÁVNO STUDOVANÁ</string>
+    <string name="quit_quiz_points_label">bodů</string>
+    <string name="quit_quiz_daily_goal_progress">Dnešní cíl: %1$d / %2$d bodů</string>
+    <string name="quit_quiz_daily_goal_one_away">Ještě pár bodů k dnešnímu cíli! 🎯</string>
+    <string name="quit_quiz_daily_goal_reached">Dnešní cíl splněn! 🎉</string>
 
     <string name="quiz_mode_title">Vyberte režim testu</string>
     <string name="quiz_mode_full_table">Test úplné tabulky skloňování</string>
