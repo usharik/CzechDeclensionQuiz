@@ -39,8 +39,8 @@ class DeclensionQuizTest : BaseComposeTest() {
         composeTestRule.onNodeWithTag(TestTags.FULL_WORD).assertIsDisplayed()
         composeTestRule.onNodeWithTag(TestTags.FULL_ERROR_COUNTER).assertIsDisplayed()
 
-        // Error counter starts at 0/5
-        assertEquals("0/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+        // Error counter starts at 0/10
+        assertEquals("0/10", taggedText(TestTags.FULL_ERROR_COUNTER))
     }
 
     /**
@@ -81,7 +81,7 @@ class DeclensionQuizTest : BaseComposeTest() {
             !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
         }
         assertEquals(text, cellText(number = 0, caseIndex = 0))
-        assertEquals("0/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+        assertEquals("0/10", taggedText(TestTags.FULL_ERROR_COUNTER))
     }
 
     /** A solved cell may be rearranged, but it must never earn its correct-form points twice. */
@@ -119,7 +119,7 @@ class DeclensionQuizTest : BaseComposeTest() {
 
         dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
 
-        assertEquals("1/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+        assertEquals("1/10", taggedText(TestTags.FULL_ERROR_COUNTER))
         composeTestRule.waitUntil(timeoutMillis = 3_000) {
             tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
         }
@@ -168,12 +168,12 @@ class DeclensionQuizTest : BaseComposeTest() {
         val word = loadedWord()
         val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
         dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
-        assertEquals("1/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+        assertEquals("1/10", taggedText(TestTags.FULL_ERROR_COUNTER))
 
         composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performClick()
 
-        composeTestRule.waitUntil(timeoutMillis = 5_000) { taggedText(TestTags.FULL_ERROR_COUNTER) == "0/5" }
-        assertEquals("0/5", taggedText(TestTags.FULL_ERROR_COUNTER))
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { taggedText(TestTags.FULL_ERROR_COUNTER) == "0/10" }
+        assertEquals("0/10", taggedText(TestTags.FULL_ERROR_COUNTER))
     }
 
     /**
@@ -386,20 +386,20 @@ class DeclensionQuizTest : BaseComposeTest() {
     }
 
     /**
-     * Five wrong placements reach the same limit shown by the error badge, trigger the
+     * Ten wrong placements reach the same limit shown by the error badge, trigger the
      * interstitial policy, and reset the badge once the ad flow completes.
      */
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun fiveMistakesDeductPenaltyPoint() {
+    fun tenMistakesDeductPenaltyPoint() {
         openQuizAndWaitForWord()
         val word = loadedWord()
         val expectedScore = openQuitDialogAndReadScore() - 1
 
-        repeat(5) {
+        repeat(10) {
             val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
             dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
-            // The 5th mistake may briefly show a real interstitial ad (if one happened to load),
+            // The 10th mistake may briefly show a real interstitial ad (if one happened to load),
             // pausing the activity, so give this a longer timeout than a plain wrong-drop bounce.
             composeTestRule.waitUntil(timeoutMillis = 8_000) {
                 tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
@@ -409,7 +409,7 @@ class DeclensionQuizTest : BaseComposeTest() {
         // Wait through the real ad-flow callback rather than blocking the UI thread. Blocking it
         // would prevent the delayed threshold handler itself from applying the penalty/reset.
         composeTestRule.waitUntil(timeoutMillis = 3_000) {
-            taggedText(TestTags.FULL_ERROR_COUNTER) == "0/5"
+            taggedText(TestTags.FULL_ERROR_COUNTER) == "0/10"
         }
         assertEquals(expectedScore, openQuitDialogAndReadScore())
     }
