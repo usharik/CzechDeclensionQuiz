@@ -42,7 +42,7 @@ jobs:
           appium --version
       
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@v3
       
       - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses || true
@@ -207,3 +207,4 @@ jobs:
             } catch (error) {
               console.log('Unable to comment on PR (this is expected for Dependabot PRs):', error.message);
             }
+
