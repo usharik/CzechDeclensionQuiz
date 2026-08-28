@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     QuizSession(app, scope, LastWordStore.MODE_FULL_DECLENSION) {
 
-    enum class DropOutcome { IGNORED, CORRECT, WRONG, COMPLETED }
+    enum class DropOutcome { IGNORED, CORRECT, WRONG, ERROR_LIMIT_REACHED, COMPLETED }
 
     var models by mutableStateOf<List<WordModel>>(emptyList())
         private set
@@ -36,9 +36,12 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     var timerResetToken by mutableStateOf(0)
         private set
     private var errorCount = 0
+    private var tableCompleted = false
+    private val correctPlacementRewards = CorrectPlacementRewards()
 
     fun wordFor(ix: Int) = if (ix < 0 || ix >= models.size) "" else models[ix].word
     fun cellIdx(number: Int, caseNum: Int) = number * 7 + caseNum
+    fun isWordComplete(): Boolean = isComplete()
 
     override fun isCurrentWordPerfect(): Boolean = errorCount == 0
 
@@ -52,13 +55,15 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
         list.shuffle()
         models = list
         actual = List(14) { -1 }
-        wrongAttempts = 0; errorCount = 0; feedback = emptyMap()
+        wrongAttempts = 0; errorCount = 0; feedback = emptyMap(); tableCompleted = false
+        correctPlacementRewards.reset()
         timerResetToken++
     }
 
     /** Applies a drop (pool→cell, cell→cell swap or cell→pool return) and reports the outcome. */
     fun handleDrop(tag: String, target: Any?): DropOutcome {
         word ?: return DropOutcome.IGNORED
+        if (tableCompleted) return DropOutcome.IGNORED
         if (target == null) return DropOutcome.IGNORED
         val poolItem = !tag.contains("_")
         if (target == POOL_KEY) {
@@ -104,8 +109,16 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
                 }
             }
         }
-        if (!ok) return DropOutcome.WRONG
-        scope.launch { progress.countCorrectForm() }
+        if (!ok) {
+            return if (wrongAttempts == DeclensionQuizRules.MAX_WRONG_ATTEMPTS) {
+                DropOutcome.ERROR_LIMIT_REACHED
+            } else {
+                DropOutcome.WRONG
+            }
+        }
+        // Correctness alone is not enough to earn more points: rearranging a previously solved
+        // cell (including dropping it onto itself) must not be a scoring exploit.
+        if (correctPlacementRewards.claim(tIdx)) scope.launch { progress.countCorrectForm() }
         if (isComplete()) { onTableCompleted(); return DropOutcome.COMPLETED }
         return DropOutcome.CORRECT
     }
@@ -149,6 +162,7 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     // Counts the exercise and syncs the word's error-map entry once the table is filled correctly.
     private fun onTableCompleted() {
         val w = word ?: return
+        tableCompleted = true
         scope.launch { progress.countExerciseCompleted() }
         if (errorCount == 0) app.appState.removeWordFromErrorMap(w.word())
         if (errorCount > 2) app.appState.putWordToErrorMap(w.word(), errorCount)

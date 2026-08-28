@@ -78,6 +78,8 @@ abstract class QuizSession(
 ) {
     var word by mutableStateOf<WordInfo?>(null)
         private set
+    var isAdvancing by mutableStateOf(false)
+        private set
     val progress = QuizProgress(app.statsRepository)
 
     /** Resets the per-mode question state for a freshly applied word. */
@@ -87,7 +89,7 @@ abstract class QuizSession(
     protected open fun isCurrentWordPerfect(): Boolean = true
 
     /** Restarts the current word for "try again"; defaults to a full re-apply (reshuffle). */
-    protected open fun restart(word: WordInfo) = applyWord(word, countStats = false)
+    protected open fun restart(word: WordInfo) = applyWord(word)
 
     /** Awaits the dictionary, loads progress and restores the last word (or picks a fresh one). */
     suspend fun start() {
@@ -96,7 +98,7 @@ abstract class QuizSession(
         if (word == null) {
             val saved = app.lastWordStore.getLastWord(lastWordMode)
             val restored = saved?.takeIf { it.isNotBlank() }?.let { app.wordService.wordByName(it) }
-            if (restored != null) applyWord(restored, countStats = false) else nextWord()
+            if (restored != null) applyWord(restored) else nextWord()
         }
     }
 
@@ -105,25 +107,40 @@ abstract class QuizSession(
      * current word was actually completed (e.g. the toolbar next button), which earns a small
      * penalty instead of the word-completion bonus.
      */
-    fun nextWord(tryAgain: Boolean = false, skipped: Boolean = false) {
+    fun nextWord(
+        tryAgain: Boolean = false,
+        skipped: Boolean = false,
+        expectedCurrentWord: WordInfo? = word,
+    ) {
+        // Navigation has side effects (stats, history and word selection). Keep it single-flight
+        // so a double tap cannot score or skip the same word twice. The expected word also
+        // rejects a queued toolbar click that belongs to the word we have already replaced.
+        if (isAdvancing || word !== expectedCurrentWord) return
         val current = word
         if (tryAgain && current != null) {
             restart(current)
             return
         }
-        scope.launch { applyWord(app.wordService.nextWord(current), countStats = true, skipped = skipped) }
+        isAdvancing = true
+        scope.launch {
+            try {
+                // The word being left is what earned the completion bonus and belongs in history.
+                // In particular, opening the first fresh word (where [current] is null) must not
+                // create a phantom completion or perfect-word bonus.
+                if (current != null) {
+                    if (skipped) progress.applyPenalty()
+                    else progress.countWordCompleted(current.word(), isCurrentWordPerfect())
+                }
+                applyWord(app.wordService.nextWord(current))
+            } finally {
+                isAdvancing = false
+            }
+        }
     }
 
-    private fun applyWord(newWord: WordInfo, countStats: Boolean, skipped: Boolean = false) {
-        // Captured before onWordApplied resets the per-word error state below.
-        val perfect = isCurrentWordPerfect()
+    private fun applyWord(newWord: WordInfo) {
         word = newWord
         app.lastWordStore.saveLastWord(lastWordMode, newWord.word())
         onWordApplied(newWord)
-        if (countStats) {
-            scope.launch {
-                if (skipped) progress.applyPenalty() else progress.countWordCompleted(newWord.word(), perfect)
-            }
-        }
     }
 }

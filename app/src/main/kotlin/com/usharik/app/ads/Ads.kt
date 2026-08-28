@@ -9,6 +9,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
 
@@ -18,14 +19,10 @@ class ThreadLocalRandomProvider : RandomProvider { override fun nextDouble() = R
 
 class AdSessionState {
     private val words = AtomicInteger()
-    private val wrongAttempts = AtomicInteger()
     private val navigations = AtomicInteger()
 
     fun nextWord() = words.incrementAndGet()
     fun resetWords() = words.set(0)
-
-    fun nextWrongAttempt() = wrongAttempts.incrementAndGet()
-    fun resetWrongAttempts() = wrongAttempts.set(0)
 
     fun nextNavigation() = navigations.incrementAndGet()
     fun resetNavigations() = navigations.set(0)
@@ -42,13 +39,8 @@ open class InterstitialAdPolicy(private val state: AdSessionState, private val r
         return true
     }
 
-    fun onDeclensionWrongAnswer(): Boolean {
-        if (!areAdsEnabled()) return false
-        val count = state.nextWrongAttempt()
-        if (count < WRONG_ATTEMPTS_PER_AD) return false
-        state.resetWrongAttempts()
-        return true
-    }
+    /** The quiz session already establishes the visible per-word error limit. */
+    fun onDeclensionErrorLimitReached(): Boolean = areAdsEnabled()
 
     fun onDeclensionTimeout(): Boolean = areAdsEnabled()
 
@@ -62,7 +54,6 @@ open class InterstitialAdPolicy(private val state: AdSessionState, private val r
 
     companion object {
         const val WORDS_PER_AD = 10
-        const val WRONG_ATTEMPTS_PER_AD = 5
         const val NAVIGATIONS_PER_AD_ATTEMPT = 5
         const val NAVIGATION_AD_PROBABILITY = .4
     }
@@ -97,21 +88,34 @@ class AdManager {
 
     /**
      * Shows the cached ad for [unitId] if [condition] holds and one is ready, otherwise runs
-     * [action] straight away. Either way, a fresh ad is queued afterwards so the next call has
-     * one ready, and [action] always fires exactly once regardless of the ad's outcome.
+     * [action] straight away. If the cache is empty, queue a load before continuing so a slow
+     * initial load or transient load failure affects only this event, never all later ones.
+     * [action] always fires exactly once regardless of the ad's outcome.
      */
     fun showAdIfNeeded(condition: Boolean, activity: Activity, unitId: String, action: () -> Unit) {
         if (!condition) return action()
-        val ad = ads.remove(unitId) ?: return action()
+        val ad = ads.remove(unitId) ?: run {
+            loadAd(activity, unitId)
+            return action()
+        }
+        val actionDelivered = AtomicBoolean(false)
+        fun finish() {
+            if (actionDelivered.compareAndSet(false, true)) action()
+        }
         ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-            override fun onAdDismissedFullScreenContent() { loadAd(activity, unitId); action() }
+            override fun onAdDismissedFullScreenContent() { loadAd(activity, unitId); finish() }
             override fun onAdFailedToShowFullScreenContent(error: AdError) {
                 Log.w(TAG, "Failed to show ad $unitId: ${error.message}")
                 loadAd(activity, unitId)
-                action()
+                finish()
             }
         }
-        ad.show(activity)
+        runCatching { ad.show(activity) }
+            .onFailure {
+                Log.w(TAG, "Failed to start ad $unitId", it)
+                loadAd(activity, unitId)
+                finish()
+            }
     }
 
     private companion object {

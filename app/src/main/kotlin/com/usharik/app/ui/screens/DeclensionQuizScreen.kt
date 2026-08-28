@@ -35,11 +35,13 @@ import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
 import com.usharik.app.TestTags
+import com.usharik.app.ToolbarAction
 import com.usharik.app.ui.components.CorrectAnswerDialog
 import com.usharik.app.ui.components.QuitQuizDialog
 import com.usharik.app.ui.components.rememberDragAndDropState
 import com.usharik.app.ui.state.DeclensionQuizSession
 import com.usharik.app.ui.state.DeclensionQuizSession.DropOutcome
+import com.usharik.app.ui.state.DeclensionQuizRules
 import com.usharik.app.utils.HapticFeedback
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,7 +64,7 @@ private const val WORD_TIMEOUT_SECONDS = 120
 fun DeclensionQuizScreen(
     app: App,
     onQuit: () -> Unit,
-    registerNext: ((() -> Unit)?) -> Unit,
+    registerNext: (ToolbarAction?) -> Unit,
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
@@ -82,14 +84,14 @@ fun DeclensionQuizScreen(
     val handbookOffsetX = remember { Animatable(0f) }
     LaunchedEffect(screenWidthPx) { if (!showHandbook) handbookOffsetX.snapTo(-screenWidthPx.toFloat()) }
 
-    // Shown every WRONG_ATTEMPTS_PER_AD mistakes (across the whole app session, not per word).
-    // The error badge must reset once such an ad is actually dismissed, otherwise it keeps
-    // counting past 5 on the current word instead of starting fresh (e.g. showing "6/5").
+    // The session reports the exact same threshold that the error badge displays. Reset the
+    // badge only after the interstitial is dismissed (or unavailable), so the next mistake cycle
+    // consistently starts at 0 rather than displaying a value beyond its maximum.
     fun wrongAnswerAd() {
         activity?.let { host ->
             scope.launch {
                 delay(600)
-                val showAd = app.adPolicy.onDeclensionWrongAnswer()
+                val showAd = app.adPolicy.onDeclensionErrorLimitReached()
                 if (showAd) scope.launch { session.progress.applyPenalty() }
                 app.adManager.showAdIfNeeded(showAd, host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { if (showAd) session.resetErrorCounter() }
             }
@@ -106,8 +108,8 @@ fun DeclensionQuizScreen(
                 }
                 DropOutcome.WRONG -> {
                     HapticFeedback.error(context)
-                    wrongAnswerAd()
                 }
+                DropOutcome.ERROR_LIMIT_REACHED -> { HapticFeedback.error(context); wrongAnswerAd() }
                 DropOutcome.IGNORED -> Unit
             }
         }
@@ -122,18 +124,34 @@ fun DeclensionQuizScreen(
     // restart the countdown on the same word, keeping whatever cells they've already placed.
     // A fresh word or a completed table also bumps timerResetToken, restarting the countdown.
     LaunchedEffect(session.timerResetToken) {
+        // Completing the table bumps the token in onTableCompleted. Do not start a new countdown
+        // behind the completion dialog: a player choosing to review their answers must not later
+        // receive a timeout penalty or an interstitial.
+        if (session.isWordComplete()) return@LaunchedEffect
         remainingSeconds = WORD_TIMEOUT_SECONDS
         while (remainingSeconds > 0) {
             delay(1_000)
             remainingSeconds--
         }
+        // A correct final drop can win the race with the final timer tick.
+        if (session.isWordComplete()) return@LaunchedEffect
         scope.launch { session.progress.applyPenalty() }
         activity?.let { host ->
             app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.resetTimer() }
         } ?: session.resetTimer()
     }
+    // Capture the word represented by this toolbar action. If a second tap was queued while
+    // the first one advanced, QuizSession rejects it once the current word has changed.
+    val toolbarWord = session.word
+    SideEffect {
+        registerNext(
+            ToolbarAction(
+                onClick = { session.nextWord(skipped = true, expectedCurrentWord = toolbarWord) },
+                enabled = toolbarWord != null && !session.isAdvancing,
+            ),
+        )
+    }
     DisposableEffect(Unit) {
-        registerNext { session.nextWord(skipped = true) }
         onDispose { registerNext(null) }
     }
     // Back closes the handbook overlay first, then falls through to the quit overlay.
@@ -187,6 +205,7 @@ fun DeclensionQuizScreen(
             cellIdx = session::cellIdx,
             feedback = session.feedback,
             wrongAttempts = session.wrongAttempts,
+            maxWrongAttempts = DeclensionQuizRules.MAX_WRONG_ATTEMPTS,
             actual = session.actual,
             remainingSeconds = remainingSeconds,
             totalSeconds = WORD_TIMEOUT_SECONDS,

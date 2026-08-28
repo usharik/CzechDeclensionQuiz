@@ -31,6 +31,13 @@ class MainActivity : AppCompatActivity() {
         requestNotificationPermissionIfNeeded()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Keep the full-quiz interstitial warm before the player can reach either its error or
+        // timeout boundary. AdManager deduplicates cached and in-flight loads.
+        (application as App).adManager.loadAd(this, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID)
+    }
+
     private fun requestNotificationPermissionIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED

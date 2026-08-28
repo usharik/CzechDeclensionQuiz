@@ -38,4 +38,17 @@ class DatabaseMigrationTest {
         }
         migrated.close()
     }
+
+    @Test fun migrate8To9_addsScoreWithoutChangingExistingStats() {
+        val database: SupportSQLiteDatabase = helper.createDatabase("migration-8-9", 8)
+        database.execSQL("INSERT INTO daily_training_stats (date, words_completed, exercises_completed, errors_count, updated_at) VALUES ('2026-01-01', 4, 9, 2, 1)")
+        database.close()
+
+        val migrated = helper.runMigrationsAndValidate("migration-8-9", 9, true, DocumentDatabase.MIGRATION_8_9)
+        migrated.query("SELECT words_completed, exercises_completed, errors_count, score FROM daily_training_stats WHERE date = '2026-01-01'").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals(4, cursor.getInt(0)); assertEquals(9, cursor.getInt(1)); assertEquals(2, cursor.getInt(2)); assertEquals(0, cursor.getInt(3))
+        }
+        migrated.close()
+    }
 }

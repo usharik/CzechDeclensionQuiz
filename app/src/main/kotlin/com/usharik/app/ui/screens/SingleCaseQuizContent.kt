@@ -61,6 +61,7 @@ fun SingleCaseQuizContent(
     correct: String,
     answered: Boolean,
     selectedIndex: Int,
+    isAdvancing: Boolean,
     onAnswer: (Int) -> Unit,
     onNextCase: () -> Unit,
     onNextWord: () -> Unit,
@@ -148,13 +149,14 @@ fun SingleCaseQuizContent(
         GradientButton(
             text = stringResource(R.string.nextCase),
             gradient = AppColors.gradientSecondary,
-            enabled = answered,
+            enabled = answered && !isAdvancing,
             onClick = onNextCase,
             modifier = Modifier.fillMaxWidth().testTag(TestTags.SC_NEXT_CASE).padding(top = Dimens.spacingLg),
         )
         GradientButton(
             text = stringResource(R.string.next_word),
             gradient = AppColors.gradientPrimary,
+            enabled = !isAdvancing,
             onClick = onNextWord,
             modifier = Modifier.fillMaxWidth().testTag(TestTags.SC_NEXT_WORD).padding(top = Dimens.spacingLg),
         )

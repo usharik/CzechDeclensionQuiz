@@ -15,4 +15,11 @@ class InterstitialAdPolicyTest {
         val policy = InterstitialAdPolicy(AdSessionState()) { 1.0 }
         repeat(InterstitialAdPolicy.NAVIGATIONS_PER_AD_ATTEMPT) { assertFalse(policy.onSingleCaseNavigation()) }
     }
+
+    @Test fun errorLimitAndTimeoutAlwaysRequestAnInterstitial() {
+        val policy = InterstitialAdPolicy(AdSessionState()) { 0.0 }
+
+        assertTrue(policy.onDeclensionErrorLimitReached())
+        assertTrue(policy.onDeclensionTimeout())
+    }
 }

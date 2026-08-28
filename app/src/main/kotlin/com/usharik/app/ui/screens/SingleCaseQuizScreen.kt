@@ -55,6 +55,7 @@ fun SingleCaseQuizScreen(
         correct = session.correct,
         answered = session.answered,
         selectedIndex = session.selectedIndex,
+        isAdvancing = session.isAdvancing,
         onAnswer = { index ->
             HapticFeedback.light(context)
             session.selectAnswer(index)?.let { isCorrect ->

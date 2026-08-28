@@ -84,6 +84,29 @@ class DeclensionQuizTest : BaseComposeTest() {
         assertEquals("0/5", taggedText(TestTags.FULL_ERROR_COUNTER))
     }
 
+    /** A solved cell may be rearranged, but it must never earn its correct-form points twice. */
+    @Test
+    fun revisitingCorrectCellDoesNotAwardExtraPoints() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+        val expectedScore = openQuitDialogAndReadScore() + 3
+        val (poolIndex, _) = poolFormForTarget(word, number = 0, caseIndex = 0)
+
+        dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+        }
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+
+        dragCellToCell(
+            sourceNumber = 0,
+            sourceCaseIndex = 0,
+            targetNumber = 0,
+            targetCaseIndex = 0,
+        )
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
     /**
      * An invalid drop increments the error counter and returns the form to the word bank after
      * its shake animation.
@@ -336,9 +359,35 @@ class DeclensionQuizTest : BaseComposeTest() {
         assertEquals(expectedScore, openQuitDialogAndReadScore())
     }
 
+    /** Rapid repeated navigation must still score the current word/penalty exactly once. */
+    @Test
+    fun doubleTappingNextWordOnlyAppliesOnePenalty() {
+        openQuizAndWaitForWord()
+        val word = loadedWord()
+        val (poolIndex, _) = poolFormForTarget(word, number = 0, caseIndex = 0)
+        dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+        }
+        val expectedScore = openQuitDialogAndReadScore() - 1
+
+        // Two pointer-up events are sent in one gesture, before Compose can recompose the app
+        // bar for the next word. This mirrors an actual double tap rather than two deliberate
+        // navigations made after the new word is already visible.
+        composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performTouchInput {
+            down(center)
+            up()
+            down(center)
+            up()
+        }
+        waitForTag(TestTags.FULL_WORD)
+
+        assertEquals(expectedScore, openQuitDialogAndReadScore())
+    }
+
     /**
-     * Five wrong placements trigger the "wrong answer" ad policy, which docks a 1-point penalty
-     * regardless of whether a real ad was actually shown.
+     * Five wrong placements reach the same limit shown by the error badge, trigger the
+     * interstitial policy, and reset the badge once the ad flow completes.
      */
     @OptIn(ExperimentalTestApi::class)
     @Test
@@ -357,9 +406,11 @@ class DeclensionQuizTest : BaseComposeTest() {
             }
         }
 
-        // The ad-policy check runs on a short delay (see wrongAnswerAd's `delay(600)`); give it
-        // time to apply the penalty before reading the persisted score.
-        Thread.sleep(1_000)
+        // Wait through the real ad-flow callback rather than blocking the UI thread. Blocking it
+        // would prevent the delayed threshold handler itself from applying the penalty/reset.
+        composeTestRule.waitUntil(timeoutMillis = 3_000) {
+            taggedText(TestTags.FULL_ERROR_COUNTER) == "0/5"
+        }
         assertEquals(expectedScore, openQuitDialogAndReadScore())
     }
 
@@ -430,6 +481,28 @@ class DeclensionQuizTest : BaseComposeTest() {
             swipe(
                 start = sourceBounds.center - sourceOrigin,
                 end = targetBounds.center - sourceOrigin,
+                durationMillis = 400,
+            )
+        }
+    }
+
+    private fun dragCellToCell(sourceNumber: Int, sourceCaseIndex: Int, targetNumber: Int, targetCaseIndex: Int) {
+        val source = composeTestRule.onNodeWithTag("${TestTags.FULL_CELL_PREFIX}${sourceNumber}_$sourceCaseIndex")
+        val target = composeTestRule.onNodeWithTag("${TestTags.FULL_CELL_PREFIX}${targetNumber}_$targetCaseIndex")
+        val sourceBounds = source.fetchSemanticsNode().boundsInRoot
+        val targetBounds = target.fetchSemanticsNode().boundsInRoot
+        val sourceOrigin = sourceBounds.topLeft
+        val targetPoint = if (sourceNumber == targetNumber && sourceCaseIndex == targetCaseIndex) {
+            // Move far enough to exceed touch-slop but remain inside the same target cell.
+            targetBounds.topLeft + androidx.compose.ui.geometry.Offset(16f, 16f)
+        } else {
+            targetBounds.center
+        }
+
+        source.performTouchInput {
+            swipe(
+                start = sourceBounds.center - sourceOrigin,
+                end = targetPoint - sourceOrigin,
                 durationMillis = 400,
             )
         }

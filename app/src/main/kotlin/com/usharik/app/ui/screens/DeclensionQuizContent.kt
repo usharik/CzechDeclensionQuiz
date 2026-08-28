@@ -55,6 +55,7 @@ fun DeclensionQuizContent(
     cellIdx: (Int, Int) -> Int,
     feedback: Map<String, CellFeedback>,
     wrongAttempts: Int,
+    maxWrongAttempts: Int,
     actual: List<Int>,
     remainingSeconds: Int,
     totalSeconds: Int,
@@ -64,7 +65,7 @@ fun DeclensionQuizContent(
             if (word == null) {
                 Text("…", Modifier.padding(Dimens.spacingMd))
             } else {
-                QuizHeader(word, wrongAttempts, remainingSeconds, totalSeconds)
+                QuizHeader(word, wrongAttempts, maxWrongAttempts, remainingSeconds, totalSeconds)
                 WordBank(
                     models = models,
                     dnd = dnd,
@@ -101,7 +102,7 @@ fun DeclensionQuizContent(
 private val WarningYellow = Color(0xFFF9A825)
 
 @Composable
-private fun QuizHeader(word: WordInfo, wrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
+private fun QuizHeader(word: WordInfo, wrongAttempts: Int, maxWrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
     val translation = localizedTranslation(word)
     Row(Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs), verticalAlignment = Alignment.Bottom) {
         Text(word.word(), Modifier.testTag(TestTags.FULL_WORD), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 19.sp)
@@ -120,13 +121,13 @@ private fun QuizHeader(word: WordInfo, wrongAttempts: Int, remainingSeconds: Int
         Text(translation, Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         TimerBadge(remainingSeconds, totalSeconds)
         Text(" ", fontSize = 11.sp)
-        ErrorCounter(wrongAttempts)
+        ErrorCounter(wrongAttempts, maxWrongAttempts)
     }
 }
 
-/** "n/5" counter that bounces on each mistake and is color-coded: green(0) / yellow(1-2) / red(3+). */
+/** Mistake counter that bounces on each error and is color-coded: green / yellow / red. */
 @Composable
-private fun ErrorCounter(wrongAttempts: Int) {
+private fun ErrorCounter(wrongAttempts: Int, maxWrongAttempts: Int) {
     val scale = remember { Animatable(1f) }
     LaunchedEffect(wrongAttempts) {
         if (wrongAttempts == 0) return@LaunchedEffect
@@ -141,7 +142,7 @@ private fun ErrorCounter(wrongAttempts: Int) {
     }
     val color by animateColorAsState(targetColor, label = "errorCounterColor")
     Text(
-        "$wrongAttempts/5",
+        "$wrongAttempts/$maxWrongAttempts",
         Modifier.testTag(TestTags.FULL_ERROR_COUNTER).graphicsLayer { scaleX = scale.value; scaleY = scale.value },
         color = color,
         fontWeight = FontWeight.Bold,

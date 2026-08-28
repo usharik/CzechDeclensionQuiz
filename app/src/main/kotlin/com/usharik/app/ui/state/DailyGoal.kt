@@ -11,7 +11,7 @@ package com.usharik.app.ui.state
  */
 object DailyGoal {
     /** Points/day target: several words' worth of practice (~3*14 + 3 + 6 = 51 pts/perfect word). */
-    const val TARGET_POINTS = 300
+    const val TARGET_POINTS = 1000
 
     /** Progress of today's collected points towards [TARGET_POINTS]. */
     data class Progress(val completed: Int, val target: Int = TARGET_POINTS) {

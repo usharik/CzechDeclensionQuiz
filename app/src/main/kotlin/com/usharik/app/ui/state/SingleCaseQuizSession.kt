@@ -33,8 +33,15 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
 
     override fun isCurrentWordPerfect(): Boolean = !hasMistake
 
-    /** True once the player has reached and answered the word's very last question. */
-    fun isWordComplete(): Boolean = plural && caseIndex == 6 && answered
+    /** True once the current form is answered and no later non-empty form remains. */
+    fun isWordComplete(): Boolean {
+        val currentWord = word ?: return false
+        return WordQuestionProgress.isFinalAnsweredForm(
+            forms = formSequence(currentWord),
+            currentIndex = WordQuestionProgress.index(caseIndex, plural),
+            answered = answered,
+        )
+    }
 
     override fun onWordApplied(word: WordInfo) { hasMistake = false; resetToFirstQuestion(word) }
 
@@ -58,6 +65,7 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
 
     // Each answered case = one exercise (visible increment in the quit dialog).
     fun nextStep() {
+        if (!answered || isAdvancing) return
         scope.launch { progress.countExerciseCompleted() }
         val w = word ?: return
         var more = advance()
@@ -105,6 +113,10 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
     // Entries can have intentionally empty forms (e.g. plural-only words); those are skipped
     // instead of being presented as blank answers.
     private fun currentFormIsEmpty(w: WordInfo) = w.cases(if (plural) 1 else 0, caseIndex).isEmpty()
+
+    private fun formSequence(w: WordInfo): List<String> = List(WordQuestionProgress.FORMS_PER_NUMBER * 2) { index ->
+        w.cases(if (index < WordQuestionProgress.FORMS_PER_NUMBER) 0 else 1, index % WordQuestionProgress.FORMS_PER_NUMBER)
+    }
 
     private fun resetToFirstQuestion(w: WordInfo) {
         caseIndex = 0

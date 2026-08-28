@@ -56,12 +56,15 @@ private enum class Destination(@StringRes val titleRes: Int) {
     ABOUT(R.string.about),
 }
 
+/** A screen-owned action rendered in the app bar. */
+data class ToolbarAction(val onClick: () -> Unit, val enabled: Boolean = true)
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CzechQuizApp(app: App) {
     // Saveable so a configuration change (rotation, locale switch) keeps the current page.
     var destination by rememberSaveable { mutableStateOf(Destination.HUB) }
-    var nextAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var nextAction by remember { mutableStateOf<ToolbarAction?>(null) }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     // FULL and SINGLE own their back press (quit-quiz overlay); other pages return to the hub.
     BackHandler(enabled = destination != Destination.HUB && destination != Destination.FULL && destination != Destination.SINGLE) { destination = Destination.HUB }
@@ -98,7 +101,7 @@ fun CzechQuizApp(app: App) {
                     maxLines = 1,
                 )
                 nextAction?.let { action ->
-                    IconButton(onClick = action, modifier = Modifier.testTag(TestTags.NAV_NEXT_BTN)) {
+                    IconButton(onClick = action.onClick, enabled = action.enabled, modifier = Modifier.testTag(TestTags.NAV_NEXT_BTN)) {
                         Icon(
                             painterResource(R.drawable.ic_arrow_forward_white_18dp),
                             contentDescription = stringResource(R.string.nextCase),
