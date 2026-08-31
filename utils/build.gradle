@@ -21,6 +21,6 @@ jar {
 dependencies {
     sourceSets.main.java.srcDirs = ['src']
     testImplementation 'junit:junit:4.13.2'
-    implementation 'org.xerial:sqlite-jdbc:3.53.2.1'
+    implementation 'org.xerial:sqlite-jdbc:3.53.4.0'
     implementation 'com.google.code.gson:gson:2.14.0'
 }
