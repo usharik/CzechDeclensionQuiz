@@ -115,8 +115,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.14.0'
 
     // Database
-    implementation 'androidx.room:room-runtime:2.8.4'
-    implementation 'androidx.room:room-ktx:2.8.4'
+    implementation 'androidx.room:room-runtime:2.8.5'
+    implementation 'androidx.room:room-ktx:2.8.5'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
