@@ -31,6 +31,20 @@ class WordService(
         }
     }
 
+    /**
+     * Next word for review mode: a random word from the mistakes list, avoiding an immediate
+     * repeat while other words remain. Null once the list is empty (everything was reviewed).
+     */
+    suspend fun nextReviewWord(currentWord: WordInfo?): WordInfo? {
+        val keys = appState.getWordsWithErrors().keys
+        val candidates = keys.filter { it != currentWord?.word() }.ifEmpty { keys.toList() }.shuffled()
+        for (key in candidates) {
+            documentRepository.wordInfoByWord(key)?.let { return it }
+            appState.removeWordFromErrorMap(key)
+        }
+        return null
+    }
+
     private suspend fun randomErrorWord(previous: String, genderFilter: String?): WordInfo? {
         val key = appState.wordsWithErrorsFlow.value.keys.randomOrNull() ?: return null
         val word = documentRepository.wordInfoByWord(key)

@@ -29,9 +29,9 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
         private set
     var selectedIndex by mutableStateOf(-1)
         private set
-    private var hasMistake = false
+    private var mistakes = 0
 
-    override fun isCurrentWordPerfect(): Boolean = !hasMistake
+    override fun isCurrentWordPerfect(): Boolean = mistakes == 0
 
     /** True once the current form is answered and no later non-empty form remains. */
     fun isWordComplete(): Boolean {
@@ -43,17 +43,17 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
         )
     }
 
-    override fun onWordApplied(word: WordInfo) { hasMistake = false; resetToFirstQuestion(word) }
+    override fun onWordApplied(word: WordInfo) { mistakes = 0; resetToFirstQuestion(word) }
 
     /** "Try again" restarts the same word from its first question without re-counting stats. */
-    override fun restart(word: WordInfo) { hasMistake = false; resetToFirstQuestion(word) }
+    override fun restart(word: WordInfo) { mistakes = 0; resetToFirstQuestion(word) }
 
     /** Registers the pick; returns whether it was correct, or null when the tap is ignored. */
     fun selectAnswer(index: Int): Boolean? {
         if (answered || index >= answers.size) return null
         val selected = answers[index]
         val isCorrect = selected == correct
-        if (isCorrect) scope.launch { progress.countCorrectForm() } else { hasMistake = true; scope.launch { progress.countError() } }
+        if (isCorrect) scope.launch { progress.countCorrectForm() } else { mistakes++; scope.launch { progress.countError() } }
         app.analyticsService.logSingleCaseAnswer(
             isCorrect, selected, correct,
             word?.word().orEmpty(), CzechCase.fromIndex(caseIndex).displayName,
@@ -71,11 +71,22 @@ class SingleCaseQuizSession(app: App, scope: CoroutineScope) :
         var more = advance()
         while (more && currentFormIsEmpty(w)) more = advance()
         if (!more) {
+            rememberMistakes(w)
             nextWord()
             return
         }
         prepareQuestion()
     }
+
+    // Words the player struggled with join the mistakes list, so review mode can revisit them.
+    // A clean run doesn't remove them: only a mistake-free full table proves the word is learned.
+    private fun rememberMistakes(w: WordInfo) {
+        if (mistakes < MISTAKES_TO_REVIEW) return
+        app.appState.putWordToErrorMap(w.word(), maxOf(mistakes, app.appState.getWordsWithErrors()[w.word()] ?: 0))
+        app.persistWordsWithErrors()
+    }
+
+    private companion object { const val MISTAKES_TO_REVIEW = 2 }
 
     // Mirrors the legacy buildAnswers: unique distractors from all forms of the current word,
     // shuffled, then the correct answer mixed in with up to three of them.

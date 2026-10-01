@@ -1,20 +1,18 @@
 package com.usharik.app.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,21 +21,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.CaseTable
-import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
 import kotlinx.coroutines.launch
@@ -67,11 +58,10 @@ private val otherNouns = mapOf(
 )
 
 /**
- * Declension handbook. Faithful Compose port of HandbookFragment/ViewModel +
- * handbook_fragment.xml: gender radio row, per-gender paradigm radio row, the "other nouns"
- * hint and a bottom-anchored table of the seven case rows (reusing the row_case cells).
+ * Declension handbook: a gender switch, the per-gender paradigm chips, the "other nouns" hint
+ * and a bottom-anchored table of the seven case rows.
  */
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HandbookScreen(app: App) {
     val context = LocalContext.current
@@ -81,7 +71,7 @@ fun HandbookScreen(app: App) {
     // being torn down and recreated - e.g. swiping the quiz's handbook overlay closed and
     // reopening it - instead of resetting to the masculine "pán" default every time.
     var gender by remember { mutableStateOf(HandbookGender.valueOf(app.appState.getHandbookGender())) }
-    // Each gender group keeps its own checked paradigm, like the three XML RadioGroups.
+    // Each gender group keeps its own checked paradigm.
     var checked by remember {
         mutableStateOf(app.appState.getHandbookParadigmByGender().mapKeys { (g, _) -> HandbookGender.valueOf(g) })
     }
@@ -113,104 +103,55 @@ fun HandbookScreen(app: App) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(start = Dimens.spacingXxs, top = Dimens.spacingSm, end = Dimens.spacingXxs),
+            .padding(horizontal = Dimens.spacingSm)
+            .padding(top = Dimens.spacingXs),
     ) {
-        Text(
-            stringResource(R.string.gender_of_noun),
-            Modifier.fillMaxWidth().padding(top = Dimens.spacingContent),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Bold,
-            fontSize = Dimens.textTitle,
-            textAlign = TextAlign.Center,
-        )
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
-        ) {
-            HandbookRadio(stringResource(R.string.masculine), gender == HandbookGender.MASCULINE, Modifier.weight(1f)) {
-                selectGender(HandbookGender.MASCULINE)
-            }
-            HandbookRadio(stringResource(R.string.neuter), gender == HandbookGender.NEUTER, Modifier.weight(1f)) {
-                selectGender(HandbookGender.NEUTER)
-            }
-            HandbookRadio(stringResource(R.string.feminine), gender == HandbookGender.FEMININE, Modifier.weight(1f)) {
-                selectGender(HandbookGender.FEMININE)
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+            val genders = listOf(
+                HandbookGender.MASCULINE to R.string.masculine,
+                HandbookGender.NEUTER to R.string.neuter,
+                HandbookGender.FEMININE to R.string.feminine,
+            )
+            genders.forEachIndexed { index, (g, label) ->
+                SegmentedButton(
+                    selected = gender == g,
+                    onClick = { selectGender(g) },
+                    shape = SegmentedButtonDefaults.itemShape(index, genders.size),
+                    label = { Text(stringResource(label), maxLines = 1) },
+                )
             }
         }
         Text(
             stringResource(R.string.type_of_declension),
-            Modifier.fillMaxWidth().padding(top = Dimens.spacingSm),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = Dimens.textBody,
-            textAlign = TextAlign.Center,
+            Modifier.padding(top = Dimens.spacingSmLarge, start = Dimens.spacingXs),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelLarge,
         )
-        // Natural-width items wrapping onto extra lines so every paradigm word is fully visible.
+        // Natural-width chips wrapping onto extra lines so every paradigm word is fully visible.
         FlowRow(
-            Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXxs).padding(top = Dimens.spacingXs),
-            horizontalArrangement = Arrangement.Center,
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSm),
         ) {
             gender.paradigms.forEach { word ->
-                HandbookRadio(word, checked[gender] == word) { selectWord(word) }
+                FilterChip(
+                    selected = checked[gender] == word,
+                    onClick = { selectWord(word) },
+                    label = { Text(word, fontSize = Dimens.textBody) },
+                )
             }
         }
-        Row(Modifier.fillMaxWidth().padding(top = Dimens.spacingSm, bottom = Dimens.spacingSm)) {
-            Text(
-                stringResource(R.string.other_nouns),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = Dimens.textLabel,
-            )
-            Text(
-                otherNouns[shownWord].orEmpty(),
-                Modifier.padding(start = Dimens.spacingXxs),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = Dimens.textSmall,
-            )
-        }
+        Text(
+            "${stringResource(R.string.other_nouns)} ${otherNouns[shownWord].orEmpty()}",
+            Modifier.padding(start = Dimens.spacingXs, bottom = Dimens.spacingXs),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = Dimens.textLabel,
+        )
         CaseTable(
             cases,
             Modifier
                 .weight(1f)
-                .padding(horizontal = Dimens.spacingXxs)
-                .padding(top = Dimens.spacingContent, bottom = Dimens.spacingSm),
+                .padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm),
         )
-        BannerAd(
-            app,
-            BuildConfig.ADMOB_BANNER_AD_UNIT_ID,
-            Modifier
-                .fillMaxWidth()
-                .padding(top = Dimens.spacingSm)
-                .heightIn(min = 60.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-        )
-    }
-}
-
-/**
- * One selector chip in the original HandbookRadioButton style: no radio circle, rounded-rect
- * background (radio_button_background) — gray fill when checked, outlined surface otherwise.
- */
-@Composable
-private fun HandbookRadio(text: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(Dimens.cornerLarge)
-    Box(
-        modifier
-            .padding(Dimens.spacingXxs)
-            .clip(shape)
-            .background(if (selected) AppColors.answerNeutral else MaterialTheme.colorScheme.surface, shape)
-            .border(Dimens.strokeThin, AppColors.stroke, shape)
-            // selectable (not clickable) so TalkBack announces the radio role and checked state.
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
-            .padding(
-                horizontal = Dimens.spacingSm + Dimens.shapeInnerPadding,
-                vertical = Dimens.spacingXs + Dimens.shapeInnerPadding,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = Dimens.textBody,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-        )
+        BannerAd(app, BuildConfig.ADMOB_BANNER_AD_UNIT_ID)
     }
 }

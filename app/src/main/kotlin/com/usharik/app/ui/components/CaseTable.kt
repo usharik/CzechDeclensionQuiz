@@ -17,6 +17,7 @@ import com.usharik.database.WordInfo
 @Composable
 fun CaseTable(cases: Array<Array<String>>, modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent)) {
+        CaseColumnsHeader(Modifier.fillMaxWidth())
         for (i in 0 until 7) {
             RowCase(
                 num = i,

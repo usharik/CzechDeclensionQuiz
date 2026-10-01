@@ -1,5 +1,6 @@
 package com.usharik.app
 
+import com.usharik.app.ui.state.DailyGoal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +12,9 @@ class AppState {
 
     private val _genderFilter = MutableStateFlow(Gender.ALL)
     val genderFilterFlow: StateFlow<String> = _genderFilter.asStateFlow()
+
+    private val _dailyGoal = MutableStateFlow(DailyGoal.DEFAULT.points)
+    val dailyGoalFlow: StateFlow<Int> = _dailyGoal.asStateFlow()
 
     private val _switchOffAnimation = MutableStateFlow(false)
     val switchOffAnimationFlow: StateFlow<Boolean> = _switchOffAnimation.asStateFlow()
@@ -27,6 +31,8 @@ class AppState {
     fun getWordsWithErrors(): Map<String, Int> = _wordsWithErrors.value
     fun getGenderFilterStr(): String = _genderFilter.value
     fun getSwitchOffAnimation(): Boolean = _switchOffAnimation.value
+    fun getDailyGoal(): Int = _dailyGoal.value
+    fun setDailyGoal(points: Int) { _dailyGoal.value = DailyGoal.Level.fromPoints(points).points }
     fun getHandbookGender(): String = _handbookGender.value
     fun getHandbookParadigmByGender(): Map<String, String> = _handbookParadigmByGender.value
     fun setWordsWithErrors(value: Map<String, Int>?) { _wordsWithErrors.value = value?.toMap().orEmpty() }

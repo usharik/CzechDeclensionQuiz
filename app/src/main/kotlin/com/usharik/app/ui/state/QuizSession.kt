@@ -10,7 +10,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /** Today's training counters and the recent-words list shown in the quit-quiz overlay. */
-class QuizProgress(private val stats: TrainingStatsRepository) {
+class QuizProgress(
+    private val stats: TrainingStatsRepository,
+    private val goalTarget: () -> Int,
+    private val onGoalReached: () -> Unit = {},
+) {
     var todayWords by mutableStateOf(0)
         private set
     var todayExercises by mutableStateOf(0)
@@ -21,7 +25,7 @@ class QuizProgress(private val stats: TrainingStatsRepository) {
         private set
 
     /** Today's progress towards the daily points goal, for the quit-quiz nudge. */
-    val dailyGoal: DailyGoal.Progress get() = DailyGoal.Progress(completed = todayScore)
+    val dailyGoal: DailyGoal.Progress get() = DailyGoal.Progress(completed = todayScore, target = goalTarget())
 
     suspend fun load() {
         recentWords = stats.recentWords()
@@ -51,7 +55,13 @@ class QuizProgress(private val stats: TrainingStatsRepository) {
 
     suspend fun countError() = stats.incrementErrorsCount()
 
-    /** Deducts a small penalty for negative behaviors (too many mistakes, timeout, skipping). */
+    /** Awards an extra bonus (e.g. for clearing a word in review mode). */
+    suspend fun addBonus(points: Int) {
+        stats.addScorePoints(points)
+        refresh()
+    }
+
+    /** Deducts a small penalty for skipping a word before completing it. */
     suspend fun applyPenalty() {
         stats.addScorePoints(-Scoring.POINTS_PENALTY)
         refresh()
@@ -59,10 +69,16 @@ class QuizProgress(private val stats: TrainingStatsRepository) {
 
     private suspend fun refresh() {
         val s = stats.todayStats()
+        val before = todayScore
         todayWords = s?.wordsCompleted ?: 0
         todayExercises = s?.exercisesCompleted ?: 0
         todayScore = s?.score ?: 0
+        if (loaded && before < goalTarget() && todayScore >= goalTarget()) onGoalReached()
+        loaded = true
     }
+
+    // The first refresh only loads today's score; it must not report a goal reached earlier.
+    private var loaded = false
 }
 
 /**
@@ -80,7 +96,20 @@ abstract class QuizSession(
         private set
     var isAdvancing by mutableStateOf(false)
         private set
-    val progress = QuizProgress(app.statsRepository)
+    /** Set when [pickNextWord] runs out of words (review mode with an emptied mistakes list). */
+    var noMoreWords by mutableStateOf(false)
+        private set
+    val progress = QuizProgress(
+        app.statsRepository,
+        goalTarget = { app.appState.getDailyGoal() },
+        onGoalReached = { app.analyticsService.logEvent("daily_goal_reached") },
+    )
+
+    /** Chooses the word after [current]; null ends the session (see [noMoreWords]). */
+    protected open suspend fun pickNextWord(current: WordInfo?): WordInfo? = app.wordService.nextWord(current)
+
+    /** Whether the word saved from the previous visit may be resumed. */
+    protected open fun canResume(word: WordInfo): Boolean = true
 
     /** Resets the per-mode question state for a freshly applied word. */
     protected abstract fun onWordApplied(word: WordInfo)
@@ -97,7 +126,7 @@ abstract class QuizSession(
         progress.load()
         if (word == null) {
             val saved = app.lastWordStore.getLastWord(lastWordMode)
-            val restored = saved?.takeIf { it.isNotBlank() }?.let { app.wordService.wordByName(it) }
+            val restored = saved?.takeIf { it.isNotBlank() }?.let { app.wordService.wordByName(it) }?.takeIf(::canResume)
             if (restored != null) applyWord(restored) else nextWord()
         }
     }
@@ -131,7 +160,8 @@ abstract class QuizSession(
                     if (skipped) progress.applyPenalty()
                     else progress.countWordCompleted(current.word(), isCurrentWordPerfect())
                 }
-                applyWord(app.wordService.nextWord(current))
+                val next = pickNextWord(current)
+                if (next == null) noMoreWords = true else applyWord(next)
             } finally {
                 isAdvancing = false
             }

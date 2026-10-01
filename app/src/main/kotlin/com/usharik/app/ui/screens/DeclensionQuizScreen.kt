@@ -38,6 +38,7 @@ import com.usharik.app.TestTags
 import com.usharik.app.ToolbarAction
 import com.usharik.app.ui.components.CorrectAnswerDialog
 import com.usharik.app.ui.components.QuitQuizDialog
+import com.usharik.app.ui.components.ReviewCompleteDialog
 import com.usharik.app.ui.components.rememberDragAndDropState
 import com.usharik.app.ui.state.DeclensionQuizSession
 import com.usharik.app.ui.state.DeclensionQuizSession.DropOutcome
@@ -48,14 +49,15 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
- * Full declension-table quiz. Faithful Compose port of DeclensionQuizFragment +
- * DeclensionQuizViewModel: a shuffled pool of forms is dragged into a 7×2 case grid; correct
+ * Full declension-table quiz: a shuffled pool of forms is dragged into a 7×2 case grid; correct
  * placements bounce and stay, wrong ones shake and return, and completing the table shows the
  * correct-answer dialog. Back shows the quit overlay with today's stats. Quiz logic and state
  * live in [DeclensionQuizSession]; this composable only wires UI concerns (haptics, ads, dialogs).
  *
  * Swiping right opens the handbook as an overlay (without leaving this screen, so the quiz
  * session, timer and error counter keep running untouched); swiping left (or back) closes it.
+ *
+ * With [review] set, the same quiz runs over the mistakes list only (see [DeclensionQuizSession]).
  */
 /** Per-word time budget (seconds) before an ad is shown if the table isn't completed yet. */
 private const val WORD_TIMEOUT_SECONDS = 120
@@ -65,12 +67,13 @@ fun DeclensionQuizScreen(
     app: App,
     onQuit: () -> Unit,
     registerNext: (ToolbarAction?) -> Unit,
+    review: Boolean = false,
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
     val scope = rememberCoroutineScope()
     val dnd = rememberDragAndDropState()
-    val session = remember { DeclensionQuizSession(app, scope) }
+    val session = remember { DeclensionQuizSession(app, scope, review) }
     var showCorrect by remember { mutableStateOf(false) }
     var showQuit by remember { mutableStateOf(false) }
     var showHandbook by remember { mutableStateOf(false) }
@@ -92,7 +95,6 @@ fun DeclensionQuizScreen(
             scope.launch {
                 delay(600)
                 val showAd = app.adPolicy.onDeclensionErrorLimitReached()
-                if (showAd) scope.launch { session.progress.applyPenalty() }
                 app.adManager.showAdIfNeeded(showAd, host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { if (showAd) session.resetErrorCounter() }
             }
         }
@@ -135,7 +137,6 @@ fun DeclensionQuizScreen(
         }
         // A correct final drop can win the race with the final timer tick.
         if (session.isWordComplete()) return@LaunchedEffect
-        scope.launch { session.progress.applyPenalty() }
         activity?.let { host ->
             app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.resetTimer() }
         } ?: session.resetTimer()
@@ -240,7 +241,13 @@ fun DeclensionQuizScreen(
             onRateApp = { HapticFeedback.light(context); showCorrect = false; rateApp() },
         )
     }
-    if (showQuit) {
+    if (session.noMoreWords) {
+        ReviewCompleteDialog(
+            dailyGoal = session.progress.dailyGoal,
+            onBackToMenu = { HapticFeedback.light(context); onQuit() },
+        )
+    }
+    if (showQuit && !session.noMoreWords) {
         QuitQuizDialog(
             words = session.progress.todayWords,
             exercises = session.progress.todayExercises,

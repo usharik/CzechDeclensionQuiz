@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tschechische Deklination</string>
-    <string name="check">Überprüfen</string>
     <string name="nextCase">Nächster Fall</string>
-    <string name="OK" translatable="false">OK</string>
-    <string name="Yes">Ja</string>
-    <string name="No">Nein</string>
     <string name="correct_answer">Alles richtig!</string>
     <string name="next_word">Nächstes Wort</string>
     <string name="stay_here">Hier bleiben</string>
     <string name="try_again">Versuche es erneut</string>
-    <string name="toast_some_errors">Es gibt mehrere Fehler.</string>
     <string name="version">Version %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Erstellungsdatum %s</string>
-    <string name="gender_of_noun">Geschlecht des Substantivs</string>
     <string name="type_of_declension">Deklinationstyp</string>
     <string name="masculine">Maskulinum</string>
     <string name="neuter">Neutrum</string>
     <string name="feminine">Femininum</string>
-    <string name="declension_quiz_1">Deklinationstest</string>
     <string name="handbook">Handbuch</string>
     <string name="about">Über die App</string>
-    <string name="nav_home">Startseite</string>
     <string name="other_nouns">Andere Substantive:</string>
     <string name="rate_app">App bewerten</string>
     <string name="rate_app_unavailable">Kein App Store gefunden</string>
@@ -43,17 +35,12 @@
     <string name="notification_channel_name">Tägliche Erinnerung</string>
     <string name="notification_channel_description">Erinnerung zum Üben der tschechischen Deklination</string>
     <string name="notification_title">Zeit zum Üben! 🇨🇿</string>
-    <string name="notification_body_active">Bleib dran — ein kurzes Quiz wartet auf dich!</string>
     <string name="notification_body_inactive">Es ist schon eine Weile her. Komm zurück und übe weiter!</string>
     <string name="notification_action_start_quiz">Quiz starten</string>
     <string name="notification_welcome_title">Benachrichtigungen aktiviert! 🎉</string>
     <string name="notification_welcome_body">Du bekommst täglich Erinnerungen, damit du regelmäßig übst.</string>
 
     <!-- Notification permission rationale dialog -->
-    <string name="notification_rationale_title">Bleib dran! 🔔</string>
-    <string name="notification_rationale_body">Möchtest du tägliche Erinnerungen erhalten? Ein kleiner Anstoß hilft dir, regelmäßig zu üben und motiviert zu bleiben.</string>
-    <string name="notification_rationale_enable">Ja, erinnere mich!</string>
-    <string name="notification_rationale_not_now">Nicht jetzt</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Weiter so! 💪</string>
@@ -72,12 +59,6 @@
     <string name="quiz_mode_full_table">Test der gesamten Deklinationstabelle</string>
     <string name="quiz_mode_one_case">Test eines Falls</string>
 
-    <string-array name="next_word_dialog">
-        <item>Nächstes Wort</item>
-        <item>Hier bleiben</item>
-        <item>Versuche es erneut</item>
-        <item>App bewerten</item>
-    </string-array>
 
     <array name="caseName">
         <item>Nominativ</item>
@@ -108,4 +89,65 @@
         <item>o</item>
         <item>s</item>
     </array>
+
+    <!-- Progress: streak, daily goal and review mode -->
+    <string name="review_title">Fehler wiederholen</string>
+    <string name="review_complete_title">Alle Fehler wiederholt! 🎉</string>
+    <string name="review_complete_message">Deine Fehlerliste ist leer. Gute Arbeit!</string>
+    <string name="review_complete_back">Zurück zum Menü</string>
+    <string name="errors_empty">Noch keine Fehler. Wörter, bei denen du Fehler machst, erscheinen hier zum Wiederholen.</string>
+    <string name="daily_goal">Tagesziel</string>
+    <string name="daily_goal_light">Locker — %d Punkte am Tag</string>
+    <string name="daily_goal_regular">Normal — %d Punkte am Tag</string>
+    <string name="daily_goal_intense">Intensiv — %d Punkte am Tag</string>
+    <string name="progress_status_goal_reached">Tagesziel erreicht! 🎉 Komm morgen wieder, um deine Serie auszubauen.</string>
+    <string name="progress_best_streak">Rekord: %d</string>
+    <string name="progress_goal_label">heute</string>
+    <string name="notification_review_body">Eine kurze Wiederholung entfernt sie endgültig aus deiner Fehlerliste.</string>
+    <plurals name="progress_status_streak_kept">
+        <item quantity="one">Serie heute verlängert ✓ Noch %d Punkt bis zum Tagesziel.</item>
+        <item quantity="other">Serie heute verlängert ✓ Noch %d Punkte bis zum Tagesziel.</item>
+    </plurals>
+    <plurals name="progress_status_keep_streak">
+        <item quantity="one">Sammle heute %d Punkt, um deine Serie zu halten.</item>
+        <item quantity="other">Sammle heute %d Punkte, um deine Serie zu halten.</item>
+    </plurals>
+    <plurals name="progress_status_start_streak">
+        <item quantity="one">Sammle heute %d Punkt, um eine Serie zu starten.</item>
+        <item quantity="other">Sammle heute %d Punkte, um eine Serie zu starten.</item>
+    </plurals>
+    <plurals name="notification_streak_body">
+        <item quantity="one">Sammle heute %d Punkt, um sie fortzusetzen.</item>
+        <item quantity="other">Sammle heute %d Punkte, um sie fortzusetzen.</item>
+    </plurals>
+    <plurals name="notification_rescue_body">
+        <item quantity="one">Sammle %d Punkt bis Mitternacht, um sie zu retten — nur ein paar Fälle.</item>
+        <item quantity="other">Sammle %d Punkte bis Mitternacht, um sie zu retten — nur ein paar Fälle.</item>
+    </plurals>
+    <plurals name="progress_streak_days">
+        <item quantity="one">Tag in Folge</item>
+        <item quantity="other">Tage in Folge</item>
+    </plurals>
+    <plurals name="progress_review_button">
+        <item quantity="one">Fehler wiederholen: %d Wort</item>
+        <item quantity="other">Fehler wiederholen: %d Wörter</item>
+    </plurals>
+    <plurals name="notification_streak_title">
+        <item quantity="one">🔥 %d Tag in Folge!</item>
+        <item quantity="other">🔥 %d Tage in Folge!</item>
+    </plurals>
+    <plurals name="notification_rescue_title">
+        <item quantity="one">Deine Serie von %d Tag endet um Mitternacht! 🔥</item>
+        <item quantity="other">Deine Serie von %d Tagen endet um Mitternacht! 🔥</item>
+    </plurals>
+    <plurals name="notification_review_title">
+        <item quantity="one">%d Wort wartet auf Wiederholung</item>
+        <item quantity="other">%d Wörter warten auf Wiederholung</item>
+    </plurals>
+    <string name="singular">Singular</string>
+    <string name="plural">Plural</string>
+    <string name="nav_back">Zurück</string>
+    <string name="quiz_mode_full_table_desc">Ziehe alle Formen in die 14 Felder der Tabelle</string>
+    <string name="quiz_mode_one_case_desc">Wähle die richtige Form für jeden Fall</string>
+    <string name="words_with_errors_desc">Übe die Wörter, bei denen du Fehler gemacht hast</string>
 </resources>

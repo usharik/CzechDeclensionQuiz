@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Чеське схилення</string>
-    <string name="check">Перевірити</string>
     <string name="nextCase">Наступний відмінок</string>
-    <string name="OK" translatable="false">OK</string>
-    <string name="Yes">Так</string>
-    <string name="No">Ні</string>
     <string name="correct_answer">Все правильно!</string>
     <string name="next_word">Наступне слово</string>
     <string name="stay_here">Залишитися</string>
     <string name="try_again">Повторити</string>
-    <string name="toast_some_errors">Кілька помилок.</string>
     <string name="version">Версія %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Дата збірки %s</string>
-    <string name="gender_of_noun">Рід іменника</string>
     <string name="type_of_declension">Тип схилення</string>
     <string name="masculine">Чоловічий</string>
     <string name="neuter">Середній</string>
     <string name="feminine">Жіночий</string>
-    <string name="declension_quiz_1">Тест схилення</string>
     <string name="handbook">Довідник</string>
     <string name="about">Про додаток</string>
-    <string name="nav_home">Головна</string>
     <string name="other_nouns">Інші іменники:</string>
     <string name="rate_app">Оцінити додаток</string>
     <string name="rate_app_unavailable">Магазин додатків не знайдено</string>
@@ -43,17 +35,12 @@
     <string name="notification_channel_name">Щоденне нагадування</string>
     <string name="notification_channel_description">Щоденне нагадування про тренування чеських відмінювань</string>
     <string name="notification_title">Час тренуватись! 🇨🇿</string>
-    <string name="notification_body_active">Не переривай серію — швидкий тест сьогодні!</string>
     <string name="notification_body_inactive">Давно не заходив. Повернись і повтори чеські відмінювання!</string>
     <string name="notification_action_start_quiz">Почати квіз</string>
     <string name="notification_welcome_title">Сповіщення увімкнено! 🎉</string>
     <string name="notification_welcome_body">Ви отримуватимете щоденні нагадування, щоб не забувати тренуватися.</string>
 
     <!-- Notification permission rationale dialog -->
-    <string name="notification_rationale_title">Тримайся курсу! 🔔</string>
-    <string name="notification_rationale_body">Бажаєш отримувати щоденні нагадування про тренування? Маленький поштовх щодня допомагає виробити звичку і підтримує мотивацію — щоб ти ніколи не забув про швидкий квіз.</string>
-    <string name="notification_rationale_enable">Так, нагадуй мені!</string>
-    <string name="notification_rationale_not_now">Не зараз</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Продовжуй! 💪</string>
@@ -72,12 +59,6 @@
     <string name="quiz_mode_full_table">Тест повної таблиці схилення</string>
     <string name="quiz_mode_one_case">Тест одного відмінка</string>
 
-    <string-array name="next_word_dialog">
-        <item>Наступне слово</item>
-        <item>Залишитися</item>
-        <item>Повторити</item>
-        <item>Оцінити додаток</item>
-    </string-array>
 
     <array name="caseName">
         <item>Nominativ</item>
@@ -108,4 +89,85 @@
         <item>o</item>
         <item>s</item>
     </array>
+
+    <!-- Progress: streak, daily goal and review mode -->
+    <string name="review_title">Робота над помилками</string>
+    <string name="review_complete_title">Усі помилки виправлено! 🎉</string>
+    <string name="review_complete_message">Список помилок порожній. Чудова робота!</string>
+    <string name="review_complete_back">До меню</string>
+    <string name="errors_empty">Помилок поки немає. Слова, у яких ви помилитеся, з’являться тут для повторення.</string>
+    <string name="daily_goal">Ціль на день</string>
+    <string name="daily_goal_light">Легка — %d балів на день</string>
+    <string name="daily_goal_regular">Звичайна — %d балів на день</string>
+    <string name="daily_goal_intense">Інтенсивна — %d балів на день</string>
+    <string name="progress_status_goal_reached">Ціль на день виконано! 🎉 Повертайтеся завтра, щоб продовжити серію.</string>
+    <string name="progress_best_streak">Рекорд: %d</string>
+    <string name="progress_goal_label">сьогодні</string>
+    <string name="notification_review_body">Коротке повторення назавжди прибере їх зі списку помилок.</string>
+    <plurals name="progress_status_streak_kept">
+        <item quantity="one">Серію продовжено ✓ До цілі дня залишився %d бал.</item>
+        <item quantity="few">Серію продовжено ✓ До цілі дня залишилося %d бали.</item>
+        <item quantity="many">Серію продовжено ✓ До цілі дня залишилося %d балів.</item>
+        <item quantity="other">Серію продовжено ✓ До цілі дня залишилося %d бала.</item>
+    </plurals>
+    <plurals name="progress_status_keep_streak">
+        <item quantity="one">Наберіть сьогодні %d бал, щоб зберегти серію.</item>
+        <item quantity="few">Наберіть сьогодні %d бали, щоб зберегти серію.</item>
+        <item quantity="many">Наберіть сьогодні %d балів, щоб зберегти серію.</item>
+        <item quantity="other">Наберіть сьогодні %d бала, щоб зберегти серію.</item>
+    </plurals>
+    <plurals name="progress_status_start_streak">
+        <item quantity="one">Наберіть сьогодні %d бал, щоб почати серію.</item>
+        <item quantity="few">Наберіть сьогодні %d бали, щоб почати серію.</item>
+        <item quantity="many">Наберіть сьогодні %d балів, щоб почати серію.</item>
+        <item quantity="other">Наберіть сьогодні %d бала, щоб почати серію.</item>
+    </plurals>
+    <plurals name="notification_streak_body">
+        <item quantity="one">Наберіть сьогодні %d бал, щоб продовжити її.</item>
+        <item quantity="few">Наберіть сьогодні %d бали, щоб продовжити її.</item>
+        <item quantity="many">Наберіть сьогодні %d балів, щоб продовжити її.</item>
+        <item quantity="other">Наберіть сьогодні %d бала, щоб продовжити її.</item>
+    </plurals>
+    <plurals name="notification_rescue_body">
+        <item quantity="one">Наберіть %d бал до півночі, щоб її врятувати — це лише кілька відмінків.</item>
+        <item quantity="few">Наберіть %d бали до півночі, щоб її врятувати — це лише кілька відмінків.</item>
+        <item quantity="many">Наберіть %d балів до півночі, щоб її врятувати — це лише кілька відмінків.</item>
+        <item quantity="other">Наберіть %d бала до півночі, щоб її врятувати — це лише кілька відмінків.</item>
+    </plurals>
+    <plurals name="progress_streak_days" tools:ignore="ImpliedQuantity">
+        <item quantity="one">день поспіль</item>
+        <item quantity="few">дні поспіль</item>
+        <item quantity="many">днів поспіль</item>
+        <item quantity="other">дня поспіль</item>
+    </plurals>
+    <plurals name="progress_review_button">
+        <item quantity="one">Повторити помилки: %d слово</item>
+        <item quantity="few">Повторити помилки: %d слова</item>
+        <item quantity="many">Повторити помилки: %d слів</item>
+        <item quantity="other">Повторити помилки: %d слова</item>
+    </plurals>
+    <plurals name="notification_streak_title">
+        <item quantity="one">🔥 Серія: %d день поспіль!</item>
+        <item quantity="few">🔥 Серія: %d дні поспіль!</item>
+        <item quantity="many">🔥 Серія: %d днів поспіль!</item>
+        <item quantity="other">🔥 Серія: %d дня поспіль!</item>
+    </plurals>
+    <plurals name="notification_rescue_title">
+        <item quantity="one">Серія з %d дня перерветься опівночі! 🔥</item>
+        <item quantity="few">Серія з %d днів перерветься опівночі! 🔥</item>
+        <item quantity="many">Серія з %d днів перерветься опівночі! 🔥</item>
+        <item quantity="other">Серія з %d дня перерветься опівночі! 🔥</item>
+    </plurals>
+    <plurals name="notification_review_title">
+        <item quantity="one">%d слово чекає на повторення</item>
+        <item quantity="few">%d слова чекають на повторення</item>
+        <item quantity="many">%d слів чекають на повторення</item>
+        <item quantity="other">%d слова чекають на повторення</item>
+    </plurals>
+    <string name="singular">Однина</string>
+    <string name="plural">Множина</string>
+    <string name="nav_back">Назад</string>
+    <string name="quiz_mode_full_table_desc">Розставте всі форми по 14 клітинках таблиці</string>
+    <string name="quiz_mode_one_case_desc">Оберіть правильну форму для кожного відмінка</string>
+    <string name="words_with_errors_desc">Повторіть слова, у яких були помилки</string>
 </resources>

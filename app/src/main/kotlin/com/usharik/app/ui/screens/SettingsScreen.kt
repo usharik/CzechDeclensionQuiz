@@ -1,20 +1,24 @@
 package com.usharik.app.ui.screens
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,26 +30,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.Role
 import com.usharik.app.App
 import com.usharik.app.Gender
 import com.usharik.app.R
 import com.usharik.app.UiLanguageManager
+import com.usharik.app.ui.state.DailyGoal
 import com.usharik.app.ui.theme.Dimens
 
 /**
- * Settings page. Faithful Compose port of SettingsFragment/ViewModel + settings_fragment.xml:
- * the gender word-filter radio group, the app-language button with its single-choice dialog and
- * the "turn off animation" checkbox. Changes are persisted to SharedPreferences immediately
- * (the fragment saved them in onPause).
+ * Settings page: daily goal, the gender word filter, the app language (single-choice dialog) and
+ * the "turn off animation" switch. Changes are persisted to SharedPreferences immediately.
  */
 @Composable
 fun SettingsScreen(app: App) {
     val context = LocalContext.current
     val genderFilter by app.appState.genderFilterFlow.collectAsState()
     val switchOffAnimation by app.appState.switchOffAnimationFlow.collectAsState()
+    val dailyGoal by app.appState.dailyGoalFlow.collectAsState()
     var languageLabel by remember { mutableStateOf(UiLanguageManager.getSelectedLanguageLabel(context)) }
     var showLanguageDialog by remember { mutableStateOf(false) }
 
@@ -53,17 +57,32 @@ fun SettingsScreen(app: App) {
         context.getSharedPreferences(App.PREFS_NAME, Context.MODE_PRIVATE).edit()
             .putString(App.PREF_GENDER_FILTER, app.appState.getGenderFilterStr())
             .putBoolean(App.PREF_SWITCH_OFF_ANIMATION, app.appState.getSwitchOffAnimation())
+            .putInt(App.PREF_DAILY_GOAL, app.appState.getDailyGoal())
             .apply()
     }
 
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(top = Dimens.spacingMd, start = Dimens.spacingMd, end = Dimens.spacingMd),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Dimens.spacingMd)
+            .padding(top = Dimens.spacingXs, bottom = Dimens.spacingMd),
+        verticalArrangement = Arrangement.spacedBy(Dimens.spacingSm),
     ) {
-        SectionHeader(stringResource(R.string.word_filter))
-        Column(Modifier.padding(start = Dimens.spacingMd)) {
+        SettingsSection(stringResource(R.string.daily_goal)) {
+            listOf(
+                DailyGoal.Level.LIGHT to R.string.daily_goal_light,
+                DailyGoal.Level.REGULAR to R.string.daily_goal_regular,
+                DailyGoal.Level.INTENSE to R.string.daily_goal_intense,
+            ).forEach { (level, label) ->
+                SettingsRadioRow(stringResource(label, level.points), dailyGoal == level.points) {
+                    app.appState.setDailyGoal(level.points)
+                    app.analyticsService.logEvent("daily_goal_changed", android.os.Bundle().apply { putInt("points", level.points) })
+                    persist()
+                }
+            }
+        }
+        SettingsSection(stringResource(R.string.word_filter)) {
             listOf(
                 Gender.ALL to stringResource(R.string.all_words),
                 Gender.ANIMATE_MASCULINE to stringResource(R.string.animate_masculine),
@@ -77,37 +96,34 @@ fun SettingsScreen(app: App) {
                 }
             }
         }
-        SectionHeader(stringResource(R.string.ui_language), Modifier.padding(top = Dimens.spacingSm))
-        Button(
-            onClick = { showLanguageDialog = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimens.spacingMd)
-                .heightIn(min = 48.dp),
-        ) {
-            Text(languageLabel)
-        }
-        SectionHeader(stringResource(R.string.additional_settings), Modifier.padding(top = Dimens.spacingSm))
-        Row(
-            Modifier
-                .padding(start = Dimens.spacingMd)
-                .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
-                    val newValue = !switchOffAnimation
-                    app.appState.setSwitchOffAnimation(newValue)
-                    app.analyticsService.logSettings(newValue)
-                    persist()
-                },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Checkbox(
-                checked = switchOffAnimation,
-                onCheckedChange = { newValue ->
-                    app.appState.setSwitchOffAnimation(newValue)
-                    app.analyticsService.logSettings(newValue)
-                    persist()
-                },
-            )
-            Text(stringResource(R.string.turn_off_animation), color = MaterialTheme.colorScheme.onSurface, fontSize = Dimens.textBody)
+        SettingsSection(stringResource(R.string.additional_settings)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { showLanguageDialog = true }
+                    .padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingSmLarge),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.ui_language), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
+                    Text(languageLabel, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodyMedium)
+                }
+                Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .toggleable(value = switchOffAnimation, role = Role.Switch) { newValue ->
+                        app.appState.setSwitchOffAnimation(newValue)
+                        app.analyticsService.logSettings(newValue)
+                        persist()
+                    }
+                    .padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingXs),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(stringResource(R.string.turn_off_animation), Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
+                Switch(checked = switchOffAnimation, onCheckedChange = null)
+            }
         }
     }
 
@@ -145,27 +161,35 @@ fun SettingsScreen(app: App) {
     }
 }
 
-/** Section title in the textAppearanceSubtitle1 style (16sp, onSurface) with the 8dp inset. */
+/** A titled group of settings rows on a tonal card. */
 @Composable
-private fun SectionHeader(text: String, modifier: Modifier = Modifier) {
+private fun SettingsSection(title: String, content: @Composable () -> Unit) {
     Text(
-        text,
-        modifier.padding(start = Dimens.spacingSm),
-        color = MaterialTheme.colorScheme.onSurface,
-        fontSize = 16.sp,
+        title,
+        Modifier.padding(start = Dimens.spacingXs, top = Dimens.spacingSm),
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.labelLarge,
     )
+    Surface(
+        Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(Dimens.cornerButton),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+    ) {
+        Column(Modifier.padding(vertical = Dimens.spacingXs)) { content() }
+    }
 }
 
-/** One MaterialRadioButton row of the gender-filter group. */
+/** One single-choice row: the whole row is the touch target and announces the radio role. */
 @Composable
 private fun SettingsRadioRow(label: String, selected: Boolean, onSelect: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onSelect() },
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
+            .padding(horizontal = Dimens.spacingSm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RadioButton(selected = selected, onClick = onSelect)
-        Text(label, color = MaterialTheme.colorScheme.onSurface, fontSize = Dimens.textBody)
+        RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(Dimens.spacingSmLarge))
+        Text(label, color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
     }
 }

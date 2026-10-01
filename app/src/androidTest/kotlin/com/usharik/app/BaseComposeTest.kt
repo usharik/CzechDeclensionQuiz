@@ -1,5 +1,7 @@
 package com.usharik.app
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
@@ -8,6 +10,7 @@ import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -16,13 +19,19 @@ import org.junit.runner.RunWith
  * Base class for all Compose UI instrumented tests.
  *
  * Starts [MainActivity] via [composeTestRule] and verifies each test begins on the hub screen.
+ * The notification permission is granted up front so its system dialog never covers the activity.
  * The toolbar home button routes through the back dispatcher, so leaving a quiz screen opens
  * the quit-quiz overlay first; [navigateHome] handles both the direct and the overlay path.
  */
 @RunWith(AndroidJUnit4::class)
 abstract class BaseComposeTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val notificationPermission: GrantPermissionRule =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
+        else GrantPermissionRule.grant()
+
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before

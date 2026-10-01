@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,9 +43,9 @@ import com.usharik.app.ui.theme.Dimens
 class CellFeedback(val correct: Boolean)
 
 /**
- * One case row mirroring row_case.xml: a header line (number, name, hint, question) above two
- * value cells (singular = blue, plural = red) that act as drag sources when filled and drop
- * targets. With a null [dnd] the row is a static display (handbook table).
+ * One case row: a header line (number, name, hint, question) above two value cells (singular /
+ * plural tints) that act as drag sources when filled and drop targets. With a null [dnd] the row
+ * is a static display (handbook table).
  * With [fillHeight] the cells stretch to fill the row's remaining height so a weighted column
  * of rows always fits on one screen without scrolling.
  */
@@ -77,8 +78,26 @@ fun RowCase(
             horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs),
         ) {
             val cellModifier = if (fillHeight) Modifier.weight(1f).fillMaxHeight() else Modifier.weight(1f)
-            AnswerCell("0_$num", singularText, AppColors.answerCorrect, dnd, singularFeedback, fillHeight, cellModifier)
-            AnswerCell("1_$num", pluralText, AppColors.answerIncorrect, dnd, pluralFeedback, fillHeight, cellModifier)
+            AnswerCell("0_$num", singularText, AppColors.singularCell, dnd, singularFeedback, fillHeight, cellModifier)
+            AnswerCell("1_$num", pluralText, AppColors.pluralCell, dnd, pluralFeedback, fillHeight, cellModifier)
+        }
+    }
+}
+
+/** "Singular | Plural" labels aligned over the two value columns of [RowCase]. */
+@Composable
+fun CaseColumnsHeader(modifier: Modifier = Modifier) {
+    Row(modifier, horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs)) {
+        listOf(R.string.singular, R.string.plural).forEach { label ->
+            Text(
+                stringResource(label),
+                Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+            )
         }
     }
 }
@@ -103,8 +122,7 @@ private fun HeaderText(text: String, modifier: Modifier = Modifier) {
 
 /**
  * A value cell. Shows the placed word (draggable when present) or nothing, over the column colour.
- * Correct placements bounce (scale 1→1.2→1); wrong placements shake horizontally — matching the
- * ObjectAnimator animations in DeclensionQuizFragment.
+ * Correct placements bounce (scale 1→1.2→1); wrong placements shake horizontally.
  */
 @Composable
 fun AnswerCell(

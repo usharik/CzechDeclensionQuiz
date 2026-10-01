@@ -9,6 +9,7 @@ import androidx.room.Transaction
 @Dao
 interface TrainingStatsDao {
     @Query("SELECT * FROM daily_training_stats WHERE date = :date") suspend fun statsByDate(date: String): DailyTrainingStatsEntity?
+    @Query("SELECT * FROM daily_training_stats ORDER BY date") suspend fun allStats(): List<DailyTrainingStatsEntity>
     @Query("INSERT OR IGNORE INTO daily_training_stats (date, words_completed, exercises_completed, errors_count, score, updated_at) VALUES (:date, 0, 0, 0, 0, :updatedAt)") suspend fun insertIgnoreStatsRow(date: String, updatedAt: Long)
     @Query("UPDATE daily_training_stats SET words_completed = words_completed + 1, updated_at = :updatedAt WHERE date = :date") suspend fun addOneWordsCompleted(date: String, updatedAt: Long)
     @Query("UPDATE daily_training_stats SET exercises_completed = exercises_completed + 1, updated_at = :updatedAt WHERE date = :date") suspend fun addOneExercisesCompleted(date: String, updatedAt: Long)

@@ -6,18 +6,12 @@
     <color name="colorAccent">#FF4081</color>
 
     <!-- Legacy color names retained because values-night overrides them. -->
-    <color name="white">#FFFFFF</color>
-    <color name="red">#ffcccc</color>
-    <color name="blue">#b3e0ff</color>
-    <color name="lightGray">#DDDDDD</color>
-    <color name="veryLightGray">#f2f2f2</color>
-    <color name="darkGray">#999999</color>
 
     <!-- Semantic surface colors -->
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorSurfaceVariant">#f2f2f2</color>
     <color name="colorOnSurface">#212121</color>
-    <color name="colorOnSurfaceVariant">#999999</color>
+    <color name="colorOnSurfaceVariant">#5F6368</color>
 
     <!-- Semantic answer-state colors -->
     <color name="colorAnswerCorrectBackground">#b3e0ff</color>
@@ -25,7 +19,11 @@
     <color name="colorAnswerNeutralBackground">#DDDDDD</color>
 
     <!-- Semantic stroke / outline color -->
-    <color name="colorStroke">#ff207d94</color>
+    <color name="colorStroke">#C5CAE0</color>
+
+    <!-- Declension table columns: singular / plural cell tints -->
+    <color name="colorSingularCell">#E8EEFF</color>
+    <color name="colorPluralCell">#FDEBF1</color>
 
     <!-- Success text color (high contrast on light background) -->
     <color name="colorSuccessText">#2E7D32</color>
@@ -40,8 +38,6 @@
     <color name="colorOnError">#FFFFFF</color>
 
     <!-- Button-specific colors (light mode) -->
-    <color name="button_answer_background">#F5F5F5</color>
-    <color name="button_answer_text">#212121</color>
 
     <!-- Quiz answer state colors -->
     <color name="colorCorrect">#4CAF50</color>
@@ -58,4 +54,5 @@
     <color name="button_neutral_end">#546E7A</color>
     <color name="button_text_on_gradient">#FFFFFF</color>
     <color name="button_outline_stroke">#3F51B5</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

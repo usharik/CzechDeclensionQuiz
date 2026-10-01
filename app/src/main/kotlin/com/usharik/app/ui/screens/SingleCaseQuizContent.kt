@@ -7,13 +7,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,28 +26,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
+import com.usharik.app.ui.components.ButtonFrame
 import com.usharik.app.ui.components.GradientButton
+import com.usharik.app.ui.components.StrokeTextButton
 import com.usharik.app.ui.components.localizedTranslation
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.database.WordInfo
 
-/** Layout port of fragment_single_case_quiz.xml (scrollable word header + question + answers). */
+/** Scrollable word header, the case question and four answer choices. */
 @Composable
 fun SingleCaseQuizContent(
     app: App,
@@ -70,7 +68,7 @@ fun SingleCaseQuizContent(
         Modifier.fillMaxSize().testTag(TestTags.SC_SCREEN).verticalScroll(rememberScrollState()).padding(Dimens.spacingMd),
     ) {
         if (word == null) {
-            Text("…", Modifier.padding(Dimens.spacingMd))
+            LoadingIndicator(Modifier.padding(top = Dimens.spacingXl))
             return@Column
         }
         // The localized case-name/hint/question arrays match what RowCase renders.
@@ -116,7 +114,7 @@ fun SingleCaseQuizContent(
                 fontSize = Dimens.textTitle,
             )
             Text(
-                if (plural) "Plural" else "Singular",
+                stringResource(if (plural) R.string.plural else R.string.singular),
                 Modifier.testTag(TestTags.SC_NUMBER_LABEL),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = Dimens.textBody,
@@ -153,12 +151,13 @@ fun SingleCaseQuizContent(
             onClick = onNextCase,
             modifier = Modifier.fillMaxWidth().testTag(TestTags.SC_NEXT_CASE).padding(top = Dimens.spacingLg),
         )
-        GradientButton(
+        // Skipping costs a point, so it is a low-emphasis action under the main "Next case".
+        StrokeTextButton(
             text = stringResource(R.string.next_word),
-            gradient = AppColors.gradientPrimary,
+            icon = painterResource(R.drawable.ic_arrow_forward),
             enabled = !isAdvancing,
             onClick = onNextWord,
-            modifier = Modifier.fillMaxWidth().testTag(TestTags.SC_NEXT_WORD).padding(top = Dimens.spacingLg),
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.SC_NEXT_WORD).padding(top = Dimens.spacingSm),
         )
         Spacer(Modifier.height(Dimens.spacingMd))
         BannerAd(app, BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID)
@@ -168,9 +167,8 @@ fun SingleCaseQuizContent(
 private enum class AnswerState { NEUTRAL, CORRECT, INCORRECT }
 
 /**
- * One answer choice: Widget.App.Button.Outlined.Modern with a surface-variant fill whose tint
- * animates to green/red over 250 ms when the question is answered (mirrors animateButtonColor),
- * plus a 1→1.06→1 scale pulse on the tapped button (mirrors pulseButton).
+ * One answer choice: an outlined button whose fill animates to green/red over 250 ms once the
+ * question is answered, plus a 1→1.06→1 scale pulse on the tapped button.
  */
 @Composable
 private fun AnswerButton(
@@ -194,19 +192,21 @@ private fun AnswerButton(
         scale.animateTo(1.06f, tween(100, easing = FastOutSlowInEasing))
         scale.animateTo(1f, tween(100, easing = FastOutSlowInEasing))
     }
-    val interaction = remember { MutableInteractionSource() }
-    Row(
-        modifier = modifier
-            .graphicsLayer { scaleX = scale.value; scaleY = scale.value }
-            .defaultMinSize(minHeight = 48.dp)
-            .clip(shape)
+    val textColor by animateColorAsState(
+        if (state == AnswerState.NEUTRAL) AppColors.outlineStroke else AppColors.textOnGradient,
+        tween(250),
+        label = "answerText",
+    )
+    // Answered buttons stay fully opaque: they're disabled only to block a second pick.
+    ButtonFrame(
+        text = text,
+        contentColor = textColor,
+        modifier = modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value },
+        decoration = Modifier
             .background(background, shape)
-            .border(BorderStroke(2.dp, AppColors.outlineStroke), shape)
-            .clickable(enabled = enabled, interactionSource = interaction, indication = null) { onClick() }
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text, color = AppColors.outlineStroke, fontWeight = FontWeight.Bold, fontSize = 17.sp, textAlign = TextAlign.Center)
-    }
+            .border(BorderStroke(2.dp, if (state == AnswerState.NEUTRAL) AppColors.outlineStroke else background), shape),
+        enabled = enabled,
+        disabledAlpha = 1f,
+        onClick = onClick,
+    )
 }

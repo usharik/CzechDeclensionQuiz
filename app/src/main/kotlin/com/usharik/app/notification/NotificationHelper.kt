@@ -1,6 +1,7 @@
 package com.usharik.app.notification
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.usharik.app.MainActivity
 import com.usharik.app.R
 import com.usharik.app.service.FirebaseAnalyticsService
+import com.usharik.app.ui.state.Streak
 
 /**
  * Manages notification channels and posting daily reminder/welcome notifications.
@@ -33,27 +35,38 @@ class NotificationHelper(private val analytics: FirebaseAnalyticsService) {
             ?.createNotificationChannel(channel)
     }
 
-    fun showDailyReminder(
+    /** Posts the reminder chosen by [ReminderPlanner], worded around the player's own progress. */
+    fun showReminder(
         context: Context,
-        isActive: Boolean,
+        kind: ReminderPlanner.Kind,
+        streak: Streak.Summary,
+        reviewCount: Int,
         inactivityStreak: Int,
-        wordsYesterday: Int,
-        exercisesYesterday: Int
     ) {
         if (!canPost(context)) return
-
-        val body = context.getString(
-            if (isActive) R.string.notification_body_active
-            else R.string.notification_body_inactive
-        )
+        val res = context.resources
+        val (title, body) = when (kind) {
+            ReminderPlanner.Kind.STREAK ->
+                res.getQuantityString(R.plurals.notification_streak_title, streak.current, streak.current) to
+                    res.getQuantityString(R.plurals.notification_streak_body, streak.pointsToKeep, streak.pointsToKeep)
+            ReminderPlanner.Kind.RESCUE ->
+                res.getQuantityString(R.plurals.notification_rescue_title, streak.current, streak.current) to
+                    res.getQuantityString(R.plurals.notification_rescue_body, streak.pointsToKeep, streak.pointsToKeep)
+            ReminderPlanner.Kind.REVIEW ->
+                res.getQuantityString(R.plurals.notification_review_title, reviewCount, reviewCount) to
+                    context.getString(R.string.notification_review_body)
+            ReminderPlanner.Kind.COMEBACK ->
+                context.getString(R.string.notification_title) to context.getString(R.string.notification_body_inactive)
+        }
         notify(
             context = context,
             id = NOTIFICATION_ID,
-            title = context.getString(R.string.notification_title),
+            title = title,
             body = body,
-            action = true
+            action = true,
+            destination = if (kind == ReminderPlanner.Kind.REVIEW) MainActivity.DESTINATION_REVIEW else null,
         )
-        analytics.logDailyReminderShown(inactivityStreak, wordsYesterday, exercisesYesterday)
+        analytics.logReminderShown(kind.name, streak.current, inactivityStreak, reviewCount)
     }
 
     fun showWelcomeNotificationIfNeeded(context: Context) {
@@ -71,15 +84,19 @@ class NotificationHelper(private val analytics: FirebaseAnalyticsService) {
         analytics.logEvent("welcome_notification_shown")
     }
 
+    // Every caller checks canPost() first; lint can't follow that guard.
+    @SuppressLint("MissingPermission")
     private fun notify(
         context: Context,
         id: Int,
         title: String,
         body: String,
-        action: Boolean
+        action: Boolean,
+        destination: String? = null,
     ) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            destination?.let { putExtra(MainActivity.EXTRA_DESTINATION, it) }
         }
         val pending = PendingIntent.getActivity(
             context,

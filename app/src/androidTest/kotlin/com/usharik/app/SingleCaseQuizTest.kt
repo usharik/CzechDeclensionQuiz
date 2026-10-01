@@ -8,6 +8,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -32,7 +33,7 @@ class SingleCaseQuizTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun initialStateIsCorrect() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performScrollTo().performClick()
 
         // Wait for the word to load (async coroutine)
         waitForTag(TestTags.SC_WORD)
@@ -65,7 +66,7 @@ class SingleCaseQuizTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun answerInteractionEnablesNextCase() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performScrollTo().performClick()
         waitForTag(TestTags.SC_WORD)
 
         // Before selecting: "Next case" is disabled
@@ -94,7 +95,7 @@ class SingleCaseQuizTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun nextWordButtonSkipsWord() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performScrollTo().performClick()
         waitForTag(TestTags.SC_WORD)
 
         // Tap an answer then next word — state should reset
@@ -117,7 +118,7 @@ class SingleCaseQuizTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun skippingWordBeforeCompletionDeductsPenaltyPoint() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_SINGLE).performScrollTo().performClick()
         waitForTag(TestTags.SC_WORD)
 
         // Earn a point first so the penalty has something to subtract from (the score is

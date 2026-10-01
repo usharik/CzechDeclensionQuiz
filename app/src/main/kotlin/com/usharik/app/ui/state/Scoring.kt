@@ -15,6 +15,13 @@ object Scoring {
     /** Extra bonus for completing a word with zero mistakes along the way. */
     const val POINTS_PERFECT_BONUS = 6
 
-    /** Deducted for negative behaviors: too many mistakes, a timeout, or skipping a word. */
+    /** Extra bonus for clearing a word from the mistakes list in review mode. */
+    const val POINTS_REVIEW_CLEARED = 10
+
+    /** Deducted for skipping a word before it was completed. */
     const val POINTS_PENALTY = 1
+
+    /** What a full, mistake-free word (7 cases × 2 numbers) earns. */
+    const val PERFECT_WORD_POINTS =
+        WordQuestionProgress.FORMS_PER_NUMBER * 2 * POINTS_PER_CORRECT_FORM + POINTS_WORD_COMPLETED + POINTS_PERFECT_BONUS
 }

@@ -5,12 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -18,17 +18,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
+import com.usharik.app.notification.ReminderPlanner
 import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.components.OutlinedModernButton
+import com.usharik.app.ui.state.Streak
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
@@ -36,9 +37,8 @@ import java.text.DateFormat
 import java.util.Date
 
 /**
- * About page. Faithful Compose port of AboutFragment + about_fragment.xml: centered logo,
- * app name, version/build info and the rate/privacy buttons (plus the debug-only test
- * notification button).
+ * About page: centered logo, app name, version/build info and the rate/privacy buttons (plus the
+ * debug-only test notification button).
  */
 @Composable
 fun AboutScreen(app: App) {
@@ -61,7 +61,6 @@ fun AboutScreen(app: App) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
             .verticalScroll(rememberScrollState())
             .padding(Dimens.spacingMd),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,14 +69,13 @@ fun AboutScreen(app: App) {
         Image(
             painterResource(R.mipmap.ic_launcher_round),
             contentDescription = stringResource(R.string.app_name),
-            modifier = Modifier.graphicsLayer { scaleX = 1.5f; scaleY = 1.5f },
+            modifier = Modifier.size(96.dp),
         )
         Text(
             stringResource(R.string.app_name),
-            Modifier.padding(top = Dimens.spacingXxl),
+            Modifier.padding(top = Dimens.spacingMdLarge),
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             stringResource(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.BUILD_TYPE, BuildConfig.GIT_COMMIT_HASH),
@@ -99,7 +97,6 @@ fun AboutScreen(app: App) {
             onClick = ::rateApp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Dimens.spacingButtonHorizontal)
                 .padding(top = Dimens.spacingXl),
         )
         OutlinedModernButton(
@@ -114,7 +111,6 @@ fun AboutScreen(app: App) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Dimens.spacingButtonHorizontal)
                 .padding(top = Dimens.spacingMd),
         )
         if (BuildConfig.DEBUG) {
@@ -124,12 +120,11 @@ fun AboutScreen(app: App) {
                 fontSize = Dimens.textBody,
                 onClick = {
                     HapticFeedback.light(context)
-                    app.notificationHelper.showDailyReminder(context, false, 1, 0, 0)
+                    app.notificationHelper.showReminder(context, ReminderPlanner.Kind.STREAK, Streak.Summary(current = 3, best = 3, todayCounts = false, pointsToKeep = Streak.MIN_POINTS), reviewCount = 0, inactivityStreak = 0)
                     Toast.makeText(context, R.string.test_notification_sent, Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Dimens.spacingButtonHorizontal)
                     .padding(top = Dimens.spacingMd),
             )
         }

@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [DocumentEntity::class, DailyTrainingStatsEntity::class, ReminderStateEntity::class, RecentWordsEntity::class],
-    version = 9,
+    version = 10,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -68,10 +68,18 @@ abstract class DocumentDatabase : RoomDatabase() {
             }
         }
 
+        /** Adds the per-day markers the hourly reminder worker needs (daily check and streak rescue). */
+        @JvmField val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `reminder_state` ADD COLUMN `last_check_date` TEXT")
+                db.execSQL("ALTER TABLE `reminder_state` ADD COLUMN `last_rescue_date` TEXT")
+            }
+        }
+
         @JvmStatic
         fun getDocumentDatabase(context: Context): DocumentDatabase =
             Room.databaseBuilder(context.applicationContext, DocumentDatabase::class.java, DB_NAME)
-                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
+                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
                 .fallbackToDestructiveMigration(true)
                 .build()
     }

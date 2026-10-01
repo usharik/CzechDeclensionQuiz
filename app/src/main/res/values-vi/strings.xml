@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sự biến đổi tiếng Séc</string>
-    <string name="check">Kiểm tra</string>
     <string name="nextCase">Trường hợp tiếp theo</string>
-    <string name="OK" translatable="false">OK</string>
-    <string name="Yes">Có</string>
-    <string name="No">Không</string>
     <string name="correct_answer">Tất cả đều chính xác!</string>
     <string name="next_word">Từ tiếp theo</string>
     <string name="stay_here">Ở lại đây</string>
     <string name="try_again">Thử lại</string>
-    <string name="toast_some_errors">Có một số lỗi.</string>
     <string name="version">Phiên bản %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Ngày xây dựng %s</string>
-    <string name="gender_of_noun">Giới tính của danh từ</string>
     <string name="type_of_declension">Loại biến đổi</string>
     <string name="masculine">Nam tính</string>
     <string name="neuter">Trung tính</string>
     <string name="feminine">Nữ tính</string>
-    <string name="declension_quiz_1">Bài kiểm tra biến đổi</string>
     <string name="handbook">Hướng dẫn</string>
     <string name="about">Giới thiệu</string>
-    <string name="nav_home">Trang chủ</string>
     <string name="other_nouns">Các danh từ khác:</string>
     <string name="rate_app">Đánh giá ứng dụng</string>
     <string name="rate_app_unavailable">Không tìm thấy cửa hàng ứng dụng</string>
@@ -43,17 +35,12 @@
     <string name="notification_channel_name">Nhắc nhở hàng ngày</string>
     <string name="notification_channel_description">Nhắc nhở hàng ngày để luyện tập cách chia danh từ tiếng Séc</string>
     <string name="notification_title">Đến giờ luyện tập rồi! 🇨🇿</string>
-    <string name="notification_body_active">Duy trì chuỗi của bạn — làm một bài kiểm tra nhanh hôm nay!</string>
     <string name="notification_body_inactive">Đã lâu rồi. Quay lại và luyện tập cách chia danh từ tiếng Séc!</string>
     <string name="notification_action_start_quiz">Bắt đầu bài kiểm tra</string>
     <string name="notification_welcome_title">Thông báo đã bật! 🎉</string>
     <string name="notification_welcome_body">Bạn sẽ nhận được nhắc nhở hàng ngày để duy trì việc luyện tập tiếng Séc.</string>
 
     <!-- Notification permission rationale dialog -->
-    <string name="notification_rationale_title">Duy trì thói quen! 🔔</string>
-    <string name="notification_rationale_body">Bạn có muốn nhận nhắc nhở hàng ngày để luyện tập không? Một cú hích nhỏ mỗi ngày giúp bạn xây dựng thói quen và duy trì động lực — để không bao giờ quên làm một bài kiểm tra nhanh.</string>
-    <string name="notification_rationale_enable">Có, hãy nhắc tôi!</string>
-    <string name="notification_rationale_not_now">Không phải bây giờ</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Tiếp tục nào! 💪</string>
@@ -72,12 +59,6 @@
     <string name="quiz_mode_full_table">Bài kiểm tra bảng biến đổi đầy đủ</string>
     <string name="quiz_mode_one_case">Bài kiểm tra một trường hợp</string>
 
-    <string-array name="next_word_dialog">
-        <item>Từ tiếp theo</item>
-        <item>Ở lại đây</item>
-        <item>Thử lại</item>
-        <item>Đánh giá ứng dụng</item>
-    </string-array>
 
     <array name="caseName">
         <item>Nominativ</item>
@@ -108,4 +89,55 @@
         <item>o</item>
         <item>s</item>
     </array>
+
+    <!-- Progress: streak, daily goal and review mode -->
+    <string name="review_title">Ôn lại lỗi sai</string>
+    <string name="review_complete_title">Đã ôn hết lỗi sai! 🎉</string>
+    <string name="review_complete_message">Danh sách lỗi đã trống. Làm tốt lắm!</string>
+    <string name="review_complete_back">Về menu</string>
+    <string name="errors_empty">Chưa có lỗi nào. Những từ bạn làm sai sẽ hiện ở đây để ôn lại.</string>
+    <string name="daily_goal">Mục tiêu hằng ngày</string>
+    <string name="daily_goal_light">Nhẹ nhàng — %d điểm mỗi ngày</string>
+    <string name="daily_goal_regular">Bình thường — %d điểm mỗi ngày</string>
+    <string name="daily_goal_intense">Chăm chỉ — %d điểm mỗi ngày</string>
+    <string name="progress_status_goal_reached">Đã đạt mục tiêu hôm nay! 🎉 Quay lại vào ngày mai để kéo dài chuỗi.</string>
+    <string name="progress_best_streak">Kỷ lục: %d</string>
+    <string name="progress_goal_label">hôm nay</string>
+    <string name="notification_review_body">Ôn nhanh một lượt để xóa chúng khỏi danh sách lỗi.</string>
+    <plurals name="progress_status_streak_kept">
+        <item quantity="other">Đã duy trì chuỗi hôm nay ✓ Còn %d điểm nữa để đạt mục tiêu.</item>
+    </plurals>
+    <plurals name="progress_status_keep_streak">
+        <item quantity="other">Hãy ghi %d điểm hôm nay để giữ chuỗi.</item>
+    </plurals>
+    <plurals name="progress_status_start_streak">
+        <item quantity="other">Hãy ghi %d điểm hôm nay để bắt đầu chuỗi.</item>
+    </plurals>
+    <plurals name="notification_streak_body">
+        <item quantity="other">Hãy ghi %d điểm hôm nay để tiếp tục.</item>
+    </plurals>
+    <plurals name="notification_rescue_body">
+        <item quantity="other">Hãy ghi %d điểm trước nửa đêm để giữ chuỗi — chỉ vài cách là đủ.</item>
+    </plurals>
+    <plurals name="progress_streak_days">
+        <item quantity="other">ngày liên tiếp</item>
+    </plurals>
+    <plurals name="progress_review_button">
+        <item quantity="other">Ôn lỗi sai: %d từ</item>
+    </plurals>
+    <plurals name="notification_streak_title">
+        <item quantity="other">🔥 Chuỗi %d ngày liên tiếp!</item>
+    </plurals>
+    <plurals name="notification_rescue_title">
+        <item quantity="other">Chuỗi %d ngày của bạn sẽ mất lúc nửa đêm! 🔥</item>
+    </plurals>
+    <plurals name="notification_review_title">
+        <item quantity="other">%d từ đang chờ ôn lại</item>
+    </plurals>
+    <string name="singular">Số ít</string>
+    <string name="plural">Số nhiều</string>
+    <string name="nav_back">Quay lại</string>
+    <string name="quiz_mode_full_table_desc">Kéo mọi dạng từ vào 14 ô của bảng</string>
+    <string name="quiz_mode_one_case_desc">Chọn dạng đúng cho từng cách</string>
+    <string name="words_with_errors_desc">Ôn lại những từ bạn đã làm sai</string>
 </resources>

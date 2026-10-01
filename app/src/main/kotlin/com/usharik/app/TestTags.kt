@@ -14,6 +14,11 @@ object TestTags {
     const val BTN_HANDBOOK = "btn_handbook"
     const val BTN_SETTINGS = "btn_settings"
     const val BTN_ABOUT = "btn_about"
+    const val HUB_PROGRESS_CARD = "hub_progress_card"
+    const val HUB_STREAK = "hub_streak"
+    const val HUB_REVIEW = "hub_review"
+    const val ERRORS_REVIEW = "errors_review"
+    const val REVIEW_COMPLETE_DIALOG = "review_complete_dialog"
     // Single-case quiz
     const val SC_SCREEN = "sc_screen"
     const val SC_WORD = "sc_word"

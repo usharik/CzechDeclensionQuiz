@@ -17,8 +17,7 @@ import com.usharik.app.ui.state.SingleCaseQuizSession
 import com.usharik.app.utils.HapticFeedback
 
 /**
- * One-case-at-a-time quiz. Faithful Compose port of SingleCaseQuizFragment +
- * SingleCaseQuizViewModel: four answer buttons per case/number question; answering colors the
+ * One-case-at-a-time quiz: four answer buttons per case/number question; answering colors the
  * correct answer green (and a wrong pick red) and unlocks "Next case". Back shows the quit
  * overlay with today's stats. Quiz logic and state live in [SingleCaseQuizSession]; this
  * composable only wires UI concerns (haptics, ads, dialogs).

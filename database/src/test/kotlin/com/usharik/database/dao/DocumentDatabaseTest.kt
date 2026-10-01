@@ -17,4 +17,9 @@ class DocumentDatabaseTest {
         assertEquals(8, DocumentDatabase.MIGRATION_8_9.startVersion)
         assertEquals(9, DocumentDatabase.MIGRATION_8_9.endVersion)
     }
+
+    @Test fun reminderMigrationTargetsVersionTen() {
+        assertEquals(9, DocumentDatabase.MIGRATION_9_10.startVersion)
+        assertEquals(10, DocumentDatabase.MIGRATION_9_10.endVersion)
+    }
 }

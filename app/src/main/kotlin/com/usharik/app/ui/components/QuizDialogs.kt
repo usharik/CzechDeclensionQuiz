@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +37,36 @@ import com.usharik.app.TestTags
 import com.usharik.app.ui.state.DailyGoal
 import com.usharik.app.ui.theme.AppColors
 
-/** Compose port of dialog_correct_answer.xml. Non-cancelable, shown when the table is complete. */
+/**
+ * Shared frame of the quiz dialogs: a 28dp-rounded surface with a centered title, an optional
+ * message and the dialog body. [testTag] is exposed as a resource id for the UI tests.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun QuizDialogFrame(
+    title: String,
+    testTag: String,
+    onDismissRequest: () -> Unit,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    message: String? = null,
+    dismissible: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Dialog(onDismissRequest = onDismissRequest, properties = DialogProperties(dismissOnBackPress = dismissible, dismissOnClickOutside = dismissible)) {
+        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
+            // Dialogs are separate windows, so the resource-id flag must be re-enabled for their tree.
+            Column(Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag(testTag).padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 12.dp)) {
+                Text(title, Modifier.fillMaxWidth().padding(bottom = if (message != null) 6.dp else 20.dp), color = titleColor, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
+                if (message != null) {
+                    Text(message, Modifier.fillMaxWidth().padding(bottom = 20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, textAlign = TextAlign.Center)
+                }
+                content()
+            }
+        }
+    }
+}
+
+/** Non-cancelable dialog shown when the table is complete. */
 @Composable
 fun CorrectAnswerDialog(
     dailyGoal: DailyGoal.Progress,
@@ -44,30 +75,16 @@ fun CorrectAnswerDialog(
     onTryAgain: () -> Unit,
     onRateApp: () -> Unit,
 ) {
-    Dialog(onDismissRequest = {}, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
-        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
-            // Dialogs are separate windows, so the resource-id flag must be re-enabled for their tree.
-            Column(Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag(TestTags.FULL_COMPLETION_DIALOG).padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp)) {
-                Text(
-                    stringResource(R.string.correct_answer),
-                    Modifier.fillMaxWidth().padding(bottom = 20.dp),
-                    color = AppColors.successText,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                )
-                DailyGoalProgress(dailyGoal, Modifier.testTag(TestTags.FULL_DIALOG_DAILY_GOAL))
-                GradientButton(stringResource(R.string.next_word), AppColors.gradientPrimary, Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_NEXT_WORD).padding(bottom = 12.dp)) { onNextWord() }
-                OutlinedModernButton(stringResource(R.string.stay_here), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_STAY_HERE).padding(bottom = 12.dp)) { onStayHere() }
-                OutlinedModernButton(stringResource(R.string.try_again), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_TRY_AGAIN).padding(bottom = 12.dp)) { onTryAgain() }
-                StrokeTextButton(stringResource(R.string.rate_app), Modifier.fillMaxWidth().padding(bottom = 4.dp)) { onRateApp() }
-            }
-        }
+    QuizDialogFrame(stringResource(R.string.correct_answer), TestTags.FULL_COMPLETION_DIALOG, onDismissRequest = {}, titleColor = AppColors.successText, dismissible = false) {
+        DailyGoalProgress(dailyGoal, Modifier.testTag(TestTags.FULL_DIALOG_DAILY_GOAL))
+        GradientButton(stringResource(R.string.next_word), AppColors.gradientPrimary, Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_NEXT_WORD).padding(bottom = 12.dp)) { onNextWord() }
+        OutlinedModernButton(stringResource(R.string.stay_here), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_STAY_HERE).padding(bottom = 12.dp)) { onStayHere() }
+        OutlinedModernButton(stringResource(R.string.try_again), Modifier.fillMaxWidth().testTag(TestTags.FULL_DIALOG_TRY_AGAIN)) { onTryAgain() }
+        StrokeTextButton(stringResource(R.string.rate_app), Modifier.fillMaxWidth(), icon = painterResource(R.drawable.ic_star)) { onRateApp() }
     }
 }
 
-/** Compose port of dialog_quit_quiz.xml: today's stats, recent-word chips and two actions. */
-@OptIn(ExperimentalComposeUiApi::class)
+/** Quit-quiz overlay: today's stats, recent-word chips and two actions. */
 @Composable
 fun QuitQuizDialog(
     words: Int,
@@ -79,24 +96,33 @@ fun QuitQuizDialog(
     onLeave: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.surface) {
-            Column(Modifier.fillMaxWidth().semantics { testTagsAsResourceId = true }.testTag(TestTags.FULL_QUIT_DIALOG).padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 8.dp)) {
-                Text(stringResource(R.string.quit_quiz_title), Modifier.fillMaxWidth().padding(bottom = 6.dp), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
-                val message = if (dailyGoal.isOneWordAway) stringResource(R.string.quit_quiz_daily_goal_one_away) else stringResource(R.string.quit_quiz_message)
-                Text(message, Modifier.fillMaxWidth().padding(bottom = 20.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, textAlign = TextAlign.Center)
-                StatsCard(words, exercises, score)
-                DailyGoalProgress(dailyGoal)
-                if (recentWords.isNotEmpty()) {
-                    Text(stringResource(R.string.quit_quiz_recent_words_label), Modifier.fillMaxWidth().padding(bottom = 8.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.Center)
-                    Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)) {
-                        recentWords.take(3).forEach { WordChip(it) }
-                    }
-                }
-                GradientButton(stringResource(R.string.quit_quiz_keep_going), AppColors.gradientPrimary, Modifier.fillMaxWidth().padding(bottom = 12.dp)) { onKeepGoing() }
-                OutlinedModernButton(stringResource(R.string.quit_quiz_leave), Modifier.fillMaxWidth().testTag(TestTags.FULL_QUIT_LEAVE).padding(bottom = 12.dp)) { onLeave() }
+    val message = if (dailyGoal.isOneWordAway) stringResource(R.string.quit_quiz_daily_goal_one_away) else stringResource(R.string.quit_quiz_message)
+    QuizDialogFrame(stringResource(R.string.quit_quiz_title), TestTags.FULL_QUIT_DIALOG, onDismissRequest = onDismiss, message = message) {
+        StatsCard(words, exercises, score)
+        DailyGoalProgress(dailyGoal, Modifier.testTag(TestTags.FULL_QUIT_DAILY_GOAL))
+        if (recentWords.isNotEmpty()) {
+            Text(stringResource(R.string.quit_quiz_recent_words_label), Modifier.fillMaxWidth().padding(bottom = 8.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Bold, fontSize = 12.sp, textAlign = TextAlign.Center)
+            Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)) {
+                recentWords.take(3).forEach { WordChip(it) }
             }
         }
+        GradientButton(stringResource(R.string.quit_quiz_keep_going), AppColors.gradientPrimary, Modifier.fillMaxWidth().padding(bottom = 12.dp)) { onKeepGoing() }
+        OutlinedModernButton(stringResource(R.string.quit_quiz_leave), Modifier.fillMaxWidth().testTag(TestTags.FULL_QUIT_LEAVE).padding(bottom = 12.dp)) { onLeave() }
+    }
+}
+
+/** Shown when review mode has cleared every word from the mistakes list. */
+@Composable
+fun ReviewCompleteDialog(dailyGoal: DailyGoal.Progress, onBackToMenu: () -> Unit) {
+    QuizDialogFrame(
+        stringResource(R.string.review_complete_title),
+        TestTags.REVIEW_COMPLETE_DIALOG,
+        onDismissRequest = onBackToMenu,
+        titleColor = AppColors.successText,
+        message = stringResource(R.string.review_complete_message),
+    ) {
+        DailyGoalProgress(dailyGoal)
+        GradientButton(stringResource(R.string.review_complete_back), AppColors.gradientPrimary, Modifier.fillMaxWidth().padding(bottom = 12.dp)) { onBackToMenu() }
     }
 }
 
@@ -118,7 +144,7 @@ private fun StatsCard(words: Int, exercises: Int, score: Int) {
 }
 
 @Composable
-private fun DailyGoalProgress(goal: DailyGoal.Progress, modifier: Modifier = Modifier.testTag(TestTags.FULL_QUIT_DAILY_GOAL)) {
+private fun DailyGoalProgress(goal: DailyGoal.Progress, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth().padding(bottom = 20.dp)) {
         Text(
             if (goal.isReached) stringResource(R.string.quit_quiz_daily_goal_reached)
@@ -140,6 +166,6 @@ private fun DailyGoalProgress(goal: DailyGoal.Progress, modifier: Modifier = Mod
 private fun StatColumn(value: Int, label: String, modifier: Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text("$value", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 40.sp)
-        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+        Text(label, Modifier.padding(horizontal = 4.dp), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 15.sp, textAlign = TextAlign.Center)
     }
 }

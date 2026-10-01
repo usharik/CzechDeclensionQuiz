@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipe
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -387,14 +388,15 @@ class DeclensionQuizTest : BaseComposeTest() {
 
     /**
      * Ten wrong placements reach the same limit shown by the error badge, trigger the
-     * interstitial policy, and reset the badge once the ad flow completes.
+     * interstitial policy, and reset the badge once the ad flow completes. Mistakes are not
+     * penalized, so the score is unchanged.
      */
     @OptIn(ExperimentalTestApi::class)
     @Test
-    fun tenMistakesDeductPenaltyPoint() {
+    fun tenMistakesResetCounterWithoutPenalty() {
         openQuizAndWaitForWord()
         val word = loadedWord()
-        val expectedScore = openQuitDialogAndReadScore() - 1
+        val expectedScore = openQuitDialogAndReadScore()
 
         repeat(10) {
             val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
@@ -431,7 +433,7 @@ class DeclensionQuizTest : BaseComposeTest() {
     }
 
     private fun openQuizAndWaitForWord() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performScrollTo().performClick()
         waitForTag(TestTags.FULL_WORD)
     }
 

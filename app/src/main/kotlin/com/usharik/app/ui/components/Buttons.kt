@@ -4,10 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -23,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -32,9 +32,52 @@ import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 
 /**
- * Replicates Widget.App.Button.Gradient.* — a 16dp rounded, unelevated button with a
- * 135° linear gradient background, bold white 17sp centered text, and an optional leading icon.
+ * Shared frame of the app's custom buttons: a 48dp-min, 16dp-rounded row with an optional leading
+ * icon and a bold label, optionally followed by a smaller subtitle. [decoration] paints the
+ * background and/or border; [contentColor] tints the icon and text. With a subtitle the content is
+ * start-aligned (a card-like mode button), otherwise it is centered.
  */
+@Composable
+fun ButtonFrame(
+    text: String,
+    contentColor: Color,
+    modifier: Modifier = Modifier,
+    decoration: Modifier = Modifier,
+    enabled: Boolean = true,
+    disabledAlpha: Float = 0.5f,
+    icon: Painter? = null,
+    subtitle: String? = null,
+    fontSize: TextUnit = 17.sp,
+    onClick: () -> Unit,
+) {
+    val shape = RoundedCornerShape(Dimens.cornerButton)
+    Row(
+        modifier = modifier
+            .defaultMinSize(minHeight = 48.dp)
+            .clip(shape)
+            .alpha(if (enabled) 1f else disabledAlpha)
+            .then(decoration)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .padding(horizontal = if (subtitle != null) Dimens.spacingMd else 24.dp, vertical = 12.dp),
+        horizontalArrangement = if (subtitle != null) Arrangement.Start else Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (icon != null) {
+            Icon(icon, contentDescription = null, tint = contentColor, modifier = Modifier.size(if (subtitle != null) 28.dp else 20.dp))
+            Spacer(Modifier.size(if (subtitle != null) Dimens.spacingMd else Dimens.spacingSm))
+        }
+        if (subtitle != null) {
+            Column(Modifier.weight(1f)) {
+                Text(text, color = contentColor, fontWeight = FontWeight.Bold, fontSize = fontSize)
+                Text(subtitle, color = contentColor.copy(alpha = 0.85f), fontSize = Dimens.textLabel, lineHeight = 16.sp)
+            }
+        } else {
+            Text(text, color = contentColor, fontWeight = FontWeight.Bold, fontSize = fontSize, textAlign = TextAlign.Center)
+        }
+    }
+}
+
+/** A rounded, unelevated button with a linear gradient background and bold white text. */
 @Composable
 fun GradientButton(
     text: String,
@@ -42,34 +85,24 @@ fun GradientButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     icon: Painter? = null,
+    subtitle: String? = null,
     fontSize: TextUnit = 17.sp,
     onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(Dimens.cornerButton)
-    val interaction = remember { MutableInteractionSource() }
-    Row(
-        modifier = modifier
-            .defaultMinSize(minHeight = 48.dp)
-            .clip(shape)
-            .alpha(if (enabled) 1f else 0.5f)
-            .background(Brush.linearGradient(gradient), shape)
-            .clickable(enabled = enabled, interactionSource = interaction, indication = null) { onClick() }
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (icon != null) {
-            Icon(icon, contentDescription = null, tint = AppColors.textOnGradient, modifier = Modifier.size(20.dp))
-            androidx.compose.foundation.layout.Spacer(Modifier.size(Dimens.spacingContent))
-        }
-        Text(text, color = AppColors.textOnGradient, fontWeight = FontWeight.Bold, fontSize = fontSize, textAlign = TextAlign.Center)
-    }
+    ButtonFrame(
+        text = text,
+        contentColor = AppColors.textOnGradient,
+        modifier = modifier,
+        decoration = Modifier.background(Brush.linearGradient(gradient)),
+        enabled = enabled,
+        icon = icon,
+        subtitle = subtitle,
+        fontSize = fontSize,
+        onClick = onClick,
+    )
 }
 
-/**
- * Replicates Widget.App.Button.Outlined.Modern — outlined, 2dp stroke and text in the
- * outline-stroke color, bold 17sp, 16dp rounded corners.
- */
+/** Outlined counterpart of [GradientButton]: 2dp stroke and text in the outline-stroke color. */
 @Composable
 fun OutlinedModernButton(
     text: String,
@@ -79,40 +112,35 @@ fun OutlinedModernButton(
     fontSize: TextUnit = 17.sp,
     onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(Dimens.cornerButton)
     val stroke = AppColors.outlineStroke
-    val interaction = remember { MutableInteractionSource() }
-    Row(
-        modifier = modifier
-            .defaultMinSize(minHeight = 48.dp)
-            .clip(shape)
-            .alpha(if (enabled) 1f else 0.5f)
-            .border(BorderStroke(2.dp, stroke), shape)
-            .clickable(enabled = enabled, interactionSource = interaction, indication = null) { onClick() }
-            .padding(horizontal = 24.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (icon != null) {
-            Icon(icon, contentDescription = null, tint = stroke, modifier = Modifier.size(20.dp))
-            androidx.compose.foundation.layout.Spacer(Modifier.size(Dimens.spacingContent))
-        }
-        Text(text, color = stroke, fontWeight = FontWeight.Bold, fontSize = fontSize, textAlign = TextAlign.Center)
-    }
+    ButtonFrame(
+        text = text,
+        contentColor = stroke,
+        modifier = modifier,
+        decoration = Modifier.border(BorderStroke(2.dp, stroke), RoundedCornerShape(Dimens.cornerButton)),
+        enabled = enabled,
+        icon = icon,
+        fontSize = fontSize,
+        onClick = onClick,
+    )
 }
 
-/** Convenience wrapper mirroring the TextButton look used for "Rate application" in the dialog. */
+/** Borderless low-emphasis button, e.g. "Rate application" or skipping a word. */
 @Composable
-fun StrokeTextButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    val interaction = remember { MutableInteractionSource() }
-    Row(
-        modifier = modifier
-            .defaultMinSize(minHeight = 48.dp)
-            .clickable(interactionSource = interaction, indication = null) { onClick() }
-            .padding(PaddingValues(horizontal = 12.dp, vertical = 12.dp)),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(text, color = AppColors.outlineStroke, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-    }
+fun StrokeTextButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    icon: Painter? = null,
+    onClick: () -> Unit,
+) {
+    ButtonFrame(
+        text = text,
+        contentColor = AppColors.outlineStroke,
+        modifier = modifier,
+        enabled = enabled,
+        icon = icon,
+        fontSize = 14.sp,
+        onClick = onClick,
+    )
 }

@@ -13,6 +13,8 @@ class TrainingStatsRepository(db: DocumentDatabase) {
     suspend fun addScorePoints(points: Int) = dao.addScorePoints(today(), points, System.currentTimeMillis())
     suspend fun todayStats(): DailyTrainingStatsEntity? = dao.statsByDate(today())
     suspend fun statsForDate(date: String): DailyTrainingStatsEntity? = dao.statsByDate(date)
+    /** Every recorded day, oldest first: one row per day, so the full history stays small. */
+    suspend fun allStats(): List<DailyTrainingStatsEntity> = dao.allStats()
     suspend fun reminderState(): ReminderStateEntity? = dao.reminderState()
     suspend fun saveReminderState(state: ReminderStateEntity) = dao.upsertReminderState(state)
     suspend fun recentWords(): List<String> = dao.recentWords()?.words.orEmpty().split(WORD_SEPARATOR).filter { it.isNotEmpty() }

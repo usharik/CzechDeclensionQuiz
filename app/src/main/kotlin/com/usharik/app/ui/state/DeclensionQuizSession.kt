@@ -17,9 +17,12 @@ import kotlinx.coroutines.launch
  * Session state holder for the full declension-table quiz: the shuffled form pool, the 7×2 grid
  * placements, per-cell feedback and error counters. [handleDrop] applies a drag-and-drop move
  * and reports its outcome so the screen can react (haptics, ads, completion dialog).
+ *
+ * With [review] set, words come only from the mistakes list; a mistake-free table clears the word
+ * from that list with a bonus, and the session ends once the list is empty.
  */
-class DeclensionQuizSession(app: App, scope: CoroutineScope) :
-    QuizSession(app, scope, LastWordStore.MODE_FULL_DECLENSION) {
+class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean = false) :
+    QuizSession(app, scope, if (review) LastWordStore.MODE_REVIEW else LastWordStore.MODE_FULL_DECLENSION) {
 
     enum class DropOutcome { IGNORED, CORRECT, WRONG, ERROR_LIMIT_REACHED, COMPLETED }
 
@@ -44,6 +47,12 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     fun isWordComplete(): Boolean = isComplete()
 
     override fun isCurrentWordPerfect(): Boolean = errorCount == 0
+
+    override suspend fun pickNextWord(current: WordInfo?): WordInfo? =
+        // nextReviewWord drops words missing from the dictionary; persist so they don't come back.
+        if (review) app.wordService.nextReviewWord(current).also { app.persistWordsWithErrors() } else super.pickNextWord(current)
+
+    override fun canResume(word: WordInfo): Boolean = !review || word.word() in app.appState.getWordsWithErrors()
 
     override fun onWordApplied(word: WordInfo) {
         val list = ArrayList<WordModel>(14)
@@ -163,7 +172,12 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope) :
     private fun onTableCompleted() {
         val w = word ?: return
         tableCompleted = true
-        scope.launch { progress.countExerciseCompleted() }
+        val cleared = review && errorCount == 0 && w.word() in app.appState.getWordsWithErrors()
+        scope.launch {
+            progress.countExerciseCompleted()
+            if (cleared) progress.addBonus(Scoring.POINTS_REVIEW_CLEARED)
+        }
+        if (cleared) app.analyticsService.logEvent("review_word_cleared")
         if (errorCount == 0) app.appState.removeWordFromErrorMap(w.word())
         if (errorCount > 2) app.appState.putWordToErrorMap(w.word(), errorCount)
         app.persistWordsWithErrors()

@@ -3,7 +3,7 @@ package com.usharik.app.ui.theme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** Spacing scale mirroring res/values/dimens.xml so Compose layouts match the original spacing. */
+/** Shared spacing, corner and text-size scale. */
 object Dimens {
     val spacingXxs = 3.dp
     val spacingXs = 4.dp
@@ -15,7 +15,6 @@ object Dimens {
     val spacingLg = 24.dp
     val spacingXl = 32.dp
     val spacingXxl = 35.dp
-    val spacingButtonHorizontal = 50.dp
 
     val cornerSmall = 4.dp
     val cornerMedium = 8.dp

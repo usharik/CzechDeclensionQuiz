@@ -27,8 +27,7 @@ data class WordModel(val word: String, val visible: Boolean)
 const val POOL_KEY = "POOL"
 
 /**
- * The shuffled word pool, laid out as a wrapping flow of chips (FlexboxLayoutManager in the
- * original). Each visible chip is a drag source tagged with its index in [models]; the whole
+ * The shuffled word pool, laid out as a wrapping flow of chips. Each visible chip is a drag source tagged with its index in [models]; the whole
  * pool is a drop target so a placed form dropped here returns to the bank.
  */
 @OptIn(ExperimentalLayoutApi::class)
@@ -54,8 +53,8 @@ fun WordBank(models: List<WordModel>, dnd: DragAndDropState, modifier: Modifier 
 }
 
 /**
- * A single word chip styled like WordTextEdit: rounded grey background, 17sp text. Reused for the
- * floating drag shadow via [DragOverlay], which applies its own scale/alpha in a graphics layer.
+ * A single draggable word chip. Reused for the floating drag shadow via [DragOverlay], which
+ * applies its own scale/alpha in a graphics layer.
  */
 @Composable
 fun WordChip(text: String, modifier: Modifier = Modifier) {
@@ -63,9 +62,9 @@ fun WordChip(text: String, modifier: Modifier = Modifier) {
     Box(
         modifier
             .clip(shape)
-            .background(AppColors.answerNeutral, shape)
+            .background(MaterialTheme.colorScheme.surfaceVariant, shape)
             .border(Dimens.strokeThin, AppColors.stroke, shape)
-            .padding(horizontal = Dimens.spacingSm, vertical = Dimens.spacingXs),
+            .padding(horizontal = Dimens.spacingSmLarge, vertical = Dimens.spacingXs + Dimens.shapeInnerPadding),
     ) {
         Text(
             text = text,

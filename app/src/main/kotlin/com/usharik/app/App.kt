@@ -21,6 +21,7 @@ import com.usharik.app.notification.NotificationHelper
 import com.usharik.app.service.FirebaseAnalyticsService
 import com.usharik.app.service.SharedPreferencesLastWordStore
 import com.usharik.app.service.WordService
+import com.usharik.app.ui.state.DailyGoal
 import com.usharik.database.DocumentRepository
 import com.usharik.database.TrainingStatsRepository
 import com.usharik.database.dao.DatabaseFactory
@@ -29,8 +30,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import java.time.Duration
-import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 /** Application-owned dependency graph. It replaces the Dagger Android graph with explicit, typed wiring. */
@@ -88,6 +87,7 @@ open class App : Application() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         appState.setGenderFilterStr(prefs.getString(PREF_GENDER_FILTER, Gender.ALL))
         appState.setSwitchOffAnimation(prefs.getBoolean(PREF_SWITCH_OFF_ANIMATION, false))
+        appState.setDailyGoal(prefs.getInt(PREF_DAILY_GOAL, DailyGoal.DEFAULT.points))
         val errorsType = object : TypeToken<HashMap<String, Int>>() {}.type
         appState.setWordsWithErrors(runCatching { gson.fromJson<HashMap<String, Int>>(prefs.getString(PREF_WORDS_WITH_ERRORS, "{}"), errorsType) }.getOrDefault(hashMapOf()))
     }
@@ -98,14 +98,15 @@ open class App : Application() {
             .apply()
     }
 
+    /**
+     * Hourly check: [DailyReminderWorker] picks the player's usual practice hour and the evening
+     * streak-rescue slot itself, so the schedule no longer pins every reminder to 9:00.
+     */
     private fun scheduleDailyReminderWorker() {
-        val now = LocalDateTime.now()
-        var next = now.toLocalDate().atTime(9, 0)
-        if (!now.isBefore(next)) next = next.plusDays(1)
-        val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(24, TimeUnit.HOURS)
-            .setInitialDelay(Duration.between(now, next).toMinutes(), TimeUnit.MINUTES)
-            .build()
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(DAILY_REMINDER_WORK, ExistingPeriodicWorkPolicy.KEEP, request)
+        val workManager = WorkManager.getInstance(this)
+        workManager.cancelUniqueWork(LEGACY_DAILY_REMINDER_WORK)
+        val request = PeriodicWorkRequestBuilder<DailyReminderWorker>(1, TimeUnit.HOURS).build()
+        workManager.enqueueUniquePeriodicWork(REMINDER_WORK, ExistingPeriodicWorkPolicy.KEEP, request)
     }
 
     companion object {
@@ -113,6 +114,8 @@ open class App : Application() {
         const val PREF_GENDER_FILTER = "genderFilterStr"
         const val PREF_SWITCH_OFF_ANIMATION = "switchOffAnimation"
         const val PREF_WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS"
-        private const val DAILY_REMINDER_WORK = "daily_reminder"
+        const val PREF_DAILY_GOAL = "dailyGoalPoints"
+        private const val LEGACY_DAILY_REMINDER_WORK = "daily_reminder"
+        private const val REMINDER_WORK = "hourly_reminder"
     }
 }

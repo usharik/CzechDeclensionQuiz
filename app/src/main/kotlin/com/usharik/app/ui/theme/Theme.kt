@@ -21,6 +21,8 @@ object AppColors {
     val answerIncorrect: Color @Composable get() = colorResource(R.color.colorAnswerIncorrectBackground)
     val answerNeutral: Color @Composable get() = colorResource(R.color.colorAnswerNeutralBackground)
     val stroke: Color @Composable get() = colorResource(R.color.colorStroke)
+    val singularCell: Color @Composable get() = colorResource(R.color.colorSingularCell)
+    val pluralCell: Color @Composable get() = colorResource(R.color.colorPluralCell)
     val successText: Color @Composable get() = colorResource(R.color.colorSuccessText)
     val correct: Color @Composable get() = colorResource(R.color.colorCorrect)
     val incorrect: Color @Composable get() = colorResource(R.color.colorIncorrect)

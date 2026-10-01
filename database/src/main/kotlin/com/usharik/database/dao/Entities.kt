@@ -31,6 +31,10 @@ data class ReminderStateEntity(
     @ColumnInfo(name = "last_active_date") var lastActiveDate: String? = null,
     @ColumnInfo(name = "last_notification_date") var lastNotificationDate: String? = null,
     @ColumnInfo(name = "inactivity_streak") var inactivityStreak: Int = 0,
+    // Added in version 10: the reminder worker runs hourly, so the once-a-day decision and the
+    // evening streak-rescue reminder each need their own "already handled today" marker.
+    @ColumnInfo(name = "last_check_date") var lastCheckDate: String? = null,
+    @ColumnInfo(name = "last_rescue_date") var lastRescueDate: String? = null,
 )
 
 @Entity(tableName = "recent_words")

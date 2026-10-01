@@ -6,6 +6,7 @@ interface LastWordStore {
     companion object {
         const val MODE_FULL_DECLENSION = "full_declension"
         const val MODE_SINGLE_CASE = "single_case"
+        const val MODE_REVIEW = "review"
         val NO_OP = object : LastWordStore { override fun saveLastWord(modeKey: String, word: String) = Unit; override fun getLastWord(modeKey: String): String? = null }
     }
 }

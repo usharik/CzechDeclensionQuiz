@@ -51,4 +51,18 @@ class DatabaseMigrationTest {
         }
         migrated.close()
     }
+
+    @Test fun migrate9To10_addsReminderMarkersWithoutChangingState() {
+        val database: SupportSQLiteDatabase = helper.createDatabase("migration-9-10", 9)
+        database.execSQL("INSERT INTO reminder_state (id, last_active_date, last_notification_date, inactivity_streak) VALUES (1, '2026-01-01', '2026-01-02', 3)")
+        database.close()
+
+        val migrated = helper.runMigrationsAndValidate("migration-9-10", 10, true, DocumentDatabase.MIGRATION_9_10)
+        migrated.query("SELECT last_notification_date, inactivity_streak, last_check_date, last_rescue_date FROM reminder_state WHERE id = 1").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals("2026-01-02", cursor.getString(0)); assertEquals(3, cursor.getInt(1))
+            assertEquals(true, cursor.isNull(2)); assertEquals(true, cursor.isNull(3))
+        }
+        migrated.close()
+    }
 }

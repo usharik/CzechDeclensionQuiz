@@ -1,6 +1,7 @@
 package com.usharik.app
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -21,8 +22,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Honor the review deep link only on a fresh launch from the notification: a recreated
+        // activity restores its own page, and Recents replays the original intent.
+        val launchedFromHistory = ((intent?.flags ?: 0) and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0
+        val startInReview = savedInstanceState == null && !launchedFromHistory &&
+            intent?.getStringExtra(EXTRA_DESTINATION) == DESTINATION_REVIEW
         setContent {
-            AppTheme { CzechQuizApp(application as App) }
+            AppTheme { CzechQuizApp(application as App, startInReview = startInReview) }
         }
         if (!UiLanguageManager.hasSavedLanguage(this)) {
             // The Compose settings screen also exposes this choice; applying SYSTEM makes the initial state explicit.
@@ -36,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         // Keep the full-quiz interstitial warm before the player can reach either its error or
         // timeout boundary. AdManager deduplicates cached and in-flight loads.
         (application as App).adManager.loadAd(this, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID)
+    }
+
+    companion object {
+        /** Notification deep link: which screen to open instead of the hub. */
+        const val EXTRA_DESTINATION = "destination"
+        const val DESTINATION_REVIEW = "review"
     }
 
     private fun requestNotificationPermissionIfNeeded() {

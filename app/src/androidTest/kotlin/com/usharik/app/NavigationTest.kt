@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +27,7 @@ class NavigationTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun fullQuizNavigationReturnsToHub() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performScrollTo().performClick()
 
         // Wait for the full quiz screen — it shows the word text node once loaded
         waitForTag(TestTags.FULL_WORD)
@@ -35,7 +36,7 @@ class NavigationTest : BaseComposeTest() {
         navigateHome()
 
         // Navigate again to verify the screen is re-entrant
-        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_FULL).performScrollTo().performClick()
         waitForTag(TestTags.FULL_WORD)
         navigateHome()
     }
@@ -43,7 +44,7 @@ class NavigationTest : BaseComposeTest() {
     /** Navigates to "Words with errors" screen and back to hub. */
     @Test
     fun wordsWithErrorsNavigationReturnsToHub() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_ERRORS).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_ERRORS).performScrollTo().performClick()
         composeTestRule.waitForIdle()
 
         // The app bar title switches to the page name
@@ -56,11 +57,11 @@ class NavigationTest : BaseComposeTest() {
     /** Navigates to Handbook screen, verifies the paradigm selectors, then returns to hub. */
     @Test
     fun handbookNavigationReturnsToHub() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_HANDBOOK).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_HANDBOOK).performScrollTo().performClick()
         composeTestRule.waitForIdle()
 
-        // Handbook shows the gender and declension-type selectors above the table
-        composeTestRule.onNodeWithText("Gender of noun").assertIsDisplayed()
+        // Handbook shows the gender switch and declension-type selector above the table
+        composeTestRule.onNodeWithText("Masculine").assertIsDisplayed()
         composeTestRule.onNodeWithText("Type of declension").assertIsDisplayed()
 
         navigateHome()
@@ -69,7 +70,7 @@ class NavigationTest : BaseComposeTest() {
     /** Navigates to Settings screen, verifies the section headers, then returns to hub. */
     @Test
     fun settingsNavigationReturnsToHub() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_SETTINGS).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_SETTINGS).performScrollTo().performClick()
         composeTestRule.waitForIdle()
 
         // Settings shows the gender filter and app-language sections
@@ -83,7 +84,7 @@ class NavigationTest : BaseComposeTest() {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun aboutNavigationReturnsToHub() {
-        composeTestRule.onNodeWithTag(TestTags.BTN_ABOUT).performClick()
+        composeTestRule.onNodeWithTag(TestTags.BTN_ABOUT).performScrollTo().performClick()
         composeTestRule.waitForIdle()
 
         // About shows a version string starting with "Version "

@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Česká skloňování</string>
-    <string name="check">Zkontrolovat</string>
     <string name="nextCase">Další pád</string>
-    <string name="OK" translatable="false">OK</string>
-    <string name="Yes">Ano</string>
-    <string name="No">Ne</string>
     <string name="correct_answer">Vše je správně!</string>
     <string name="next_word">Další slovo</string>
     <string name="stay_here">Zůstat zde</string>
     <string name="try_again">Zkusit znovu</string>
-    <string name="toast_some_errors">Existuje několik chyb.</string>
     <string name="version">Verze %1$s %2$s (%3$s)</string>
     <string name="date_of_build">Datum vytvoření %s</string>
-    <string name="gender_of_noun">Rod podstatného jména</string>
     <string name="type_of_declension">Typ skloňování</string>
     <string name="masculine">Mužský rod</string>
     <string name="neuter">Střední rod</string>
     <string name="feminine">Ženský rod</string>
-    <string name="declension_quiz_1">Test skloňování</string>
     <string name="handbook">Příručka</string>
     <string name="about">O aplikaci</string>
-    <string name="nav_home">Domů</string>
     <string name="other_nouns">Další podstatná jména:</string>
     <string name="rate_app">Hodnotit aplikaci</string>
     <string name="rate_app_unavailable">Obchod Play Store nebyl nalezen</string>
@@ -43,17 +35,12 @@
     <string name="notification_channel_name">Denní připomínka</string>
     <string name="notification_channel_description">Denní připomínka pro procvičování českého skloňování</string>
     <string name="notification_title">Čas procvičovat! 🇨🇿</string>
-    <string name="notification_body_active">Udrž sérii — rychlý kvíz dnes!</string>
     <string name="notification_body_inactive">Už to bylo dlouho. Vrať se a procvičuj české skloňování!</string>
     <string name="notification_action_start_quiz">Začít kvíz</string>
     <string name="notification_welcome_title">Oznámení jsou zapnutá! 🎉</string>
     <string name="notification_welcome_body">Budete dostávat denní připomínky, abyste pokračovali v procvičování češtiny.</string>
 
     <!-- Notification permission rationale dialog -->
-    <string name="notification_rationale_title">Zůstaň na správné cestě! 🔔</string>
-    <string name="notification_rationale_body">Chceš dostávat denní připomínky pro procvičování češtiny? Malý impuls každý den pomáhá budovat návyk a udržuje motivaci — abys nikdy nezapomněl na rychlý kvíz.</string>
-    <string name="notification_rationale_enable">Ano, připomínej mi!</string>
-    <string name="notification_rationale_not_now">Teď ne</string>
 
     <!-- Quit quiz overlay -->
     <string name="quit_quiz_title">Pokračuj! 💪</string>
@@ -72,12 +59,6 @@
     <string name="quiz_mode_full_table">Test úplné tabulky skloňování</string>
     <string name="quiz_mode_one_case">Test jednoho pádu</string>
 
-    <string-array name="next_word_dialog">
-        <item>Další slovo</item>
-        <item>Zůstat zde</item>
-        <item>Zkusit znovu</item>
-        <item>Hodnotit aplikaci</item>
-    </string-array>
 
     <array name="caseName">
         <item>Nominativ</item>
@@ -108,4 +89,85 @@
         <item>o</item>
         <item>s</item>
     </array>
+
+    <!-- Progress: streak, daily goal and review mode -->
+    <string name="review_title">Oprava chyb</string>
+    <string name="review_complete_title">Všechny chyby opraveny! 🎉</string>
+    <string name="review_complete_message">Seznam chyb je prázdný. Skvělá práce!</string>
+    <string name="review_complete_back">Zpět do menu</string>
+    <string name="errors_empty">Zatím žádné chyby. Slova, ve kterých uděláte chybu, se tu objeví k opakování.</string>
+    <string name="daily_goal">Denní cíl</string>
+    <string name="daily_goal_light">Lehký — %d bodů denně</string>
+    <string name="daily_goal_regular">Běžný — %d bodů denně</string>
+    <string name="daily_goal_intense">Intenzivní — %d bodů denně</string>
+    <string name="progress_status_goal_reached">Denní cíl splněn! 🎉 Vraťte se zítra a prodlužte sérii.</string>
+    <string name="progress_best_streak">Rekord: %d</string>
+    <string name="progress_goal_label">dnes</string>
+    <string name="notification_review_body">Krátké opakování je navždy odstraní ze seznamu chyb.</string>
+    <plurals name="progress_status_streak_kept">
+        <item quantity="one">Série dnes prodloužena ✓ Do denního cíle zbývá %d bod.</item>
+        <item quantity="few">Série dnes prodloužena ✓ Do denního cíle zbývají %d body.</item>
+        <item quantity="many">Série dnes prodloužena ✓ Do denního cíle zbývá %d bodu.</item>
+        <item quantity="other">Série dnes prodloužena ✓ Do denního cíle zbývá %d bodů.</item>
+    </plurals>
+    <plurals name="progress_status_keep_streak">
+        <item quantity="one">Získejte dnes %d bod, abyste udrželi sérii.</item>
+        <item quantity="few">Získejte dnes %d body, abyste udrželi sérii.</item>
+        <item quantity="many">Získejte dnes %d bodu, abyste udrželi sérii.</item>
+        <item quantity="other">Získejte dnes %d bodů, abyste udrželi sérii.</item>
+    </plurals>
+    <plurals name="progress_status_start_streak">
+        <item quantity="one">Získejte dnes %d bod a začněte sérii.</item>
+        <item quantity="few">Získejte dnes %d body a začněte sérii.</item>
+        <item quantity="many">Získejte dnes %d bodu a začněte sérii.</item>
+        <item quantity="other">Získejte dnes %d bodů a začněte sérii.</item>
+    </plurals>
+    <plurals name="notification_streak_body">
+        <item quantity="one">Získejte dnes %d bod, ať série pokračuje.</item>
+        <item quantity="few">Získejte dnes %d body, ať série pokračuje.</item>
+        <item quantity="many">Získejte dnes %d bodu, ať série pokračuje.</item>
+        <item quantity="other">Získejte dnes %d bodů, ať série pokračuje.</item>
+    </plurals>
+    <plurals name="notification_rescue_body">
+        <item quantity="one">Získejte %d bod do půlnoci a zachraňte ji — stačí pár pádů.</item>
+        <item quantity="few">Získejte %d body do půlnoci a zachraňte ji — stačí pár pádů.</item>
+        <item quantity="many">Získejte %d bodu do půlnoci a zachraňte ji — stačí pár pádů.</item>
+        <item quantity="other">Získejte %d bodů do půlnoci a zachraňte ji — stačí pár pádů.</item>
+    </plurals>
+    <plurals name="progress_streak_days">
+        <item quantity="one">den v řadě</item>
+        <item quantity="few">dny v řadě</item>
+        <item quantity="many">dne v řadě</item>
+        <item quantity="other">dní v řadě</item>
+    </plurals>
+    <plurals name="progress_review_button">
+        <item quantity="one">Opakovat chyby: %d slovo</item>
+        <item quantity="few">Opakovat chyby: %d slova</item>
+        <item quantity="many">Opakovat chyby: %d slova</item>
+        <item quantity="other">Opakovat chyby: %d slov</item>
+    </plurals>
+    <plurals name="notification_streak_title">
+        <item quantity="one">🔥 Série: %d den v řadě!</item>
+        <item quantity="few">🔥 Série: %d dny v řadě!</item>
+        <item quantity="many">🔥 Série: %d dne v řadě!</item>
+        <item quantity="other">🔥 Série: %d dní v řadě!</item>
+    </plurals>
+    <plurals name="notification_rescue_title">
+        <item quantity="one">Vaše série %d dne o půlnoci skončí! 🔥</item>
+        <item quantity="few">Vaše série %d dnů o půlnoci skončí! 🔥</item>
+        <item quantity="many">Vaše série %d dne o půlnoci skončí! 🔥</item>
+        <item quantity="other">Vaše série %d dnů o půlnoci skončí! 🔥</item>
+    </plurals>
+    <plurals name="notification_review_title">
+        <item quantity="one">%d slovo čeká na opakování</item>
+        <item quantity="few">%d slova čekají na opakování</item>
+        <item quantity="many">%d slova čeká na opakování</item>
+        <item quantity="other">%d slov čeká na opakování</item>
+    </plurals>
+    <string name="singular">Jednotné číslo</string>
+    <string name="plural">Množné číslo</string>
+    <string name="nav_back">Zpět</string>
+    <string name="quiz_mode_full_table_desc">Přetáhněte všechny tvary do 14 políček tabulky</string>
+    <string name="quiz_mode_one_case_desc">Vyberte správný tvar pro každý pád</string>
+    <string name="words_with_errors_desc">Procvičte slova, ve kterých jste chybovali</string>
 </resources>
