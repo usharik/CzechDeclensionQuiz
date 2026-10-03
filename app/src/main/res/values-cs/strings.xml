@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Česká skloňování</string>
+    <string name="hub_title">Trenažér českého skloňování</string>
     <string name="nextCase">Další pád</string>
     <string name="correct_answer">Vše je správně!</string>
     <string name="next_word">Další slovo</string>

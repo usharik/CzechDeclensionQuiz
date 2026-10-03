@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Чешское склонение</string>
+    <string name="hub_title">Тренажёр склонений чешского</string>
     <string name="nextCase">Следующий падеж</string>
     <string name="correct_answer">Все правильно!</string>
     <string name="next_word">Следующее слово</string>

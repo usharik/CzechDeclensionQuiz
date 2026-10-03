@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tschechische Deklination</string>
+    <string name="hub_title">Tschechische Deklination</string>
     <string name="nextCase">Nächster Fall</string>
     <string name="correct_answer">Alles richtig!</string>
     <string name="next_word">Nächstes Wort</string>

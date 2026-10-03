@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Чэшскае скланенне</string>
+    <string name="hub_title">Трэнажор чэшскага скланення</string>
     <string name="nextCase">Наступны падзеж</string>
     <string name="correct_answer">Усё правільна!</string>
     <string name="next_word">Наступнае слова</string>

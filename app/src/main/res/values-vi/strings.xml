@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sự biến đổi tiếng Séc</string>
+    <string name="hub_title">Luyện biến cách tiếng Séc</string>
     <string name="nextCase">Trường hợp tiếp theo</string>
     <string name="correct_answer">Tất cả đều chính xác!</string>
     <string name="next_word">Từ tiếp theo</string>
