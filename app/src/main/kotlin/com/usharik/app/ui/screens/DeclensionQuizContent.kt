@@ -91,7 +91,7 @@ fun DeclensionQuizContent(
                     Modifier.fillMaxWidth().weight(2f).padding(vertical = Dimens.spacingXs),
                     verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent),
                 ) {
-                    CaseColumnsHeader(table.columnKind, Modifier.fillMaxWidth())
+                    CaseColumnsHeader(Modifier.fillMaxWidth())
                     fun placed(cell: FormCell) = wordFor(actual.getOrElse(cellIdx(cell.column, cell.row)) { -1 })
                     // A section none of whose cells exist (no imperative for modal verbs) is left out entirely.
                     table.sections.filter { s -> s.rows.any { r -> r.cells.any { it.exists } } }.forEach { section ->

@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +38,6 @@ import com.usharik.app.ui.state.FormTables
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
 import com.usharik.database.AdjectiveInfo
-import kotlinx.coroutines.launch
 
 private enum class HandbookGender(val paradigms: List<String>) {
     MASCULINE(listOf("pán", "hrad", "muž", "stroj", "předseda", "soudce")),
@@ -139,7 +137,6 @@ fun HandbookScreen(app: App) {
 @Composable
 private fun NounHandbook(app: App, modifier: Modifier) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var gender by remember { mutableStateOf(HandbookGender.valueOf(app.appState.getHandbookGender())) }
     // Each gender group keeps its own checked paradigm.
     var checked by remember {
@@ -153,7 +150,6 @@ private fun NounHandbook(app: App, modifier: Modifier) {
         checked = checked + (gender to word)
         shownWord = word
         app.appState.setHandbookParadigm(gender.name, word)
-        scope.launch { app.dictionaryReady.await(); app.documentRepository.wordInfoByWord(word)?.let { table = FormTables.noun(it) } }
     }
 
     // Switching the gender re-selects that group's remembered (or default) paradigm so the
@@ -164,7 +160,8 @@ private fun NounHandbook(app: App, modifier: Modifier) {
         selectWord(checked[g] ?: g.paradigms.first())
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(shownWord) {
+        table = null
         app.dictionaryReady.await()
         app.documentRepository.wordInfoByWord(shownWord)?.let { table = FormTables.noun(it) }
     }
@@ -187,7 +184,9 @@ private fun NounHandbook(app: App, modifier: Modifier) {
         }
         ChipRow(stringResource(R.string.type_of_declension), gender.paradigms, checked[gender], ::selectWord)
         Hint("${stringResource(R.string.other_nouns)} ${otherNouns[shownWord].orEmpty()}")
-        table?.let { CaseTable(it, Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm)) }
+        table?.takeIf { it.lexeme.headword == shownWord }?.let {
+            CaseTable(it, Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm))
+        }
     }
 }
 
@@ -195,22 +194,21 @@ private fun NounHandbook(app: App, modifier: Modifier) {
 @Composable
 private fun AdjectiveHandbook(app: App, modifier: Modifier) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var word by remember { mutableStateOf(app.appState.getHandbookAdjective()) }
     var gender by remember { mutableStateOf(app.appState.getHandbookAdjectiveGender()) }
     var info by remember { mutableStateOf<AdjectiveInfo?>(null) }
     val model = adjectiveModels.firstOrNull { it.word == word } ?: adjectiveModels.first()
 
-    fun load(w: String) {
-        scope.launch { app.dictionaryReady.await(); info = app.documentRepository.adjectiveByWord(w) }
-    }
     fun selectWord(w: String) {
         HapticFeedback.light(context)
         word = w
         app.appState.setHandbookAdjective(w)
-        load(w)
     }
-    LaunchedEffect(Unit) { load(word) }
+    LaunchedEffect(word) {
+        info = null
+        app.dictionaryReady.await()
+        info = app.documentRepository.adjectiveByWord(word)
+    }
 
     Column(modifier) {
         ChipRow(stringResource(R.string.type_of_adjective), adjectiveModels.map { it.word }, word, ::selectWord)
@@ -230,7 +228,9 @@ private fun AdjectiveHandbook(app: App, modifier: Modifier) {
         }
         Hint("${stringResource(R.string.other_adjectives)} ${model.others}")
         Hint(stringResource(model.tip))
-        info?.let { CaseTable(FormTables.adjectiveParadigm(it, gender), Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm)) }
+        info?.takeIf { it.word() == word }?.let {
+            CaseTable(FormTables.adjectiveParadigm(it, gender), Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm))
+        }
     }
 }
 
@@ -238,27 +238,28 @@ private fun AdjectiveHandbook(app: App, modifier: Modifier) {
 @Composable
 private fun VerbHandbook(app: App, modifier: Modifier) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var word by remember { mutableStateOf(app.appState.getHandbookVerb()) }
     var table by remember { mutableStateOf<FormTable?>(null) }
     val model = verbModels.firstOrNull { it.word == word } ?: verbModels.first()
 
-    fun load(w: String) {
-        scope.launch { app.dictionaryReady.await(); app.documentRepository.verbByWord(w)?.let { table = FormTables.verb(it) } }
-    }
     fun selectWord(w: String) {
         HapticFeedback.light(context)
         word = w
         app.appState.setHandbookVerb(w)
-        load(w)
     }
-    LaunchedEffect(Unit) { load(word) }
+    LaunchedEffect(word) {
+        table = null
+        app.dictionaryReady.await()
+        app.documentRepository.verbByWord(word)?.let { table = FormTables.verb(it) }
+    }
 
     Column(modifier) {
         ChipRow(stringResource(R.string.type_of_conjugation), verbModels.map { it.word }, word, ::selectWord)
         if (model.others.isNotEmpty()) Hint("${stringResource(R.string.other_verbs)} ${model.others}")
         Hint(stringResource(model.tip))
-        table?.let { CaseTable(it, Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm)) }
+        table?.takeIf { it.lexeme.headword == word }?.let {
+            CaseTable(it, Modifier.weight(1f).padding(top = Dimens.spacingXs, bottom = Dimens.spacingSm))
+        }
     }
 }
 

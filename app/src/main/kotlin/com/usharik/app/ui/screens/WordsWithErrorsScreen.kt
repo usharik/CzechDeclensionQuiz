@@ -19,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +41,6 @@ import com.usharik.app.ui.state.FormTable
 import com.usharik.app.ui.state.FormTables
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
-import kotlinx.coroutines.launch
 
 /**
  * Words-with-errors page: a review-mode shortcut, the chips of the words the player got wrong
@@ -52,18 +50,22 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WordsWithErrorsScreen(app: App, onStartReview: () -> Unit) {
-    val scope = rememberCoroutineScope()
     val wordsWithErrors by app.appState.wordsWithErrorsFlow.collectAsState()
     var selectedKey by remember { mutableStateOf<String?>(null) }
     var table by remember { mutableStateOf<FormTable?>(null) }
 
     fun select(key: String) {
         selectedKey = key
-        scope.launch { app.dictionaryReady.await(); table = app.wordService.lexemeByKey(key)?.let(FormTables::of) }
     }
 
     LaunchedEffect(wordsWithErrors.keys) {
         if (selectedKey !in wordsWithErrors) wordsWithErrors.keys.firstOrNull()?.let(::select) ?: run { selectedKey = null; table = null }
+    }
+    LaunchedEffect(selectedKey) {
+        table = null
+        val key = selectedKey ?: return@LaunchedEffect
+        app.dictionaryReady.await()
+        table = app.wordService.lexemeByKey(key)?.let(FormTables::of)
     }
 
     Column(
@@ -117,7 +119,7 @@ fun WordsWithErrorsScreen(app: App, onStartReview: () -> Unit) {
                     )
                 }
             }
-            table?.let {
+            table?.takeIf { it.lexeme.key == selectedKey }?.let {
                 Text(
                     lexemeSubtitle(it.lexeme),
                     Modifier.padding(start = Dimens.spacingXs),

@@ -9,6 +9,7 @@ import com.usharik.app.ui.state.Lexeme
 import com.usharik.database.AdjectiveInfo
 import com.usharik.database.DocumentRepository
 import com.usharik.database.WordInfo
+import kotlinx.coroutines.CancellationException
 import kotlin.random.Random
 
 /**
@@ -47,7 +48,9 @@ class WordService(
                 Log.i(javaClass.name, "New word is ${it.key}")
                 analyticsService.logNextWord(it.key)
             }
-        } catch (error: Throwable) {
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (error: Exception) {
             Log.e(javaClass.name, "Error getting next word", error)
             FirebaseCrashlytics.getInstance().recordException(error)
             throw error

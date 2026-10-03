@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.usharik.app.R
 import com.usharik.app.TestTags
-import com.usharik.app.ui.state.ColumnKind
 import com.usharik.app.ui.state.FormCell
 import com.usharik.app.ui.state.FormRow
 import com.usharik.app.ui.state.SectionTitle
@@ -65,9 +64,9 @@ fun RowCase(
     row: FormRow,
     dnd: DragAndDropState?,
     text: (FormCell) -> String,
+    modifier: Modifier = Modifier,
     feedback: (FormCell) -> CellFeedback? = { null },
     fillHeight: Boolean = false,
-    modifier: Modifier = Modifier,
 ) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spacingXxs)) {
         row.caseIndex?.let { CaseHeader(it) }
@@ -109,9 +108,8 @@ private fun CaseHeader(caseIndex: Int) {
 }
 
 /** "Singular | Plural" labels aligned over the two value columns; verb tables label their person columns the same way. */
-@Suppress("UNUSED_PARAMETER")
 @Composable
-fun CaseColumnsHeader(columnKind: ColumnKind = ColumnKind.NUMBER, modifier: Modifier = Modifier) {
+fun CaseColumnsHeader(modifier: Modifier = Modifier) {
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs)) {
         listOf(R.string.singular, R.string.plural).forEach { label ->
             Text(
@@ -177,8 +175,8 @@ fun AnswerCell(
     background: Color,
     dnd: DragAndDropState?,
     feedback: CellFeedback?,
-    fillHeight: Boolean = false,
     modifier: Modifier = Modifier,
+    fillHeight: Boolean = false,
 ) {
     val shape = RoundedCornerShape(Dimens.cornerLarge)
     val scale = remember { Animatable(1f) }

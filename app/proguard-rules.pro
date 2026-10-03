@@ -32,17 +32,11 @@
 -keep class com.google.gson.reflect.TypeToken
 -keep class * extends com.google.gson.reflect.TypeToken
 
-# Gson uses reflection to (de)serialize this model class; keep its fields
-# and constructors so R8 doesn't rename/remove them and break JSON
-# (de)serialization.
+# Gson reads the bundled noun, adjective, and verb dictionaries by reflecting
+# over these classes. Keep their constructors and JSON field names in release.
 -keep class com.usharik.database.WordInfo { *; }
--keepclassmembers class com.usharik.database.WordInfo { *; }
-
-# Prevent R8 from turning classes instantiated only via Gson reflection
-# (never via a visible "new" call) into abstract stubs through vertical
-# class merging. This is the fix documented by Gson for the
-# "Abstract classes can't be instantiated!" crash.
--keep,allowobfuscation,allowshrinking class com.usharik.database.WordInfo
+-keep class com.usharik.database.AdjectiveInfo { *; }
+-keep class com.usharik.database.VerbInfo { *; }
 
 # Room entities are accessed via generated code but keep them defensively
 # since they are also passed through/around reflection-sensitive paths.

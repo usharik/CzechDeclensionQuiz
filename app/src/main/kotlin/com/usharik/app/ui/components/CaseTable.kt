@@ -22,7 +22,7 @@ import com.usharik.database.VerbInfo
 @Composable
 fun CaseTable(table: FormTable, modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent)) {
-        CaseColumnsHeader(table.columnKind, Modifier.fillMaxWidth())
+        CaseColumnsHeader(Modifier.fillMaxWidth())
         // A section none of whose cells exist (no imperative for modal verbs) is left out entirely.
         table.sections.filter { s -> s.rows.any { r -> r.cells.any { it.exists } } }.forEach { section ->
             if (section.title != SectionTitle.NONE) SectionHeader(section.title)
