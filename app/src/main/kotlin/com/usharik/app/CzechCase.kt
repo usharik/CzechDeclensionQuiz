@@ -9,7 +9,7 @@ enum class CzechCase(
     NOMINATIV(0, "Nominativ", "", "kdo? co?"),
     GENITIV(1, "Genitiv", "bez", "koho? čeho?"),
     DATIV(2, "Dativ", "ke", "komu? čemu?"),
-    AKUZATIV(3, "Akuzativ", "vidim", "koho? co?"),
+    AKUZATIV(3, "Akuzativ", "vidím", "koho? co?"),
     VOKATIV(4, "Vokativ", "", "-"),
     LOKAL(5, "Lokál", "o", "(o) kom? (o) čem?"),
     INSTRUMENTAL(6, "Instrumentál", "s", "kým? čím?");

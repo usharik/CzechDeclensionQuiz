@@ -170,4 +170,58 @@
     <string name="quiz_mode_full_table_desc">Расставьте все формы по 14 клеткам таблицы</string>
     <string name="quiz_mode_one_case_desc">Выберите верную форму для каждого падежа</string>
     <string name="words_with_errors_desc">Повторите слова, в которых были ошибки</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Что тренировать</string>
+    <string name="pos_nouns">Существительные</string>
+    <string name="pos_adjectives">Прилагательные</string>
+    <string name="pos_verbs">Глаголы</string>
+    <string name="pos_nouns_short">Сущ.</string>
+    <string name="pos_adjectives_short">Прил.</string>
+    <string name="pos_verbs_short">Глаг.</string>
+    <string name="pos_tag_adjective">прил.</string>
+    <string name="pos_tag_verb">глаг.</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Просклоняйте прилагательное с существительным: 14 форм</string>
+    <string name="quiz_mode_full_table_desc_verbs">Расставьте формы настоящего, прошедшего и императива</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Выберите согласованную форму прилагательного, падеж за падежом</string>
+    <string name="quiz_mode_one_case_desc_verbs">Выберите верную форму глагола, лицо за лицом</string>
+    <string name="section_present">Настоящее время</string>
+    <string name="section_past">Прошедшее время (причастие)</string>
+    <string name="section_imperative">Императив</string>
+    <string name="adjective_kind_hard">твёрдое прилагательное</string>
+    <string name="adjective_kind_soft">мягкое прилагательное</string>
+    <string name="adjective_kind_possessive">притяжательное прилагательное</string>
+    <string name="with_noun">с «%s»</string>
+    <string name="comparative_label">сравнительная степень: %s</string>
+    <string name="aspect_imperfective">несовершенный вид</string>
+    <string name="aspect_perfective">совершенный вид</string>
+    <string name="aspect_biaspectual">двувидовой</string>
+    <string name="aspect_pair">пара: %s</string>
+    <string name="verb_group">группа «-%s»</string>
+    <string name="verb_group_irregular">неправильный</string>
+    <string name="type_of_conjugation">Тип спряжения</string>
+    <string name="type_of_adjective">Тип прилагательного</string>
+    <string name="other_adjectives">Другие прилагательные:</string>
+    <string name="other_verbs">Другие глаголы:</string>
+    <string name="gender_masculine_animate_short">м. одуш.</string>
+    <string name="gender_masculine_inanimate_short">м. неодуш.</string>
+    <string name="gender_feminine_short">жен.</string>
+    <string name="gender_neuter_short">ср.</string>
+    <string name="tip_adj_hard">Во мн. ч. одушевлённого мужского рода смягчается основа: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Вин. п. ед. ч. одуш. = род. п. (mladého).</string>
+    <string name="tip_adj_soft">Одна форма для всех родов в именительном (jarní den, jarní noc, jarní ráno). Косвенные падежи: -ího, -ímu, -ím. Так же склоняются сравнительные степени (lepší, starší).</string>
+    <string name="tip_adj_possessive">Краткие окончания, как у существительных: otcova, otcovu, otcově. -ův — от владельца мужского рода (otec), -in — женского (matka → matčin).</string>
+    <string name="tip_verb_dela">Группа -á: -ám, -áš, -á, -áme, -áte, -ají. Императив на -ej: dělej, dělejte! Сюда относится большинство глаголов на -at.</string>
+    <string name="tip_verb_prosi">Группа -í: -ím, -íš, -í, -íme, -íte, -í (или -ějí: umějí). Императив без окончания: pros!, mluv!; после двух согласных -i: mysli!</string>
+    <string name="tip_verb_kupuje">Группа -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (формы -uju/-ujou разговорные). Императив -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Группа -ne: -nu, -neš, -ne, -neme, -nete, -nou. Императив -ni: tiskni!, sedni si! В прошедшем часто выпадает -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Группа -e: -u, -eš, -e, -eme, -ete, -ou. Основа часто меняется: číst → čtu, psát → píšu, péct → peču. Императив: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Учите по одному: být (jsem, jsi, je…), mít (mám), jít (jdu, прош. šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Прошедшее = причастие + jsem/jsi/jsme/jste; в 3-м лице вспомогательного глагола нет: dělal jsem, dělala jsi, dělali jsme, dělal. Во мн. ч.: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Словосочетания: прилагательное + существительное</string>
+    <string name="pos_phrases_short">Фразы</string>
+    <string name="quiz_mode_full_table_verbs">Полная таблица спряжения</string>
+    <string name="quiz_mode_one_case_verbs">По одной форме</string>
+    <string name="next_form">Следующая форма</string>
+    <string name="quiz_mode_full_table_desc_phrases">Просклоняйте целые словосочетания вроде «mladý muž»: 14 форм</string>
+    <string name="quiz_mode_one_case_desc_phrases">Выберите верное словосочетание после bez, ke, vidím, o, s</string>
 </resources>

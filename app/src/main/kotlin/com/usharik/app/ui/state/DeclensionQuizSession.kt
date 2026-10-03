@@ -4,31 +4,34 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.usharik.app.App
+import com.usharik.app.PartOfSpeech
 import com.usharik.app.service.LastWordStore
 import com.usharik.app.ui.components.CellFeedback
 import com.usharik.app.ui.components.POOL_KEY
 import com.usharik.app.ui.components.WordModel
-import com.usharik.database.WordInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * Session state holder for the full declension-table quiz: the shuffled form pool, the 7×2 grid
+ * Session state holder for the full-table quiz: the shuffled form pool, the rows × 2 grid
  * placements, per-cell feedback and error counters. [handleDrop] applies a drag-and-drop move
  * and reports its outcome so the screen can react (haptics, ads, completion dialog).
+ *
+ * The grid comes from the current [FormTable]: 7 case rows for a noun or an adjective (+ noun),
+ * 8 rows in three sections for a verb. Cell keys are `"<column>_<row>"`.
  *
  * With [review] set, words come only from the mistakes list; a mistake-free table clears the word
  * from that list with a bonus, and the session ends once the list is empty.
  */
-class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean = false) :
-    QuizSession(app, scope, if (review) LastWordStore.MODE_REVIEW else LastWordStore.MODE_FULL_DECLENSION) {
+class DeclensionQuizSession(app: App, scope: CoroutineScope, partOfSpeech: PartOfSpeech, val review: Boolean = false) :
+    QuizSession(app, scope, partOfSpeech, if (review) LastWordStore.MODE_REVIEW else LastWordStore.modeFullTable(partOfSpeech)) {
 
     enum class DropOutcome { IGNORED, CORRECT, WRONG, ERROR_LIMIT_REACHED, COMPLETED }
 
     var models by mutableStateOf<List<WordModel>>(emptyList())
         private set
-    var actual by mutableStateOf(List(14) { -1 }) // idx = number*7 + caseNum
+    var actual by mutableStateOf(List(14) { -1 }) // idx = column*rowCount + row
         private set
     var wrongAttempts by mutableStateOf(0)
         private set
@@ -43,27 +46,23 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean
     private val correctPlacementRewards = CorrectPlacementRewards()
 
     fun wordFor(ix: Int) = if (ix < 0 || ix >= models.size) "" else models[ix].word
-    fun cellIdx(number: Int, caseNum: Int) = number * 7 + caseNum
+    private val rowCount: Int get() = table?.rowCount ?: 7
+    fun cellIdx(column: Int, row: Int) = column * rowCount + row
     fun isWordComplete(): Boolean = isComplete()
 
     override fun isCurrentWordPerfect(): Boolean = errorCount == 0
 
-    override suspend fun pickNextWord(current: WordInfo?): WordInfo? =
-        // nextReviewWord drops words missing from the dictionary; persist so they don't come back.
-        if (review) app.wordService.nextReviewWord(current).also { app.persistWordsWithErrors() } else super.pickNextWord(current)
+    override suspend fun pickNextLexeme(current: Lexeme?): Lexeme? =
+        // nextReviewLexeme drops words missing from the dictionary; persist so they don't come back.
+        if (review) app.wordService.nextReviewLexeme(current).also { app.persistWordsWithErrors() } else super.pickNextLexeme(current)
 
-    override fun canResume(word: WordInfo): Boolean = !review || word.word() in app.appState.getWordsWithErrors()
+    override fun canResume(lexeme: Lexeme): Boolean = !review || lexeme.key in app.appState.getWordsWithErrors()
 
-    override fun onWordApplied(word: WordInfo) {
-        val list = ArrayList<WordModel>(14)
-        for (i in 0..6) {
-            val s = word.cases(0, i); val p = word.cases(1, i)
-            list.add(WordModel(s, s.isNotEmpty()))
-            list.add(WordModel(p, p.isNotEmpty()))
-        }
-        list.shuffle()
-        models = list
-        actual = List(14) { -1 }
+    override fun onTableApplied(table: FormTable) {
+        // Pool every cell (including non-existent ones as invisible entries) so pool indices stay
+        // stable and shuffled independently of which forms a lexeme happens to lack.
+        models = table.cells.map { WordModel(it.target, it.exists) }.shuffled()
+        actual = List(table.rowCount * 2) { -1 }
         wrongAttempts = 0; errorCount = 0; feedback = emptyMap(); tableCompleted = false
         correctPlacementRewards.reset()
         timerResetToken++
@@ -71,7 +70,7 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean
 
     /** Applies a drop (pool→cell, cell→cell swap or cell→pool return) and reports the outcome. */
     fun handleDrop(tag: String, target: Any?): DropOutcome {
-        word ?: return DropOutcome.IGNORED
+        table ?: return DropOutcome.IGNORED
         if (tableCompleted) return DropOutcome.IGNORED
         if (target == null) return DropOutcome.IGNORED
         val poolItem = !tag.contains("_")
@@ -132,7 +131,7 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean
         return DropOutcome.CORRECT
     }
 
-    private fun correctAt(number: Int, caseNum: Int) = word?.cases(number, caseNum).orEmpty()
+    private fun correctAt(column: Int, row: Int) = table?.target(column, row).orEmpty()
     private fun setVisible(ix: Int, v: Boolean) { models = models.mapIndexed { i, m -> if (i == ix) m.copy(visible = v) else m } }
     private fun setActual(idx: Int, v: Int) { actual = actual.toMutableList().also { it[idx] = v } }
     private fun mark(tn: Int, tc: Int, ok: Boolean) { feedback = feedback + ("${tn}_$tc" to CellFeedback(ok)) }
@@ -157,12 +156,11 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean
     fun resetTimer() { timerResetToken++ }
 
     private fun isComplete(): Boolean {
-        val w = word ?: return false
-        for (i in 0..6) for (n in 0..1) {
-            val c = w.cases(n, i)
-            if (c.isNotEmpty()) {
-                val ix = actual[cellIdx(n, i)]
-                if (ix == -1 || c != wordFor(ix)) return false
+        val t = table ?: return false
+        for (cell in t.cells) {
+            if (cell.exists) {
+                val ix = actual[cellIdx(cell.column, cell.row)]
+                if (ix == -1 || cell.target != wordFor(ix)) return false
             }
         }
         return true
@@ -170,16 +168,16 @@ class DeclensionQuizSession(app: App, scope: CoroutineScope, val review: Boolean
 
     // Counts the exercise and syncs the word's error-map entry once the table is filled correctly.
     private fun onTableCompleted() {
-        val w = word ?: return
+        val key = lexeme?.key ?: return
         tableCompleted = true
-        val cleared = review && errorCount == 0 && w.word() in app.appState.getWordsWithErrors()
+        val cleared = review && errorCount == 0 && key in app.appState.getWordsWithErrors()
         scope.launch {
             progress.countExerciseCompleted()
             if (cleared) progress.addBonus(Scoring.POINTS_REVIEW_CLEARED)
         }
         if (cleared) app.analyticsService.logEvent("review_word_cleared")
-        if (errorCount == 0) app.appState.removeWordFromErrorMap(w.word())
-        if (errorCount > 2) app.appState.putWordToErrorMap(w.word(), errorCount)
+        if (errorCount == 0) app.appState.removeWordFromErrorMap(key)
+        if (errorCount > 2) app.appState.putWordToErrorMap(key, errorCount)
         app.persistWordsWithErrors()
         timerResetToken++
     }

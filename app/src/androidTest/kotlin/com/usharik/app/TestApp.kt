@@ -19,8 +19,12 @@ import com.usharik.app.ads.AdManager
  */
 class TestApp : App() {
     override fun onCreate() {
+        // The tests drive the noun quizzes: pin the hub's word class, since a manual session on the
+        // same device may have left adjectives, verbs or phrases selected.
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
-            .putString(UiLanguageManager.UI_LANGUAGE_KEY, UiLanguage.ENGLISH.preferenceValue()).commit()
+            .putString(UiLanguageManager.UI_LANGUAGE_KEY, UiLanguage.ENGLISH.preferenceValue())
+            .putString(PREF_PART_OF_SPEECH, PartOfSpeech.NOUN.name)
+            .commit()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getSystemService(LocaleManager::class.java).applicationLocales = LocaleList.forLanguageTags(UiLanguage.ENGLISH.languageTags())
         }

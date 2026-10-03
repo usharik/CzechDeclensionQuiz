@@ -170,4 +170,58 @@
     <string name="quiz_mode_full_table_desc">Přetáhněte všechny tvary do 14 políček tabulky</string>
     <string name="quiz_mode_one_case_desc">Vyberte správný tvar pro každý pád</string>
     <string name="words_with_errors_desc">Procvičte slova, ve kterých jste chybovali</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Co procvičovat</string>
+    <string name="pos_nouns">Podstatná jména</string>
+    <string name="pos_adjectives">Přídavná jména</string>
+    <string name="pos_verbs">Slovesa</string>
+    <string name="pos_nouns_short">Podst.</string>
+    <string name="pos_adjectives_short">Příd.</string>
+    <string name="pos_verbs_short">Slovesa</string>
+    <string name="pos_tag_adjective">příd.</string>
+    <string name="pos_tag_verb">slov.</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Skloňujte přídavné jméno s podstatným: 14 tvarů</string>
+    <string name="quiz_mode_full_table_desc_verbs">Umístěte tvary přítomného, minulého času a rozkazu</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Vyberte shodný tvar přídavného jména, pád po pádu</string>
+    <string name="quiz_mode_one_case_desc_verbs">Vyberte správný tvar slovesa, osobu po osobě</string>
+    <string name="section_present">Přítomný čas</string>
+    <string name="section_past">Minulý čas (příčestí)</string>
+    <string name="section_imperative">Rozkazovací způsob</string>
+    <string name="adjective_kind_hard">tvrdé přídavné jméno</string>
+    <string name="adjective_kind_soft">měkké přídavné jméno</string>
+    <string name="adjective_kind_possessive">přivlastňovací přídavné jméno</string>
+    <string name="with_noun">s „%s“</string>
+    <string name="comparative_label">2. stupeň: %s</string>
+    <string name="aspect_imperfective">nedokonavé</string>
+    <string name="aspect_perfective">dokonavé</string>
+    <string name="aspect_biaspectual">obouvidové</string>
+    <string name="aspect_pair">vidový protějšek: %s</string>
+    <string name="verb_group">skupina „-%s“</string>
+    <string name="verb_group_irregular">nepravidelné</string>
+    <string name="type_of_conjugation">Typ časování</string>
+    <string name="type_of_adjective">Typ přídavného jména</string>
+    <string name="other_adjectives">Další přídavná jména:</string>
+    <string name="other_verbs">Další slovesa:</string>
+    <string name="gender_masculine_animate_short">m. živ.</string>
+    <string name="gender_masculine_inanimate_short">m. neživ.</string>
+    <string name="gender_feminine_short">ž.</string>
+    <string name="gender_neuter_short">s.</string>
+    <string name="tip_adj_hard">V 1. pádě mn. č. mužského životného rodu se mění souhláska: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. 4. pád j. č. životných = 2. pád (mladého).</string>
+    <string name="tip_adj_soft">Jeden tvar pro všechny rody v 1. pádě (jarní den, jarní noc, jarní ráno). Ostatní pády: -ího, -ímu, -ím. Stejně se skloňují 2. stupně (lepší, starší).</string>
+    <string name="tip_adj_possessive">Krátké koncovky jako u podstatných jmen: otcova, otcovu, otcově. -ův od mužského vlastníka (otec), -in od ženského (matka → matčin).</string>
+    <string name="tip_verb_dela">Skupina -á: -ám, -áš, -á, -áme, -áte, -ají. Rozkaz na -ej: dělej, dělejte! Patří sem většina sloves na -at.</string>
+    <string name="tip_verb_prosi">Skupina -í: -ím, -íš, -í, -íme, -íte, -í (nebo -ějí: umějí). Rozkaz bez koncovky: pros!, mluv!; po dvou souhláskách -i: mysli!</string>
+    <string name="tip_verb_kupuje">Skupina -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (tvary -uju/-ujou jsou hovorové). Rozkaz -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Skupina -ne: -nu, -neš, -ne, -neme, -nete, -nou. Rozkaz -ni: tiskni!, sedni si! V minulém čase často odpadá -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Skupina -e: -u, -eš, -e, -eme, -ete, -ou. Kmen se často mění: číst → čtu, psát → píšu, péct → peču. Rozkaz: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Učte se jedno po druhém: být (jsem, jsi, je…), mít (mám), jít (jdu, min. šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Minulý čas = příčestí + jsem/jsi/jsme/jste; ve 3. osobě bez pomocného slovesa: dělal jsem, dělala jsi, dělali jsme, dělal. Pozor na množné číslo: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Spojení přídavného a podstatného jména</string>
+    <string name="pos_phrases_short">Spojení</string>
+    <string name="quiz_mode_full_table_verbs">Kvíz s celou tabulkou časování</string>
+    <string name="quiz_mode_one_case_verbs">Kvíz po jednom tvaru</string>
+    <string name="next_form">Další tvar</string>
+    <string name="quiz_mode_full_table_desc_phrases">Skloňujte celá spojení jako „mladý muž“: 14 tvarů</string>
+    <string name="quiz_mode_one_case_desc_phrases">Vyberte správné spojení po bez, ke, vidím, o, s</string>
 </resources>

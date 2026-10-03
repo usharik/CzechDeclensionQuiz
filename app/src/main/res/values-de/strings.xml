@@ -150,4 +150,58 @@
     <string name="quiz_mode_full_table_desc">Ziehe alle Formen in die 14 Felder der Tabelle</string>
     <string name="quiz_mode_one_case_desc">Wähle die richtige Form für jeden Fall</string>
     <string name="words_with_errors_desc">Übe die Wörter, bei denen du Fehler gemacht hast</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Was üben?</string>
+    <string name="pos_nouns">Substantive</string>
+    <string name="pos_adjectives">Adjektive</string>
+    <string name="pos_verbs">Verben</string>
+    <string name="pos_nouns_short">Subst.</string>
+    <string name="pos_adjectives_short">Adj.</string>
+    <string name="pos_verbs_short">Verben</string>
+    <string name="pos_tag_adjective">Adj.</string>
+    <string name="pos_tag_verb">Verb</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Adjektiv mit Substantiv deklinieren: 14 Formen einsetzen</string>
+    <string name="quiz_mode_full_table_desc_verbs">Präsens-, Vergangenheits- und Imperativformen einsetzen</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Die passende Adjektivform wählen, Fall für Fall</string>
+    <string name="quiz_mode_one_case_desc_verbs">Die richtige Verbform wählen, Person für Person</string>
+    <string name="section_present">Präsens</string>
+    <string name="section_past">Vergangenheit (Partizip)</string>
+    <string name="section_imperative">Imperativ</string>
+    <string name="adjective_kind_hard">hartes Adjektiv</string>
+    <string name="adjective_kind_soft">weiches Adjektiv</string>
+    <string name="adjective_kind_possessive">Possessivadjektiv</string>
+    <string name="with_noun">mit „%s“</string>
+    <string name="comparative_label">Komparativ: %s</string>
+    <string name="aspect_imperfective">imperfektiv</string>
+    <string name="aspect_perfective">perfektiv</string>
+    <string name="aspect_biaspectual">biaspektuell</string>
+    <string name="aspect_pair">Aspektpartner: %s</string>
+    <string name="verb_group">Gruppe „-%s“</string>
+    <string name="verb_group_irregular">unregelmäßig</string>
+    <string name="type_of_conjugation">Konjugationstyp</string>
+    <string name="type_of_adjective">Adjektivtyp</string>
+    <string name="other_adjectives">Weitere Adjektive:</string>
+    <string name="other_verbs">Weitere Verben:</string>
+    <string name="gender_masculine_animate_short">m. bel.</string>
+    <string name="gender_masculine_inanimate_short">m. unbel.</string>
+    <string name="gender_feminine_short">fem.</string>
+    <string name="gender_neuter_short">neutr.</string>
+    <string name="tip_adj_hard">Im Plural maskulin belebt wird der Stamm erweicht: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Akkusativ Sg. belebt = Genitiv (mladého).</string>
+    <string name="tip_adj_soft">Eine Form für alle Geschlechter im Nominativ (jarní den, jarní noc, jarní ráno). Andere Fälle: -ího, -ímu, -ím. Komparative (lepší, starší) werden ebenso dekliniert.</string>
+    <string name="tip_adj_possessive">Kurze, substantivische Endungen: otcova, otcovu, otcově. -ův von einem männlichen Besitzer (otec), -in von einem weiblichen (matka → matčin).</string>
+    <string name="tip_verb_dela">Gruppe -á: -ám, -áš, -á, -áme, -áte, -ají. Imperativ auf -ej: dělej, dělejte! Die meisten Verben auf -at gehören hierher.</string>
+    <string name="tip_verb_prosi">Gruppe -í: -ím, -íš, -í, -íme, -íte, -í (oder -ějí: umějí). Imperativ ohne Endung: pros!, mluv!; nach zwei Konsonanten -i: mysli!</string>
+    <string name="tip_verb_kupuje">Gruppe -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (-uju/-ujou sind umgangssprachlich). Imperativ -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Gruppe -ne: -nu, -neš, -ne, -neme, -nete, -nou. Imperativ -ni: tiskni!, sedni si! In der Vergangenheit fällt -nu- oft weg: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Gruppe -e: -u, -eš, -e, -eme, -ete, -ou. Der Stamm ändert sich oft: číst → čtu, psát → píšu, péct → peču. Imperativ: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Einzeln lernen: být (jsem, jsi, je…), mít (mám), jít (jdu, Vergangenheit šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Vergangenheit = Partizip + jsem/jsi/jsme/jste; die 3. Person hat kein Hilfsverb: dělal jsem, dělala jsi, dělali jsme, dělal. Im Plural: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Adjektiv + Substantiv</string>
+    <string name="pos_phrases_short">Phrasen</string>
+    <string name="quiz_mode_full_table_verbs">Quiz mit ganzer Konjugationstabelle</string>
+    <string name="quiz_mode_one_case_verbs">Quiz Form für Form</string>
+    <string name="next_form">Nächste Form</string>
+    <string name="quiz_mode_full_table_desc_phrases">Ganze Phrasen wie „mladý muž“ deklinieren: 14 Formen einsetzen</string>
+    <string name="quiz_mode_one_case_desc_phrases">Die richtige Phrase nach bez, ke, vidím, o, s wählen</string>
 </resources>

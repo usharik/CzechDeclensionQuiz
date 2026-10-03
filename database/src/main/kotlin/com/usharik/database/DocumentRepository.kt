@@ -36,4 +36,65 @@ class DocumentRepository @JvmOverloads constructor(private val db: DocumentDatab
         }
     }
 
+    // ---- adjectives -------------------------------------------------------------------------
+
+    suspend fun adjectiveCount(): Int = db.lexiconDao().adjectiveCount()
+    suspend fun adjectiveByWord(word: String): AdjectiveInfo? = db.lexiconDao().adjectiveJson(word)?.let { gson.fromJson(it, AdjectiveInfo::class.java) }
+
+    /** A random adjective other than [excludingWord], preferring [kind] (tvrdé/měkké/přivlastňovací) when given. */
+    suspend fun randomAdjective(excludingWord: String = "", kind: String? = null): AdjectiveInfo {
+        val dao = db.lexiconDao()
+        val entity = dao.randomAdjective(excludingWord, kind)
+            ?: requireNotNull(dao.randomAdjective(excludingWord, null)) { "Adjective dictionary is empty" }
+        return gson.fromJson(entity.json, AdjectiveInfo::class.java)
+    }
+
+    suspend fun populateAdjectivesFromJsonStream(stream: InputStream) {
+        BufferedReader(InputStreamReader(stream)).use { reader ->
+            db.runInTransaction {
+                val statement = db.compileStatement("insert into ADJECTIVE(word_id, word, kind, json) values(?, ?, ?, ?)")
+                generateSequence { reader.readLine() }.forEach { json ->
+                    val adjective = gson.fromJson(json, AdjectiveInfo::class.java)
+                    statement.bindLong(1, adjective.wordId!!)
+                    statement.bindString(2, adjective.word())
+                    statement.bindString(3, adjective.kind())
+                    statement.bindString(4, json)
+                    statement.executeInsert()
+                    statement.clearBindings()
+                }
+            }
+        }
+    }
+
+    // ---- verbs -------------------------------------------------------------------------------
+
+    suspend fun verbCount(): Int = db.lexiconDao().verbCount()
+    suspend fun verbByWord(word: String): VerbInfo? = db.lexiconDao().verbJson(word)?.let { gson.fromJson(it, VerbInfo::class.java) }
+
+    /** A random verb other than [excludingWord], preferring [verbClass] (dělá, prosí, …) when given. */
+    suspend fun randomVerb(excludingWord: String = "", verbClass: String? = null): VerbInfo {
+        val dao = db.lexiconDao()
+        val entity = dao.randomVerb(excludingWord, verbClass)
+            ?: requireNotNull(dao.randomVerb(excludingWord, null)) { "Verb dictionary is empty" }
+        return gson.fromJson(entity.json, VerbInfo::class.java)
+    }
+
+    suspend fun populateVerbsFromJsonStream(stream: InputStream) {
+        BufferedReader(InputStreamReader(stream)).use { reader ->
+            db.runInTransaction {
+                val statement = db.compileStatement("insert into VERB(word_id, word, aspect, verb_class, json) values(?, ?, ?, ?, ?)")
+                generateSequence { reader.readLine() }.forEach { json ->
+                    val verb = gson.fromJson(json, VerbInfo::class.java)
+                    statement.bindLong(1, verb.wordId!!)
+                    statement.bindString(2, verb.word())
+                    statement.bindString(3, verb.aspect())
+                    statement.bindString(4, verb.verbClass())
+                    statement.bindString(5, json)
+                    statement.executeInsert()
+                    statement.clearBindings()
+                }
+            }
+        }
+    }
+
 }

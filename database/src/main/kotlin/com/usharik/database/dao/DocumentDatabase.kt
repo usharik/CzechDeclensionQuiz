@@ -9,14 +9,15 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [DocumentEntity::class, DailyTrainingStatsEntity::class, ReminderStateEntity::class, RecentWordsEntity::class],
-    version = 10,
+    entities = [DocumentEntity::class, DailyTrainingStatsEntity::class, ReminderStateEntity::class, RecentWordsEntity::class, AdjectiveEntity::class, VerbEntity::class],
+    version = 11,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
 abstract class DocumentDatabase : RoomDatabase() {
     abstract fun documentDao(): DocumentDao
     abstract fun trainingStatsDao(): TrainingStatsDao
+    abstract fun lexiconDao(): LexiconDao
 
     companion object {
         const val DB_NAME = "quiz-dictionary-database"
@@ -76,10 +77,26 @@ abstract class DocumentDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Adds the adjective and verb dictionaries. The tables are created empty here; the app fills them
+         * from the bundled JSONL assets on the next start (see the dictionary import in the Application).
+         */
+        @JvmField val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS `ADJECTIVE` (`word_id` INTEGER, `word` TEXT, `kind` TEXT, `json` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_ADJECTIVE_word` ON `ADJECTIVE` (`word`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_ADJECTIVE_kind` ON `ADJECTIVE` (`kind`)")
+                db.execSQL("CREATE TABLE IF NOT EXISTS `VERB` (`word_id` INTEGER, `word` TEXT, `aspect` TEXT, `verb_class` TEXT, `json` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_VERB_word` ON `VERB` (`word`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_VERB_verb_class` ON `VERB` (`verb_class`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_VERB_aspect` ON `VERB` (`aspect`)")
+            }
+        }
+
         @JvmStatic
         fun getDocumentDatabase(context: Context): DocumentDatabase =
             Room.databaseBuilder(context.applicationContext, DocumentDatabase::class.java, DB_NAME)
-                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
+                .addMigrations(MIGRATION_5_7, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10, MIGRATION_10_11)
                 .fallbackToDestructiveMigration(true)
                 .build()
     }

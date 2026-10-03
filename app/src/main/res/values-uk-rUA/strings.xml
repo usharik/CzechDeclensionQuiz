@@ -170,4 +170,58 @@
     <string name="quiz_mode_full_table_desc">Розставте всі форми по 14 клітинках таблиці</string>
     <string name="quiz_mode_one_case_desc">Оберіть правильну форму для кожного відмінка</string>
     <string name="words_with_errors_desc">Повторіть слова, у яких були помилки</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Що тренувати</string>
+    <string name="pos_nouns">Іменники</string>
+    <string name="pos_adjectives">Прикметники</string>
+    <string name="pos_verbs">Дієслова</string>
+    <string name="pos_nouns_short">Імен.</string>
+    <string name="pos_adjectives_short">Прикм.</string>
+    <string name="pos_verbs_short">Дієсл.</string>
+    <string name="pos_tag_adjective">прикм.</string>
+    <string name="pos_tag_verb">дієсл.</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Провідмінюйте прикметник з іменником: 14 форм</string>
+    <string name="quiz_mode_full_table_desc_verbs">Розставте форми теперішнього, минулого часу та наказового способу</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Оберіть узгоджену форму прикметника, відмінок за відмінком</string>
+    <string name="quiz_mode_one_case_desc_verbs">Оберіть правильну форму дієслова, особа за особою</string>
+    <string name="section_present">Теперішній час</string>
+    <string name="section_past">Минулий час (дієприкметник)</string>
+    <string name="section_imperative">Наказовий спосіб</string>
+    <string name="adjective_kind_hard">твердий прикметник</string>
+    <string name="adjective_kind_soft">м’який прикметник</string>
+    <string name="adjective_kind_possessive">присвійний прикметник</string>
+    <string name="with_noun">з «%s»</string>
+    <string name="comparative_label">вищий ступінь: %s</string>
+    <string name="aspect_imperfective">недоконаний вид</string>
+    <string name="aspect_perfective">доконаний вид</string>
+    <string name="aspect_biaspectual">двовидове</string>
+    <string name="aspect_pair">пара: %s</string>
+    <string name="verb_group">група «-%s»</string>
+    <string name="verb_group_irregular">неправильне</string>
+    <string name="type_of_conjugation">Тип дієвідмінювання</string>
+    <string name="type_of_adjective">Тип прикметника</string>
+    <string name="other_adjectives">Інші прикметники:</string>
+    <string name="other_verbs">Інші дієслова:</string>
+    <string name="gender_masculine_animate_short">ч. істот.</string>
+    <string name="gender_masculine_inanimate_short">ч. неістот.</string>
+    <string name="gender_feminine_short">жін.</string>
+    <string name="gender_neuter_short">сер.</string>
+    <string name="tip_adj_hard">У множині чоловічого роду істот змінюється приголосний: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Зн. в. одн. істот = род. в. (mladého).</string>
+    <string name="tip_adj_soft">Одна форма для всіх родів у називному (jarní den, jarní noc, jarní ráno). Непрямі відмінки: -ího, -ímu, -ím. Так само відмінюються вищі ступені (lepší, starší).</string>
+    <string name="tip_adj_possessive">Короткі закінчення, як в іменників: otcova, otcovu, otcově. -ův — від власника чоловічого роду (otec), -in — жіночого (matka → matčin).</string>
+    <string name="tip_verb_dela">Група -á: -ám, -áš, -á, -áme, -áte, -ají. Наказовий спосіб на -ej: dělej, dělejte! Сюди належить більшість дієслів на -at.</string>
+    <string name="tip_verb_prosi">Група -í: -ím, -íš, -í, -íme, -íte, -í (або -ějí: umějí). Наказовий спосіб без закінчення: pros!, mluv!; після двох приголосних -i: mysli!</string>
+    <string name="tip_verb_kupuje">Група -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (форми -uju/-ujou розмовні). Наказовий спосіб -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Група -ne: -nu, -neš, -ne, -neme, -nete, -nou. Наказовий спосіб -ni: tiskni!, sedni si! У минулому часі часто випадає -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Група -e: -u, -eš, -e, -eme, -ete, -ou. Основа часто змінюється: číst → čtu, psát → píšu, péct → peču. Наказовий спосіб: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Вчіть по одному: být (jsem, jsi, je…), mít (mám), jít (jdu, мин. šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Минулий час = дієприкметник + jsem/jsi/jsme/jste; у 3-й особі допоміжного дієслова немає: dělal jsem, dělala jsi, dělali jsme, dělal. У множині: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Словосполучення: прикметник + іменник</string>
+    <string name="pos_phrases_short">Фрази</string>
+    <string name="quiz_mode_full_table_verbs">Повна таблиця дієвідмінювання</string>
+    <string name="quiz_mode_one_case_verbs">По одній формі</string>
+    <string name="next_form">Наступна форма</string>
+    <string name="quiz_mode_full_table_desc_phrases">Провідмінюйте цілі словосполучення на кшталт «mladý muž»: 14 форм</string>
+    <string name="quiz_mode_one_case_desc_phrases">Оберіть правильне словосполучення після bez, ke, vidím, o, s</string>
 </resources>

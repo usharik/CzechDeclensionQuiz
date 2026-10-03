@@ -1,5 +1,12 @@
 # CzechDeclensionQuiz
-Android quiz application to study declension of nouns in Czech language
+Android quiz application to study Czech declension and conjugation: nouns (912 words), adjectives
+(506 words, practised in agreement with a noun) and verbs (581 words: present tense, past participle,
+imperative, aspect pairs) and adjective + noun phrases declined together. Both quiz modes (full drag-and-drop table, one form at a time), the mistakes
+review and the handbook work for all three word classes.
+
+The adjective and verb corpora are built from Wiktionary by `utils/corpus/build_corpus.py`;
+see [ADJECTIVES_VERBS_NOTES.md](ADJECTIVES_VERBS_NOTES.md) for the grammar background, the sources and
+the design decisions.
 
 <a href="https://play.google.com/store/apps/details?id=com.usharik.app">Get it on Google Play</a>
 

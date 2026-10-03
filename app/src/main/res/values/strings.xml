@@ -152,4 +152,58 @@
     <string name="quiz_mode_full_table_desc">Drag every form into the 14-cell table</string>
     <string name="quiz_mode_one_case_desc">Pick the right form, case by case</string>
     <string name="words_with_errors_desc">Practice the words you got wrong</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">What to practise</string>
+    <string name="pos_nouns">Nouns</string>
+    <string name="pos_adjectives">Adjectives</string>
+    <string name="pos_verbs">Verbs</string>
+    <string name="pos_phrases">Adjective + noun phrases</string>
+    <string name="pos_nouns_short">Nouns</string>
+    <string name="pos_adjectives_short">Adjectives</string>
+    <string name="pos_verbs_short">Verbs</string>
+    <string name="pos_phrases_short">Phrases</string>
+    <string name="quiz_mode_full_table_verbs">Full conjugation table quiz</string>
+    <string name="quiz_mode_one_case_verbs">One form at a time quiz</string>
+    <string name="next_form">Next form</string>
+    <string name="quiz_mode_full_table_desc_phrases">Decline whole phrases like “mladý muž”: 14 forms to place</string>
+    <string name="quiz_mode_one_case_desc_phrases">Pick the right phrase after bez, ke, vidím, o, s</string>
+    <string name="pos_tag_adjective">adj.</string>
+    <string name="pos_tag_verb">verb</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Decline the adjective with a noun: 14 forms to place</string>
+    <string name="quiz_mode_full_table_desc_verbs">Place the present, past and imperative forms</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Pick the adjective form that agrees, case by case</string>
+    <string name="quiz_mode_one_case_desc_verbs">Pick the right verb form, person by person</string>
+    <string name="section_present">Present tense</string>
+    <string name="section_past">Past tense (participle)</string>
+    <string name="section_imperative">Imperative</string>
+    <string name="adjective_kind_hard">hard adjective</string>
+    <string name="adjective_kind_soft">soft adjective</string>
+    <string name="adjective_kind_possessive">possessive adjective</string>
+    <string name="with_noun">with “%s”</string>
+    <string name="comparative_label">comparative: %s</string>
+    <string name="aspect_imperfective">imperfective</string>
+    <string name="aspect_perfective">perfective</string>
+    <string name="aspect_biaspectual">biaspectual</string>
+    <string name="aspect_pair">pair: %s</string>
+    <string name="verb_group">group “-%s”</string>
+    <string name="verb_group_irregular">irregular</string>
+    <string name="type_of_conjugation">Type of conjugation</string>
+    <string name="type_of_adjective">Type of adjective</string>
+    <string name="other_adjectives">Other adjectives:</string>
+    <string name="other_verbs">Other verbs:</string>
+    <string name="gender_masculine_animate_short">m. anim.</string>
+    <string name="gender_masculine_inanimate_short">m. inan.</string>
+    <string name="gender_feminine_short">fem.</string>
+    <string name="gender_neuter_short">neut.</string>
+    <string name="tip_adj_hard">Masculine animate plural softens the stem: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Accusative sg. of animate = genitive (mladého).</string>
+    <string name="tip_adj_soft">One form for all genders in the nominative (jarní den, jarní noc, jarní ráno). Oblique cases take -ího, -ímu, -ím. Comparatives (lepší, starší) decline like this too.</string>
+    <string name="tip_adj_possessive">Short, noun-like endings: otcova, otcovu, otcově. -ův comes from a masculine owner (otec), -in from a feminine one (matka → matčin).</string>
+    <string name="tip_verb_dela">-á group: -ám, -áš, -á, -áme, -áte, -ají. Imperative ends in -ej: dělej, dělejte! Most verbs ending in -at belong here.</string>
+    <string name="tip_verb_prosi">-í group: -ím, -íš, -í, -íme, -íte, -í (or -ějí: umějí). The imperative drops the ending: pros!, mluv!, after two consonants add -i: mysli!</string>
+    <string name="tip_verb_kupuje">-uje group: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (the -uju/-ujou forms are colloquial). Imperative -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">-ne group: -nu, -neš, -ne, -neme, -nete, -nou. Imperative -ni: tiskni!, sedni si! Past tense often drops -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">-e group: -u, -eš, -e, -eme, -ete, -ou. The stem often changes: číst → čtu, psát → píšu, péct → peču. Imperative: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Learn these one by one: být (jsem, jsi, je…), mít (mám), jít (jdu, past šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Past tense = participle + jsem/jsi/jsme/jste; the 3rd person has no auxiliary: dělal jsem, dělala jsi, dělali jsme, dělal. Watch the plural: oni dělali, ony dělaly.</string>
 </resources>

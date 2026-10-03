@@ -28,14 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
-import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.CaseColumnsHeader
@@ -43,18 +41,27 @@ import com.usharik.app.ui.components.CellFeedback
 import com.usharik.app.ui.components.DragAndDropState
 import com.usharik.app.ui.components.DragOverlay
 import com.usharik.app.ui.components.RowCase
+import com.usharik.app.ui.components.SectionHeader
 import com.usharik.app.ui.components.WordBank
 import com.usharik.app.ui.components.WordChip
 import com.usharik.app.ui.components.WordModel
+import com.usharik.app.ui.components.lexemeSubtitle
 import com.usharik.app.ui.components.localizedTranslation
+import com.usharik.app.ui.state.FormCell
+import com.usharik.app.ui.state.FormTable
+import com.usharik.app.ui.state.Lexeme
+import com.usharik.app.ui.state.SectionTitle
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
-import com.usharik.database.WordInfo
 
+/**
+ * Full-table quiz content: the headword card, the shuffled word pool and the drop grid built
+ * from [table] (7 case rows for nouns and adjectives, three verb sections for a verb).
+ */
 @Composable
 fun DeclensionQuizContent(
     app: App,
-    word: WordInfo?,
+    table: FormTable?,
     models: List<WordModel>,
     dnd: DragAndDropState,
     wordFor: (Int) -> String,
@@ -68,34 +75,37 @@ fun DeclensionQuizContent(
 ) {
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize().padding(horizontal = Dimens.spacingSm, vertical = Dimens.spacingXs)) {
-            if (word == null) {
+            if (table == null) {
                 LoadingIndicator(Modifier.weight(1f))
             } else {
-                QuizHeader(word, wrongAttempts, maxWrongAttempts, remainingSeconds, totalSeconds)
+                QuizHeader(table.lexeme, wrongAttempts, maxWrongAttempts, remainingSeconds, totalSeconds)
                 WordBank(
                     models = models,
                     dnd = dnd,
                     modifier = Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
                 )
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                // All seven case rows share the remaining height so the whole table
-                // is always on screen without scrolling.
+                // All rows share the remaining height so the whole table is always on screen
+                // without scrolling. Section titles (verbs) take their natural height.
                 Column(
                     Modifier.fillMaxWidth().weight(2f).padding(vertical = Dimens.spacingXs),
                     verticalArrangement = Arrangement.spacedBy(Dimens.spacingContent),
                 ) {
-                    CaseColumnsHeader(Modifier.fillMaxWidth())
-                    for (i in 0..6) {
-                        RowCase(
-                            num = i,
-                            dnd = dnd,
-                            singularText = wordFor(actual[cellIdx(0, i)]),
-                            pluralText = wordFor(actual[cellIdx(1, i)]),
-                            singularFeedback = feedback["0_$i"],
-                            pluralFeedback = feedback["1_$i"],
-                            fillHeight = true,
-                            modifier = Modifier.fillMaxWidth().weight(1f),
-                        )
+                    CaseColumnsHeader(table.columnKind, Modifier.fillMaxWidth())
+                    fun placed(cell: FormCell) = wordFor(actual.getOrElse(cellIdx(cell.column, cell.row)) { -1 })
+                    // A section none of whose cells exist (no imperative for modal verbs) is left out entirely.
+                    table.sections.filter { s -> s.rows.any { r -> r.cells.any { it.exists } } }.forEach { section ->
+                        if (section.title != SectionTitle.NONE) SectionHeader(section.title)
+                        section.rows.forEach { row ->
+                            RowCase(
+                                row = row,
+                                dnd = dnd,
+                                text = ::placed,
+                                feedback = { feedback[it.key] },
+                                fillHeight = true,
+                                modifier = Modifier.fillMaxWidth().weight(1f),
+                            )
+                        }
                     }
                 }
                 BannerAd(app, BuildConfig.ADMOB_BANNER_AD_UNIT_ID)
@@ -110,17 +120,19 @@ private val WarningYellow = Color(0xFFF9A825)
 /** Orange used for the "danger" tier before the maximum is reached. */
 private val WarningOrange = Color(0xFFE65100)
 
-/** Word, pattern, gender and translation on the left; timer and mistake badges on the right. */
+/** Headword, grammar line and translation on the left; timer and mistake badges on the right. */
 @Composable
-private fun QuizHeader(word: WordInfo, wrongAttempts: Int, maxWrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
-    val translation = localizedTranslation(word)
+private fun QuizHeader(lexeme: Lexeme, wrongAttempts: Int, maxWrongAttempts: Int, remainingSeconds: Int, totalSeconds: Int) {
+    val translation = localizedTranslation(lexeme)
     Row(Modifier.fillMaxWidth().padding(horizontal = Dimens.spacingXs), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
-            Text(word.word(), Modifier.testTag(TestTags.FULL_WORD), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(lexeme.headword, Modifier.testTag(TestTags.FULL_WORD), color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold, fontSize = 22.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                "${stringResource(R.string.declension_pattern, word.declensionType())} · ${word.gender()}",
+                lexemeSubtitle(lexeme),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 13.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(translation, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, fontStyle = FontStyle.Italic, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }

@@ -22,4 +22,9 @@ class DocumentDatabaseTest {
         assertEquals(9, DocumentDatabase.MIGRATION_9_10.startVersion)
         assertEquals(10, DocumentDatabase.MIGRATION_9_10.endVersion)
     }
+
+    @Test fun lexiconMigrationTargetsVersionEleven() {
+        assertEquals(10, DocumentDatabase.MIGRATION_10_11.startVersion)
+        assertEquals(11, DocumentDatabase.MIGRATION_10_11.endVersion)
+    }
 }

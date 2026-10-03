@@ -43,3 +43,25 @@ data class RecentWordsEntity(
     // Kept nullable to match the schema shipped in database versions 5–7.
     @ColumnInfo(name = "words") var words: String? = "",
 )
+
+/** One adjective of the bundled `adjectives.jsonl`; [json] holds the full [com.usharik.database.AdjectiveInfo]. */
+@Entity(tableName = "ADJECTIVE", indices = [Index(value = ["word"]), Index(value = ["kind"])])
+data class AdjectiveEntity(
+    @ColumnInfo(name = "word_id") var wordId: Long?,
+    @ColumnInfo(name = "word") var word: String?,
+    /** `tvrdé`, `měkké` or `přivlastňovací`. */
+    @ColumnInfo(name = "kind") var kind: String?,
+    @ColumnInfo(name = "json") var json: String?,
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+)
+
+/** One verb of the bundled `verbs.jsonl`; [json] holds the full [com.usharik.database.VerbInfo]. */
+@Entity(tableName = "VERB", indices = [Index(value = ["word"]), Index(value = ["verb_class"]), Index(value = ["aspect"])])
+data class VerbEntity(
+    @ColumnInfo(name = "word_id") var wordId: Long?,
+    @ColumnInfo(name = "word") var word: String?,
+    @ColumnInfo(name = "aspect") var aspect: String?,
+    @ColumnInfo(name = "verb_class") var verbClass: String?,
+    @ColumnInfo(name = "json") var json: String?,
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+)

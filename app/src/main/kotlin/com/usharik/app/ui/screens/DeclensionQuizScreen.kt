@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
+import com.usharik.app.PartOfSpeech
 import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ToolbarAction
@@ -59,12 +60,20 @@ import kotlin.math.roundToInt
  *
  * With [review] set, the same quiz runs over the mistakes list only (see [DeclensionQuizSession]).
  */
-/** Per-word time budget (seconds) before an ad is shown if the table isn't completed yet. */
-private const val WORD_TIMEOUT_SECONDS = 120
+/**
+ * Per-word time budget (seconds) before an ad is shown if the table isn't completed yet. Phrases
+ * get the most time: every chip is a two-word phrase, so reading and matching them is slower.
+ */
+internal fun wordTimeoutSeconds(partOfSpeech: PartOfSpeech): Int = when (partOfSpeech) {
+    PartOfSpeech.PHRASE -> 300
+    PartOfSpeech.VERB, PartOfSpeech.ADJECTIVE -> 210
+    PartOfSpeech.NOUN -> 180
+}
 
 @Composable
 fun DeclensionQuizScreen(
     app: App,
+    partOfSpeech: PartOfSpeech,
     onQuit: () -> Unit,
     registerNext: (ToolbarAction?) -> Unit,
     review: Boolean = false,
@@ -73,11 +82,13 @@ fun DeclensionQuizScreen(
     val activity = context as? Activity
     val scope = rememberCoroutineScope()
     val dnd = rememberDragAndDropState()
-    val session = remember { DeclensionQuizSession(app, scope, review) }
+    val session = remember { DeclensionQuizSession(app, scope, partOfSpeech, review) }
+    // Review mode mixes word classes; it follows the class of the word currently on screen.
+    val timeoutSeconds = wordTimeoutSeconds(session.lexeme?.partOfSpeech ?: partOfSpeech)
     var showCorrect by remember { mutableStateOf(false) }
     var showQuit by remember { mutableStateOf(false) }
     var showHandbook by remember { mutableStateOf(false) }
-    var remainingSeconds by remember { mutableStateOf(WORD_TIMEOUT_SECONDS) }
+    var remainingSeconds by remember { mutableStateOf(wordTimeoutSeconds(partOfSpeech)) }
     // Horizontal offset of the handbook panel, in px: -screenWidthPx (fully off-screen, to the
     // left - the same side the opening swipe starts from) to 0 (fully covering the quiz).
     // Follows the finger while dragging, then springs to whichever side it's closer to on
@@ -130,7 +141,7 @@ fun DeclensionQuizScreen(
         // behind the completion dialog: a player choosing to review their answers must not later
         // receive a timeout penalty or an interstitial.
         if (session.isWordComplete()) return@LaunchedEffect
-        remainingSeconds = WORD_TIMEOUT_SECONDS
+        remainingSeconds = timeoutSeconds
         while (remainingSeconds > 0) {
             delay(1_000)
             remainingSeconds--
@@ -141,17 +152,17 @@ fun DeclensionQuizScreen(
             app.adManager.showAdIfNeeded(app.adPolicy.onDeclensionTimeout(), host, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID) { session.resetTimer() }
         } ?: session.resetTimer()
     }
-    // Capture the word represented by this toolbar action. If a second tap was queued while
+    // Capture the table represented by this toolbar action. If a second tap was queued while
     // the first one advanced, QuizSession rejects it once the current word has changed.
-    val toolbarWord = session.word
+    val toolbarTable = session.table
     SideEffect {
         registerNext(
             ToolbarAction(
                 onClick = {
                     val skipped = !session.isWordComplete()
-                    session.nextWord(skipped = skipped, expectedCurrentWord = toolbarWord)
+                    session.nextWord(skipped = skipped, expectedCurrentTable = toolbarTable)
                 },
-                enabled = toolbarWord != null && !session.isAdvancing,
+                enabled = toolbarTable != null && !session.isAdvancing,
             ),
         )
     }
@@ -202,7 +213,7 @@ fun DeclensionQuizScreen(
         // never reset while the handbook is shown; only the visible layer changes.
         DeclensionQuizContent(
             app = app,
-            word = session.word,
+            table = session.table,
             models = session.models,
             dnd = dnd,
             wordFor = session::wordFor,
@@ -212,7 +223,7 @@ fun DeclensionQuizScreen(
             maxWrongAttempts = DeclensionQuizRules.MAX_WRONG_ATTEMPTS,
             actual = session.actual,
             remainingSeconds = remainingSeconds,
-            totalSeconds = WORD_TIMEOUT_SECONDS,
+            totalSeconds = timeoutSeconds,
         )
         // Opaque surface behind the handbook so the quiz table underneath never shows through
         // while dragging or once fully open. Only composed while at least partially visible so

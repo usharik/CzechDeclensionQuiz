@@ -170,4 +170,58 @@
     <string name="quiz_mode_full_table_desc">Расстаўце ўсе формы па 14 клетках табліцы</string>
     <string name="quiz_mode_one_case_desc">Выберыце правільную форму для кожнага склону</string>
     <string name="words_with_errors_desc">Паўтарыце словы, у якіх былі памылкі</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Што трэніраваць</string>
+    <string name="pos_nouns">Назоўнікі</string>
+    <string name="pos_adjectives">Прыметнікі</string>
+    <string name="pos_verbs">Дзеясловы</string>
+    <string name="pos_nouns_short">Наз.</string>
+    <string name="pos_adjectives_short">Прым.</string>
+    <string name="pos_verbs_short">Дзеясл.</string>
+    <string name="pos_tag_adjective">прым.</string>
+    <string name="pos_tag_verb">дзеясл.</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Праскланяйце прыметнік з назоўнікам: 14 форм</string>
+    <string name="quiz_mode_full_table_desc_verbs">Расстаўце формы цяперашняга, прошлага часу і загаднага ладу</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Абярыце ўзгодненую форму прыметніка, склон за склонам</string>
+    <string name="quiz_mode_one_case_desc_verbs">Абярыце правільную форму дзеяслова, асоба за асобай</string>
+    <string name="section_present">Цяперашні час</string>
+    <string name="section_past">Прошлы час (дзеепрыметнік)</string>
+    <string name="section_imperative">Загадны лад</string>
+    <string name="adjective_kind_hard">цвёрды прыметнік</string>
+    <string name="adjective_kind_soft">мяккі прыметнік</string>
+    <string name="adjective_kind_possessive">прыналежны прыметнік</string>
+    <string name="with_noun">з «%s»</string>
+    <string name="comparative_label">вышэйшая ступень: %s</string>
+    <string name="aspect_imperfective">незакончанае трыванне</string>
+    <string name="aspect_perfective">закончанае трыванне</string>
+    <string name="aspect_biaspectual">двухтрывальны</string>
+    <string name="aspect_pair">пара: %s</string>
+    <string name="verb_group">група «-%s»</string>
+    <string name="verb_group_irregular">неправільны</string>
+    <string name="type_of_conjugation">Тып спражэння</string>
+    <string name="type_of_adjective">Тып прыметніка</string>
+    <string name="other_adjectives">Іншыя прыметнікі:</string>
+    <string name="other_verbs">Іншыя дзеясловы:</string>
+    <string name="gender_masculine_animate_short">м. адуш.</string>
+    <string name="gender_masculine_inanimate_short">м. неадуш.</string>
+    <string name="gender_feminine_short">жан.</string>
+    <string name="gender_neuter_short">н.</string>
+    <string name="tip_adj_hard">У множным ліку мужчынскага адушаўлёнага роду змяняецца зычны: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Він. скл. адз. л. адуш. = род. скл. (mladého).</string>
+    <string name="tip_adj_soft">Адна форма для ўсіх родаў у назоўным (jarní den, jarní noc, jarní ráno). Ускосныя склоны: -ího, -ímu, -ím. Так жа скланяюцца вышэйшыя ступені (lepší, starší).</string>
+    <string name="tip_adj_possessive">Кароткія канчаткі, як у назоўнікаў: otcova, otcovu, otcově. -ův — ад уладальніка мужчынскага роду (otec), -in — жаночага (matka → matčin).</string>
+    <string name="tip_verb_dela">Група -á: -ám, -áš, -á, -áme, -áte, -ají. Загадны лад на -ej: dělej, dělejte! Сюды належыць большасць дзеясловаў на -at.</string>
+    <string name="tip_verb_prosi">Група -í: -ím, -íš, -í, -íme, -íte, -í (або -ějí: umějí). Загадны лад без канчатка: pros!, mluv!; пасля дзвюх зычных -i: mysli!</string>
+    <string name="tip_verb_kupuje">Група -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (формы -uju/-ujou гутарковыя). Загадны лад -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Група -ne: -nu, -neš, -ne, -neme, -nete, -nou. Загадны лад -ni: tiskni!, sedni si! У прошлым часе часта выпадае -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Група -e: -u, -eš, -e, -eme, -ete, -ou. Аснова часта мяняецца: číst → čtu, psát → píšu, péct → peču. Загадны лад: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Вучыце па адным: být (jsem, jsi, je…), mít (mám), jít (jdu, прошлы šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Прошлы час = дзеепрыметнік + jsem/jsi/jsme/jste; у 3-й асобе дапаможнага дзеяслова няма: dělal jsem, dělala jsi, dělali jsme, dělal. У множным ліку: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Словазлучэнні: прыметнік + назоўнік</string>
+    <string name="pos_phrases_short">Фразы</string>
+    <string name="quiz_mode_full_table_verbs">Поўная табліца спражэння</string>
+    <string name="quiz_mode_one_case_verbs">Па адной форме</string>
+    <string name="next_form">Наступная форма</string>
+    <string name="quiz_mode_full_table_desc_phrases">Праскланяйце цэлыя словазлучэнні кшталту «mladý muž»: 14 форм</string>
+    <string name="quiz_mode_one_case_desc_phrases">Абярыце правільнае словазлучэнне пасля bez, ke, vidím, o, s</string>
 </resources>

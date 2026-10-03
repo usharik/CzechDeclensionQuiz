@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
+import com.usharik.app.PartOfSpeech
 import com.usharik.app.ui.components.QuitQuizDialog
 import com.usharik.app.ui.state.SingleCaseQuizSession
 import com.usharik.app.utils.HapticFeedback
@@ -25,12 +26,13 @@ import com.usharik.app.utils.HapticFeedback
 @Composable
 fun SingleCaseQuizScreen(
     app: App,
+    partOfSpeech: PartOfSpeech,
     onQuit: () -> Unit,
 ) {
     val context = LocalContext.current
     val activity = context as? Activity
     val scope = rememberCoroutineScope()
-    val session = remember { SingleCaseQuizSession(app, scope) }
+    val session = remember { SingleCaseQuizSession(app, scope, partOfSpeech) }
     var showQuit by remember { mutableStateOf(false) }
 
     fun continueWithPotentialInterstitial(action: () -> Unit) {
@@ -47,9 +49,8 @@ fun SingleCaseQuizScreen(
 
     SingleCaseQuizContent(
         app = app,
-        word = session.word,
-        caseIndex = session.caseIndex,
-        plural = session.plural,
+        table = session.table,
+        question = session.question,
         answers = session.answers,
         correct = session.correct,
         answered = session.answered,
@@ -63,12 +64,12 @@ fun SingleCaseQuizScreen(
         },
         onNextCase = {
             HapticFeedback.light(context)
-            app.analyticsService.logSingleCaseNavigation("NEXT_CASE", session.word?.word().orEmpty())
+            app.analyticsService.logSingleCaseNavigation("NEXT_CASE", session.lexeme?.key.orEmpty())
             continueWithPotentialInterstitial(session::nextStep)
         },
         onNextWord = {
             HapticFeedback.light(context)
-            app.analyticsService.logSingleCaseNavigation("NEXT_WORD", session.word?.word().orEmpty())
+            app.analyticsService.logSingleCaseNavigation("NEXT_WORD", session.lexeme?.key.orEmpty())
             val skipped = !session.isWordComplete()
             continueWithPotentialInterstitial { session.nextWord(skipped = skipped) }
         },

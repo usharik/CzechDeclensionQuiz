@@ -29,13 +29,22 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.usharik.app.R
 import com.usharik.app.TestTags
+import com.usharik.app.ui.state.ColumnKind
+import com.usharik.app.ui.state.FormCell
+import com.usharik.app.ui.state.FormRow
+import com.usharik.app.ui.state.SectionTitle
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 
@@ -43,50 +52,66 @@ import com.usharik.app.ui.theme.Dimens
 class CellFeedback(val correct: Boolean)
 
 /**
- * One case row: a header line (number, name, hint, question) above two value cells (singular /
- * plural tints) that act as drag sources when filled and drop targets. With a null [dnd] the row
- * is a static display (handbook table).
+ * One row of a [com.usharik.app.ui.state.FormTable]: for case rows a header line (number, name,
+ * hint, question) above two value cells (singular / plural tints); verb rows have no header, the
+ * person is shown inside each cell instead. Cells act as drag sources when filled and drop
+ * targets. With a null [dnd] the row is a static display (handbook, mistakes page).
+ * [text] gives the form currently placed in a cell ("" when empty), [feedback] its last outcome.
  * With [fillHeight] the cells stretch to fill the row's remaining height so a weighted column
  * of rows always fits on one screen without scrolling.
  */
 @Composable
 fun RowCase(
-    num: Int,
+    row: FormRow,
     dnd: DragAndDropState?,
-    singularText: String,
-    pluralText: String,
-    singularFeedback: CellFeedback? = null,
-    pluralFeedback: CellFeedback? = null,
+    text: (FormCell) -> String,
+    feedback: (FormCell) -> CellFeedback? = { null },
     fillHeight: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val names = stringArrayResource(R.array.caseName)
-    val hints = stringArrayResource(R.array.caseHint)
-    val questions = stringArrayResource(R.array.caseQuestion)
     Column(modifier, verticalArrangement = Arrangement.spacedBy(Dimens.spacingXxs)) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            HeaderText("${num + 1}", Modifier.width(Dimens.caseNumWidth))
-            HeaderText(names.getOrElse(num) { "" }, Modifier.width(Dimens.caseNameWidth))
-            HeaderText(hints.getOrElse(num) { "" }, Modifier.weight(1f))
-            HeaderText(questions.getOrElse(num) { "" }, Modifier.weight(1.4f))
-        }
+        row.caseIndex?.let { CaseHeader(it) }
         Row(
             if (fillHeight) Modifier.weight(1f) else Modifier,
             horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs),
         ) {
             val cellModifier = if (fillHeight) Modifier.weight(1f).fillMaxHeight() else Modifier.weight(1f)
-            AnswerCell("0_$num", singularText, AppColors.singularCell, dnd, singularFeedback, fillHeight, cellModifier)
-            AnswerCell("1_$num", pluralText, AppColors.pluralCell, dnd, pluralFeedback, fillHeight, cellModifier)
+            row.cells.forEachIndexed { column, cell ->
+                AnswerCell(
+                    cell = cell,
+                    text = text(cell),
+                    background = if (column == 0) AppColors.singularCell else AppColors.pluralCell,
+                    dnd = dnd,
+                    feedback = feedback(cell),
+                    fillHeight = fillHeight,
+                    modifier = cellModifier,
+                )
+            }
         }
     }
 }
 
-/** "Singular | Plural" labels aligned over the two value columns of [RowCase]. */
+/** The case header line: number, localized case name, helper word and question. */
 @Composable
-fun CaseColumnsHeader(modifier: Modifier = Modifier) {
+private fun CaseHeader(caseIndex: Int) {
+    val names = stringArrayResource(R.array.caseName)
+    val hints = stringArrayResource(R.array.caseHint)
+    val questions = stringArrayResource(R.array.caseQuestion)
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HeaderText("${caseIndex + 1}", Modifier.width(Dimens.caseNumWidth))
+        HeaderText(names.getOrElse(caseIndex) { "" }, Modifier.width(Dimens.caseNameWidth))
+        HeaderText(hints.getOrElse(caseIndex) { "" }, Modifier.weight(1f))
+        HeaderText(questions.getOrElse(caseIndex) { "" }, Modifier.weight(1.4f))
+    }
+}
+
+/** "Singular | Plural" labels aligned over the two value columns; verb tables label their person columns the same way. */
+@Suppress("UNUSED_PARAMETER")
+@Composable
+fun CaseColumnsHeader(columnKind: ColumnKind = ColumnKind.NUMBER, modifier: Modifier = Modifier) {
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(Dimens.spacingXxs)) {
         listOf(R.string.singular, R.string.plural).forEach { label ->
             Text(
@@ -100,6 +125,25 @@ fun CaseColumnsHeader(modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+/** Title line of a verb table section (present / past / imperative). */
+@Composable
+fun SectionHeader(title: SectionTitle, modifier: Modifier = Modifier) {
+    val res = when (title) {
+        SectionTitle.PRESENT -> R.string.section_present
+        SectionTitle.PAST -> R.string.section_past
+        SectionTitle.IMPERATIVE -> R.string.section_imperative
+        SectionTitle.NONE -> return
+    }
+    Text(
+        stringResource(res),
+        modifier.padding(start = Dimens.spacingXs, top = Dimens.spacingXxs),
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+        maxLines = 1,
+    )
 }
 
 /** Tight single-line text: no extra font padding so the header claims minimal row height. */
@@ -121,12 +165,14 @@ private fun HeaderText(text: String, modifier: Modifier = Modifier) {
 }
 
 /**
- * A value cell. Shows the placed word (draggable when present) or nothing, over the column colour.
+ * A value cell. Shows the fixed prefix/suffix of the cell (person, agreeing noun) in a muted
+ * colour around the placed form (draggable when present), over the column colour. A cell whose
+ * target does not exist for this word is drawn blank and takes no drops.
  * Correct placements bounce (scale 1→1.2→1); wrong placements shake horizontally.
  */
 @Composable
 fun AnswerCell(
-    cellKey: String,
+    cell: FormCell,
     text: String,
     background: Color,
     dnd: DragAndDropState?,
@@ -156,27 +202,57 @@ fun AnswerCell(
         }
     }
     val occupied = text.isNotEmpty()
+    val active = dnd != null && cell.exists
+    val hintColor = MaterialTheme.colorScheme.onSurfaceVariant
     Box(
         modifier
             .graphicsLayer {
                 scaleX = scale.value; scaleY = scale.value; translationX = shift.value
             }
-            .testTag("${TestTags.FULL_CELL_PREFIX}$cellKey")
+            .testTag("${TestTags.FULL_CELL_PREFIX}${cell.key}")
             .defaultMinSize(minHeight = 40.dp)
             .clip(shape)
-            .background(background, shape)
+            .background(if (cell.exists) background else background.copy(alpha = 0.35f), shape)
             .border(Dimens.strokeThin, AppColors.stroke, shape)
-            .then(if (dnd != null) Modifier.dropTarget(dnd, cellKey) else Modifier)
-            .then(if (dnd != null && occupied) Modifier.dragSource(dnd, cellKey, text) else Modifier)
+            .then(if (active) Modifier.dropTarget(dnd, cell.key) else Modifier)
+            .then(if (active && occupied) Modifier.dragSource(dnd, cell.key, text) else Modifier)
             .padding(horizontal = Dimens.spacingSm),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = Dimens.draggableFontSize,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-        )
+        if (cell.exists && cell.suffix.isNotEmpty()) {
+            // Agreement cells: the adjective form on top, the noun it agrees with underneath.
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = Dimens.draggableFontSize,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+                )
+                Text(
+                    text = cell.suffix,
+                    color = hintColor,
+                    fontSize = Dimens.textSmall,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false)),
+                )
+            }
+        } else if (cell.exists) {
+            Text(
+                text = buildAnnotatedString {
+                    if (cell.prefix.isNotEmpty()) withStyle(SpanStyle(color = hintColor, fontSize = Dimens.staticFontSize)) { append(cell.prefix); append(' ') }
+                    append(text)
+                },
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = if (cell.prefix.isEmpty()) Dimens.draggableFontSize else 16.sp,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }

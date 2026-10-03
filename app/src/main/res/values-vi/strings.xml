@@ -140,4 +140,58 @@
     <string name="quiz_mode_full_table_desc">Kéo mọi dạng từ vào 14 ô của bảng</string>
     <string name="quiz_mode_one_case_desc">Chọn dạng đúng cho từng cách</string>
     <string name="words_with_errors_desc">Ôn lại những từ bạn đã làm sai</string>
+
+    <!-- Parts of speech: nouns, adjectives, verbs -->
+    <string name="word_class_title">Luyện gì</string>
+    <string name="pos_nouns">Danh từ</string>
+    <string name="pos_adjectives">Tính từ</string>
+    <string name="pos_verbs">Động từ</string>
+    <string name="pos_nouns_short">Danh từ</string>
+    <string name="pos_adjectives_short">Tính từ</string>
+    <string name="pos_verbs_short">Động từ</string>
+    <string name="pos_tag_adjective">tính từ</string>
+    <string name="pos_tag_verb">động từ</string>
+    <string name="quiz_mode_full_table_desc_adjectives">Biến cách tính từ cùng danh từ: xếp 14 dạng</string>
+    <string name="quiz_mode_full_table_desc_verbs">Xếp các dạng hiện tại, quá khứ và mệnh lệnh</string>
+    <string name="quiz_mode_one_case_desc_adjectives">Chọn dạng tính từ phù hợp, từng cách một</string>
+    <string name="quiz_mode_one_case_desc_verbs">Chọn dạng động từ đúng, từng ngôi một</string>
+    <string name="section_present">Thì hiện tại</string>
+    <string name="section_past">Thì quá khứ (phân từ)</string>
+    <string name="section_imperative">Mệnh lệnh</string>
+    <string name="adjective_kind_hard">tính từ cứng</string>
+    <string name="adjective_kind_soft">tính từ mềm</string>
+    <string name="adjective_kind_possessive">tính từ sở hữu</string>
+    <string name="with_noun">với “%s”</string>
+    <string name="comparative_label">so sánh hơn: %s</string>
+    <string name="aspect_imperfective">thể chưa hoàn thành</string>
+    <string name="aspect_perfective">thể hoàn thành</string>
+    <string name="aspect_biaspectual">hai thể</string>
+    <string name="aspect_pair">cặp thể: %s</string>
+    <string name="verb_group">nhóm “-%s”</string>
+    <string name="verb_group_irregular">bất quy tắc</string>
+    <string name="type_of_conjugation">Kiểu chia động từ</string>
+    <string name="type_of_adjective">Kiểu tính từ</string>
+    <string name="other_adjectives">Tính từ khác:</string>
+    <string name="other_verbs">Động từ khác:</string>
+    <string name="gender_masculine_animate_short">nam, động</string>
+    <string name="gender_masculine_inanimate_short">nam, bất động</string>
+    <string name="gender_feminine_short">nữ</string>
+    <string name="gender_neuter_short">trung</string>
+    <string name="tip_adj_hard">Số nhiều giống nam chỉ sinh vật làm mềm phụ âm cuối: mladý → mladí, hezký → hezcí, drahý → drazí, český → čeští. Đối cách số ít (sinh vật) = sinh cách (mladého).</string>
+    <string name="tip_adj_soft">Một dạng cho mọi giống ở chủ cách (jarní den, jarní noc, jarní ráno). Các cách khác: -ího, -ímu, -ím. Dạng so sánh hơn (lepší, starší) cũng biến cách như vậy.</string>
+    <string name="tip_adj_possessive">Đuôi ngắn giống danh từ: otcova, otcovu, otcově. -ův từ chủ sở hữu giống nam (otec), -in từ giống nữ (matka → matčin).</string>
+    <string name="tip_verb_dela">Nhóm -á: -ám, -áš, -á, -áme, -áte, -ají. Mệnh lệnh đuôi -ej: dělej, dělejte! Hầu hết động từ tận cùng -at thuộc nhóm này.</string>
+    <string name="tip_verb_prosi">Nhóm -í: -ím, -íš, -í, -íme, -íte, -í (hoặc -ějí: umějí). Mệnh lệnh bỏ đuôi: pros!, mluv!; sau hai phụ âm thêm -i: mysli!</string>
+    <string name="tip_verb_kupuje">Nhóm -uje: -uji/-uju, -uješ, -uje, -ujeme, -ujete, -ují/-ujou (dạng -uju/-ujou là khẩu ngữ). Mệnh lệnh -uj: kupuj!</string>
+    <string name="tip_verb_tiskne">Nhóm -ne: -nu, -neš, -ne, -neme, -nete, -nou. Mệnh lệnh -ni: tiskni!, sedni si! Quá khứ thường mất -nu-: tiskl, sedl.</string>
+    <string name="tip_verb_nese">Nhóm -e: -u, -eš, -e, -eme, -ete, -ou. Gốc từ thường đổi: číst → čtu, psát → píšu, péct → peču. Mệnh lệnh: čti!, piš!, peč!</string>
+    <string name="tip_verb_irregular">Học từng từ: být (jsem, jsi, je…), mít (mám), jít (jdu, quá khứ šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
+    <string name="tip_past_tense">Quá khứ = phân từ + jsem/jsi/jsme/jste; ngôi thứ ba không có trợ động từ: dělal jsem, dělala jsi, dělali jsme, dělal. Số nhiều: oni dělali, ony dělaly.</string>
+    <string name="pos_phrases">Cụm tính từ + danh từ</string>
+    <string name="pos_phrases_short">Cụm từ</string>
+    <string name="quiz_mode_full_table_verbs">Bài kiểm tra bảng chia động từ đầy đủ</string>
+    <string name="quiz_mode_one_case_verbs">Bài kiểm tra từng dạng một</string>
+    <string name="next_form">Dạng tiếp theo</string>
+    <string name="quiz_mode_full_table_desc_phrases">Biến cách cả cụm như “mladý muž”: xếp 14 dạng</string>
+    <string name="quiz_mode_one_case_desc_phrases">Chọn cụm từ đúng sau bez, ke, vidím, o, s</string>
 </resources>

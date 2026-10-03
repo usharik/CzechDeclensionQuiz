@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
+import com.usharik.app.PartOfSpeech
 import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
@@ -45,9 +50,10 @@ import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
 
 /**
- * Quiz-mode selection hub: the progress card, three gradient quiz-mode cards, tiles for the
- * secondary pages and a banner pinned to the bottom.
+ * Quiz-mode selection hub: the progress card, the nouns / adjectives / verbs switch, three
+ * gradient quiz-mode cards, tiles for the secondary pages and a banner pinned to the bottom.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HubScreen(
     app: App,
@@ -61,6 +67,7 @@ fun HubScreen(
 ) {
     val context = LocalContext.current
     val goalTarget by app.appState.dailyGoalFlow.collectAsState()
+    val partOfSpeech by app.appState.partOfSpeechFlow.collectAsState()
     val wordsWithErrors by app.appState.wordsWithErrorsFlow.collectAsState()
     var overview by remember { mutableStateOf<ProgressOverview?>(null) }
     LaunchedEffect(goalTarget, wordsWithErrors.size) {
@@ -92,14 +99,43 @@ fun HubScreen(
                 ProgressCard(it, onReview = { click("REVIEW", onStartReview) }, Modifier.padding(bottom = Dimens.spacingMdLarge))
             }
             Text(
+                stringResource(R.string.word_class_title),
+                Modifier.padding(bottom = Dimens.spacingSm),
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            // Which dictionary the quiz modes below draw from. Persisted, so the app reopens on the same choice.
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(bottom = Dimens.spacingMdLarge)) {
+                PartOfSpeech.entries.forEachIndexed { index, pos ->
+                    SegmentedButton(
+                        selected = partOfSpeech == pos,
+                        onClick = {
+                            HapticFeedback.light(context)
+                            app.analyticsService.logButtonClick("HUB_PART_OF_SPEECH", pos.name)
+                            app.persistPartOfSpeech(pos)
+                        },
+                        shape = SegmentedButtonDefaults.itemShape(index, PartOfSpeech.entries.size),
+                        label = { Text(stringResource(pos.shortTitleRes), maxLines = 1) },
+                        modifier = Modifier.testTag(TestTags.HUB_POS_PREFIX + pos.name.lowercase()),
+                    )
+                }
+            }
+            Text(
                 stringResource(R.string.quiz_mode_title),
                 Modifier.padding(bottom = Dimens.spacingSmLarge),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
             )
             GradientButton(
-                text = stringResource(R.string.quiz_mode_full_table),
-                subtitle = stringResource(R.string.quiz_mode_full_table_desc),
+                text = stringResource(quizTitleRes(partOfSpeech, full = true)),
+                subtitle = stringResource(
+                    when (partOfSpeech) {
+                        PartOfSpeech.NOUN -> R.string.quiz_mode_full_table_desc
+                        PartOfSpeech.ADJECTIVE -> R.string.quiz_mode_full_table_desc_adjectives
+                        PartOfSpeech.VERB -> R.string.quiz_mode_full_table_desc_verbs
+                        PartOfSpeech.PHRASE -> R.string.quiz_mode_full_table_desc_phrases
+                    },
+                ),
                 gradient = AppColors.gradientPrimary,
                 icon = painterResource(R.drawable.ic_grid),
                 fontSize = Dimens.textTitle,
@@ -107,8 +143,15 @@ fun HubScreen(
                 modifier = Modifier.fillMaxWidth().testTag(TestTags.BTN_FULL),
             )
             GradientButton(
-                text = stringResource(R.string.quiz_mode_one_case),
-                subtitle = stringResource(R.string.quiz_mode_one_case_desc),
+                text = stringResource(quizTitleRes(partOfSpeech, full = false)),
+                subtitle = stringResource(
+                    when (partOfSpeech) {
+                        PartOfSpeech.NOUN -> R.string.quiz_mode_one_case_desc
+                        PartOfSpeech.ADJECTIVE -> R.string.quiz_mode_one_case_desc_adjectives
+                        PartOfSpeech.VERB -> R.string.quiz_mode_one_case_desc_verbs
+                        PartOfSpeech.PHRASE -> R.string.quiz_mode_one_case_desc_phrases
+                    },
+                ),
                 gradient = AppColors.gradientSecondary,
                 icon = painterResource(R.drawable.ic_quiz),
                 fontSize = Dimens.textTitle,
@@ -141,6 +184,14 @@ fun HubScreen(
             widthFraction = 1f,
         )
     }
+}
+
+/** The quiz-mode title for a word class: verbs are conjugated, everything else is declined. */
+fun quizTitleRes(partOfSpeech: PartOfSpeech, full: Boolean): Int = when {
+    partOfSpeech == PartOfSpeech.VERB && full -> R.string.quiz_mode_full_table_verbs
+    partOfSpeech == PartOfSpeech.VERB -> R.string.quiz_mode_one_case_verbs
+    full -> R.string.quiz_mode_full_table
+    else -> R.string.quiz_mode_one_case
 }
 
 /** Tonal tile with an icon above a short label, for the hub's secondary pages. */

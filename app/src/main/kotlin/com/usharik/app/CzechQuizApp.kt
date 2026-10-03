@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import com.usharik.app.ui.screens.HubScreen
 import com.usharik.app.ui.screens.SettingsScreen
 import com.usharik.app.ui.screens.SingleCaseQuizScreen
 import com.usharik.app.ui.screens.WordsWithErrorsScreen
+import com.usharik.app.ui.screens.quizTitleRes
 
 private enum class Destination(@StringRes val titleRes: Int) {
     HUB(R.string.hub_title),
@@ -67,6 +69,8 @@ fun CzechQuizApp(app: App, startInReview: Boolean = false) {
     }
     var nextAction by remember { mutableStateOf<ToolbarAction?>(null) }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    // The hub's nouns / adjectives / verbs choice; quiz screens capture it when they are created.
+    val partOfSpeech by app.appState.partOfSpeechFlow.collectAsState()
     // Quizzes own their back press (quit-quiz overlay); other pages return to the hub.
     BackHandler(enabled = destination !in setOf(Destination.HUB, Destination.FULL, Destination.SINGLE, Destination.REVIEW)) { destination = Destination.HUB }
     val isHub = destination == Destination.HUB
@@ -78,7 +82,13 @@ fun CzechQuizApp(app: App, startInReview: Boolean = false) {
         TopAppBar(
             title = {
                 Text(
-                    stringResource(destination.titleRes),
+                    stringResource(
+                        when (destination) {
+                            Destination.FULL -> quizTitleRes(partOfSpeech, full = true)
+                            Destination.SINGLE -> quizTitleRes(partOfSpeech, full = false)
+                            else -> destination.titleRes
+                        },
+                    ),
                     Modifier.testTag(TestTags.APP_BAR_TITLE),
                     style = if (isHub) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge,
                     maxLines = 1,
@@ -129,17 +139,20 @@ fun CzechQuizApp(app: App, startInReview: Boolean = false) {
                 )
                 Destination.FULL -> DeclensionQuizScreen(
                     app = app,
+                    partOfSpeech = partOfSpeech,
                     onQuit = { destination = Destination.HUB },
                     registerNext = { nextAction = it },
                 )
                 Destination.REVIEW -> DeclensionQuizScreen(
                     app = app,
+                    partOfSpeech = partOfSpeech,
                     onQuit = { destination = Destination.HUB },
                     registerNext = { nextAction = it },
                     review = true,
                 )
                 Destination.SINGLE -> SingleCaseQuizScreen(
                     app = app,
+                    partOfSpeech = partOfSpeech,
                     onQuit = { destination = Destination.HUB },
                 )
                 Destination.ERRORS -> WordsWithErrorsScreen(app, onStartReview = ::startReview)

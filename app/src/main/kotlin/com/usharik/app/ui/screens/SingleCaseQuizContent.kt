@@ -43,18 +43,20 @@ import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.ButtonFrame
 import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.components.StrokeTextButton
+import com.usharik.app.ui.components.lexemeSubtitle
 import com.usharik.app.ui.components.localizedTranslation
+import com.usharik.app.ui.state.FormCell
+import com.usharik.app.ui.state.FormTable
+import com.usharik.app.ui.state.SectionTitle
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
-import com.usharik.database.WordInfo
 
-/** Scrollable word header, the case question and four answer choices. */
+/** Scrollable headword card, the question (case / person) and four answer choices. */
 @Composable
 fun SingleCaseQuizContent(
     app: App,
-    word: WordInfo?,
-    caseIndex: Int,
-    plural: Boolean,
+    table: FormTable?,
+    question: FormCell?,
     answers: List<String>,
     correct: String,
     answered: Boolean,
@@ -67,19 +69,14 @@ fun SingleCaseQuizContent(
     Column(
         Modifier.fillMaxSize().testTag(TestTags.SC_SCREEN).verticalScroll(rememberScrollState()).padding(Dimens.spacingMd),
     ) {
-        if (word == null) {
+        if (table == null || question == null) {
             LoadingIndicator(Modifier.padding(top = Dimens.spacingXl))
             return@Column
         }
-        // The localized case-name/hint/question arrays match what RowCase renders.
-        val translation = localizedTranslation(word)
-        val caseName = stringArrayResource(R.array.caseName).getOrElse(caseIndex) { "" }
-        val caseHint = stringArrayResource(R.array.caseHint).getOrElse(caseIndex) { "-" }
-        val question = stringArrayResource(R.array.caseQuestion).getOrElse(caseIndex) { "" }
-        val caseQuestion = if (caseHint.isBlank() || caseHint == "-") question else "$caseHint - $question"
-
+        val lexeme = table.lexeme
+        val translation = localizedTranslation(lexeme)
         Text(
-            word.word(),
+            lexeme.headword,
             Modifier.fillMaxWidth().testTag(TestTags.SC_WORD).padding(top = Dimens.spacingMd),
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
@@ -87,7 +84,7 @@ fun SingleCaseQuizContent(
             textAlign = TextAlign.Center,
         )
         Text(
-            stringResource(R.string.declension_pattern, word.declensionType()),
+            lexemeSubtitle(lexeme),
             Modifier.fillMaxWidth().padding(top = Dimens.spacingXs),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = Dimens.textLabel,
@@ -101,33 +98,7 @@ fun SingleCaseQuizContent(
             fontStyle = FontStyle.Italic,
             textAlign = TextAlign.Center,
         )
-        Row(
-            Modifier.fillMaxWidth().padding(top = Dimens.spacingLg),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                "${caseIndex + 1}. $caseName",
-                Modifier.testTag(TestTags.SC_CASE_NAME),
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold,
-                fontSize = Dimens.textTitle,
-            )
-            Text(
-                stringResource(if (plural) R.string.plural else R.string.singular),
-                Modifier.testTag(TestTags.SC_NUMBER_LABEL),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = Dimens.textBody,
-            )
-        }
-        Text(
-            caseQuestion,
-            Modifier.fillMaxWidth().testTag(TestTags.SC_QUESTION).padding(top = Dimens.spacingXs),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = Dimens.textBody,
-            fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center,
-        )
+        QuestionBlock(table, question)
         for (i in 0 until 4) {
             if (i >= answers.size) continue
             val answer = answers[i]
@@ -145,7 +116,7 @@ fun SingleCaseQuizContent(
             )
         }
         GradientButton(
-            text = stringResource(R.string.nextCase),
+            text = stringResource(if (table.partOfSpeech == com.usharik.app.PartOfSpeech.VERB) R.string.next_form else R.string.nextCase),
             gradient = AppColors.gradientSecondary,
             enabled = answered && !isAdvancing,
             onClick = onNextCase,
@@ -161,6 +132,79 @@ fun SingleCaseQuizContent(
         )
         Spacer(Modifier.height(Dimens.spacingMd))
         BannerAd(app, BuildConfig.ADMOB_SINGLE_CASE_QUIZ_AD_UNIT_ID)
+    }
+}
+
+/**
+ * What is being asked. Case rows (nouns, adjectives): "3. Dativ" + Singular/Plural + the case
+ * question, and for adjectives the phrase with a gap ("___ muži"). Verb rows: the section
+ * (present / past / imperative) + the person, and the gap phrase ("já ___").
+ */
+@Composable
+private fun QuestionBlock(table: FormTable, question: FormCell) {
+    val row = table.rows[question.row]
+    val caseIndex = row.caseIndex
+    val title: String
+    val side: String
+    val hint: String
+    if (caseIndex != null) {
+        // The localized case-name/hint/question arrays match what RowCase renders.
+        val caseName = stringArrayResource(R.array.caseName).getOrElse(caseIndex) { "" }
+        val caseHint = stringArrayResource(R.array.caseHint).getOrElse(caseIndex) { "-" }
+        val caseQuestion = stringArrayResource(R.array.caseQuestion).getOrElse(caseIndex) { "" }
+        title = "${caseIndex + 1}. $caseName"
+        side = stringResource(if (question.column == 1) R.string.plural else R.string.singular)
+        hint = if (caseHint.isBlank() || caseHint == "-") caseQuestion else "$caseHint - $caseQuestion"
+    } else {
+        val section = table.sections.first { s -> s.rows.any { it.index == question.row } }
+        title = stringResource(
+            when (section.title) {
+                SectionTitle.PAST -> R.string.section_past
+                SectionTitle.IMPERATIVE -> R.string.section_imperative
+                else -> R.string.section_present
+            },
+        )
+        side = stringResource(if (question.column == 1) R.string.plural else R.string.singular)
+        hint = ""
+    }
+    Row(
+        Modifier.fillMaxWidth().padding(top = Dimens.spacingLg),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            title,
+            Modifier.testTag(TestTags.SC_CASE_NAME),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold,
+            fontSize = Dimens.textTitle,
+        )
+        Text(
+            side,
+            Modifier.testTag(TestTags.SC_NUMBER_LABEL),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = Dimens.textBody,
+        )
+    }
+    if (hint.isNotEmpty()) Text(
+        hint,
+        Modifier.fillMaxWidth().testTag(TestTags.SC_QUESTION).padding(top = Dimens.spacingXs),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        fontSize = Dimens.textBody,
+        fontStyle = FontStyle.Italic,
+        textAlign = TextAlign.Center,
+    )
+    // The phrase with a gap for the form: "___ muži" for adjectives, "bez ___" for phrases,
+    // "on, ona, ono ___" for verbs (the full person label, not the short cell prefix).
+    if (question.prefix.isNotEmpty() || question.suffix.isNotEmpty()) {
+        val lead = if (caseIndex == null) question.question else question.prefix
+        Text(
+            listOf(lead, "___", question.suffix).filter { it.isNotEmpty() }.joinToString(" "),
+            Modifier.fillMaxWidth().testTag(TestTags.SC_GAP).padding(top = Dimens.spacingSm),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = Dimens.textTitle,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

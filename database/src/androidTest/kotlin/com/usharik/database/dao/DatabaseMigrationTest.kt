@@ -65,4 +65,16 @@ class DatabaseMigrationTest {
         }
         migrated.close()
     }
+
+    @Test fun migrate10To11_addsEmptyLexiconTablesWithoutTouchingNouns() {
+        val database: SupportSQLiteDatabase = helper.createDatabase("migration-10-11", 10)
+        database.execSQL("INSERT INTO DOCUMENT (word_id, word, gender, declension_type, json) VALUES (1, 'muž', 'rod: m. živ.', 'muž', '{}')")
+        database.close()
+
+        val migrated = helper.runMigrationsAndValidate("migration-10-11", 11, true, DocumentDatabase.MIGRATION_10_11)
+        migrated.query("SELECT count(*) FROM DOCUMENT").use { cursor -> cursor.moveToFirst(); assertEquals(1, cursor.getInt(0)) }
+        migrated.query("SELECT count(*) FROM ADJECTIVE").use { cursor -> cursor.moveToFirst(); assertEquals(0, cursor.getInt(0)) }
+        migrated.query("SELECT count(*) FROM VERB").use { cursor -> cursor.moveToFirst(); assertEquals(0, cursor.getInt(0)) }
+        migrated.close()
+    }
 }

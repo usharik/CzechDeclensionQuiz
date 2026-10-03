@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.usharik.app.App
+import com.usharik.app.PartOfSpeech
 import com.usharik.database.TrainingStatsRepository
-import com.usharik.database.WordInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -82,21 +82,26 @@ class QuizProgress(
 }
 
 /**
- * Base class for the two quiz-session state holders. Owns the current word, the shared session
- * progress and the word lifecycle: restoring the last word on start, moving to the next word and
- * counting per-word stats. Composables observe the exposed snapshot state; UI-only concerns
- * (haptics, ads, dialogs) stay in the screens.
+ * Base class for the two quiz-session state holders. Owns the current lexeme and its [FormTable],
+ * the shared session progress and the word lifecycle: restoring the last word on start, moving to
+ * the next word and counting per-word stats. Composables observe the exposed snapshot state;
+ * UI-only concerns (haptics, ads, dialogs) stay in the screens.
+ *
+ * [partOfSpeech] selects which dictionary fresh words come from; review mode ignores it and walks
+ * the whole mistakes list.
  */
 abstract class QuizSession(
     protected val app: App,
     protected val scope: CoroutineScope,
+    val partOfSpeech: PartOfSpeech,
     private val lastWordMode: String,
 ) {
-    var word by mutableStateOf<WordInfo?>(null)
+    var table by mutableStateOf<FormTable?>(null)
         private set
+    val lexeme: Lexeme? get() = table?.lexeme
     var isAdvancing by mutableStateOf(false)
         private set
-    /** Set when [pickNextWord] runs out of words (review mode with an emptied mistakes list). */
+    /** Set when [pickNextLexeme] runs out of words (review mode with an emptied mistakes list). */
     var noMoreWords by mutableStateOf(false)
         private set
     val progress = QuizProgress(
@@ -105,29 +110,29 @@ abstract class QuizSession(
         onGoalReached = { app.analyticsService.logEvent("daily_goal_reached") },
     )
 
-    /** Chooses the word after [current]; null ends the session (see [noMoreWords]). */
-    protected open suspend fun pickNextWord(current: WordInfo?): WordInfo? = app.wordService.nextWord(current)
+    /** Chooses the lexeme after [current]; null ends the session (see [noMoreWords]). */
+    protected open suspend fun pickNextLexeme(current: Lexeme?): Lexeme? = app.wordService.nextLexeme(partOfSpeech, current)
 
-    /** Whether the word saved from the previous visit may be resumed. */
-    protected open fun canResume(word: WordInfo): Boolean = true
+    /** Whether the lexeme saved from the previous visit may be resumed. */
+    protected open fun canResume(lexeme: Lexeme): Boolean = true
 
-    /** Resets the per-mode question state for a freshly applied word. */
-    protected abstract fun onWordApplied(word: WordInfo)
+    /** Resets the per-mode question state for a freshly applied table. */
+    protected abstract fun onTableApplied(table: FormTable)
 
     /** Whether the word being left behind was completed without any mistakes (perfect bonus). */
     protected open fun isCurrentWordPerfect(): Boolean = true
 
     /** Restarts the current word for "try again"; defaults to a full re-apply (reshuffle). */
-    protected open fun restart(word: WordInfo) = applyWord(word)
+    protected open fun restart(table: FormTable) = applyTable(table)
 
     /** Awaits the dictionary, loads progress and restores the last word (or picks a fresh one). */
     suspend fun start() {
         app.dictionaryReady.await()
         progress.load()
-        if (word == null) {
+        if (table == null) {
             val saved = app.lastWordStore.getLastWord(lastWordMode)
-            val restored = saved?.takeIf { it.isNotBlank() }?.let { app.wordService.wordByName(it) }?.takeIf(::canResume)
-            if (restored != null) applyWord(restored) else nextWord()
+            val restored = saved?.takeIf { it.isNotBlank() }?.let { app.wordService.lexemeByKey(it) }?.takeIf(::canResume)
+            if (restored != null) applyLexeme(restored) else nextWord()
         }
     }
 
@@ -139,13 +144,13 @@ abstract class QuizSession(
     fun nextWord(
         tryAgain: Boolean = false,
         skipped: Boolean = false,
-        expectedCurrentWord: WordInfo? = word,
+        expectedCurrentTable: FormTable? = table,
     ) {
         // Navigation has side effects (stats, history and word selection). Keep it single-flight
-        // so a double tap cannot score or skip the same word twice. The expected word also
+        // so a double tap cannot score or skip the same word twice. The expected table also
         // rejects a queued toolbar click that belongs to the word we have already replaced.
-        if (isAdvancing || word !== expectedCurrentWord) return
-        val current = word
+        if (isAdvancing || table !== expectedCurrentTable) return
+        val current = table
         if (tryAgain && current != null) {
             restart(current)
             return
@@ -158,19 +163,23 @@ abstract class QuizSession(
                 // create a phantom completion or perfect-word bonus.
                 if (current != null) {
                     if (skipped) progress.applyPenalty()
-                    else progress.countWordCompleted(current.word(), isCurrentWordPerfect())
+                    else progress.countWordCompleted(current.lexeme.headword, isCurrentWordPerfect())
                 }
-                val next = pickNextWord(current)
-                if (next == null) noMoreWords = true else applyWord(next)
+                val next = pickNextLexeme(current?.lexeme)
+                if (next == null) noMoreWords = true else applyLexeme(next)
             } finally {
                 isAdvancing = false
             }
         }
     }
 
-    private fun applyWord(newWord: WordInfo) {
-        word = newWord
-        app.lastWordStore.saveLastWord(lastWordMode, newWord.word())
-        onWordApplied(newWord)
+    private fun applyLexeme(lexeme: Lexeme) {
+        app.lastWordStore.saveLastWord(lastWordMode, lexeme.key)
+        applyTable(FormTables.of(lexeme))
+    }
+
+    private fun applyTable(newTable: FormTable) {
+        table = newTable
+        onTableApplied(newTable)
     }
 }

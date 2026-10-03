@@ -76,6 +76,14 @@ open class App : Application() {
             if (documentRepository.count() == 0) {
                 assets.open("data.jsonl").use { stream -> documentRepository.populateFromJsonStream(stream) }
             }
+            // Adjectives and verbs arrived in a later version: existing installs get the tables from the
+            // 10→11 migration and fill them here on their first start after the update.
+            if (documentRepository.adjectiveCount() == 0) {
+                assets.open("adjectives.jsonl").use { stream -> documentRepository.populateAdjectivesFromJsonStream(stream) }
+            }
+            if (documentRepository.verbCount() == 0) {
+                assets.open("verbs.jsonl").use { stream -> documentRepository.populateVerbsFromJsonStream(stream) }
+            }
         }
         restorePreferences()
     }
@@ -88,8 +96,14 @@ open class App : Application() {
         appState.setGenderFilterStr(prefs.getString(PREF_GENDER_FILTER, Gender.ALL))
         appState.setSwitchOffAnimation(prefs.getBoolean(PREF_SWITCH_OFF_ANIMATION, false))
         appState.setDailyGoal(prefs.getInt(PREF_DAILY_GOAL, DailyGoal.DEFAULT.points))
+        appState.setPartOfSpeech(PartOfSpeech.fromName(prefs.getString(PREF_PART_OF_SPEECH, null)))
         val errorsType = object : TypeToken<HashMap<String, Int>>() {}.type
         appState.setWordsWithErrors(runCatching { gson.fromJson<HashMap<String, Int>>(prefs.getString(PREF_WORDS_WITH_ERRORS, "{}"), errorsType) }.getOrDefault(hashMapOf()))
+    }
+
+    fun persistPartOfSpeech(partOfSpeech: PartOfSpeech) {
+        appState.setPartOfSpeech(partOfSpeech)
+        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putString(PREF_PART_OF_SPEECH, partOfSpeech.name).apply()
     }
 
     fun persistWordsWithErrors() {
@@ -115,6 +129,7 @@ open class App : Application() {
         const val PREF_SWITCH_OFF_ANIMATION = "switchOffAnimation"
         const val PREF_WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS"
         const val PREF_DAILY_GOAL = "dailyGoalPoints"
+        const val PREF_PART_OF_SPEECH = "partOfSpeech"
         private const val LEGACY_DAILY_REMINDER_WORK = "daily_reminder"
         private const val REMINDER_WORK = "hourly_reminder"
     }

@@ -17,6 +17,9 @@ object TestTags {
     const val HUB_PROGRESS_CARD = "hub_progress_card"
     const val HUB_STREAK = "hub_streak"
     const val HUB_REVIEW = "hub_review"
+    const val HUB_POS_PREFIX = "hub_pos_" // append the PartOfSpeech name in lower case
+    // Handbook
+    const val HANDBOOK_POS_PREFIX = "handbook_pos_" // append the PartOfSpeech name in lower case
     const val ERRORS_REVIEW = "errors_review"
     const val REVIEW_COMPLETE_DIALOG = "review_complete_dialog"
     // Single-case quiz
@@ -25,6 +28,7 @@ object TestTags {
     const val SC_CASE_NAME = "sc_case_name"
     const val SC_NUMBER_LABEL = "sc_number_label"
     const val SC_QUESTION = "sc_case_question"
+    const val SC_GAP = "sc_gap" // the phrase with a gap: "já ___" / "___ muže"
     const val SC_ANSWER_PREFIX = "sc_answer_" // append 0..3
     const val SC_NEXT_CASE = "sc_next_case"
     const val SC_NEXT_WORD = "sc_next_word"

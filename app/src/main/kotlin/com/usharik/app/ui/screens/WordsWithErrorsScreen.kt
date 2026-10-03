@@ -31,34 +31,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
+import com.usharik.app.PartOfSpeech
 import com.usharik.app.R
 import com.usharik.app.TestTags
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.CaseTable
 import com.usharik.app.ui.components.GradientButton
+import com.usharik.app.ui.components.lexemeSubtitle
+import com.usharik.app.ui.state.FormTable
+import com.usharik.app.ui.state.FormTables
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import kotlinx.coroutines.launch
 
 /**
  * Words-with-errors page: a review-mode shortcut, the chips of the words the player got wrong
- * and the declension table of the selected word (the first one until another is picked).
+ * (nouns, adjectives and verbs, tagged by class) and the form table of the selected one (the
+ * first one until another is picked).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun WordsWithErrorsScreen(app: App, onStartReview: () -> Unit) {
     val scope = rememberCoroutineScope()
     val wordsWithErrors by app.appState.wordsWithErrorsFlow.collectAsState()
-    var selectedWord by remember { mutableStateOf<String?>(null) }
-    var cases by remember { mutableStateOf<Array<Array<String>>?>(null) }
+    var selectedKey by remember { mutableStateOf<String?>(null) }
+    var table by remember { mutableStateOf<FormTable?>(null) }
 
-    fun selectWord(word: String) {
-        selectedWord = word
-        scope.launch { app.dictionaryReady.await(); app.documentRepository.wordInfoByWord(word)?.cases()?.let { cases = it } }
+    fun select(key: String) {
+        selectedKey = key
+        scope.launch { app.dictionaryReady.await(); table = app.wordService.lexemeByKey(key)?.let(FormTables::of) }
     }
 
     LaunchedEffect(wordsWithErrors.keys) {
-        if (selectedWord !in wordsWithErrors) wordsWithErrors.keys.firstOrNull()?.let(::selectWord) ?: run { selectedWord = null; cases = null }
+        if (selectedKey !in wordsWithErrors) wordsWithErrors.keys.firstOrNull()?.let(::select) ?: run { selectedKey = null; table = null }
     }
 
     Column(
@@ -99,15 +104,27 @@ fun WordsWithErrorsScreen(app: App, onStartReview: () -> Unit) {
                     .padding(vertical = Dimens.spacingXs),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSm),
             ) {
-                wordsWithErrors.keys.forEach { word ->
+                wordsWithErrors.keys.forEach { key ->
+                    val tag = when (PartOfSpeech.ofKey(key)) {
+                        PartOfSpeech.NOUN, PartOfSpeech.PHRASE -> ""
+                        PartOfSpeech.ADJECTIVE -> " · " + stringResource(R.string.pos_tag_adjective)
+                        PartOfSpeech.VERB -> " · " + stringResource(R.string.pos_tag_verb)
+                    }
                     FilterChip(
-                        selected = selectedWord == word,
-                        onClick = { selectWord(word) },
-                        label = { Text(word) },
+                        selected = selectedKey == key,
+                        onClick = { select(key) },
+                        label = { Text(PartOfSpeech.wordOfKey(key) + tag) },
                     )
                 }
             }
-            cases?.let {
+            table?.let {
+                Text(
+                    lexemeSubtitle(it.lexeme),
+                    Modifier.padding(start = Dimens.spacingXs),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = Dimens.textLabel,
+                    maxLines = 1,
+                )
                 CaseTable(
                     it,
                     Modifier
