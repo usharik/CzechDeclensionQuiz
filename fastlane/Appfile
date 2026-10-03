@@ -1,0 +1,5 @@
+# Path to Google Play Console Service Account JSON Key file
+json_key_file(ENV["PLAY_STORE_JSON_KEY_PATH"] || "pc-api-key.json")
+
+# Application Package Name
+package_name("com.usharik.app")

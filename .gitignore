@@ -50,3 +50,8 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+# Fastlane & Bundler
+pc-api-key.json
+fastlane/report.xml
+fastlane/README.md
