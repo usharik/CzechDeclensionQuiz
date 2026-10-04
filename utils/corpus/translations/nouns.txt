@@ -33,7 +33,7 @@ hranolek | картопля фрі (брусочок) | khoai tây chiên (miế
 hráčka | гравчиня | người chơi (nữ)
 hrách | горох | đậu Hà Lan
 hráč | гравець | người chơi, cầu thủ
-hřib | боровик | nấm bolet
+hřib | боровик | nấm gan bò
 hřiště | майданчик, поле (спортивне) | sân chơi, sân thể thao
 hříbě | лоша, лошатко | ngựa con
 hřích | гріх | tội lỗi
@@ -154,9 +154,9 @@ původ | походження | nguồn gốc
 huba | пащека, рот | mõm, mồm
 zpráva | повідомлення, новина, звіт | tin tức, tin nhắn, báo cáo
 klid | спокій, тиша | sự yên tĩnh, bình tĩnh
-klikva | журавлина | việt quất đỏ
+klikva | журавлина | nam việt quất
 klinika | клініка | phòng khám, bệnh viện
-klíč | ключ | chìa khóa
+klíč | ключ | chìa khóa, cờ lê
 úleva | полегшення, пільга | sự nhẹ nhõm, ưu đãi
 pletař | в'язальник | thợ đan
 sen | сон, мрія | giấc mơ, ước mơ
@@ -187,7 +187,7 @@ hřbet | спина, хребет | lưng, sống lưng
 hřbitov | кладовище | nghĩa trang
 tanečník | танцівник | vũ công
 tank | танк, бак | xe tăng, bồn chứa
-knoflík | ґудзик, кнопка | cúc áo, núm
+knoflík | ґудзик, кнопка | cúc áo, nút bấm
 knoflíček | ґудзичок | cúc áo nhỏ
 robotika | робототехніка | kỹ thuật robot, robot học
 robota | панщина | lao dịch
@@ -196,10 +196,10 @@ riviéra | рив'єра | bờ biển riviera
 riziko | ризик | rủi ro
 říčka | річечка | dòng suối, sông nhỏ
 řeč | мова, промова, розмова | lời nói, bài phát biểu, ngôn ngữ
-řepa | буряк | củ cải đường
+řepa | буряк | củ cải đường, củ dền
 čelo | чоло, лоб | trán
 šeď | сірість, сірий колір | màu xám
-špalek | колода, цурпалок | khúc gỗ
+špalek | колода, оцупок | khúc gỗ
 špalík | цурпалок, брусок | khúc gỗ nhỏ
 škleb | гримаса | cái nhăn mặt
 šluk | затяжка | hơi thuốc
@@ -239,7 +239,7 @@ hloubka | глибина | độ sâu
 hloupost | дурість, дурниця | sự ngu ngốc, chuyện vớ vẩn
 průvoz | транзит | quá cảnh
 číslo | число, номер, цифра | số, con số
-číše | келих, чаша | cốc, chén rượu
+číše | келих, чаша | ly rượu, chén rượu
 číška | чашечка, келишок | chén nhỏ, ly nhỏ
 číšník | офіціант | bồi bàn
 přívěs | причіп | rơ moóc
@@ -288,8 +288,8 @@ dóm | собор | nhà thờ lớn
 domobrana | ополчення | dân quân
 domov | дім, батьківщина | nhà, quê hương
 domovina | батьківщина | quê hương, tổ quốc
-domovnice | двірничка, наглядачка будинку | người trông nhà (nữ)
-domovník | двірник, наглядач будинку | người trông nhà
+domovnice | двірничка, наглядачка будинку | người trông coi tòa nhà (nữ)
+domovník | двірник, наглядач будинку | người trông coi tòa nhà
 zákop | окоп, траншея | chiến hào
 kuchař | кухар | đầu bếp
 kuchařka | кухарка, кулінарна книга | nữ đầu bếp, sách nấu ăn
@@ -341,7 +341,7 @@ zodiak | зодіак | vòng hoàng đạo
 rýč | заступ, лопата | cái thuổng
 sluch | слух | thính giác
 sluchadlo | слуховий апарат | máy trợ thính
-slušnost | порядність, пристойність | sự lịch sự, đứng đắn
+slušnost | порядність, пристойність | sự lịch sự, sự đứng đắn
 objednatel | замовник | khách đặt hàng
 objednávka | замовлення | đơn đặt hàng
 křáp | мотлох, руїна (про авто) | đồ cũ nát, xe cà tàng
@@ -356,7 +356,7 @@ osud | доля | số phận
 domeček | будиночок | ngôi nhà nhỏ xíu
 domek | будиночок | ngôi nhà nhỏ
 doména | домен, сфера | lĩnh vực, tên miền
-domluva | домовленість, умовляння | sự thỏa thuận, lời khuyên răn
+domluva | домовленість, зауваження | sự thỏa thuận, lời khuyên răn
 domýšlivec | зарозуміла людина, гордій | kẻ tự phụ
 domýšlivost | зарозумілість, пиха | tính tự phụ
 vědec | науковець, учений | nhà khoa học
@@ -374,7 +374,7 @@ pes | пес, собака | con chó
 pestík | маточка (квітки) | nhụy hoa
 nylon | нейлон | nylon
 nymfa | німфа | tiên nữ, nữ thần thiên nhiên
-nynějšek | теперішній час | hiện tại
+nynějšek | сьогодення, теперішність | hiện tại
 nýtek | заклепка | đinh tán nhỏ
 bryndák | слинявчик | yếm dãi
 brýle | окуляри | kính mắt
@@ -392,7 +392,7 @@ hranol | призма, брус | lăng trụ, thanh gỗ vuông
 ret | губа | môi
 náhrdelník | намисто | vòng cổ
 batoh | рюкзак | ba lô
-jistota | впевненість, безпека, певність | sự chắc chắn, an toàn
+jistota | впевненість, безпека, певність | sự chắc chắn, sự an toàn
 přátelství | дружба | tình bạn
 pošťák | листоноша | người đưa thư
 můra | нічний метелик, нічне жахіття | bướm đêm, ác mộng
@@ -400,14 +400,14 @@ můstek | місток, трамплін | cầu nhỏ, cầu nhảy
 smutek | смуток, жалоба | nỗi buồn, tang
 kov | метал | kim loại
 dóza | скринька, банка | hộp, lọ
-dozimetr | дозиметр | máy đo liều
+dozimetr | дозиметр | liều kế, máy đo bức xạ
 dozor | нагляд | sự giám sát
 čížek | чиж | chim sẻ thông
 nováček | новачок | người mới
 látka | тканина, речовина, матеріал | vải, chất, đề tài
 hrdinka | героїня | nữ anh hùng
 šířka | ширина, широта | chiều rộng, vĩ độ
-kuře | курча, курка | gà con, thịt gà
+kuře | курча, курятина | gà con, thịt gà
 kůr | хори (у церкві) | gác hát trong nhà thờ
 kůrčička | скоринка | lớp vỏ bánh
 osamělost | самотність | sự cô đơn
@@ -417,7 +417,7 @@ nemocnost | захворюваність | tỷ lệ mắc bệnh
 schopnost | здатність, здібність | khả năng
 řádek | рядок | dòng
 helikoptéra | гелікоптер, вертоліт | trực thăng
-opilec | п'яниця | người say rượu
+opilec | п'яниця | kẻ say xỉn, bợm rượu
 kombinát | комбінат | tổ hợp công nghiệp
 kombiné | комбінація (білизна) | váy lót
 košíček | кошичок, чашечка (бюстгальтера) | giỏ nhỏ, cúp áo ngực
@@ -473,15 +473,15 @@ próza | проза | văn xuôi
 prozaik | прозаїк | nhà văn viết văn xuôi
 závist | заздрість | sự ghen tị
 závistivec | заздрісник | kẻ hay ghen tị
-lupa | лупа | kính lúp
-soudce | суддя | thẩm phán, trọng tài
+lupa | лупа, збільшувальне скло | kính lúp
+soudce | суддя | thẩm phán, quan tòa
 sukně | спідниця | váy
 sukničkář | бабій, ловелас | kẻ trăng hoa
 neteř | племінниця | cháu gái
 sestra | сестра, медсестра | chị gái, em gái, y tá
 sestřenice | двоюрідна сестра | chị em họ
 kotník | щиколотка, кісточка | mắt cá chân
-lůžko | ліжко, койка | giường
+lůžko | ліжко, спальне місце | giường
 lůžkovina | постільна білизна | chăn ga gối, đồ trải giường
 panáček | чоловічок, фігурка | hình nhân nhỏ
 panovník | правитель, монарх | quân vương
@@ -508,7 +508,7 @@ osina | остюк | râu hạt (lúa)
 dům | будинок, дім | ngôi nhà
 ženáč | одружений чоловік | người đàn ông đã có vợ
 žena | жінка, дружина | phụ nữ, vợ
-stroj | машина, верстат | máy móc
+stroj | машина, верстат | máy, cỗ máy
 strojek | машинка, механізм | máy nhỏ, cơ cấu
 předseda | голова, головуючий | chủ tịch
 staveniště | будівельний майданчик | công trường
@@ -519,7 +519,7 @@ týden | тиждень | tuần
 zpěvák | співак | ca sĩ
 maminka | мама, матуся | mẹ
 řež | різанина, бійня | cuộc tàn sát, ẩu đả
-mávátko | махалка, прапорець | cờ vẫy
+mávátko | прапорець (для махання) | cờ vẫy
 máma | мама | mẹ
 sova | сова | con cú
 říše | імперія, царство | đế chế, vương quốc
@@ -571,7 +571,7 @@ rýže | рис | gạo, cơm
 rýpal | причепа, прискіплива людина | người hay bắt bẻ
 ryzost | чистота (металу) | độ nguyên chất
 ryzlink | рислінг | rượu Riesling
-ryzec | рижик, груздь | nấm sữa
+ryzec | рижик, грузд | nấm sữa
 rytíř | лицар | hiệp sĩ
 rytmika | ритміка | nhịp điệu
 rychtář | староста, війт | trưởng làng
@@ -677,7 +677,7 @@ univerzita | університет | trường đại học
 úžina | протока, вузина | eo biển
 úzkost | тривога, страх | sự lo âu
 území | територія | lãnh thổ
-nóta | нота, мелодія; дипломатична нота | nốt nhạc, giai điệu; công hàm
+nóta | дипломатична нота, мелодія (розм.) | công hàm, giai điệu
 láska | любов, кохання | tình yêu
 dřez | мийка, раковина | bồn rửa
 dřevník | дровітня | nhà kho củi
@@ -709,7 +709,7 @@ návrhář | модельєр, дизайнер | nhà thiết kế
 pranice | бійка | cuộc ẩu đả
 pranostika | народна прикмета про погоду | tục ngữ về thời tiết
 sporák | плита (кухонна) | bếp lò
-pejskař | собачник | người yêu chó
+pejskař | собачник | người nuôi chó, người yêu chó
 pejsek | песик | cún, chó nhỏ
 šití | шиття | việc may vá
 šev | шов | đường may
@@ -753,7 +753,7 @@ dezén | візерунок, малюнок (протектора) | hoa văn
 dezertér | дезертир | kẻ đào ngũ
 dezert | десерт | món tráng miệng
 roucho | вбрання, облачення | áo choàng
-bělásek | біланка (метелик) | bướm trắng
+bělásek | білан (метелик) | bướm trắng
 příručka | довідник, посібник | sổ tay hướng dẫn
 dětství | дитинство | thời thơ ấu
 déšť | дощ | mưa
@@ -773,7 +773,7 @@ majitelka | власниця, господиня | bà chủ
 vulkán | вулкан | núi lửa
 výluka | перерва в русі, локаут | sự tạm ngừng, đóng cửa
 výložka | петлиця, вилога | phù hiệu cổ áo
-výlov | вилов риби | mẻ thu hoạch cá
+výlov | вилов риби | việc thu hoạch cá
 výlez | люк | cửa sập
 výlet | екскурсія, поїздка | chuyến dã ngoại
 dav | натовп | đám đông
@@ -795,14 +795,14 @@ strava | їжа, харчування | thức ăn, chế độ ăn
 štvanice | цькування, гонитва | cuộc săn đuổi
 jetel | конюшина | cỏ ba lá
 Anglie | Англія | nước Anh
-klíště | кліщ | con ve
+klíště | кліщ | bọ ve
 klíčník | ключник | người giữ chìa khóa
 minuta | хвилина | phút
 prožitek | переживання, враження | trải nghiệm
 prověrka | перевірка | sự kiểm tra
 provozovatel | оператор, власник | nhà điều hành
 projev | промова, вияв | bài phát biểu, biểu hiện
-výkop | котлован, рів, удар від воріт | hố đào, cú phát bóng
+výkop | котлован, рів, початковий удар | hố đào, cú phát bóng
 výkonnost | продуктивність, працездатність | hiệu suất
 smích | сміх | tiếng cười
 prevence | профілактика | phòng ngừa
@@ -846,7 +846,7 @@ fatalista | фаталіст | người theo thuyết định mệnh
 fasáda | фасад | mặt tiền
 věrnost | вірність | lòng trung thành
 boršč | борщ | súp borscht
-kufřík | валізка, кейс | cặp tài liệu
+kufřík | валізка, кейс | va li nhỏ, cặp số
 kufr | валіза, багажник | va li, cốp xe
 opičák | мавпа (самець) | khỉ đực
 risk | ризик | rủi ro
@@ -859,7 +859,7 @@ internet | інтернет | internet
 polovina | половина | một nửa
 vyšetření | обстеження, розслідування | sự khám bệnh, điều tra
 most | міст | cây cầu
-kánoe | каное | xuồng canoe
+kánoe | каное | xuồng
 setkání | зустріч | cuộc gặp gỡ
 úlovek | улов, здобич | con mồi săn được, mẻ cá
 úlomek | уламок | mảnh vỡ
@@ -868,7 +868,7 @@ válka | війна | chiến tranh
 válečník | воїн | chiến binh
 válenda | тахта | giường đi văng
 válenka | валянок | ủng dạ
-valuta | валюта | ngoại tệ
+valuta | іноземна валюта | ngoại tệ
 počasí | погода | thời tiết
 Velikonoce | Великдень | lễ Phục sinh
 mošt | свіжий фруктовий сік, сусло | nước ép trái cây chưa lên men
@@ -904,7 +904,7 @@ voda | вода | nước
 maso | м'ясо | thịt
 jablko | яблуко | quả táo
 škola | школа | trường học
-student | студент | sinh viên
+student | студент | sinh viên, học sinh
 pokoj | кімната | phòng
 restaurace | ресторан | nhà hàng
 obchod | магазин | cửa hàng

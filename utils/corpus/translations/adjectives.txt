@@ -5,7 +5,7 @@ další | наступний, ще один | tiếp theo, khác nữa
 poslední | останній | cuối cùng
 celý | весь, цілий | toàn bộ, cả
 vlastní | власний | riêng, của mình
-ostatní | інші | những cái khác
+ostatní | інші | còn lại, khác
 velký | великий | lớn, to
 jistý | певний, впевнений | chắc chắn, nào đó
 skvělý | чудовий | tuyệt vời
@@ -158,7 +158,7 @@ směšný | смішний, безглуздий | lố bịch
 absurdní | абсурдний | vô lý
 budoucí | майбутній | tương lai
 kompletní | повний, комплектний | đầy đủ
-vážný | серйозний | nghiêm túc
+vážný | серйозний | nghiêm túc, nghiêm trọng
 zlatý | золотий | bằng vàng
 obří | велетенський | khổng lồ
 spodní | нижній | dưới
@@ -189,7 +189,7 @@ dospělý | дорослий | trưởng thành
 hudební | музичний | thuộc âm nhạc
 rodinný | сімейний | gia đình
 podobný | подібний, схожий | giống
-následující | наступний | sau đây
+následující | наступний | tiếp theo, sau đây
 vodní | водний, водяний | liên quan đến nước, thủy sinh
 tlustý | товстий | dày, béo
 vládní | урядовий | chính phủ
@@ -198,7 +198,7 @@ zvědavý | допитливий, цікавий | tò mò
 legální | легальний | hợp pháp
 ztracený | загублений, втрачений | bị mất
 populární | популярний | phổ biến
-zábavný | розважальний | vui nhộn
+zábavný | веселий, кумедний, цікавий | vui nhộn
 sportovní | спортивний | thể thao
 hnusný | огидний | ghê tởm
 dopravní | транспортний | giao thông
@@ -207,7 +207,7 @@ bezpečný | безпечний | an toàn
 televizní | телевізійний | truyền hình
 zelený | зелений | xanh lá
 báječný | чудовий, казковий | tuyệt vời
-ochotný | готовий допомогти, послужливий | sẵn lòng
+ochotný | готовий допомогти, привітний | sẵn lòng
 osamělý | самотній | cô đơn
 klidný | спокійний | bình tĩnh, yên tĩnh
 letní | літній | mùa hè
@@ -291,7 +291,7 @@ zoufalý | зневірений, розпачливий, відчайдушни�
 žijící | живий, що живе | đang sống
 divoký | дикий | hoang dã
 blízký | близький | gần
-brutální | брутальний, жорстокий | tàn bạo
+brutální | жорстокий, брутальний | tàn bạo
 naprostý | абсолютний, цілковитий | hoàn toàn
 laskavý | ласкавий, люб'язний | tử tế
 módní | модний | thời trang
@@ -305,7 +305,7 @@ rozumný | розумний, слушний | hợp lý
 studený | холодний | lạnh
 luxusní | розкішний | sang trọng
 rybí | рибний, риб'ячий | thuộc cá
-létající | літаючий | bay, biết bay
+létající | летючий, що літає | bay, biết bay
 milující | люблячий | yêu thương
 romantický | романтичний | lãng mạn
 armádní | армійський | thuộc quân đội
@@ -374,7 +374,7 @@ satelitní | супутниковий | vệ tinh
 lékařský | медичний, лікарський | y tế
 zahraniční | закордонний, іноземний | nước ngoài
 časový | часовий | thuộc thời gian
-krycí | маскувальний, прикривний | che đậy
+krycí | маскувальний, покривний | che đậy
 ozbrojený | озброєний | có vũ trang
 matoucí | оманливий, що збиває з пантелику | gây bối rối
 maličký | маленький, крихітний | bé xíu
@@ -445,7 +445,7 @@ oddaný | відданий | tận tụy
 královský | королівський | hoàng gia
 pohřební | похоронний | thuộc tang lễ
 unikátní | унікальний | độc đáo
-slovní | словесний | bằng lời
+slovní | словесний | thuộc từ ngữ, bằng lời
 pohlavní | статевий | giới tính, sinh dục
 anglický | англійський | thuộc Anh
 legendární | легендарний | huyền thoại
@@ -470,7 +470,7 @@ skromný | скромний | khiêm tốn
 chodící | що ходить, ходячий | biết đi
 realitní | рієлторський, пов'язаний із нерухомістю | bất động sản
 solidní | солідний, надійний | đáng tin cậy, vững chắc, khá tốt
-mluvčí | речник, що говорить | người phát ngôn
+mluvčí | речник | người phát ngôn
 chladný | холодний | lạnh, lạnh lùng
 levný | дешевий | rẻ
 kapitánův | капітанів | của đội trưởng, của thuyền trưởng
@@ -483,12 +483,12 @@ mužský | чоловічий | thuộc nam giới
 příchozí | вхідний | đến
 tajemný | таємничий | bí ẩn
 alternativní | альтернативний | thay thế
-filmový | кіно-, фільмовий | thuộc phim
+filmový | кінематографічний, фільмовий | thuộc phim
 společenský | суспільний, світський | xã hội, xã giao
-pouhý | лише, простий | chỉ là
+pouhý | лише, простий | đơn thuần, chỉ là
 jehněčí | ягнячий | thuộc cừu non
 čokoládový | шоколадний | sô-cô-la
-závodní | гоночний, заводський | đua, thuộc nhà máy
+závodní | перегоновий, заводський | đua, thuộc nhà máy
 prasečí | свинячий | thuộc lợn
 významný | значний, видатний | quan trọng
 hnědý | коричневий | nâu
