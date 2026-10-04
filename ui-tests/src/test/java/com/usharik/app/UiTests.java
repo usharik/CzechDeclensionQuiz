@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -225,10 +226,17 @@ public class UiTests {
         }
     }
 
-    /** The label lives on a child text node of the tagged button container. */
+    /** The tagged button shows [expectedText], either as its own merged text or on a child text node. */
     private void assertButtonText(String tag, String expectedText) {
-        By label = AppiumBy.xpath("//*[@resource-id='" + tag + "']//*[@text='" + expectedText + "']");
-        assertNotNull(wait.until(ExpectedConditions.visibilityOfElementLocated(label)));
+        // A clickable container merges its children's semantics: hub tiles report the label only
+        // through the tagged node's own text, gradient buttons keep it on a descendant.
+        By descendantLabel = AppiumBy.xpath("//*[@resource-id='" + tag + "']//*[@text='" + expectedText + "']");
+        Boolean labelled = wait.until(d -> {
+            List<WebElement> nodes = d.findElements(byTag(tag));
+            return !nodes.isEmpty() && nodes.get(0).isDisplayed()
+                    && (expectedText.equals(nodes.get(0).getText()) || !d.findElements(descendantLabel).isEmpty());
+        });
+        assertTrue(labelled);
     }
 
     /**
