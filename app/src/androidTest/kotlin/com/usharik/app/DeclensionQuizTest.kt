@@ -469,11 +469,14 @@ class DeclensionQuizTest : BaseComposeTest() {
     }
 
     /**
-     * Drags a pool chip onto a table cell with a real swipe gesture. The whole quiz fits on a
-     * single screen (no scrolling), so both nodes are always visible.
+     * Drags a pool chip onto a table cell with a real swipe gesture. The table always fits on
+     * screen, but the word bank scrolls when its chips don't fit (14 long forms on a small
+     * screen), so the chip is scrolled into view first: a swipe started from an off-screen chip's
+     * bounds would land on the table instead and never start a drag.
      */
     private fun dragPoolWordToCell(poolIndex: Int, number: Int, caseIndex: Int) {
-        val source = composeTestRule.onNodeWithTag("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
+        val source = composeTestRule.onNodeWithTag("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex").performScrollTo()
+        composeTestRule.waitForIdle()
         val target = composeTestRule.onNodeWithTag("${TestTags.FULL_CELL_PREFIX}${number}_$caseIndex")
         val sourceBounds = source.fetchSemanticsNode().boundsInRoot
         val targetBounds = target.fetchSemanticsNode().boundsInRoot
