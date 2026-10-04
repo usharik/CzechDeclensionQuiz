@@ -9,6 +9,20 @@ import java.io.InputStreamReader
 
 class DocumentRepository @JvmOverloads constructor(private val db: DocumentDatabase, private val gson: Gson = Gson()) {
     suspend fun count(): Int = db.documentDao().count()
+
+    /**
+     * Empties the noun, adjective and verb tables so the next import reloads them from the bundled
+     * assets. Only dictionary rows go; training statistics and progress live in other tables.
+     */
+    suspend fun clearDictionaries() {
+        db.runInTransaction {
+            db.openHelper.writableDatabase.apply {
+                execSQL("delete from DOCUMENT")
+                execSQL("delete from ADJECTIVE")
+                execSQL("delete from VERB")
+            }
+        }
+    }
     suspend fun wordInfoByWord(word: String): WordInfo? = db.documentDao().jsonForWord(word)?.let { gson.fromJson(it, WordInfo::class.java) }
     suspend fun randomWordWithAnotherDeclensionType(type: String, gender: String? = null): WordInfo {
         val dao = db.documentDao()

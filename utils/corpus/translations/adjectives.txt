@@ -1,0 +1,508 @@
+# Ukrainian and Vietnamese glosses for database/src/main/assets/adjectives.jsonl.
+# Format: czech word | Ukrainian | Vietnamese. Applied by utils/corpus/add_translations.py.
+dobrý | добрий, хороший | tốt
+další | наступний, ще один | tiếp theo, khác nữa
+poslední | останній | cuối cùng
+celý | весь, цілий | toàn bộ, cả
+vlastní | власний | riêng, của mình
+ostatní | інші | những cái khác
+velký | великий | lớn, to
+jistý | певний, впевнений | chắc chắn, nào đó
+skvělý | чудовий | tuyệt vời
+nový | новий | mới
+jasný | ясний | rõ ràng, sáng
+jiný | інший | khác
+mrtvý | мертвий | chết
+jediný | єдиний | duy nhất
+malý | малий, маленький | nhỏ
+zvláštní | особливий, дивний | đặc biệt, kỳ lạ
+starý | старий | cũ, già
+špatný | поганий | xấu, tồi
+hlavní | головний | chính
+normální | нормальний, звичайний | bình thường
+pěkný | гарний | đẹp, xinh
+šťastný | щасливий | hạnh phúc, may mắn
+příští | наступний | tới, sau
+perfektní | досконалий, бездоганний | hoàn hảo
+hezký | гарний, вродливий | đẹp, xinh xắn
+stejný | однаковий | giống nhau
+úžasný | дивовижний | tuyệt diệu
+osobní | особистий | cá nhân
+střední | середній | giữa, trung bình
+dnešní | сьогоднішній | của hôm nay
+divný | дивний | kỳ quặc
+mladý | молодий | trẻ
+noční | нічний | ban đêm
+minulý | минулий | đã qua, trước
+plný | повний | đầy
+nervózní | нервовий | lo lắng, căng thẳng
+milý | милий, любий | dễ thương, thân mến
+drahý | дорогий | đắt, thân yêu
+boží | божий | của Chúa, tuyệt cú mèo
+těžký | важкий | nặng, khó
+policejní | поліцейський | thuộc cảnh sát
+připravený | готовий, підготовлений | sẵn sàng
+krásný | гарний, прекрасний | đẹp
+šílený | божевільний | điên rồ
+bezpečnostní | охоронний, безпековий | an ninh
+skutečný | справжній, реальний | thật, thực tế
+silný | сильний | mạnh
+hodný | добрий, слухняний | tốt bụng, ngoan
+naštvaný | сердитий, роздратований | bực tức
+pravý | правий, справжній | bên phải, thật
+zlý | злий | ác, xấu
+chytrý | розумний | thông minh
+domácí | домашній | thuộc gia đình, làm tại nhà, trong nước
+speciální | спеціальний | đặc biệt
+důležitý | важливий | quan trọng
+správný | правильний | đúng
+dlouhý | довгий | dài
+hrozný | жахливий | kinh khủng
+nemocný | хворий | ốm
+životní | життєвий | thuộc cuộc sống
+hloupý | дурний | ngu ngốc
+čistý | чистий | sạch
+upřímný | щирий | chân thành
+sexuální | сексуальний | thuộc tình dục
+černý | чорний | đen
+státní | державний | nhà nước
+pracovní | робочий | thuộc công việc
+národní | національний, народний | dân tộc, quốc gia
+možný | можливий | có thể
+prací | пральний | để giặt
+volný | вільний | tự do, rảnh
+opatrný | обережний | cẩn thận
+vtipný | дотепний, смішний | hài hước, dí dỏm
+vynikající | видатний, чудовий | xuất sắc
+zadní | задній | phía sau
+ženatý | одружений | đã có vợ
+cizí | чужий, іноземний | lạ, nước ngoài
+obchodní | торговий, діловий | thương mại
+severní | північний | phía bắc
+nebezpečný | небезпечний | nguy hiểm
+jižní | південний | phía nam
+unavený | втомлений | mệt mỏi
+bílý | білий | trắng
+zatracený | проклятий | chết tiệt
+schopný | здатний, здібний | có năng lực
+nádherný | чудовий, розкішний | lộng lẫy
+svatební | весільний | thuộc đám cưới
+vnitřní | внутрішній | bên trong
+ženský | жіночий | thuộc phụ nữ
+podezřelý | підозрілий | đáng ngờ
+opravdový | справжній | thật sự
+vzrušující | захопливий, хвилюючий | gây phấn khích, ly kỳ
+základní | основний, базовий | cơ bản
+telefonní | телефонний | điện thoại
+obrovský | величезний | khổng lồ
+školní | шкільний | thuộc trường học
+krevní | кров'яний, кровоносний | thuộc máu
+smutný | сумний | buồn
+bývalý | колишній | cũ, trước đây
+legrační | смішний, кумедний | buồn cười
+vysoký | високий | cao
+opilý | п'яний | say rượu
+známý | відомий, знайомий | nổi tiếng, quen
+blbý | дурний | ngớ ngẩn
+zajímavý | цікавий | thú vị
+hrdý | гордий | tự hào
+dokonalý | досконалий | hoàn hảo
+zodpovědný | відповідальний | có trách nhiệm
+živý | живий | sống, sinh động
+vánoční | різдвяний | thuộc Giáng sinh
+pyšný | гордий, пихатий | kiêu hãnh, kiêu ngạo
+jednoduchý | простий | đơn giản
+oficiální | офіційний | chính thức
+federální | федеральний | liên bang
+původní | первісний, оригінальний | ban đầu, nguyên bản
+rychlý | швидкий | nhanh
+zdravotní | медичний, пов'язаний зі здоров'ям | y tế, về sức khỏe
+červený | червоний | đỏ
+finanční | фінансовий | tài chính
+oblíbený | улюблений, популярний | được yêu thích
+negativní | негативний | tiêu cực
+sladký | солодкий | ngọt
+bohatý | багатий | giàu
+neuvěřitelný | неймовірний | không thể tin được
+roztomilý | чарівний, милий | đáng yêu
+zraněný | поранений | bị thương
+svatý | святий | thánh, thiêng liêng
+profesionální | професійний | chuyên nghiệp
+moderní | сучасний | hiện đại
+americký | американський | thuộc Mỹ
+přední | передній, провідний | phía trước, hàng đầu
+pozitivní | позитивний | tích cực
+hotový | готовий | xong, sẵn sàng
+západní | західний | phía tây
+pořádný | ґрунтовний, добрячий, охайний | ra trò, ngăn nắp
+ubohý | жалюгідний, бідолашний | đáng thương
+slabý | слабкий | yếu
+modrý | синій, блакитний | xanh lam
+tvrdý | твердий, жорсткий | cứng
+strašný | страшний, жахливий | khủng khiếp
+geniální | геніальний | tài tình, thiên tài
+zamilovaný | закоханий | đang yêu
+okouzlující | чарівний | quyến rũ
+výborný | відмінний | xuất sắc
+nadšený | захоплений | hào hứng
+vedlejší | побічний, сусідній | phụ, bên cạnh
+obyčejný | звичайний | bình thường
+tajný | таємний | bí mật
+prázdný | порожній | trống rỗng
+vděčný | вдячний | biết ơn
+sociální | соціальний | xã hội
+včerejší | вчорашній | của hôm qua
+hustý | густий, щільний | dày đặc, đặc
+falešný | фальшивий | giả
+směšný | смішний, безглуздий | lố bịch
+absurdní | абсурдний | vô lý
+budoucí | майбутній | tương lai
+kompletní | повний, комплектний | đầy đủ
+vážný | серйозний | nghiêm túc
+zlatý | золотий | bằng vàng
+obří | велетенський | khổng lồ
+spodní | нижній | dưới
+soukromý | приватний | riêng tư, tư nhân
+parádní | чудовий, шикарний | tuyệt vời, sang trọng
+lidský | людський | thuộc con người
+mezinárodní | міжнародний | quốc tế
+zdravý | здоровий | khỏe mạnh
+východní | східний | phía đông
+slušný | пристойний, ввічливий | lịch sự, đàng hoàng
+snadný | легкий, простий | dễ
+svobodný | вільний, неодружений | tự do, độc thân
+slavný | славетний, відомий | nổi tiếng
+zmatený | розгублений | bối rối
+spokojený | задоволений | hài lòng
+ideální | ідеальний | lý tưởng
+právní | правовий, юридичний | pháp lý
+vrchní | верхній, старший | trên, trưởng
+psí | собачий | của chó
+otevřený | відкритий | mở
+neznámý | невідомий, незнайомий | không quen, chưa biết
+riskantní | ризикований | mạo hiểm
+příjemný | приємний | dễ chịu
+inteligentní | розумний, кмітливий | thông minh
+krátký | короткий | ngắn
+slepý | сліпий | mù
+dospělý | дорослий | trưởng thành
+hudební | музичний | thuộc âm nhạc
+rodinný | сімейний | gia đình
+podobný | подібний, схожий | giống
+následující | наступний | sau đây
+vodní | водний, водяний | liên quan đến nước, thủy sinh
+tlustý | товстий | dày, béo
+vládní | урядовий | chính phủ
+úplný | повний | đầy đủ, hoàn chỉnh
+zvědavý | допитливий, цікавий | tò mò
+legální | легальний | hợp pháp
+ztracený | загублений, втрачений | bị mất
+populární | популярний | phổ biến
+zábavný | розважальний | vui nhộn
+sportovní | спортивний | thể thao
+hnusný | огидний | ghê tởm
+dopravní | транспортний | giao thông
+náhradní | запасний | dự phòng
+bezpečný | безпечний | an toàn
+televizní | телевізійний | truyền hình
+zelený | зелений | xanh lá
+báječný | чудовий, казковий | tuyệt vời
+ochotný | готовий допомогти, послужливий | sẵn lòng
+osamělý | самотній | cô đơn
+klidný | спокійний | bình tĩnh, yên tĩnh
+letní | літній | mùa hè
+přesný | точний | chính xác
+konkrétní | конкретний | cụ thể
+bankovní | банківський | ngân hàng
+čerstvý | свіжий | tươi
+smrtící | смертельний | chết người
+nelegální | нелегальний | bất hợp pháp
+špinavý | брудний | bẩn
+denní | денний, щоденний | hàng ngày, ban ngày
+přírodní | природний | tự nhiên
+agresivní | агресивний | hung hăng
+totální | тотальний, повний | hoàn toàn
+naivní | наївний | ngây thơ
+lehký | легкий | nhẹ, dễ
+statečný | хоробрий, мужній | dũng cảm
+předchozí | попередній | trước đó
+překvapený | здивований | ngạc nhiên
+kuřecí | курячий | (thịt) gà
+horní | верхній | trên
+stabilní | стабільний | ổn định
+děsivý | моторошний, жахливий | đáng sợ
+zdejší | тутешній | ở đây, địa phương
+příšerný | жахливий | khủng khiếp
+drsný | грубий, суворий, шорсткий | thô ráp, khắc nghiệt
+hovězí | яловичий | (thịt) bò
+taneční | танцювальний | thuộc khiêu vũ
+námořní | морський, військово-морський | thuộc hải quân, hàng hải
+horký | гарячий, спекотний | nóng
+úspěšný | успішний | thành công
+pitomý | дурний | ngu ngốc
+čestný | чесний, почесний | trung thực, danh dự
+společný | спільний | chung
+odporný | огидний | ghê tởm
+krutý | жорстокий | tàn nhẫn
+morální | моральний | đạo đức
+nahý | голий | trần truồng
+atraktivní | привабливий | hấp dẫn
+zvyklý | звиклий | quen
+trapný | незручний, ганебний | gây ngượng, đáng xấu hổ
+zavřený | закритий, зачинений | đóng
+duševní | душевний, психічний | tinh thần
+ošklivý | потворний, гидкий | xấu xí
+stupidní | тупий, безглуздий | ngu xuẩn
+přímý | прямий | thẳng, trực tiếp
+nudný | нудний | nhàm chán
+duchovní | духовний | tinh thần, tâm linh
+veliký | великий | to lớn
+mocný | могутній | hùng mạnh
+měsíční | місячний, щомісячний | hàng tháng, thuộc mặt trăng
+bláznivý | божевільний | điên khùng
+vyděšený | наляканий | hoảng sợ
+vhodný | придатний, доречний | phù hợp
+anonymní | анонімний | nặc danh
+tichý | тихий | yên lặng
+vojenský | військовий | quân sự
+štědrý | щедрий | hào phóng
+věrný | вірний | trung thành
+zklamaný | розчарований | thất vọng
+absolutní | абсолютний | tuyệt đối
+tradiční | традиційний | truyền thống
+teplý | теплий | ấm
+mobilní | мобільний | di động
+večerní | вечірній | buổi tối
+arogantní | зарозумілий, пихатий | kiêu căng
+maximální | максимальний | tối đa
+výjimečný | винятковий | đặc biệt, ngoại lệ
+citlivý | чутливий | nhạy cảm
+zubní | зубний | thuộc răng
+originální | оригінальний | độc đáo, nguyên bản
+funkční | функціональний, робочий | hoạt động tốt, chức năng
+operační | операційний | thuộc phẫu thuật, vận hành
+vnější | зовнішній | bên ngoài
+mizerný | жалюгідний, паскудний | tồi tệ
+fantastický | фантастичний | tuyệt vời
+dětský | дитячий | thuộc trẻ em
+emocionální | емоційний | cảm xúc
+zásadní | принциповий, основоположний | then chốt
+zoufalý | зневірений, розпачливий, відчайдушний | tuyệt vọng
+žijící | живий, що живе | đang sống
+divoký | дикий | hoang dã
+blízký | близький | gần
+brutální | брутальний, жорстокий | tàn bạo
+naprostý | абсолютний, цілковитий | hoàn toàn
+laskavý | ласкавий, люб'язний | tử tế
+módní | модний | thời trang
+složitý | складний | phức tạp
+odvážný | сміливий, відважний | dũng cảm
+hrubý | грубий | thô, thô lỗ
+oblečený | одягнений | mặc quần áo
+poloviční | половинний | một nửa
+hladový | голодний | đói
+rozumný | розумний, слушний | hợp lý
+studený | холодний | lạnh
+luxusní | розкішний | sang trọng
+rybí | рибний, риб'ячий | thuộc cá
+létající | літаючий | bay, biết bay
+milující | люблячий | yêu thương
+romantický | романтичний | lãng mạn
+armádní | армійський | thuộc quân đội
+samotný | сам, самотній | chính, một mình
+oční | очний | thuộc mắt
+určitý | певний | nhất định
+užitečný | корисний | hữu ích
+standardní | стандартний | tiêu chuẩn
+rozbitý | розбитий | bị vỡ, hỏng
+pouliční | вуличний | đường phố
+nešťastný | нещасний, невдалий | bất hạnh
+válečný | воєнний | thuộc chiến tranh
+francouzský | французький | thuộc Pháp
+kouzelný | чарівний | kỳ diệu
+temný | темний | tối tăm
+intenzivní | інтенсивний | mạnh mẽ, chuyên sâu
+ohromující | приголомшливий | choáng ngợp
+ohromný | величезний | khổng lồ
+vzácný | рідкісний, цінний | hiếm, quý
+závislý | залежний | phụ thuộc, nghiện
+komunikační | комунікаційний | thuộc giao tiếp
+dračí | драконячий | thuộc rồng
+kriminální | кримінальний | hình sự
+světový | світовий | thế giới
+centrální | центральний | trung tâm
+kreditní | кредитний | tín dụng
+dívčí | дівочий | thuộc con gái
+příbuzný | споріднений, родич | có họ hàng, liên quan
+vstupní | вхідний, вступний | đầu vào, lối vào
+staromódní | старомодний | lỗi thời
+vystrašený | переляканий | sợ hãi
+jarní | весняний | mùa xuân
+služební | службовий | công vụ
+drobný | дрібний | nhỏ bé
+běžný | звичайний, поточний | thông thường
+extrémní | екстремальний | cực độ, cực đoan
+pohledný | вродливий | ưa nhìn
+minimální | мінімальний | tối thiểu
+zvířecí | тваринний | thuộc động vật
+globální | глобальний | toàn cầu
+nemožný | неможливий | không thể
+dvojitý | подвійний | kép, đôi
+hluboký | глибокий | sâu
+přirozený | природний | tự nhiên
+věřící | віруючий | có đức tin
+typický | типовий | điển hình
+kvalitní | якісний | chất lượng cao
+požární | пожежний | phòng cháy chữa cháy
+ruční | ручний | bằng tay
+chybějící | відсутній | thiếu
+zlomený | зламаний | gãy
+žlutý | жовтий | vàng
+cestovní | дорожній, туристичний | du lịch
+roční | річний | hàng năm
+veselý | веселий | vui vẻ
+moudrý | мудрий | khôn ngoan
+pevný | міцний, твердий | chắc chắn
+pobřežní | прибережний | ven biển
+věčný | вічний | vĩnh cửu
+milostný | любовний | thuộc tình yêu
+chudý | бідний | nghèo
+rozhodující | вирішальний | quyết định
+civilní | цивільний | dân sự
+pozdní | пізній | muộn
+satelitní | супутниковий | vệ tinh
+lékařský | медичний, лікарський | y tế
+zahraniční | закордонний, іноземний | nước ngoài
+časový | часовий | thuộc thời gian
+krycí | маскувальний, прикривний | che đậy
+ozbrojený | озброєний | có vũ trang
+matoucí | оманливий, що збиває з пантелику | gây bối rối
+maličký | маленький, крихітний | bé xíu
+masivní | масивний | đồ sộ
+řídící | керівний, керувальний | điều khiển
+kontrolní | контрольний | kiểm tra
+ptačí | пташиний | thuộc chim
+lodní | корабельний | thuộc tàu
+nepříjemný | неприємний | khó chịu
+tvrdohlavý | упертий | bướng bỉnh
+digitální | цифровий | kỹ thuật số
+hluchý | глухий | điếc
+přátelský | дружній, привітний | thân thiện
+drogový | наркотичний | thuộc ma túy
+obžalovaný | обвинувачений | bị cáo
+ilegální | нелегальний | bất hợp pháp
+náročný | вимогливий, складний | khắt khe, khó khăn
+přesvědčený | переконаний | tin chắc
+ukradený | вкрадений | bị đánh cắp
+zimní | зимовий | mùa đông
+klasický | класичний | cổ điển
+senzační | сенсаційний | giật gân
+efektivní | ефективний | hiệu quả
+pomalý | повільний | chậm
+otravný | набридливий | phiền phức
+přeživší | що вижив | sống sót
+generální | генеральний | tổng
+neviditelný | невидимий | vô hình
+volební | виборчий | bầu cử
+trpělivý | терплячий | kiên nhẫn
+vědecký | науковий | khoa học
+vážený | шановний | đáng kính
+milovaný | коханий, улюблений | được yêu thương
+kreativní | креативний, творчий | sáng tạo
+kočičí | котячий | thuộc mèo
+fotbalový | футбольний | bóng đá
+britský | британський | thuộc Anh
+holčičí | дівчачий | thuộc bé gái
+slavnostní | урочистий, святковий | trang trọng
+růžový | рожевий | hồng
+podivný | дивний | kỳ lạ
+sobecký | егоїстичний | ích kỷ
+sériový | серійний | hàng loạt
+podzemní | підземний | ngầm
+husí | гусячий | thuộc ngỗng
+poštovní | поштовий | bưu chính
+spravedlivý | справедливий | công bằng
+elektrický | електричний | điện
+ruský | російський | thuộc Nga
+primitivní | примітивний | thô sơ
+rudý | червоний, багряний | đỏ thắm
+čínský | китайський | thuộc Trung Quốc
+jemný | ніжний, тонкий, м'який | mịn, tinh tế
+stavební | будівельний | xây dựng
+aktuální | актуальний, поточний | hiện tại
+nemocniční | лікарняний | thuộc bệnh viện
+zbývající | що залишився | còn lại
+komplikovaný | складний, заплутаний | phức tạp
+vizuální | візуальний | thị giác
+zkušební | випробувальний, пробний | thử nghiệm
+německý | німецький | thuộc Đức
+ostrý | гострий, різкий | sắc, cay
+nedělní | недільний | Chủ nhật
+poznávací | розпізнавальний, пізнавальний | nhận dạng, nhận thức
+jedinečný | унікальний | độc nhất
+veřejný | публічний, громадський | công cộng
+oddaný | відданий | tận tụy
+královský | королівський | hoàng gia
+pohřební | похоронний | thuộc tang lễ
+unikátní | унікальний | độc đáo
+slovní | словесний | bằng lời
+pohlavní | статевий | giới tính, sinh dục
+anglický | англійський | thuộc Anh
+legendární | легендарний | huyền thoại
+strážný | вартовий | canh gác
+nutný | необхідний | cần thiết
+povrchní | поверховий | hời hợt
+kulturní | культурний | văn hóa
+zbytečný | зайвий, марний | vô ích, thừa
+mokrý | мокрий | ướt
+formální | формальний | hình thức
+krvavý | кривавий | đẫm máu
+okresní | районний, окружний | thuộc huyện
+uzavřený | закритий | đóng kín
+potenciální | потенційний | tiềm năng
+prostý | простий | đơn giản
+hořící | палаючий | đang cháy
+politický | політичний | chính trị
+vyčerpaný | виснажений | kiệt sức
+opuštěný | покинутий | bị bỏ rơi
+ledový | крижаний | băng giá
+skromný | скромний | khiêm tốn
+chodící | що ходить, ходячий | biết đi
+realitní | рієлторський, пов'язаний із нерухомістю | bất động sản
+solidní | солідний, надійний | đáng tin cậy, vững chắc, khá tốt
+mluvčí | речник, що говорить | người phát ngôn
+chladný | холодний | lạnh, lạnh lùng
+levný | дешевий | rẻ
+kapitánův | капітанів | của đội trưởng, của thuyền trưởng
+diskrétní | делікатний, дискретний | kín đáo
+počítačový | комп'ютерний | máy tính
+děsný | жахливий | kinh khủng
+každodenní | щоденний | hàng ngày
+nukleární | ядерний | hạt nhân
+mužský | чоловічий | thuộc nam giới
+příchozí | вхідний | đến
+tajemný | таємничий | bí ẩn
+alternativní | альтернативний | thay thế
+filmový | кіно-, фільмовий | thuộc phim
+společenský | суспільний, світський | xã hội, xã giao
+pouhý | лише, простий | chỉ là
+jehněčí | ягнячий | thuộc cừu non
+čokoládový | шоколадний | sô-cô-la
+závodní | гоночний, заводський | đua, thuộc nhà máy
+prasečí | свинячий | thuộc lợn
+významný | значний, видатний | quan trọng
+hnědý | коричневий | nâu
+nadřízený | вищий за посадою, начальник | cấp trên
+dřívější | колишній, попередній | trước đây
+intimní | інтимний | thân mật
+průměrný | середній, посередній | trung bình
+cenný | цінний | có giá trị
+záchranný | рятувальний | cứu hộ
+reklamní | рекламний | quảng cáo
+nízký | низький | thấp
+otcův | батьків | của bố
+matčin | материн | của mẹ
+bratrův | братів | của anh/em trai
+sestřin | сестрин | của chị/em gái
+dědečkův | дідусів | của ông
+babiččin | бабусин | của bà

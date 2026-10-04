@@ -27,6 +27,8 @@ data class VerbInfo(
     val past: Array<String>?,
     val imperative: Array<String>?,
     val future: Array<String>?,
+    val translation_uk: String? = null,
+    val translation_vi: String? = null,
 ) {
     fun word() = word.orEmpty()
     fun aspect() = aspect.orEmpty()
@@ -34,6 +36,8 @@ data class VerbInfo(
     fun verbClass() = verbClass.orEmpty()
     fun translation_ru() = translation_ru.orEmpty()
     fun translation_en() = translation_en.orEmpty()
+    fun translation_uk() = translation_uk.orEmpty()
+    fun translation_vi() = translation_vi.orEmpty()
     fun present(index: Int): String = present?.getOrNull(index).orEmpty()
     fun past(index: Int): String = past?.getOrNull(index).orEmpty()
     fun imperative(index: Int): String = imperative?.getOrNull(index).orEmpty()

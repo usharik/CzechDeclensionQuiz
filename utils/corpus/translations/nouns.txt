@@ -1,0 +1,915 @@
+# Ukrainian and Vietnamese glosses for database/src/main/assets/data.jsonl.
+# Format: czech word | Ukrainian | Vietnamese. Applied by utils/corpus/add_translations.py.
+abonent | абонент, передплатник | thuê bao, người đăng ký
+café | кафе | quán cà phê
+kabát | пальто, плащ | áo khoác, áo choàng
+kadeřnice | перукарка | thợ làm tóc (nữ)
+kadeřník | перукар | thợ làm tóc
+kadeřnictví | перукарня | tiệm làm tóc, nghề làm tóc
+idea | ідея, думка | ý tưởng, ý niệm
+val | вал, насип | thành lũy, đê, ụ đất
+pachatel | злочинець, правопорушник | thủ phạm, kẻ phạm tội
+pachatelka | злочинниця | thủ phạm (nữ)
+oratorium | ораторія | thanh xướng kịch (oratorio)
+osa | вісь | trục
+osada | селище, поселення | khu dân cư, làng nhỏ
+celofán | целофан | giấy bóng kính
+jury | журі | ban giám khảo
+joystick | джойстик | cần điều khiển
+jóga | йога | yoga
+jedenáctka | одинадцятка, пенальті | số mười một, quả phạt đền
+jih | південь | phía nam, miền nam
+jiřina | жоржина | hoa thược dược
+jiřička | міська ластівка | chim nhạn bụng trắng
+pstruh | форель | cá hồi suối
+vulgarismus | вульгаризм | từ thô tục
+vůle | воля, бажання | ý chí, ý muốn
+vlaječka | прапорець | lá cờ nhỏ
+vládce | правитель, володар | người cai trị, vua chúa
+hra | гра, п'єса | trò chơi, vở kịch
+hračka | іграшка, дрібниця | đồ chơi, chuyện dễ ợt
+hračkářství | магазин іграшок | cửa hàng đồ chơi
+hranolek | картопля фрі (брусочок) | khoai tây chiên (miếng)
+hráčka | гравчиня | người chơi (nữ)
+hrách | горох | đậu Hà Lan
+hráč | гравець | người chơi, cầu thủ
+hřib | боровик | nấm bolet
+hřiště | майданчик, поле (спортивне) | sân chơi, sân thể thao
+hříbě | лоша, лошатко | ngựa con
+hřích | гріх | tội lỗi
+hříšník | грішник | kẻ tội lỗi
+hříva | грива | bờm
+hřebec | жеребець | ngựa giống, ngựa đực
+hřeben | гребінець, гребінь, хребет (гір) | cái lược, sống núi
+hřebíček | гвоздика (прянощі), цвяшок | đinh nhỏ, đinh hương
+hřebík | цвях | cái đinh
+výstraha | попередження, застереження | lời cảnh báo
+krev | кров | máu
+změna | зміна | sự thay đổi
+zodpovědnost | відповідальність | trách nhiệm
+diabetik | діабетик | người bị tiểu đường
+kouzlo | чари, чарівність, фокус | phép thuật, sự quyến rũ
+kečup | кетчуп | tương cà
+kelímek | стаканчик, баночка | cốc nhỏ, hũ
+keř | кущ | bụi cây
+leasing | лізинг | thuê tài chính
+lednička | холодильник | tủ lạnh
+lék | ліки | thuốc
+leknín | латаття | hoa súng
+lékař | лікар | bác sĩ
+lékařka | лікарка | bác sĩ (nữ)
+lékařství | медицина | y học
+lékárna | аптека | hiệu thuốc
+lékárnička | аптечка | tủ thuốc, hộp sơ cứu
+problém | проблема | vấn đề
+úl | вулик | tổ ong
+uličnice | пустунка, бешкетниця | cô bé nghịch ngợm
+ulice | вулиця | đường phố
+ulička | вуличка, прохід | ngõ, hẻm, lối đi
+skládka | смітник, звалище | bãi rác
+sklář | склороб, склодув | thợ thủy tinh
+žid | єврей, юдей | người Do Thái
+židle | стілець | ghế
+život | життя | cuộc sống, sự sống
+pán | пан, господар | ông, quý ông, chủ
+panel | панель, щит | tấm panel, bảng
+panelák | панельний будинок | nhà tập thể lắp ghép
+panenka | лялька, зіниця | búp bê, con ngươi
+panoš | зброєносець, паж | người hầu cận hiệp sĩ, tiểu đồng
+pošta | пошта | bưu điện, thư từ
+reakce | реакція | phản ứng
+řeka | річка | sông
+estét | естет | người duy mỹ, người sành thẩm mỹ
+peníze | гроші | tiền
+židlička | стільчик | ghế nhỏ, ghế đẩu
+růže | троянда | hoa hồng
+růžek | ріжок, куточок | cái sừng nhỏ, góc
+dítě | дитина | đứa trẻ
+květ | квітка, цвіт | hoa
+květina | квітка | hoa, cây hoa
+řada | ряд, низка, черга | hàng, dãy, loạt
+bylina | трава, трав'яниста рослина | cây thảo, thảo dược
+bylinka | травичка, лікарська трава | rau thơm, thảo mộc
+bytař | квартирний злодій | kẻ trộm đột nhập nhà
+bytí | буття, існування | sự tồn tại
+byznys | бізнес | kinh doanh
+býk | бик | bò đực
+býlí | бур'ян | cỏ dại
+myčka | посудомийна машина, мийка | máy rửa bát
+mystika | містика | huyền bí, thần bí học
+myš | миша | con chuột
+myšák | миша-самець | chuột đực
+pych | крадіжка врожаю чи лісу, браконьєрство | trộm nông sản, lâm sản; săn bắt trái phép
+pytlák | браконьєр | kẻ săn trộm
+omyl | помилка | sai lầm, nhầm lẫn
+písek | пісок | cát
+čas | час | thời gian
+úkol | завдання | nhiệm vụ, bài tập
+trvání | тривалість | thời gian kéo dài
+tramvaj | трамвай | xe điện
+stůl | стіл | cái bàn
+židovka | єврейка | người phụ nữ Do Thái
+želva | черепаха | con rùa
+nutrie | нутрія | chuột hải ly (nutria)
+nůše | короб, кошик (заплічний) | gùi, giỏ đeo lưng
+nůž | ніж | con dao
+nůžky | ножиці | cái kéo
+nohavice | холоша | ống quần
+noha | нога | chân
+tričko | футболка | áo phông
+kočka | кішка | con mèo
+rekord | рекорд | kỷ lục
+rok | рік | năm
+rukavice | рукавичка | găng tay
+ruka | рука | tay
+rukávník | муфта | ống giữ ấm tay (bằng lông)
+bůh | бог | thần, Chúa
+gymnasta | гімнаст | vận động viên thể dục dụng cụ
+gymnastika | гімнастика | thể dục dụng cụ
+gymnastka | гімнастка | nữ vận động viên thể dục dụng cụ
+gymnazista | гімназист | học sinh trung học
+gynekologie | гінекологія | phụ khoa
+gynekolog | гінеколог | bác sĩ phụ khoa
+gymnázium | гімназія | trường trung học phổ thông
+gynekoložka | гінекологиня | nữ bác sĩ phụ khoa
+gyps | гіпс | thạch cao, băng bột
+gyros | гірос | gyros (thịt nướng kiểu Hy Lạp)
+gyroskop | гіроскоп | con quay hồi chuyển
+tlach | балаканина | chuyện tầm phào
+tlačítko | кнопка | nút bấm
+tlak | тиск | áp lực, áp suất
+park | парк | công viên
+moucha | муха, вада | con ruồi, khuyết điểm
+moudro | мудрість, мудре слово | lời khôn ngoan
+moudrost | мудрість | sự khôn ngoan
+Chorvatsko | Хорватія | Croatia
+chřípí | ніздрі | lỗ mũi
+sněženka | підсніжник | hoa giọt tuyết
+smetana | вершки | kem sữa
+spaliny | продукти згоряння | khí thải
+spalničky | кір | bệnh sởi
+spála | скарлатина | bệnh tinh hồng nhiệt
+strýc | дядько | chú, bác, cậu
+původ | походження | nguồn gốc
+huba | пащека, рот | mõm, mồm
+zpráva | повідомлення, новина, звіт | tin tức, tin nhắn, báo cáo
+klid | спокій, тиша | sự yên tĩnh, bình tĩnh
+klikva | журавлина | việt quất đỏ
+klinika | клініка | phòng khám, bệnh viện
+klíč | ключ | chìa khóa
+úleva | полегшення, пільга | sự nhẹ nhõm, ưu đãi
+pletař | в'язальник | thợ đan
+sen | сон, мрія | giấc mơ, ước mơ
+guláš | гуляш, безлад | món goulash, mớ hỗn độn
+golem | голем | người đất sét golem
+gong | гонг | cái chiêng
+gotika | готика | phong cách Gothic
+hroch | бегемот | hà mã
+hromada | купа, безліч | đống, rất nhiều
+úžas | подив, здивування | sự kinh ngạc
+letadlo | літак | máy bay
+zavazadlo | багаж | hành lý
+herec | актор | diễn viên
+herečka | акторка | nữ diễn viên
+herna | ігровий зал, гральний заклад | phòng chơi, sòng bạc
+blbec | дурень, бовдур | thằng ngốc
+náměstek | заступник | phó, cấp phó
+město | місто | thành phố
+míšenka | метиска | phụ nữ lai
+klan | клан | thị tộc, gia tộc
+klarinet | кларнет | kèn clarinet
+klarinetista | кларнетист | người thổi clarinet
+kluk | хлопець, хлопчик | cậu bé, chàng trai
+klukovina | хлоп'яча витівка | trò nghịch ngợm
+holka | дівчина, дівчинка | cô gái, bé gái
+auto | автомобіль, машина | ô tô
+hřbet | спина, хребет | lưng, sống lưng
+hřbitov | кладовище | nghĩa trang
+tanečník | танцівник | vũ công
+tank | танк, бак | xe tăng, bồn chứa
+knoflík | ґудзик, кнопка | cúc áo, núm
+knoflíček | ґудзичок | cúc áo nhỏ
+robotika | робототехніка | kỹ thuật robot, robot học
+robota | панщина | lao dịch
+riviéra | рив'єра | bờ biển riviera
+řidička | водійка | nữ tài xế
+riziko | ризик | rủi ro
+říčka | річечка | dòng suối, sông nhỏ
+řeč | мова, промова, розмова | lời nói, bài phát biểu, ngôn ngữ
+řepa | буряк | củ cải đường
+čelo | чоло, лоб | trán
+šeď | сірість, сірий колір | màu xám
+špalek | колода, цурпалок | khúc gỗ
+špalík | цурпалок, брусок | khúc gỗ nhỏ
+škleb | гримаса | cái nhăn mặt
+šluk | затяжка | hơi thuốc
+žák | учень | học sinh
+název | назва | tên gọi
+náznak | натяк | dấu hiệu, gợi ý
+názor | думка, погляд | ý kiến, quan điểm
+názornost | наочність | tính trực quan
+názvosloví | термінологія | thuật ngữ
+újezd | округ, військовий полігон | địa hạt, khu huấn luyện quân sự
+povel | команда, наказ | mệnh lệnh
+pověst | репутація, легенда | danh tiếng, truyền thuyết
+kolega | колега | đồng nghiệp
+překážka | перешкода | chướng ngại vật
+překážkář | бар'єрист | vận động viên chạy vượt rào
+překvapení | несподіванка, сюрприз | sự bất ngờ
+pokřik | вигук, крик | tiếng hô, tiếng la
+píseň | пісня | bài hát
+váha | вага, ваги | cân nặng, cái cân
+kamarád | друг, приятель | bạn
+kámen | камінь | hòn đá
+vrch | пагорб, верх | đồi, đỉnh
+drahota | дорожнеча | sự đắt đỏ
+dramatik | драматург | nhà soạn kịch
+drama | драма | kịch
+dramaturg | драматург (редактор театру) | biên tập viên kịch
+dramaturgie | драматургія | biên tập kịch bản, xây dựng tiết mục
+jízdárna | манеж | sân tập cưỡi ngựa
+jízdenka | квиток (проїзний) | vé xe
+nárok | право, претензія, вимоги | quyền, yêu cầu
+hlava | голова | cái đầu
+hlavice | головка, капітель, боєголовка | đầu, chóp, đầu đạn
+hlavolam | головоломка | câu đố hóc búa
+hlodavec | гризун | loài gặm nhấm
+hloh | глід | cây táo gai
+hloubka | глибина | độ sâu
+hloupost | дурість, дурниця | sự ngu ngốc, chuyện vớ vẩn
+průvoz | транзит | quá cảnh
+číslo | число, номер, цифра | số, con số
+číše | келих, чаша | cốc, chén rượu
+číška | чашечка, келишок | chén nhỏ, ly nhỏ
+číšník | офіціант | bồi bàn
+přívěs | причіп | rơ moóc
+příběh | історія, оповідь | câu chuyện
+zvíře | тварина, звір | con vật
+zvěř | звірі, дичина | thú rừng, muông thú
+zvěst | звістка, чутка | tin đồn, tin tức
+zdraví | здоров'я | sức khỏe
+odpad | відходи, сміття, злив | rác thải, cống thoát
+úkon | дія, операція | thao tác, hành động
+clo | мито | thuế quan
+clonka | діафрагма | khẩu độ, màn chắn
+člověk | людина | con người
+stěžeň | щогла | cột buồm
+rozhodnutí | рішення | quyết định
+údaj | дані, відомості | số liệu, dữ liệu
+Ázerbájdžánec | азербайджанець | người Azerbaijan
+jméno | ім'я, назва | tên
+ryba | риба | con cá
+rybář | рибалка | ngư dân, người câu cá
+rybíz | смородина | quả lý chua
+rybník | ставок | ao
+kopanec | копняк, промах | cú đá, sai lầm ngớ ngẩn
+kopyto | копито | móng guốc
+foto | фото | ảnh
+fotka | фотка, знімок | tấm ảnh
+femininum | жіночий рід | giống cái
+feminismus | фемінізм | chủ nghĩa nữ quyền
+fena | сука (собака) | chó cái
+fenyl | феніл | phenyl
+festival | фестиваль | lễ hội
+fešanda | красуня | người đẹp
+fešák | красень, чепурун | anh chàng đẹp trai
+fetiš | фетиш | bái vật, vật sùng bái
+fyziolog | фізіолог | nhà sinh lý học
+útulek | притулок | trại cứu hộ, nơi trú ẩn
+evangelista | євангеліст | thánh sử
+evangelium | Євангеліє | Phúc Âm
+evangelík | євангелік, протестант | tín đồ Tin Lành
+evidence | облік, реєстр | sổ sách, sự đăng ký
+evoluce | еволюція | tiến hóa
+Evropan | європеєць | người châu Âu
+Evropanka | європейка | phụ nữ châu Âu
+zkratka | скорочення, абревіатура, коротший шлях | chữ viết tắt, đường tắt
+dóm | собор | nhà thờ lớn
+domobrana | ополчення | dân quân
+domov | дім, батьківщина | nhà, quê hương
+domovina | батьківщина | quê hương, tổ quốc
+domovnice | двірничка, наглядачка будинку | người trông nhà (nữ)
+domovník | двірник, наглядач будинку | người trông nhà
+zákop | окоп, траншея | chiến hào
+kuchař | кухар | đầu bếp
+kuchařka | кухарка, кулінарна книга | nữ đầu bếp, sách nấu ăn
+pondělí | понеділок | thứ Hai
+dílo | твір, праця | tác phẩm, công trình
+řízek | шніцель, живець (рослини) | thịt cốt lết tẩm bột, cành giâm
+knedlík | кнедлик | bánh knedlík (luộc)
+zmrzlinář | морозивник, продавець морозива | người bán kem
+káva | кава | cà phê
+kytara | гітара | đàn ghi-ta
+kytarista | гітарист | người chơi ghi-ta
+pitomec | дурень, телепень | thằng ngốc
+pitomost | дурниця, дурість | chuyện ngớ ngẩn
+polévka | суп | súp, canh
+polibek | поцілунок | nụ hôn
+námět | тема, сюжет, пропозиція | đề tài, ý tưởng
+skutek | вчинок, діло | hành động, việc làm
+platba | платіж, оплата | sự thanh toán
+plyn | газ | khí, ga
+plynoměr | газовий лічильник | đồng hồ đo khí
+plíčky | легені (страва) | phổi (món ăn)
+vodopád | водоспад | thác nước
+brontosaurus | бронтозавр | khủng long brontosaurus
+póza | поза | tư thế, dáng điệu
+klobása | ковбаса | xúc xích
+klobouk | капелюх | mũ (có vành)
+ještěr | ящір | thằn lằn
+ještěrka | ящірка | thằn lằn
+azimut | азимут | góc phương vị
+azbuka | кирилиця, азбука | bảng chữ cái Kirin
+azyl | притулок | tị nạn, nơi trú ẩn
+azylant | особа, що отримала притулок, біженець | người được cấp quy chế tị nạn
+ažura | ажур | đường thêu ren
+počin | почин, ініціатива | việc làm, sáng kiến
+hmota | матерія, речовина, маса | vật chất, khối
+hmotnost | маса, вага | khối lượng
+okres | район, округ | huyện, quận
+opravář | ремонтник | thợ sửa chữa
+oprávka | знос, накопичена амортизація (бухг.) | khấu hao lũy kế (kế toán)
+opravna | ремонтна майстерня | xưởng sửa chữa
+výchova | виховання | giáo dục, sự nuôi dạy
+východ | схід, вихід | phía đông, lối ra
+návštěva | відвідини, візит, гість | chuyến thăm, khách
+návštěvnost | відвідуваність | lượng khách
+návštěvník | відвідувач, гість | khách, người đến thăm
+vítr | вітер | gió
+záliba | захоплення, хобі | sở thích
+zodiak | зодіак | vòng hoàng đạo
+rýč | заступ, лопата | cái thuổng
+sluch | слух | thính giác
+sluchadlo | слуховий апарат | máy trợ thính
+slušnost | порядність, пристойність | sự lịch sự, đứng đắn
+objednatel | замовник | khách đặt hàng
+objednávka | замовлення | đơn đặt hàng
+křáp | мотлох, руїна (про авто) | đồ cũ nát, xe cà tàng
+říjen | жовтень | tháng Mười
+obývák | вітальня | phòng khách
+hymna | гімн | quốc ca
+hymnus | гімн | bài thánh ca
+hyperaktivita | гіперактивність | chứng tăng động
+skříň | шафа | tủ
+skříňka | шафка, скринька | tủ nhỏ, hộp
+osud | доля | số phận
+domeček | будиночок | ngôi nhà nhỏ xíu
+domek | будиночок | ngôi nhà nhỏ
+doména | домен, сфера | lĩnh vực, tên miền
+domluva | домовленість, умовляння | sự thỏa thuận, lời khuyên răn
+domýšlivec | зарозуміла людина, гордій | kẻ tự phụ
+domýšlivost | зарозумілість, пиха | tính tự phụ
+vědec | науковець, учений | nhà khoa học
+užitek | користь, вигода | lợi ích
+chlap | чоловік, мужик | người đàn ông, gã
+povídkář | новеліст | nhà văn viết truyện ngắn
+povídka | оповідання | truyện ngắn
+věštkyně | віщунка, ворожка | bà thầy bói
+ústa | рот, уста | miệng
+odhláška | зняття з реєстрації, скасування | sự hủy đăng ký, đơn hủy đăng ký
+odhodlanost | рішучість | sự quyết tâm
+odhodlání | рішучість | lòng quyết tâm
+Vánoce | Різдво | Giáng sinh
+pes | пес, собака | con chó
+pestík | маточка (квітки) | nhụy hoa
+nylon | нейлон | nylon
+nymfa | німфа | tiên nữ, nữ thần thiên nhiên
+nynějšek | теперішній час | hiện tại
+nýtek | заклепка | đinh tán nhỏ
+bryndák | слинявчик | yếm dãi
+brýle | окуляри | kính mắt
+dýka | кинджал | dao găm
+cvičitel | інструктор, дресирувальник | huấn luyện viên
+cvičitelka | інструкторка, дресирувальниця | nữ huấn luyện viên
+diabetolog | діабетолог | bác sĩ chuyên khoa tiểu đường
+dívka | дівчина | cô gái
+cyklista | велосипедист | người đi xe đạp
+kopaná | футбол | bóng đá
+zámek | замок (палац), замок (на дверях) | lâu đài, ổ khóa
+dojem | враження | ấn tượng
+hrad | замок, фортеця | lâu đài, thành trì
+hranol | призма, брус | lăng trụ, thanh gỗ vuông
+ret | губа | môi
+náhrdelník | намисто | vòng cổ
+batoh | рюкзак | ba lô
+jistota | впевненість, безпека, певність | sự chắc chắn, an toàn
+přátelství | дружба | tình bạn
+pošťák | листоноша | người đưa thư
+můra | нічний метелик, нічне жахіття | bướm đêm, ác mộng
+můstek | місток, трамплін | cầu nhỏ, cầu nhảy
+smutek | смуток, жалоба | nỗi buồn, tang
+kov | метал | kim loại
+dóza | скринька, банка | hộp, lọ
+dozimetr | дозиметр | máy đo liều
+dozor | нагляд | sự giám sát
+čížek | чиж | chim sẻ thông
+nováček | новачок | người mới
+látka | тканина, речовина, матеріал | vải, chất, đề tài
+hrdinka | героїня | nữ anh hùng
+šířka | ширина, широта | chiều rộng, vĩ độ
+kuře | курча, курка | gà con, thịt gà
+kůr | хори (у церкві) | gác hát trong nhà thờ
+kůrčička | скоринка | lớp vỏ bánh
+osamělost | самотність | sự cô đơn
+váhání | вагання | sự do dự
+nemoc | хвороба | bệnh
+nemocnost | захворюваність | tỷ lệ mắc bệnh
+schopnost | здатність, здібність | khả năng
+řádek | рядок | dòng
+helikoptéra | гелікоптер, вертоліт | trực thăng
+opilec | п'яниця | người say rượu
+kombinát | комбінат | tổ hợp công nghiệp
+kombiné | комбінація (білизна) | váy lót
+košíček | кошичок, чашечка (бюстгальтера) | giỏ nhỏ, cúp áo ngực
+košík | кошик | cái giỏ
+dynamit | динаміт | thuốc nổ dynamit
+dynamo | динамо, генератор | máy phát điện
+dynastie | династія | triều đại
+dysgrafie | дисграфія | chứng khó viết
+dysgrafik | людина з дисграфією | người mắc chứng khó viết
+dyslektik | людина з дислексією | người mắc chứng khó đọc
+dyslexie | дислексія | chứng khó đọc
+dýchání | дихання | sự hô hấp
+dýha | шпон | gỗ lạng
+dým | дим | khói
+dýmka | люлька | tẩu thuốc
+dýně | гарбуз | quả bí ngô
+dýnko | денце, верх (капелюха) | đáy, chỏm mũ
+slib | обіцянка | lời hứa
+lyceum | ліцей | trường trung học (lyceum)
+mlýn | млин | cối xay
+bydlení | житло, проживання | nhà ở, chỗ ở
+močál | болото, трясовина | đầm lầy
+kolo | колесо, велосипед, раунд | bánh xe, xe đạp, vòng
+řetěz | ланцюг | dây xích
+unie | унія, союз | liên minh
+únik | витік, втеча | sự rò rỉ, sự trốn thoát
+kříž | хрест | thánh giá, chữ thập
+křižovatka | перехрестя | giao lộ, ngã tư
+krk | шия, горло | cổ, cổ họng
+krkavec | ворон | quạ
+lanovka | канатна дорога, фунікулер | cáp treo
+léto | літо | mùa hè
+kniha | книга | quyển sách
+řidič | водій | tài xế
+řídítka | кермо (велосипеда) | ghi đông
+syn | син | con trai
+synovec | племінник | cháu trai
+tchán | тесть, свекор | bố vợ, bố chồng
+tchyně | теща, свекруха | mẹ vợ, mẹ chồng
+pštros | страус | đà điểu
+tragédie | трагедія | bi kịch
+tramping | піший туризм, мандри з наметом | đi bộ dã ngoại và cắm trại
+bratr | брат | anh trai, em trai
+černidlo | вакса, чорна фарба | xi đen
+černoch | темношкірий, чорношкірий | người da đen
+černoška | темношкіра жінка | phụ nữ da đen
+černovláska | брюнетка | cô gái tóc đen
+čerň | чорнота, чорна фарба | màu đen
+chvíle | мить, хвилина | khoảnh khắc, chốc lát
+tango | танго | điệu tango
+Drážďany | Дрезден | Dresden
+próza | проза | văn xuôi
+prozaik | прозаїк | nhà văn viết văn xuôi
+závist | заздрість | sự ghen tị
+závistivec | заздрісник | kẻ hay ghen tị
+lupa | лупа | kính lúp
+soudce | суддя | thẩm phán, trọng tài
+sukně | спідниця | váy
+sukničkář | бабій, ловелас | kẻ trăng hoa
+neteř | племінниця | cháu gái
+sestra | сестра, медсестра | chị gái, em gái, y tá
+sestřenice | двоюрідна сестра | chị em họ
+kotník | щиколотка, кісточка | mắt cá chân
+lůžko | ліжко, койка | giường
+lůžkovina | постільна білизна | chăn ga gối, đồ trải giường
+panáček | чоловічок, фігурка | hình nhân nhỏ
+panovník | правитель, монарх | quân vương
+pivo | пиво | bia
+kutě | ліжко, постіль | giường ngủ
+kutil | майстер на всі руки | người tự làm đồ (DIY)
+kutilství | майстрування, «зроби сам» | việc tự làm đồ (DIY)
+den | день | ngày
+vzdálenost | відстань | khoảng cách
+vzdech | зітхання | tiếng thở dài
+morek | кістковий мозок | tủy xương
+moře | море | biển
+muž | чоловік | người đàn ông, chồng
+múza | муза | nàng thơ
+muzeum | музей | bảo tàng
+moč | сеча | nước tiểu
+splatnost | строк платежу | hạn thanh toán
+helium | гелій | heli
+helma | шолом, каска | mũ bảo hiểm
+skrýš | схованка, сховище | chỗ ẩn náu
+osamění | самотність | sự cô độc
+osika | осика | cây dương rung
+osina | остюк | râu hạt (lúa)
+dům | будинок, дім | ngôi nhà
+ženáč | одружений чоловік | người đàn ông đã có vợ
+žena | жінка, дружина | phụ nữ, vợ
+stroj | машина, верстат | máy móc
+strojek | машинка, механізм | máy nhỏ, cơ cấu
+předseda | голова, головуючий | chủ tịch
+staveniště | будівельний майданчик | công trường
+stavení | будинок, будівля | ngôi nhà, tòa nhà
+kost | кістка | xương
+centrum | центр | trung tâm
+týden | тиждень | tuần
+zpěvák | співак | ca sĩ
+maminka | мама, матуся | mẹ
+řež | різанина, бійня | cuộc tàn sát, ẩu đả
+mávátko | махалка, прапорець | cờ vẫy
+máma | мама | mẹ
+sova | сова | con cú
+říše | імперія, царство | đế chế, vương quốc
+mamut | мамонт | voi ma mút
+příživník | дармоїд, паразит | kẻ ăn bám
+přízvuk | наголос, акцент | trọng âm, giọng
+přízrak | привид, примара | bóng ma
+přízeň | прихильність, рідня | sự ưu ái, họ hàng
+příze | пряжа | sợi
+přívrat | упор, «плуг» (лижі) | tư thế chữ V (trượt tuyết)
+přívoz | пором, переправа | phà
+přívod | подача, підведення | đường cấp, nguồn cấp
+přívažek | довісок | phần thêm vào
+příval | потік, злива | dòng nước ồ ạt, mưa như trút
+příušnice | свинка (хвороба) | bệnh quai bị
+přítěž | тягар | gánh nặng
+přívlastek | означення (граматика), атрибут | định ngữ
+půst | піст | sự nhịn ăn, mùa chay
+půlnoc | північ (час) | nửa đêm
+pyré | пюре | món xay nhuyễn
+džíp | джип | xe jeep
+důmysl | кмітливість, винахідливість | sự khéo léo, tài trí
+tým | команда | đội
+chování | поведінка | hành vi, cách cư xử
+hýl | снігур | chim sẻ ức đỏ
+hysterka | істеричка | người đàn bà cuồng loạn
+hysterie | істерія | chứng cuồng loạn
+hypotéka | іпотека | thế chấp
+hypnóza | гіпноз | thôi miên
+hříčka | забавка, гра слів | trò vui, trò chơi chữ
+lžíce | ложка | cái thìa
+lžička | ложечка | thìa nhỏ
+hezoun | красунчик | anh chàng bảnh bao
+hever | домкрат | con đội, kích
+heslo | пароль, гасло | mật khẩu, khẩu hiệu
+dříč | трудяга | người làm việc chăm chỉ
+datum | дата | ngày tháng
+cyklus | цикл | chu kỳ
+cyklon | циклон | xoáy thuận, bão xoáy
+oštěp | спис | ngọn giáo, lao
+žeton | жетон | xu thay tiền, phỉnh
+žeň | жнива, урожай | mùa gặt
+rožeň | рожен | xiên nướng
+plž | слимак | động vật chân bụng (ốc, sên)
+rýžák | щітка (жорстка) | bàn chải cọ
+rýžoviště | розсип (золотоносний), рисове поле | bãi đãi vàng, ruộng lúa
+rýma | нежить | sổ mũi
+rýže | рис | gạo, cơm
+rýpal | причепа, прискіплива людина | người hay bắt bẻ
+ryzost | чистота (металу) | độ nguyên chất
+ryzlink | рислінг | rượu Riesling
+ryzec | рижик, груздь | nấm sữa
+rytíř | лицар | hiệp sĩ
+rytmika | ритміка | nhịp điệu
+rychtář | староста, війт | trưởng làng
+schůdky | драбинка, сходинки | bậc thang, thang gấp
+schéma | схема | sơ đồ
+schránka | скринька, ящик | hộp, hòm thư
+schovávaná | хованки | trò trốn tìm
+lež | брехня | lời nói dối
+ležák | лагер (пиво) | bia lager
+kýč | кітч, несмак | đồ kitsch, đồ sến súa
+kráva | корова | con bò cái
+měsíc | місяць | mặt trăng, tháng
+náměstí | площа | quảng trường
+žákyně | учениця | nữ sinh
+žízeň | спрага | cơn khát
+zásek | зарубка, засічка | vết khía
+otázka | питання | câu hỏi
+bůžek | божок | vị thần nhỏ
+výživné | аліменти | tiền cấp dưỡng
+přehled | огляд | tổng quan
+kůže | шкіра | da
+kauce | застава | tiền bảo lãnh, tiền đặt cọc
+kostým | костюм | trang phục, bộ vest nữ
+ezoterika | езотерика | huyền học
+exulant | вигнанець, емігрант | người lưu vong
+fůra | віз, купа | một xe đầy, cả đống
+páže | паж | thị đồng
+pantograf | струмоприймач, пантограф | cần lấy điện
+hrádek | невеликий замок | lâu đài nhỏ
+róba | вечірня сукня, урочисте вбрання | áo dạ hội, lễ phục
+žestě | мідні духові інструменти | bộ kèn đồng
+žerď | жердина, держак | cột cờ, sào
+žervé | м'який сир | phô mai kem
+žert | жарт | trò đùa
+žemle | булочка | bánh mì tròn
+úžlabí | ущелина, улоговина | hẻm núi
+učitel | учитель, викладач | giáo viên
+požár | пожежа | đám cháy
+požitek | насолода, задоволення | sự thích thú
+pozvání | запрошення | lời mời
+křížovka | кросворд | ô chữ
+úhoř | вугор | cá chình
+děvčátko | дівчинка | bé gái
+děvče | дівчина, дівчинка | cô gái
+zmrzlina | морозиво | kem
+přání | бажання, побажання | mong muốn, lời chúc
+nástupiště | платформа, перон | sân ga
+sídliště | житловий масив | khu chung cư
+kaštanovník | каштан (дерево) | cây hạt dẻ
+kaštan | каштан | hạt dẻ, hạt dẻ ngựa
+kaše | каша, пюре | cháo, món xay nhuyễn
+kašel | кашель | ho
+posádka | екіпаж, гарнізон | thủy thủ đoàn, phi hành đoàn, quân đồn trú
+časopis | журнал | tạp chí
+penízek | монетка, талабан (рослина) | đồng xu nhỏ
+táta | тато | bố
+tatínek | татусь | bố, ba
+müsli | мюслі | ngũ cốc muesli
+džungle | джунглі | rừng rậm
+džus | сік | nước ép
+džunka | джонка | thuyền mành
+džudista | дзюдоїст | võ sĩ judo
+džentlmen | джентльмен | quý ông
+džem | джем, варення | mứt
+džbánek | глечик | bình nhỏ
+džbán | глек | bình, vò
+džber | діжка, цебер | thùng gỗ
+kýta | стегно, окіст | đùi (thịt)
+kýbl | відро | xô
+kýl | кіль | sống thuyền
+hrášek | горошок | đậu Hà Lan
+hrátky | ігри, забави | trò vui đùa
+hvězdářství | астрономія | thiên văn học
+hvězdář | астроном | nhà thiên văn
+hvězda | зірка | ngôi sao
+hvězdárna | обсерваторія | đài thiên văn
+hvězdice | морська зірка, зірочка | sao biển
+hvizd | свист | tiếng huýt sáo
+výzvědy | розвідка | sự trinh sát
+výživa | харчування | dinh dưỡng
+zelí | капуста | bắp cải
+zkušenost | досвід | kinh nghiệm
+metro | метро | tàu điện ngầm
+lýtko | литка | bắp chân
+lýko | лико | libe, sợi vỏ cây
+lyže | лижа | ván trượt tuyết
+lyžařka | лижниця | người trượt tuyết (nữ)
+lyžař | лижник | người trượt tuyết
+lysina | лисина | chỗ hói
+lyrika | лірика | thơ trữ tình
+lyra | ліра | đàn lia
+lymfa | лімфа | bạch huyết
+lvíče | левеня | sư tử con
+lvice | левиця | sư tử cái
+vrchovina | височина | vùng cao
+nadšenec | ентузіаст, шанувальник | người say mê
+lezec | скелелаз | người leo núi
+lexikum | лексика | từ vựng
+levák | шульга, лівша | người thuận tay trái
+únava | втома | sự mệt mỏi
+univerziáda | універсіада | Đại hội thể thao sinh viên
+univerzita | університет | trường đại học
+úžina | протока, вузина | eo biển
+úzkost | тривога, страх | sự lo âu
+území | територія | lãnh thổ
+nóta | нота, мелодія; дипломатична нота | nốt nhạc, giai điệu; công hàm
+láska | любов, кохання | tình yêu
+dřez | мийка, раковина | bồn rửa
+dřevník | дровітня | nhà kho củi
+úložka | вклад, депозит | khoản tiền gửi
+pazour | лапа, кіготь | móng vuốt, bàn tay
+práce | праця, робота | công việc
+energie | енергія | năng lượng
+mínění | думка | ý kiến
+tvořivost | творчість | óc sáng tạo
+nádrž | резервуар, бак, водойма | bể chứa, hồ chứa
+bonus | бонус, премія | tiền thưởng
+diplomat | дипломат | nhà ngoại giao
+lastura | черепашка, мушля | vỏ sò
+laser | лазер | laser, tia laser
+kotě | кошеня | mèo con
+kotva | якір | mỏ neo
+strýček | дядечко | chú
+číšnice | офіціантка | nữ bồi bàn
+položka | пункт, позиція, стаття | mục, khoản
+příkrov | покрив | lớp phủ
+příkrm | прикорм | thức ăn dặm
+příkon | споживана потужність | công suất tiêu thụ
+příkrasa | прикраса | sự tô điểm
+příklad | приклад, задача | ví dụ, bài toán
+přikrývka | ковдра | chăn
+návrší | пагорб, узвишшя | gò đồi
+návrh | пропозиція, проєкт, ескіз | đề xuất, bản thiết kế
+návrhář | модельєр, дизайнер | nhà thiết kế
+pranice | бійка | cuộc ẩu đả
+pranostika | народна прикмета про погоду | tục ngữ về thời tiết
+sporák | плита (кухонна) | bếp lò
+pejskař | собачник | người yêu chó
+pejsek | песик | cún, chó nhỏ
+šití | шиття | việc may vá
+šev | шов | đường may
+šéf | шеф, начальник | sếp, ông chủ
+býček | бичок | bê đực
+byt | квартира | căn hộ
+bídák | негідник | kẻ đê tiện
+průkazka | посвідчення, квиток | thẻ
+průkaz | посвідчення | giấy chứng nhận, thẻ căn cước
+punčocháče | колготки | quần tất
+punčocha | панчоха | tất dài
+kůzle | козеня | dê con
+kužel | конус, булава | hình nón, chùy
+proud | течія, потік, струм | dòng chảy, dòng điện
+surovina | сировина | nguyên liệu
+podmínka | умова | điều kiện
+krtek | кріт | chuột chũi
+křížek | хрестик, дієз | dấu thập nhỏ, dấu thăng
+křídlo | крило, рояль | cánh, đàn piano cánh
+prostředí | середовище, обстановка | môi trường
+větrník | флюгер, вітрячок, заварне тістечко | chong chóng, bánh su kem
+kávovar | кавоварка | máy pha cà phê
+les | ліс | rừng
+tovar | товар | hàng hóa
+žíla | вена, жила | tĩnh mạch
+jíva | верба козяча | cây liễu dê
+jímka | вигрібна яма, резервуар | bể chứa, hố ga
+jílec | руків'я (шаблі), ефес | chuôi kiếm
+jíl | глина | đất sét
+návěst | сигнал | tín hiệu
+návěj | замет | đống tuyết
+návyk | звичка, навичка | thói quen
+návrat | повернення | sự trở về
+návod | інструкція, посібник | hướng dẫn
+náves | сільська площа | quảng trường làng
+kouř | дим | khói
+génius | геній | thiên tài
+vývin | розвиток | sự phát triển
+oběť | жертва | nạn nhân, sự hy sinh
+dezén | візерунок, малюнок (протектора) | hoa văn
+dezertér | дезертир | kẻ đào ngũ
+dezert | десерт | món tráng miệng
+roucho | вбрання, облачення | áo choàng
+bělásek | біланка (метелик) | bướm trắng
+příručka | довідник, посібник | sổ tay hướng dẫn
+dětství | дитинство | thời thơ ấu
+déšť | дощ | mưa
+deštník | парасолька | cái ô
+dezinformace | дезінформація | tin sai lệch
+dextróza | декстроза | đường dextrose
+pusa | рот, поцілунок | miệng, nụ hôn
+zákoník | кодекс | bộ luật
+zákonnost | законність | tính hợp pháp
+zákon | закон | luật
+zákazník | клієнт, покупець | khách hàng
+zákaznice | клієнтка, покупниця | khách hàng (nữ)
+zákaz | заборона | lệnh cấm
+téma | тема | chủ đề
+tematika | тематика | đề tài
+majitelka | власниця, господиня | bà chủ
+vulkán | вулкан | núi lửa
+výluka | перерва в русі, локаут | sự tạm ngừng, đóng cửa
+výložka | петлиця, вилога | phù hiệu cổ áo
+výlov | вилов риби | mẻ thu hoạch cá
+výlez | люк | cửa sập
+výlet | екскурсія, поїздка | chuyến dã ngoại
+dav | натовп | đám đông
+řezník | м'ясник | người bán thịt
+mýdlo | мило | xà phòng
+grácie | грація | sự duyên dáng
+grupa | група | nhóm
+groš | гріш | đồng xu
+grog | грог | rượu grog
+groteska | гротеск, комедія | hài kịch hình thể, trò hề
+úspěch | успіх | thành công
+úředník | службовець, чиновник | viên chức
+ošklivec | потвора, страховисько | kẻ xấu xí
+ošetřovna | медпункт | phòng y tế
+ošacení | одяг | quần áo
+sklíčko | скельце | mảnh kính nhỏ
+toxin | токсин | độc tố
+strava | їжа, харчування | thức ăn, chế độ ăn
+štvanice | цькування, гонитва | cuộc săn đuổi
+jetel | конюшина | cỏ ba lá
+Anglie | Англія | nước Anh
+klíště | кліщ | con ve
+klíčník | ключник | người giữ chìa khóa
+minuta | хвилина | phút
+prožitek | переживання, враження | trải nghiệm
+prověrka | перевірка | sự kiểm tra
+provozovatel | оператор, власник | nhà điều hành
+projev | промова, вияв | bài phát biểu, biểu hiện
+výkop | котлован, рів, удар від воріт | hố đào, cú phát bóng
+výkonnost | продуктивність, працездатність | hiệu suất
+smích | сміх | tiếng cười
+prevence | профілактика | phòng ngừa
+chovatel | тваринник, заводчик | người chăn nuôi
+témbr | тембр | âm sắc
+temeno | тім'я, вершина | đỉnh đầu
+bunda | куртка | áo khoác
+blbost | дурниця | chuyện ngu ngốc
+mzda | зарплата | tiền lương
+slečna | панна, панночка | cô, thiếu nữ
+síťka | сіточка | lưới nhỏ, túi lưới
+přítelkyně | подруга, дівчина | bạn gái
+přítel | друг, хлопець | bạn, bạn trai
+mlha | туман | sương mù
+kapr | короп | cá chép
+kapraď | папороть | cây dương xỉ
+kapradina | папороть | cây dương xỉ
+strom | дерево | cây
+chorvatština | хорватська мова | tiếng Croatia
+trh | ринок | chợ, thị trường
+vidlička | виделка | cái nĩa
+oblek | костюм | bộ com lê
+sukno | сукно | vải dạ
+situace | ситуація | tình huống
+utrpení | страждання | nỗi đau khổ
+noviny | газета | báo
+novinka | новинка, новина | điều mới, tin mới
+slůně | слоненя | voi con
+vděk | вдячність | lòng biết ơn
+šarm | шарм, чарівність | sức quyến rũ
+náhoda | випадок, збіг | sự tình cờ
+kavka | галка | quạ gáy xám
+firma | фірма | công ty
+finiš | фініш | chặng nước rút
+fregata | фрегат | khinh hạm
+teta | тітка | cô, dì
+prohlídka | огляд | sự kiểm tra, khám bệnh, tham quan
+fáze | фаза, етап | giai đoạn
+fazole | квасоля | đậu
+fatalista | фаталіст | người theo thuyết định mệnh
+fasáda | фасад | mặt tiền
+věrnost | вірність | lòng trung thành
+boršč | борщ | súp borscht
+kufřík | валізка, кейс | cặp tài liệu
+kufr | валіза, багажник | va li, cốp xe
+opičák | мавпа (самець) | khỉ đực
+risk | ризик | rủi ro
+sarkasmus | сарказм | sự mỉa mai
+porota | журі, присяжні | ban giám khảo, bồi thẩm đoàn
+mince | монета | đồng xu
+mincovna | монетний двір | xưởng đúc tiền
+setmění | сутінки | hoàng hôn, chạng vạng
+internet | інтернет | internet
+polovina | половина | một nửa
+vyšetření | обстеження, розслідування | sự khám bệnh, điều tra
+most | міст | cây cầu
+kánoe | каное | xuồng canoe
+setkání | зустріч | cuộc gặp gỡ
+úlovek | улов, здобич | con mồi săn được, mẻ cá
+úlomek | уламок | mảnh vỡ
+fén | фен | máy sấy tóc
+válka | війна | chiến tranh
+válečník | воїн | chiến binh
+válenda | тахта | giường đi văng
+válenka | валянок | ủng dạ
+valuta | валюта | ngoại tệ
+počasí | погода | thời tiết
+Velikonoce | Великдень | lễ Phục sinh
+mošt | свіжий фруктовий сік, сусло | nước ép trái cây chưa lên men
+rozvoz | доставка | sự giao hàng
+rozvoj | розвиток | sự phát triển
+prapředek | пращур | tổ tiên
+matice | гайка, матриця | đai ốc, ma trận
+slunce | сонце | mặt trời
+služka | служниця | người hầu gái
+služba | служба, послуга | dịch vụ, sự phục vụ
+slunko | сонечко | mặt trời
+sluha | слуга | người hầu
+nožíř | майстер із виготовлення ножів | thợ làm dao
+nožka | ніжка | bàn chân nhỏ, chân
+novota | новизна, нововведення | sự mới mẻ
+cuketa | цукіні, кабачок | bí ngòi
+cukr | цукор | đường
+nachlazení | застуда | cảm lạnh
+náčrt | ескіз, начерк | bản phác thảo
+nácvik | тренування, розучування | sự luyện tập
+strouha | канава, рів | mương
+námel | ріжки (грибок) | nấm cựa gà
+roztok | розчин | dung dịch
+klášter | монастир | tu viện
+cynik | цинік | kẻ coi thường đạo lý, kẻ khinh đời
+Ukrajinec | українець | người Ukraina
+Rus | росіянин | người Nga
+Vietnamec | в'єтнамець | người Việt Nam
+matka | мати | mẹ
+otec | батько | cha
+chléb | хліб | bánh mì
+voda | вода | nước
+maso | м'ясо | thịt
+jablko | яблуко | quả táo
+škola | школа | trường học
+student | студент | sinh viên
+pokoj | кімната | phòng
+restaurace | ресторан | nhà hàng
+obchod | магазин | cửa hàng
+autobus | автобус | xe buýt
+vlak | потяг | tàu hỏa
+věc | річ | đồ vật
+místo | місце | chỗ, nơi
+způsob | спосіб | cách, phương pháp

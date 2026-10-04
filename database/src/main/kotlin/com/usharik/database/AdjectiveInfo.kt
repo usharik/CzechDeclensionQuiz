@@ -18,11 +18,15 @@ data class AdjectiveInfo(
     val comparative: String?,
     val superlative: String?,
     val cases: Array<Array<Array<String>>>?,
+    val translation_uk: String? = null,
+    val translation_vi: String? = null,
 ) {
     fun word() = word.orEmpty()
     fun kind() = kind.orEmpty()
     fun translation_ru() = translation_ru.orEmpty()
     fun translation_en() = translation_en.orEmpty()
+    fun translation_uk() = translation_uk.orEmpty()
+    fun translation_vi() = translation_vi.orEmpty()
     fun comparative() = comparative.orEmpty()
     fun superlative() = superlative.orEmpty()
 

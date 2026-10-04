@@ -94,6 +94,15 @@ za krokem; академические 5 классов по Wikipedia «Czech co
 словарь (`utils/corpus/manual_translations.py`, ≈ 400 слов) плюс ≈ 180 ручных исправлений там, где
 Викисловарь давал не основное значение или не тот вид. Все записи вычитаны.
 
+Украинский и вьетнамский (`translation_uk`, `translation_vi`) — для всех трёх словарей, включая
+существительные из `data.jsonl`: короткие глоссы (1–3 основных значения, у глаголов в украинском
+сохранён вид), написанные вручную по чешскому слову с опорой на русский и английский переводы. Лежат в
+`utils/corpus/translations/{nouns,adjectives,verbs}.txt` (`слово | uk | vi`); `add_translations.py`
+вписывает их в JSONL, `build_corpus.py` делает это сам и падает, если у нового слова нет перевода.
+Приложение показывает украинский/вьетнамский глосс в соответствующем языке интерфейса (с откатом на
+русский/английский). При изменении JSONL нужно увеличить `App.DICTIONARY_VERSION` — тогда у
+существующих установок словарные таблицы перезагрузятся из ассетов (прогресс не затрагивается).
+
 Пересборка: `python3 utils/corpus/build_corpus.py` (кэш страниц в `utils/corpus/cache/`, не в git;
 скрипт докачивает недостающее через API Викисловаря). Лицензия исходных данных — CC BY-SA
 (Wiktionary); список частот — CC BY-SA (hermitdave/FrequencyWords).
@@ -101,7 +110,7 @@ za krokem; академические 5 классов по Wikipedia «Czech co
 Формат записи глагола:
 ```json
 {"wordId": 5, "word": "dělat", "aspect": "nedokonavé", "pair": "udělat", "verbClass": "dělá",
- "translation_ru": "делать", "translation_en": "to do; to make",
+ "translation_ru": "делать", "translation_en": "to do; to make", "translation_uk": "робити", "translation_vi": "làm",
  "present": ["dělám","děláš","dělá","děláme","děláte","dělají"],
  "past": ["dělal","dělala","dělalo","dělali","dělaly"], "imperative": ["dělej","dělejme","dělejte"]}
 ```
