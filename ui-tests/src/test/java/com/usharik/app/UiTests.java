@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -225,6 +227,20 @@ public class UiTests {
         }
     }
 
+    /** Scrolls the first scrollable container (the hub column) all the way down. */
+    private void scrollToBottom() {
+        List<WebElement> scrollables = driver.findElements(AppiumBy.xpath("//*[@scrollable='true']"));
+        if (scrollables.isEmpty()) {
+            return;
+        }
+        String id = ((org.openqa.selenium.remote.RemoteWebElement) scrollables.get(0)).getId();
+        while (Boolean.TRUE.equals(driver.executeScript("mobile: scrollGesture",
+                Map.of("elementId", id, "direction", "down", "percent", 1.0)))) {
+            waitForUiUpdate();
+        }
+        waitForUiUpdate();
+    }
+
     /**
      * The tagged button shows [expectedText]. Clickable containers merge their children's
      * semantics, so depending on the component the label is the node's own text or content
@@ -234,6 +250,11 @@ public class UiTests {
         String self = "//*[@resource-id='" + tag + "']";
         String has = "[@text='" + expectedText + "' or @content-desc='" + expectedText + "']";
         By label = AppiumBy.xpath(self + has + " | " + self + "//*" + has);
+        // The secondary hub tiles sit below the fold on phone-sized screens, and UiAutomator
+        // drops the text of nodes that are mostly off-screen: scroll the hub down if needed.
+        if (driver.findElements(label).isEmpty()) {
+            scrollToBottom();
+        }
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(label));
         } catch (org.openqa.selenium.TimeoutException e) {
