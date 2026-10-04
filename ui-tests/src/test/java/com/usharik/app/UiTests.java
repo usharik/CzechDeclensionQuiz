@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
-import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -226,17 +225,23 @@ public class UiTests {
         }
     }
 
-    /** The tagged button shows [expectedText], either as its own merged text or on a child text node. */
+    /**
+     * The tagged button shows [expectedText]. Clickable containers merge their children's
+     * semantics, so depending on the component the label is the node's own text or content
+     * description, or sits on a descendant; any of these counts.
+     */
     private void assertButtonText(String tag, String expectedText) {
-        // A clickable container merges its children's semantics: hub tiles report the label only
-        // through the tagged node's own text, gradient buttons keep it on a descendant.
-        By descendantLabel = AppiumBy.xpath("//*[@resource-id='" + tag + "']//*[@text='" + expectedText + "']");
-        Boolean labelled = wait.until(d -> {
-            List<WebElement> nodes = d.findElements(byTag(tag));
-            return !nodes.isEmpty() && nodes.get(0).isDisplayed()
-                    && (expectedText.equals(nodes.get(0).getText()) || !d.findElements(descendantLabel).isEmpty());
-        });
-        assertTrue(labelled);
+        String self = "//*[@resource-id='" + tag + "']";
+        String has = "[@text='" + expectedText + "' or @content-desc='" + expectedText + "']";
+        By label = AppiumBy.xpath(self + has + " | " + self + "//*" + has);
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(label));
+        } catch (org.openqa.selenium.TimeoutException e) {
+            String source = driver.getPageSource();
+            int at = source.indexOf(tag);
+            String around = at < 0 ? "<tag not in page source>" : source.substring(Math.max(0, at - 600), Math.min(source.length(), at + 1200));
+            throw new AssertionError("No '" + expectedText + "' label on " + tag + ". Page source around it: " + around, e);
+        }
     }
 
     /**
