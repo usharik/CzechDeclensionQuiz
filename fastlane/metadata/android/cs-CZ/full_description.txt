@@ -21,6 +21,6 @@ Vzory podstatných jmen (pán, hrad, žena, město a další), tvrdá, měkká a
 • Volitelná denní připomínka
 • Filtr podstatných jmen podle rodu
 
-Rozhraní v češtině, angličtině, ruštině, ukrajinštině, běloruštině, němčině a vietnamštině. Překlady slov jsou v ruštině a angličtině.
+Rozhraní v češtině, angličtině, ruštině, ukrajinštině, běloruštině, němčině a vietnamštině. Překlady slov jsou v ruštině, angličtině, ukrajinštině a vietnamštině.
 
 Zdarma, bez registrace, funguje offline.
