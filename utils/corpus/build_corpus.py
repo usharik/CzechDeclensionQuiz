@@ -6,7 +6,8 @@ Sources (all CC BY-SA):
   * English Wiktionary - English glosses and aspect partners ({{cs-verb|a=impf|pf=...}}).
   * Russian Wiktionary - Russian glosses where the Czech Wiktionary has none.
   * hermitdave/FrequencyWords (OpenSubtitles 2018, cs_50k) - frequency ranking used to pick common lemmas.
-Hand-written glosses and exclusions live in manual_translations.py.
+Hand-written glosses and exclusions live in manual_translations.py; Ukrainian and Vietnamese glosses
+live in translations/*.txt (see add_translations.py).
 
 Usage: python3 build_corpus.py            (uses ./cache, fetches whatever is missing)
 """
@@ -15,6 +16,7 @@ import json, os, re, sys, time, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse_wikitext import parse_adj, parse_verb  # noqa: E402
 import manual_translations as mt  # noqa: E402
+import add_translations  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, "cache")
@@ -322,5 +324,6 @@ if __name__ == "__main__":
     print("verb classes:", Counter(v["verbClass"] for v in verbs))
     print("aspects:", Counter(v["aspect"] for v in verbs), "with pair:", sum(1 for v in verbs if v["pair"]))
     print("adjective kinds:", Counter(a["kind"] for a in adjs))
-    write_jsonl("verbs.jsonl", verbs)
-    write_jsonl("adjectives.jsonl", adjs)
+    # Ukrainian and Vietnamese glosses are hand-written in translations/*.txt; a new word fails here until it gets one.
+    write_jsonl("verbs.jsonl", add_translations.apply(verbs, "verbs.txt"))
+    write_jsonl("adjectives.jsonl", add_translations.apply(adjs, "adjectives.txt"))

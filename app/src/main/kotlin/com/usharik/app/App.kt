@@ -73,6 +73,11 @@ open class App : Application() {
         // The import runs off the main thread so a first launch renders immediately;
         // word-loading screens show their loading state until dictionaryReady completes.
         dictionaryReady = appScope.async {
+            // Installs whose rows predate the bundled dictionary (e.g. without the uk/vi glosses) reload it;
+            // the version is stored only after a complete import, so an interrupted one is retried.
+            val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val dictionaryOutdated = prefs.getInt(PREF_DICTIONARY_VERSION, 0) < DICTIONARY_VERSION
+            if (dictionaryOutdated) documentRepository.clearDictionaries()
             if (documentRepository.count() == 0) {
                 assets.open("data.jsonl").use { stream -> documentRepository.populateFromJsonStream(stream) }
             }
@@ -84,6 +89,7 @@ open class App : Application() {
             if (documentRepository.verbCount() == 0) {
                 assets.open("verbs.jsonl").use { stream -> documentRepository.populateVerbsFromJsonStream(stream) }
             }
+            if (dictionaryOutdated) prefs.edit().putInt(PREF_DICTIONARY_VERSION, DICTIONARY_VERSION).apply()
         }
         restorePreferences()
     }
@@ -130,6 +136,9 @@ open class App : Application() {
         const val PREF_WORDS_WITH_ERRORS = "WORDS_WITH_ERRORS"
         const val PREF_DAILY_GOAL = "dailyGoalPoints"
         const val PREF_PART_OF_SPEECH = "partOfSpeech"
+        const val PREF_DICTIONARY_VERSION = "dictionaryVersion"
+        /** Bump whenever the bundled JSONL dictionaries change so existing installs re-import them. */
+        const val DICTIONARY_VERSION = 1
         private const val LEGACY_DAILY_REMINDER_WORK = "daily_reminder"
         private const val REMINDER_WORK = "hourly_reminder"
     }

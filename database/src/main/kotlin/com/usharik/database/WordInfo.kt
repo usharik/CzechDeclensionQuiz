@@ -15,12 +15,17 @@ data class WordInfo(
     val translation_en: String?,
     val gender: String?,
     val declensionType: String?,
+    // Last and defaulted so positional constructor calls stay valid; Gson leaves them null in old rows.
+    val translation_uk: String? = null,
+    val translation_vi: String? = null,
 ) {
     fun wordId() = wordId
     fun word() = word.orEmpty()
     fun cases() = cases
     fun translation_ru() = translation_ru.orEmpty()
     fun translation_en() = translation_en.orEmpty()
+    fun translation_uk() = translation_uk.orEmpty()
+    fun translation_vi() = translation_vi.orEmpty()
     fun gender() = gender.orEmpty()
     fun declensionType() = declensionType.orEmpty()
     fun cases(number: Int, grammaticalCase: Int) = cases!![number][grammaticalCase]

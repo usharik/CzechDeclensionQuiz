@@ -1,0 +1,584 @@
+# Ukrainian and Vietnamese glosses for database/src/main/assets/verbs.jsonl.
+# Format: czech word | Ukrainian | Vietnamese. Ukrainian keeps the Czech aspect (perfective
+# verbs get perfective glosses). Applied by utils/corpus/add_translations.py.
+být | бути | là, ở, có
+říct | сказати | nói
+jít | іти | đi (bộ)
+mít | мати | có
+dělat | робити | làm
+udělat | зробити | làm (xong)
+vědět | знати | biết
+mluvit | говорити | nói
+vidět | бачити | nhìn thấy
+dostat | отримати | nhận được
+najít | знайти | tìm thấy
+dát | дати | đưa, cho
+pomoct | допомогти | giúp
+muset | мусити | phải
+vzít | взяти | lấy
+nechat | залишити, дозволити | để lại, để cho
+zabít | убити | giết
+počkat | почекати | chờ
+promluvit | поговорити | nói chuyện
+vrátit | повернути | trả lại
+zůstat | залишитися | ở lại
+hrát | грати | chơi
+věřit | вірити | tin
+přijít | прийти | đến
+chtít | хотіти | muốn
+říkat | казати, говорити | nói
+odejít | піти, відійти | rời đi
+potřebovat | потребувати | cần
+pracovat | працювати | làm việc
+spát | спати | ngủ
+zavolat | покликати, зателефонувати | gọi
+myslet | думати | nghĩ
+jet | їхати | đi (bằng xe)
+zastavit | зупинити | dừng lại
+uvěřit | повірити | tin tưởng
+zjistit | з'ясувати, дізнатися | phát hiện ra
+slyšet | чути | nghe thấy
+čekat | чекати | chờ đợi
+chodit | ходити | đi lại
+držet | тримати | cầm, giữ
+zachránit | врятувати | cứu
+bojovat | боротися | chiến đấu
+představit | представити, познайомити | giới thiệu
+ukázat | показати | chỉ, cho xem
+změnit | змінити | thay đổi
+přestat | перестати | ngừng
+cítit | відчувати | cảm thấy
+pokračovat | продовжувати | tiếp tục
+získat | здобути, отримати | giành được
+hledat | шукати | tìm kiếm
+použít | використати | sử dụng
+koupit | купити | mua
+zkusit | спробувати | thử
+jíst | їсти | ăn
+sledovat | стежити, дивитися | theo dõi, xem
+brát | брати | lấy
+vysvětlit | пояснити | giải thích
+poslouchat | слухати | nghe
+sedět | сидіти | ngồi
+zemřít | померти | chết
+projít | пройти | đi qua
+poslat | надіслати | gửi
+zničit | знищити | phá hủy
+moct | могти | có thể
+znamenat | означати | có nghĩa là
+trvat | тривати | kéo dài
+řídit | керувати, водити | điều khiển, lái xe
+milovat | кохати, любити | yêu
+říci | сказати | nói
+zbavit | позбавити | tước bỏ, giải thoát khỏi
+vyhrát | виграти | thắng
+utéct | утекти | chạy trốn
+připravit | приготувати, підготувати | chuẩn bị
+naučit | навчити | dạy
+dávat | давати | cho, đưa
+chránit | захищати | bảo vệ
+fungovat | працювати, функціонувати | hoạt động
+pochopit | зрозуміти | hiểu ra
+opustit | покинути | rời bỏ
+ublížit | заподіяти шкоду, скривдити | làm hại
+sehnat | дістати, знайти | kiếm được
+udržet | утримати, зберегти | giữ được
+umřít | померти | chết
+zaplatit | заплатити | trả tiền
+vybrat | вибрати | chọn
+poznat | пізнати, впізнати | nhận ra
+bavit | розважати | giải trí, làm vui
+poděkovat | подякувати | cảm ơn
+znát | знати | biết, quen
+chovat | розводити, тримати на руках | nuôi, bế
+přemýšlet | роздумувати | suy nghĩ
+zapomenout | забути | quên
+vyřešit | розв'язати, вирішити | giải quyết
+číst | читати | đọc
+učit | учити, навчати | dạy
+postavit | поставити, збудувати | đặt, xây
+chytit | спіймати, схопити | bắt
+ztratit | загубити, втратити | đánh mất
+skončit | закінчити, закінчитися | kết thúc
+pít | пити | uống
+lhát | брехати | nói dối
+nosit | носити | mang, mặc
+požádat | попросити | yêu cầu, xin
+vypadnout | випасти, забратися | rơi ra, cút đi
+zajít | зайти | ghé qua
+napsat | написати | viết
+navštívit | відвідати | thăm
+psát | писати | viết
+omluvit | вибачити | tha lỗi, bào chữa cho
+prodat | продати | bán
+střílet | стріляти | bắn
+platit | платити | trả tiền
+pustit | пустити, відпустити | thả, buông
+přiznat | визнати | thừa nhận
+vzdát | облишити, віддати (шану) | từ bỏ
+vyhodit | викинути, звільнити | vứt đi, sa thải
+odjet | поїхати | khởi hành
+přijmout | прийняти | chấp nhận
+zpívat | співати | hát
+volat | кликати, дзвонити | gọi
+přesvědčit | переконати | thuyết phục
+využít | використати | tận dụng
+rozhodnout | вирішити | quyết định
+přidat | додати | thêm
+zkontrolovat | перевірити | kiểm tra
+zmizet | зникнути | biến mất
+zavřít | закрити, зачинити | đóng
+používat | використовувати | dùng
+stačit | вистачати | đủ
+sednout | сісти | ngồi xuống
+předstírat | удавати | giả vờ
+dokončit | закінчити, завершити | hoàn thành
+vést | вести | dẫn dắt
+pomáhat | допомагати | giúp đỡ
+bydlet | жити, мешкати | sống, ở
+sejít | зійти, спуститися | đi xuống
+riskovat | ризикувати | mạo hiểm
+vyrazit | вирушити, вибити | lên đường, đánh bật
+nabídnout | запропонувати | đề nghị
+soustředit | зосередити | tập trung
+strávit | провести (час), перетравити | dành (thời gian), tiêu hóa
+přinést | принести | mang đến
+chybět | бракувати, бути відсутнім | thiếu, vắng mặt
+přežít | пережити, вижити | sống sót
+vyzvednout | забрати, підняти | nhận, đón
+zařídit | влаштувати, облаштувати | sắp xếp
+vytvořit | створити | tạo ra
+dýchat | дихати | thở
+pamatovat | пам'ятати | nhớ
+bránit | захищати, заважати | bảo vệ, ngăn cản
+spojit | з'єднати, об'єднати | kết nối
+litovat | шкодувати | hối tiếc
+jednat | діяти, вести переговори | hành động, đàm phán
+porazit | перемогти | đánh bại
+přečíst | прочитати | đọc xong
+spolupracovat | співпрацювати | hợp tác
+přivést | привести | dẫn đến
+zvládnout | упоратися | xoay xở được
+jezdit | їздити | đi lại (bằng xe)
+ovládat | керувати, володіти | điều khiển
+půjčit | позичити | cho mượn
+zabíjet | убивати | giết
+plavat | плавати | bơi
+vadit | заважати | làm phiền
+zahrát | зіграти | chơi (một ván)
+ochránit | захистити | bảo vệ
+ukrást | вкрасти | ăn trộm
+odpočinout | відпочити | nghỉ ngơi
+zajímat | цікавити | gây hứng thú, thu hút sự quan tâm
+koukat | дивитися | nhìn
+hlídat | стерегти, доглядати | canh giữ, trông
+schovat | сховати | giấu
+sníst | з'їсти | ăn hết
+řešit | вирішувати, розв'язувати | giải quyết
+zabránit | запобігти | ngăn chặn
+provést | виконати, провести | thực hiện
+křičet | кричати | hét
+vydržet | витримати | chịu đựng
+pozvat | запросити | mời
+varovat | попереджати | cảnh báo
+běžet | бігти | chạy
+tancovat | танцювати | nhảy múa
+vyjít | вийти | đi ra
+ukončit | припинити, завершити | chấm dứt
+podepsat | підписати | ký
+opravit | виправити, полагодити | sửa chữa
+vymyslet | вигадати, придумати | nghĩ ra
+odpovědět | відповісти | trả lời
+zatknout | заарештувати | bắt giữ
+bolet | боліти | đau
+počítat | рахувати | đếm
+souhlasit | погоджуватися | đồng ý
+dojít | дійти | đi đến
+zastřelit | застрелити | bắn chết
+čelit | протистояти | đối mặt
+sundat | зняти | cởi, tháo
+vařit | варити, готувати | nấu
+vypnout | вимкнути | tắt
+vzpomenout | згадати | nhớ lại
+uklidnit | заспокоїти | làm dịu
+vyměnit | замінити, обміняти | đổi
+přijet | приїхати | đến (bằng xe)
+utíkat | тікати, бігти | chạy trốn
+zrušit | скасувати | hủy bỏ
+vytáhnout | витягти | kéo ra
+dosáhnout | досягти | đạt được
+prodávat | продавати | bán
+opakovat | повторювати | lặp lại
+letět | летіти | bay
+užít | використати | dùng, tận hưởng
+vydělat | заробити | kiếm tiền
+povídat | розповідати, балакати | trò chuyện
+tančit | танцювати | khiêu vũ
+zajistit | забезпечити | đảm bảo
+vyřídit | владнати, передати | giải quyết, chuyển lời
+políbit | поцілувати | hôn
+zvednout | підняти | nhấc lên
+brečet | плакати | khóc
+položit | покласти | đặt xuống
+věnovat | присвячувати, дарувати | dành, tặng
+pohnout | поворухнути, зрушити | cử động
+způsobit | спричинити | gây ra
+ležet | лежати | nằm
+následovat | слідувати | đi theo
+existovat | існувати | tồn tại
+sloužit | служити | phục vụ
+vyzkoušet | випробувати | thử nghiệm
+odstranit | усунути, видалити | loại bỏ
+vstávat | вставати | dậy, đứng dậy
+nenávidět | ненавидіти | ghét
+vyprávět | розповідати | kể
+skočit | стрибнути | nhảy
+trpět | страждати | chịu đựng
+předat | передати | chuyển giao
+potkat | зустріти | gặp
+odpustit | пробачити | tha thứ
+hlasovat | голосувати | bỏ phiếu
+kouřit | курити | hút thuốc
+skrývat | приховувати | che giấu
+podat | подати | đưa, nộp
+poslechnout | послухати, послухатися | nghe theo
+vstoupit | увійти | bước vào
+vydat | видати | xuất bản, phát hành
+otočit | повернути, перевернути | xoay
+doufat | сподіватися | hy vọng
+měnit | міняти | thay đổi
+odvézt | відвезти | chở đi
+kontrolovat | контролювати, перевіряти | kiểm tra
+připojit | приєднати, підключити | kết nối
+uzavřít | закрити, укласти (угоду) | đóng, ký kết
+znít | звучати | vang lên, nghe có vẻ
+odpočívat | відпочивати | nghỉ ngơi
+přát | бажати | chúc
+vracet | повертати | trả lại
+informovat | інформувати | thông báo
+slíbit | пообіцяти | hứa
+poradit | порадити | khuyên
+uvolnit | звільнити, розслабити | giải phóng, thả lỏng
+cestovat | подорожувати | du lịch
+unést | викрасти, винести | bắt cóc
+projet | проїхати | đi qua (bằng xe)
+rozdělit | розділити | chia
+vyrovnat | вирівняти, урівняти | cân bằng
+vyjádřit | висловити | bày tỏ
+seznámit | познайомити | giới thiệu, cho làm quen
+létat | літати | bay
+odmítnout | відмовити, відхилити | từ chối
+trávit | проводити (час), перетравлювати | dành (thời gian), tiêu hóa
+potvrdit | підтвердити | xác nhận
+studovat | вивчати, навчатися | học
+vyčistit | вичистити | làm sạch
+užívat | вживати, користуватися | sử dụng
+přejít | перейти | đi qua, băng qua
+hýbat | рухати | cử động
+převzít | перейняти, прийняти | tiếp nhận
+trénovat | тренувати | tập luyện
+ignorovat | ігнорувати | phớt lờ
+sebrat | підібрати, забрати | nhặt, lấy đi
+obtěžovat | турбувати, докучати | quấy rầy
+vysvětlovat | пояснювати | giải thích
+identifikovat | ідентифікувати | nhận dạng
+žádat | просити, вимагати | yêu cầu
+omlouvat | вибачати | tha lỗi, bào chữa
+zkoušet | пробувати, екзаменувати | thử, kiểm tra
+očekávat | очікувати | mong đợi
+spravit | полагодити | sửa
+uklidit | прибрати | dọn dẹp
+rozumět | розуміти | hiểu
+odvést | відвести | dẫn đi
+pozdravit | привітати | chào
+domluvit | договорити, узгодити | nói hết, dàn xếp
+vídat | бачити (регулярно) | gặp thường xuyên
+stáhnout | стягнути, завантажити | rút, tải xuống
+popsat | описати | mô tả
+uniknout | вислизнути, уникнути | trốn thoát
+zabrat | зайняти, подіяти | chiếm, có tác dụng
+kontaktovat | зв'язатися | liên lạc
+vstát | встати | đứng dậy
+uznat | визнати | công nhận
+umýt | помити | rửa
+nakupovat | купувати, робити покупки | mua sắm
+posadit | посадити, усадити | cho ngồi
+vyslechnout | вислухати, допитати | nghe hết, thẩm vấn
+překonat | подолати, перевершити | vượt qua
+objednat | замовити | đặt hàng
+určit | визначити, призначити | xác định
+donutit | змусити | buộc
+odhalit | викрити, розкрити | tiết lộ, vạch trần
+sdílet | ділитися, поділяти | chia sẻ
+obrátit | перевернути, звернути | lật, quay
+svědčit | свідчити | làm chứng
+přesunout | пересунути, перенести | di chuyển
+krýt | покривати, прикривати | che, bao phủ
+soudit | судити | xét xử, phán xét
+cvičit | тренуватися, вправлятися | tập luyện
+poskytnout | надати | cung cấp
+líbat | цілувати | hôn
+připomenout | нагадати | nhắc nhở
+usnout | заснути | ngủ thiếp đi
+oznámit | оголосити, повідомити | thông báo
+odpovídat | відповідати | trả lời, tương ứng
+zaměřit | націлити, зосередити | nhắm vào
+plakat | плакати | khóc
+prosit | просити | xin, cầu xin
+rušit | заважати, порушувати | làm phiền
+pomstít | помститися | trả thù
+ujít | пройти (відстань) | đi bộ (một quãng)
+splnit | виконати | hoàn thành
+prát | прати | giặt
+házet | кидати | ném
+spustit | запустити, опустити | khởi động, hạ xuống
+dodat | додати, доставити | thêm, cung cấp
+léčit | лікувати | chữa bệnh
+učinit | зробити, вчинити | làm
+zlomit | зламати | bẻ gãy
+uvědomit | повідомити | báo cho biết
+vyloučit | виключити | loại trừ
+točit | крутити, знімати (фільм) | quay
+umírat | помирати | chết, hấp hối
+respektovat | поважати, дотримуватися | tôn trọng
+běhat | бігати | chạy
+zaútočit | атакувати, напасти | tấn công
+stavět | будувати | xây dựng
+schovávat | ховати | giấu
+odložit | відкласти | để sang một bên, hoãn
+zvážit | зважити, обміркувати | cân nhắc
+zvracet | блювати | nôn
+zopakovat | повторити | lặp lại
+růst | рости | lớn lên
+kupovat | купувати | mua
+nutit | змушувати | ép buộc
+probudit | розбудити | đánh thức
+krást | красти | ăn cắp
+povědět | сказати, розповісти | nói, kể
+objevit | відкрити, виявити | khám phá
+mlčet | мовчати | im lặng
+předpokládat | припускати | giả định
+umět | уміти | biết (làm gì)
+přimět | змусити | khiến, buộc
+tvrdit | стверджувати | khẳng định
+vystoupit | вийти, виступити | xuống xe, trình diễn
+nahradit | замінити | thay thế
+volit | обирати, голосувати | chọn, bầu
+vládnout | правити, панувати | cai trị
+rozhodovat | вирішувати | quyết định
+nést | нести | mang
+končit | закінчувати | kết thúc
+ověřit | перевірити | xác minh
+odnést | віднести | mang đi
+obejmout | обійняти | ôm
+vinit | звинувачувати | đổ lỗi
+prohlédnout | оглянути | xem xét
+překvapit | здивувати | làm ngạc nhiên
+donést | донести, принести | mang đến
+obvinit | звинуватити | buộc tội
+zabalit | запакувати | đóng gói
+dohodnout | узгодити, домовитися | thỏa thuận
+zapnout | увімкнути, застебнути | bật
+sdělit | повідомити | thông báo
+předvést | продемонструвати | trình diễn
+chápat | розуміти | hiểu
+vyléčit | вилікувати | chữa khỏi
+odcházet | іти, відходити | rời đi
+kopat | копати, бити ногою | đào, đá
+zachovat | зберегти | giữ gìn
+vybírat | вибирати, збирати | chọn, thu
+ukazovat | показувати | cho xem, chỉ ra
+procházet | проходити | đi qua
+stavit | будувати | xây
+podporovat | підтримувати | ủng hộ
+vzbudit | розбудити, викликати | đánh thức, khơi dậy
+ztrácet | втрачати, губити | đánh mất
+obnovit | відновити | khôi phục
+lovit | полювати, ловити | săn
+posílat | надсилати | gửi
+tahat | тягати, тягнути | kéo
+osvobodit | звільнити | giải phóng
+drát | дерти, рвати | xé
+operovat | оперувати | phẫu thuật
+ovlivnit | вплинути | ảnh hưởng
+dopustit | допустити | để xảy ra
+reagovat | реагувати | phản ứng
+oslavit | відсвяткувати | ăn mừng
+napadnout | напасти, спасти на думку | tấn công, nảy ra
+otravovat | отруювати, набридати | đầu độc, quấy rầy
+prohrát | програти | thua
+obléct | одягнути | mặc
+pohybovat | рухати | di chuyển
+udržovat | підтримувати | duy trì
+pršet | іти (про дощ) | mưa
+vyvolat | викликати | gây ra
+pohřbít | поховати | chôn cất
+připomínat | нагадувати | gợi nhớ
+komunikovat | спілкуватися | giao tiếp
+vyrobit | виготовити, виробити | sản xuất
+bít | бити | đánh
+pozorovat | спостерігати | quan sát
+zpomalit | сповільнити | làm chậm
+vycházet | виходити | đi ra
+obrat | обібрати | lấy sạch, cướp
+přiblížit | наблизити | đưa lại gần
+zapsat | записати | ghi lại
+důvěřovat | довіряти | tin tưởng
+posunout | посунути | đẩy, dời
+podpořit | підтримати | ủng hộ
+oženit | одружити | cưới vợ cho
+slavit | святкувати | ăn mừng, kỷ niệm
+ovládnout | оволодіти, захопити | chiếm lĩnh
+ušetřit | заощадити | tiết kiệm
+rozbít | розбити | đập vỡ
+obejít | обійти | đi vòng
+jmenovat | назвати, призначити | bổ nhiệm, gọi tên
+strčit | штовхнути, засунути | đẩy, nhét
+zmínit | згадати | đề cập
+zadržet | затримати | giữ lại, bắt giữ
+prokázat | довести | chứng minh
+zlepšit | покращити | cải thiện
+srovnat | порівняти, вирівняти | so sánh
+vydělávat | заробляти | kiếm tiền
+vejít | увійти | đi vào
+založit | заснувати | thành lập
+vyděsit | налякати | làm hoảng sợ
+připustit | допустити, визнати | thừa nhận
+sejmout | зняти | tháo xuống
+uvařit | зварити, приготувати | nấu xong
+zranit | поранити | làm bị thương
+spálit | спалити | đốt cháy
+mlátit | лупцювати, молотити | đánh đập
+upravit | відредагувати, впорядкувати | chỉnh sửa
+přinutit | змусити | ép buộc
+zvýšit | підвищити | tăng
+skákat | стрибати | nhảy
+navrhnout | запропонувати, спроєктувати | đề xuất, thiết kế
+přistát | приземлитися | hạ cánh
+považovat | вважати | coi là
+obviňovat | звинувачувати | buộc tội
+trápit | мучити, турбувати | dằn vặt
+zdržovat | затримувати | làm chậm trễ
+nakrmit | нагодувати | cho ăn
+odolat | встояти | cưỡng lại
+mrknout | моргнути, зиркнути | nháy mắt
+uvažovat | міркувати | suy xét
+zajet | заїхати | ghé qua (bằng xe)
+pořídit | придбати | sắm
+dopadnout | упасти, закінчитися | rơi xuống, kết thúc (ra sao)
+uspořádat | організувати | tổ chức
+uklízet | прибирати | dọn dẹp
+děkovat | дякувати | cảm ơn
+nasadit | надіти, задіяти | đeo vào, triển khai
+těšit | тішити, радувати | làm vui lòng
+tisknout | друкувати, тиснути | in, ấn
+mazat | мазати, стирати | bôi, xóa
+péct | пекти | nướng
+sázet | садити, робити ставки | trồng, đặt cược
+minout | минути, промахнутися | đi qua, trượt
+malovat | малювати, фарбувати | vẽ, sơn
+bát se | боятися | sợ
+dívat se | дивитися | nhìn, xem
+podívat se | подивитися | xem, nhìn
+ptát se | питати | hỏi
+zeptat se | запитати | hỏi
+učit se | учитися | học
+naučit se | навчитися, вивчити | học được
+jmenovat se | називатися | tên là
+smát se | сміятися | cười
+zasmát se | засміятися | bật cười
+bavit se | розважатися, розмовляти | vui chơi, trò chuyện
+starat se | піклуватися | chăm sóc
+postarat se | подбати | lo liệu
+snažit se | старатися | cố gắng
+pokusit se | спробувати | thử
+cítit se | почуватися | cảm thấy
+chovat se | поводитися | cư xử
+hádat se | сваритися | cãi nhau
+líbit se | подобатися | được thích
+dařit se | вдаватися | thành công, suôn sẻ
+stát se | стати, статися | trở thành, xảy ra
+dostat se | потрапити, дістатися | đến được
+vrátit se | повернутися | quay lại
+vracet se | повертатися | trở về
+zdát se | здаватися, снитися | có vẻ, mơ thấy
+divit se | дивуватися | ngạc nhiên
+těšit se | тішитися, чекати з нетерпінням | mong chờ
+scházet se | зустрічатися, збиратися | gặp nhau
+sejít se | зустрітися, зібратися | gặp nhau
+rozhodnout se | вирішити, наважитися | quyết định
+vzdát se | здатися, відмовитися | đầu hàng, từ bỏ
+omlouvat se | вибачатися | xin lỗi
+omluvit se | вибачитися | xin lỗi
+stydět se | соромитися | xấu hổ
+zlobit se | сердитися | tức giận
+probudit se | прокинутися | thức dậy
+vzbudit se | прокинутися | thức dậy
+obléct se | одягнутися | mặc quần áo
+oblékat se | одягатися | mặc quần áo
+umýt se | умитися, помитися | rửa ráy, tắm
+koupat se | купатися | tắm
+vykoupat se | викупатися | tắm xong
+narodit se | народитися | được sinh ra
+oženit se | одружитися (про чоловіка) | cưới vợ
+vdát se | вийти заміж | lấy chồng
+zabývat se | займатися | làm về, nghiên cứu, xử lý
+věnovat se | присвячувати себе, займатися | dành thời gian cho
+pohybovat se | рухатися | di chuyển
+objevit se | з'явитися | xuất hiện
+ztratit se | загубитися, заблукати | bị lạc
+obávat se | побоюватися | e sợ
+mýlit se | помилятися | nhầm lẫn
+nudit se | нудьгувати | buồn chán
+usmívat se | усміхатися | mỉm cười
+usmát se | усміхнутися | mỉm cười
+zamilovat se | закохатися | phải lòng
+rozejít se | розійтися, розлучитися | chia tay
+podílet se | брати участь | tham gia
+spoléhat se | покладатися | dựa vào
+zúčastnit se | взяти участь | tham dự
+zranit se | поранитися | bị thương
+ozvat se | озватися | lên tiếng, liên lạc
+přát si | бажати | mong muốn
+myslet si | думати, вважати | nghĩ rằng
+uvědomit si | усвідомити | nhận ra
+vzpomenout si | згадати | nhớ ra
+pamatovat si | пам'ятати | ghi nhớ
+dovolit si | дозволити собі | cho phép mình
+vzít si | взяти собі, одружитися | lấy, kết hôn
+brát si | брати собі, одружуватися | lấy, kết hôn
+hrát si | гратися | chơi đùa
+stěžovat si | скаржитися | phàn nàn
+zasloužit si | заслужити | xứng đáng
+sednout si | сісти | ngồi xuống
+lehnout si | лягти | nằm xuống
+odpočinout si | відпочити | nghỉ ngơi
+dát si | замовити, взяти собі (їжу) | dùng (món ăn)
+koupit si | купити собі | mua cho mình
+půjčit si | позичити (собі) | mượn
+všimnout si | помітити | để ý
+pospíšit si | поспішити | nhanh lên
+představit si | уявити | tưởng tượng
+představovat si | уявляти | hình dung
+vážit si | поважати, цінувати | trân trọng
+modlit se | молитися | cầu nguyện
+prát se | битися | đánh nhau
+dotknout se | доторкнутися | chạm vào
+dozvědět se | дізнатися | biết được
+napít se | напитися, попити | uống
+vyhnout se | уникнути | tránh
+měnit se | змінюватися | thay đổi
+stěhovat se | переїжджати | chuyển nhà
+sprchovat se | приймати душ | tắm vòi sen
+holit se | голитися | cạo râu
+česat se | зачісуватися | chải tóc
+procházet se | прогулюватися | đi dạo
+setkat se | зустрітися | gặp gỡ
+seznámit se | познайомитися | làm quen
+loučit se | прощатися | chào tạm biệt
+rozloučit se | попрощатися | từ biệt
+zajímat se | цікавитися | quan tâm
+zamyslet se | замислитися | suy ngẫm
+soustředit se | зосередитися | tập trung
+chystat se | збиратися, готуватися | chuẩn bị
+přestěhovat se | переїхати | chuyển nhà

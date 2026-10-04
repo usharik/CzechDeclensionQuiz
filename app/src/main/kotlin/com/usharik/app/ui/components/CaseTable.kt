@@ -40,8 +40,8 @@ fun CaseTable(table: FormTable, modifier: Modifier = Modifier) {
 }
 
 /**
- * The lexeme's translation in the app-selected locale (not the device default): Russian for the
- * Russian/Belarusian/Ukrainian UI languages, English otherwise.
+ * The lexeme's translation in the app-selected locale (not the device default); see
+ * [Lexeme.translationFor] for which gloss each UI language gets.
  *
  * Note: this reads [LocalConfiguration]'s resolved locale, which reflects the UI language the
  * app applied via [com.usharik.app.UiLanguageManager] (AppCompatDelegate locales), not
@@ -49,8 +49,7 @@ fun CaseTable(table: FormTable, modifier: Modifier = Modifier) {
  */
 @Composable
 fun localizedTranslation(lexeme: Lexeme): String {
-    val lang = LocalConfiguration.current.locales[0].isO3Language
-    return if (lang in setOf("rus", "bel", "ukr")) lexeme.translationRu else lexeme.translationEn
+    return lexeme.translationFor(LocalConfiguration.current.locales[0].isO3Language)
 }
 
 /**

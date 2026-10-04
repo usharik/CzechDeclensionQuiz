@@ -14,13 +14,29 @@ sealed interface Lexeme {
     val headword: String
     val translationRu: String
     val translationEn: String
+    val translationUk: String
+    val translationVi: String
     val key: String get() = partOfSpeech.key(headword)
+
+    /**
+     * The gloss for a UI language given as an ISO 639-2 code (`Locale.isO3Language`): Ukrainian and
+     * Vietnamese have their own glosses, falling back to Russian and English respectively when an
+     * entry has none; Russian and Belarusian use Russian; every other language uses English.
+     */
+    fun translationFor(iso3Language: String): String = when (iso3Language) {
+        "ukr" -> translationUk.ifEmpty { translationRu }
+        "vie" -> translationVi.ifEmpty { translationEn }
+        "rus", "bel" -> translationRu
+        else -> translationEn
+    }
 
     data class Noun(val info: WordInfo) : Lexeme {
         override val partOfSpeech get() = PartOfSpeech.NOUN
         override val headword get() = info.word()
         override val translationRu get() = info.translation_ru()
         override val translationEn get() = info.translation_en()
+        override val translationUk get() = info.translation_uk()
+        override val translationVi get() = info.translation_vi()
     }
 
     /**
@@ -33,6 +49,8 @@ sealed interface Lexeme {
         override val headword get() = info.word()
         override val translationRu get() = info.translation_ru()
         override val translationEn get() = info.translation_en()
+        override val translationUk get() = info.translation_uk()
+        override val translationVi get() = info.translation_vi()
     }
 
     /**
@@ -44,8 +62,16 @@ sealed interface Lexeme {
         /** Shown in agreement (*milé město*, not *milý město*); the persisted [key] keeps both lemmas. */
         override val headword get() = "${adjective.form(0, gender, 0).substringBefore(",").trim().ifEmpty { adjective.word() }} ${noun.word()}"
         override val key get() = partOfSpeech.key("${adjective.word()} ${noun.word()}")
-        override val translationRu get() = "${adjective.translation_ru().substringBefore(",").substringBefore(";")} + ${noun.translation_ru().substringBefore(",").substringBefore(";")}"
-        override val translationEn get() = "${adjective.translation_en().substringBefore(",").substringBefore(";")} + ${noun.translation_en().substringBefore(",").substringBefore(";")}"
+        override val translationRu get() = phrase(adjective.translation_ru(), noun.translation_ru())
+        override val translationEn get() = phrase(adjective.translation_en(), noun.translation_en())
+        override val translationUk get() = phrase(adjective.translation_uk(), noun.translation_uk())
+        override val translationVi get() = phrase(adjective.translation_vi(), noun.translation_vi())
+
+        /** "first adjective sense + first noun sense"; empty when either gloss is missing so [translationFor] falls back. */
+        private fun phrase(adjective: String, noun: String): String =
+            if (adjective.isEmpty() || noun.isEmpty()) "" else "${firstSense(adjective)} + ${firstSense(noun)}"
+
+        private fun firstSense(gloss: String) = gloss.substringBefore(",").substringBefore(";")
     }
 
     data class Verb(val info: VerbInfo) : Lexeme {
@@ -53,6 +79,8 @@ sealed interface Lexeme {
         override val headword get() = info.word()
         override val translationRu get() = info.translation_ru()
         override val translationEn get() = info.translation_en()
+        override val translationUk get() = info.translation_uk()
+        override val translationVi get() = info.translation_vi()
     }
 }
 
