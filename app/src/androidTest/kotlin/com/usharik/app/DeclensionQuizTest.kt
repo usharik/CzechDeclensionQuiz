@@ -116,7 +116,7 @@ class DeclensionQuizTest : BaseComposeTest() {
     @Test
     fun incorrectPlacementReturnsFormToBankAndIncrementsErrorCounter() {
         openQuizAndWaitForWord()
-        val word = loadedWord()
+        val word = loadedWordWithWrongForms()
         val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
 
         dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
@@ -163,10 +163,10 @@ class DeclensionQuizTest : BaseComposeTest() {
     @Test
     fun advancingToNextWordResetsErrorCounter() {
         openQuizAndWaitForWord()
-        val word = loadedWord()
+        val word = loadedWordWithWrongForms()
         val (poolIndex, _) = poolFormNotMatchingTarget(word, number = 0, caseIndex = 0)
         dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
-        assertEquals("1/10", taggedText(TestTags.FULL_ERROR_COUNTER))
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { taggedText(TestTags.FULL_ERROR_COUNTER) == "1/10" }
 
         composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performClick()
 
@@ -258,7 +258,7 @@ class DeclensionQuizTest : BaseComposeTest() {
     @Test
     fun scoringSystemAwardsAndAccumulatesPointsCorrectly() {
         openQuizAndWaitForWord()
-        val word = loadedWord()
+        val word = loadedWordWithWrongForms()
 
         var expectedScore = openQuitDialogAndReadScore()
 
@@ -384,7 +384,7 @@ class DeclensionQuizTest : BaseComposeTest() {
     @Test
     fun tenMistakesResetCounterWithoutPenalty() {
         openQuizAndWaitForWord()
-        val word = loadedWord()
+        val word = loadedWordWithWrongForms()
         val expectedScore = openQuitDialogAndReadScore()
 
         repeat(10) {
@@ -459,6 +459,22 @@ class DeclensionQuizTest : BaseComposeTest() {
                 e,
             )
         }
+    }
+
+    /**
+     * The loaded word, skipping words whose forms are all identical (indeclinable *žervé*, *café*):
+     * tests that need a wrong form for the first cell cannot run on those.
+     */
+    private fun loadedWordWithWrongForms(): WordInfo {
+        repeat(5) {
+            val word = loadedWord()
+            if (visiblePoolForms().any { it.second != word.cases(0, 0) }) return word
+            composeTestRule.onNodeWithTag(TestTags.NAV_NEXT_BTN).performClick()
+            composeTestRule.waitUntil(timeoutMillis = 5_000) {
+                runCatching { taggedText(TestTags.FULL_WORD) != word.word() }.getOrDefault(false)
+            }
+        }
+        error("Five indeclinable words in a row.")
     }
 
     private fun poolFormForTarget(word: WordInfo, number: Int, caseIndex: Int): Pair<Int, String> {
