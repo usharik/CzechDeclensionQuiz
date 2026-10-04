@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
@@ -139,11 +140,7 @@ class DeclensionQuizTest : BaseComposeTest() {
         for (caseIndex in 0..6) {
             for (number in 0..1) {
                 if (word.cases(number, caseIndex).isNotEmpty()) {
-                    val (poolIndex, _) = poolFormForTarget(word, number, caseIndex)
-                    dragPoolWordToCell(poolIndex, number, caseIndex)
-                    composeTestRule.waitUntil(timeoutMillis = 3_000) {
-                        !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
-                    }
+                    placeCorrectForm(word, number, caseIndex)
                 }
             }
         }
@@ -277,11 +274,7 @@ class DeclensionQuizTest : BaseComposeTest() {
         for (caseIndex in 0..6) {
             for (number in 0..1) {
                 if (word.cases(number, caseIndex).isNotEmpty()) {
-                    val (poolIndex, _) = poolFormForTarget(word, number, caseIndex)
-                    dragPoolWordToCell(poolIndex, number, caseIndex)
-                    composeTestRule.waitUntil(timeoutMillis = 3_000) {
-                        !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
-                    }
+                    placeCorrectForm(word, number, caseIndex)
                     expectedScore += 3
                     assertEquals(expectedScore, openQuitDialogAndReadScore())
                 }
@@ -316,11 +309,7 @@ class DeclensionQuizTest : BaseComposeTest() {
         for (caseIndex in 0..6) {
             for (number in 0..1) {
                 if (word.cases(number, caseIndex).isNotEmpty()) {
-                    val (poolIndex, _) = poolFormForTarget(word, number, caseIndex)
-                    dragPoolWordToCell(poolIndex, number, caseIndex)
-                    composeTestRule.waitUntil(timeoutMillis = 3_000) {
-                        !tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
-                    }
+                    placeCorrectForm(word, number, caseIndex)
                     expectedScore += 3
                 }
             }
@@ -443,6 +432,33 @@ class DeclensionQuizTest : BaseComposeTest() {
         return requireNotNull(runBlocking {
             (composeTestRule.activity.application as App).wordService.wordByName(text)
         }) { "The displayed word '$text' was not found in the app database." }
+    }
+
+    /**
+     * Drags the pool form that belongs in the given cell onto it and waits for it to leave the
+     * bank. On a timeout the failure names the step and dumps the bank, the cell and the gesture
+     * geometry, since these full-table tests only run on CI.
+     */
+    private fun placeCorrectForm(word: WordInfo, number: Int, caseIndex: Int) {
+        val (poolIndex, form) = poolFormForTarget(word, number, caseIndex)
+        val poolTag = "${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex"
+        val cellTag = "${TestTags.FULL_CELL_PREFIX}${number}_$caseIndex"
+        val sourceBounds = composeTestRule.onNodeWithTag(poolTag).fetchSemanticsNode().boundsInRoot
+        dragPoolWordToCell(poolIndex, number, caseIndex)
+        try {
+            composeTestRule.waitUntil(timeoutMillis = 3_000) { !tagExists(poolTag) }
+        } catch (e: androidx.compose.ui.test.ComposeTimeoutException) {
+            val cell = runCatching { composeTestRule.onNodeWithTag(cellTag).fetchSemanticsNode() }.getOrNull()
+            throw AssertionError(
+                "Form '$form' (pool $poolIndex) did not leave the bank after dragging it to $number/$caseIndex " +
+                    "of '${word.word()}'. Cell text: ${runCatching { cellText(number, caseIndex) }.getOrElse { "<${it.javaClass.simpleName}>" }}; " +
+                    "errors: ${runCatching { taggedText(TestTags.FULL_ERROR_COUNTER) }.getOrNull()}; " +
+                    "source before scroll: $sourceBounds, after: ${runCatching { composeTestRule.onNodeWithTag(poolTag).fetchSemanticsNode().boundsInRoot }.getOrNull()}; " +
+                    "target: ${cell?.boundsInRoot}; root: ${composeTestRule.onRoot().fetchSemanticsNode().boundsInRoot}; " +
+                    "bank: ${visiblePoolForms()}",
+                e,
+            )
+        }
     }
 
     private fun poolFormForTarget(word: WordInfo, number: Int, caseIndex: Int): Pair<Int, String> {
