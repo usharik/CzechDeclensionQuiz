@@ -121,7 +121,7 @@ class DeclensionQuizTest : BaseComposeTest() {
 
         dragPoolWordToCell(poolIndex, number = 0, caseIndex = 0)
 
-        assertEquals("1/10", taggedText(TestTags.FULL_ERROR_COUNTER))
+        composeTestRule.waitUntil(timeoutMillis = 3_000) { taggedText(TestTags.FULL_ERROR_COUNTER) == "1/10" }
         composeTestRule.waitUntil(timeoutMillis = 3_000) {
             tagExists("${TestTags.FULL_POOL_WORD_PREFIX}$poolIndex")
         }

@@ -2,8 +2,8 @@ package com.usharik.app.ui.components
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +40,9 @@ fun BannerAd(app: App, unitId: String, modifier: Modifier = Modifier, widthFract
         val size = remember(adWidthDp) {
             AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidthDp)
         }
-        BannerAdView(unitId, size, onFailed = { failed = true }, Modifier.width(adWidthDp.dp).wrapContentHeight())
+        // Reserve the anchored banner's known height up front: with wrap-content the slot is 0 dp
+        // until the ad loads, and the late jump shifts the quiz table under a dragging finger.
+        BannerAdView(unitId, size, onFailed = { failed = true }, Modifier.width(adWidthDp.dp).height(size.height.dp))
     }
 }
 
