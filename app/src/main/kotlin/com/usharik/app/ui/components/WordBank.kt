@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
@@ -40,13 +41,18 @@ fun WordBank(models: List<WordModel>, dnd: DragAndDropState, modifier: Modifier 
     ) {
         models.forEachIndexed { index, model ->
             if (model.visible && model.word.isNotEmpty()) {
-                WordChip(
-                    text = model.word,
-                    modifier = Modifier
-                        .testTag("${TestTags.FULL_POOL_WORD_PREFIX}$index")
-                        .semantics { contentDescription = model.word }
-                        .dragSource(dnd, "$index", model.word),
-                )
+                // Keyed by pool index: without it a chip that shifts left when an earlier one is
+                // placed takes over that chip's slot, its drag handler restarts with the new tag
+                // and can miss the down event of the next gesture, so the chip doesn't pick up.
+                key(index) {
+                    WordChip(
+                        text = model.word,
+                        modifier = Modifier
+                            .testTag("${TestTags.FULL_POOL_WORD_PREFIX}$index")
+                            .semantics { contentDescription = model.word }
+                            .dragSource(dnd, "$index", model.word),
+                    )
+                }
             }
         }
     }
