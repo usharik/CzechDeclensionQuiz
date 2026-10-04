@@ -55,7 +55,8 @@ class DragAndDropState {
         draggedTag = tag; dragText = text; pointer = at; itemSize = size; dragging = true
     }
 
-    fun move(delta: Offset) { pointer += delta }
+    /** Moves the pointer to [at], in root coordinates. */
+    fun moveTo(at: Offset) { pointer = at }
 
     fun end() {
         if (!dragging) return
@@ -94,7 +95,10 @@ fun Modifier.dragSource(
                     onPickUp()
                     state.start(tag, text, itemRoot + local, size)
                 },
-                onDrag = { change, amount -> change.consume(); state.move(amount) },
+                // Track the finger's actual position rather than summing deltas: the drag starts
+                // past touch slop and the first delta repeats that over-slop distance, which put the
+                // drop point ~8dp ahead of the finger and missed cells released near their edge.
+                onDrag = { change, _ -> change.consume(); state.moveTo(itemRoot + change.position) },
                 onDragEnd = { state.end() },
                 onDragCancel = { state.cancel() },
             )
