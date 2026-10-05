@@ -10,7 +10,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.gson.JsonParser
 import com.usharik.app.ads.AdManager
 import com.usharik.app.ads.AdSessionState
 import com.usharik.app.ads.InterstitialAdPolicy
@@ -56,7 +56,7 @@ open class App : Application() {
         gson = Gson()
         appState = AppState()
         val database = DatabaseFactory.provideDocumentDatabase(this)
-        documentRepository = DocumentRepository(database, gson)
+        documentRepository = DocumentRepository(database)
         statsRepository = TrainingStatsRepository(database)
         analyticsService = FirebaseAnalyticsService(FirebaseAnalytics.getInstance(this))
         notificationHelper = NotificationHelper(analyticsService)
@@ -103,8 +103,13 @@ open class App : Application() {
         appState.setSwitchOffAnimation(prefs.getBoolean(PREF_SWITCH_OFF_ANIMATION, false))
         appState.setDailyGoal(prefs.getInt(PREF_DAILY_GOAL, DailyGoal.DEFAULT.points))
         appState.setPartOfSpeech(PartOfSpeech.fromName(prefs.getString(PREF_PART_OF_SPEECH, null)))
-        val errorsType = object : TypeToken<HashMap<String, Int>>() {}.type
-        appState.setWordsWithErrors(runCatching { gson.fromJson<HashMap<String, Int>>(prefs.getString(PREF_WORDS_WITH_ERRORS, "{}"), errorsType) }.getOrDefault(hashMapOf()))
+        // Parsed by hand rather than through a TypeToken, which relies on R8 keeping generic signatures.
+        appState.setWordsWithErrors(
+            runCatching {
+                JsonParser.parseString(prefs.getString(PREF_WORDS_WITH_ERRORS, null) ?: "{}").asJsonObject
+                    .entrySet().associate { (word, count) -> word to count.asInt }
+            }.getOrDefault(emptyMap()),
+        )
     }
 
     fun persistPartOfSpeech(partOfSpeech: PartOfSpeech) {
