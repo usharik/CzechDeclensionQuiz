@@ -1,26 +1,26 @@
-Learn Czech grammar by doing it. Czech Declension Quiz trains the forms that make Czech hard: seven cases, two numbers, four genders, and verb conjugation.
+Learn Czech grammar by doing it. Czech Declension Quiz drills the forms that make Czech hard: the seven cases in singular and plural, noun and adjective declension, adjective agreement and verb conjugation.
 
-★ THREE WORD CLASSES, ONE APP
+Three word classes, one app
 • Nouns: 912 words with gender, declension pattern and translation
 • Adjectives: 506 words, always practised together with a noun so you learn agreement (mladý muž → mladého muže, jarní noc → jarní noci)
 • Verbs: 581 words with the present tense, past participle and imperative, plus aspect pairs (dělat / udělat)
 • Phrases: decline an adjective and a noun together after bez, ke, vidím, o, s
 
-★ TWO WAYS TO PRACTISE
-• Full table: drag every form into its place in the 14-cell declension or conjugation table
+Two ways to practise
+• Full table: drag every form into its place in the declension or conjugation table
 • One form at a time: pick the right form, case by case or person by person
 
-★ LEARN FROM YOUR MISTAKES
+Learn from your mistakes
 Every word you get wrong goes to your mistakes list. Review it until it's empty.
 
-★ HANDBOOK
+Grammar handbook
 Declension patterns for nouns (pán, hrad, žena, město and others), hard, soft and possessive adjectives, and the main verb groups, with short grammar tips: stem softening, the imperative, the past tense with jsem / jsi.
 
-★ STAY MOTIVATED
+Stay motivated
 • Daily goal with points and a streak
 • Optional daily reminder
 • Filter nouns by gender
 
 The interface is available in English, Czech, Russian, Ukrainian, Belarusian, German and Vietnamese. Translations of the words are in Russian, English, Ukrainian and Vietnamese.
 
-Free, no account needed, works offline.
+Free with ads: banners and occasional full-screen ads. An optional one-time in-app purchase removes all ads for good. No account needed, and the quizzes work offline.

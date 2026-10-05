@@ -1,28 +1,28 @@
-Học ngữ pháp tiếng Séc qua thực hành. Ứng dụng giúp bạn luyện đúng những gì làm tiếng Séc trở nên khó: bảy cách, hai số, bốn giống và cách chia động từ.
+Học ngữ pháp tiếng Séc qua thực hành. Ứng dụng giúp bạn luyện đúng những gì làm tiếng Séc trở nên khó: bảy cách ngữ pháp ở số ít và số nhiều, biến cách danh từ và tính từ, sự hòa hợp và cách chia động từ.
 
-★ BA LOẠI TỪ TRONG MỘT ỨNG DỤNG
+Ba loại từ trong một ứng dụng
 • Danh từ: 912 từ kèm giống, mẫu biến cách và bản dịch
 • Tính từ: 506 từ, luôn được luyện cùng một danh từ để bạn học sự hòa hợp (mladý muž → mladého muže, jarní noc → jarní noci)
 • Động từ: 581 từ với thì hiện tại, phân từ quá khứ và thức mệnh lệnh, cùng các cặp thể (dělat / udělat)
 • Cụm từ: biến cách tính từ và danh từ cùng nhau sau bez, ke, vidím, o, s
 
-★ HAI CÁCH LUYỆN TẬP
+Hai cách luyện tập
 • Cả bảng: kéo từng dạng từ vào đúng ô trong bảng biến cách hoặc chia động từ
 • Từng dạng một: chọn dạng đúng cho từng cách hoặc từng ngôi
 
-★ HỌC TỪ LỖI SAI
+Học từ lỗi sai
 Những từ bạn làm sai sẽ được đưa vào danh sách riêng. Hãy ôn lại cho đến khi danh sách trống.
 
-★ SỔ TAY NGỮ PHÁP
-Các mẫu biến cách danh từ (pán, hrad, žena, město và các mẫu khác), tính từ cứng, mềm và sở hữu, các nhóm động từ chính, kèm mẹo ngữ pháp ngắn: biến âm gốc từ, thức mệnh lệnh, thì quá khứ với jsem / jsi.
+Sổ tay ngữ pháp
+Các mẫu biến cách danh từ (pán, hrad, žena, město và các mẫu khác), các nhóm tính từ theo mẫu cứng, mẫu mềm và tính từ sở hữu, các nhóm động từ chính, kèm mẹo ngữ pháp ngắn: biến âm gốc từ, thức mệnh lệnh, thì quá khứ với jsem / jsi.
 
-★ GIỮ ĐỘNG LỰC
+Giữ động lực
 • Mục tiêu hằng ngày tính bằng điểm và chuỗi ngày liên tiếp
 • Nhắc nhở hằng ngày (tùy chọn)
 • Lọc danh từ theo giống
 
-Cả 2000 từ đều có bản dịch tiếng Việt. Giao diện có tiếng Việt, tiếng Séc, tiếng Anh, tiếng Nga, tiếng Ukraina, tiếng Belarus và tiếng Đức.
+Gần 2000 từ đều có bản dịch tiếng Việt. Giao diện có tiếng Việt, tiếng Séc, tiếng Anh, tiếng Nga, tiếng Ukraina, tiếng Belarus và tiếng Đức.
 
 Bạn phát hiện lỗi trong bản dịch? Hãy viết cho tác giả ứng dụng qua địa chỉ usharik@mail.ru — mỗi góp ý đều giúp từ điển tốt hơn.
 
-Miễn phí, không cần tài khoản, dùng được khi không có mạng.
+Miễn phí, có quảng cáo: biểu ngữ và đôi khi quảng cáo toàn màn hình. Bạn có thể mua một lần trong ứng dụng để xóa vĩnh viễn mọi quảng cáo. Không cần tài khoản, các bài luyện tập dùng được khi không có mạng.
