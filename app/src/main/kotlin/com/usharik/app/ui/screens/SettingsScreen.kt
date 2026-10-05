@@ -90,6 +90,7 @@ fun SettingsScreen(app: App) {
                         .fillMaxWidth()
                         .testTag(TestTags.BTN_REMOVE_ADS)
                         .clickable(enabled = price != null && !removeAdsOffer.pending, role = Role.Button) {
+                            app.analyticsService.logButtonClick("SETTINGS_BUTTON_CLICK", "REMOVE_ADS")
                             (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) }
                         }
                         .padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingSmLarge),
@@ -101,6 +102,7 @@ fun SettingsScreen(app: App) {
                             when {
                                 removeAdsOffer.pending -> stringResource(R.string.remove_ads_pending)
                                 price != null -> stringResource(R.string.remove_ads_price, price)
+                                !removeAdsOffer.billingChecked -> stringResource(R.string.remove_ads_loading)
                                 else -> stringResource(R.string.remove_ads_unavailable)
                             },
                             color = if (price != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,

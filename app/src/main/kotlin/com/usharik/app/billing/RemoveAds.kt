@@ -33,6 +33,8 @@ data class RemoveAdsOffer(
     val pending: Boolean = false,
     /** Play's purchase list has been read at least once since start, so the entitlement is current. */
     val purchasesSynced: Boolean = false,
+    /** Play has answered (with a product, without one, or with an error); before that the price is just loading. */
+    val billingChecked: Boolean = false,
 )
 
 interface PurchaseManager {

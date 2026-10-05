@@ -217,4 +217,5 @@
     <string name="support_offer_buy">Remove ads · %1$s</string>
     <string name="support_offer_later">Not now</string>
     <string name="support_offer_never">Don\'t show again</string>
+    <string name="remove_ads_loading">Checking Google Play…</string>
 </resources>

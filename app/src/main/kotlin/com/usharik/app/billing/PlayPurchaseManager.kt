@@ -49,8 +49,9 @@ class PlayPurchaseManager(
         client.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(result: BillingResult) {
                 connecting = false
-                if (result.responseCode == BillingResponseCode.OK) syncWithPlay()
-                else Log.w(TAG, "Billing setup failed: ${result.describe()}")
+                if (result.responseCode == BillingResponseCode.OK) return syncWithPlay()
+                Log.w(TAG, "Billing setup failed: ${result.describe()}")
+                state.update { it.copy(billingChecked = true) }
             }
 
             override fun onBillingServiceDisconnected() {
@@ -90,11 +91,12 @@ class PlayPurchaseManager(
         client.queryProductDetailsAsync(QueryProductDetailsParams.newBuilder().setProductList(listOf(product)).build()) { result, details ->
             if (result.responseCode != BillingResponseCode.OK) {
                 Log.w(TAG, "Product query failed: ${result.describe()}")
+                state.update { it.copy(billingChecked = true) }
                 return@queryProductDetailsAsync
             }
             val removeAds = details.productDetailsList.firstOrNull { it.productId == REMOVE_ADS_PRODUCT_ID }
             productDetails = removeAds
-            state.update { it.copy(formattedPrice = removeAds?.oneTimePurchaseOfferDetails?.formattedPrice) }
+            state.update { it.copy(formattedPrice = removeAds?.oneTimePurchaseOfferDetails?.formattedPrice, billingChecked = true) }
         }
     }
 

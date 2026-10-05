@@ -206,4 +206,5 @@
     <string name="support_offer_buy">Gỡ quảng cáo · %1$s</string>
     <string name="support_offer_later">Để sau</string>
     <string name="support_offer_never">Không hiện lại</string>
+    <string name="remove_ads_loading">Đang kiểm tra Google Play…</string>
 </resources>

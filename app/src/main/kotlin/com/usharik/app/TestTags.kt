@@ -14,6 +14,7 @@ object TestTags {
     const val BTN_HANDBOOK = "btn_handbook"
     const val BTN_SETTINGS = "btn_settings"
     const val BTN_REMOVE_ADS = "btn_remove_ads"
+    const val BTN_ABOUT_REMOVE_ADS = "btn_about_remove_ads"
     const val BTN_ABOUT = "btn_about"
     const val HUB_PROGRESS_CARD = "hub_progress_card"
     const val HUB_SUPPORT_OFFER = "hub_support_offer"

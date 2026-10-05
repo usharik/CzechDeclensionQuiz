@@ -1,5 +1,6 @@
 package com.usharik.app.ui.screens
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -16,16 +17,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
+import com.usharik.app.TestTags
 import com.usharik.app.notification.ReminderPlanner
 import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.components.OutlinedModernButton
@@ -43,6 +48,8 @@ import java.util.Date
 @Composable
 fun AboutScreen(app: App) {
     val context = LocalContext.current
+    val adFree by app.adFree.adFree.collectAsState()
+    val removeAdsOffer by app.purchaseManager.offer.collectAsState()
 
     fun rateApp() {
         HapticFeedback.light(context)
@@ -89,6 +96,32 @@ fun AboutScreen(app: App) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = Dimens.textBody,
         )
+        val price = removeAdsOffer.formattedPrice
+        if (adFree) {
+            Text(
+                stringResource(R.string.ads_removed),
+                Modifier.padding(top = Dimens.spacingXl),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = Dimens.textBody,
+            )
+        } else if (price != null && !removeAdsOffer.pending) {
+            // The purchase is also in Settings; here it sits next to "rate" as a way to support the app.
+            GradientButton(
+                text = stringResource(R.string.remove_ads),
+                subtitle = stringResource(R.string.remove_ads_price, price),
+                gradient = AppColors.gradientPrimary,
+                fontSize = Dimens.textBody,
+                onClick = {
+                    HapticFeedback.light(context)
+                    app.analyticsService.logButtonClick("ABOUT_BUTTON_CLICK", "REMOVE_ADS")
+                    (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.spacingXl)
+                    .testTag(TestTags.BTN_ABOUT_REMOVE_ADS),
+            )
+        }
         GradientButton(
             text = stringResource(R.string.rate_app),
             gradient = AppColors.gradientAccent,
@@ -97,7 +130,7 @@ fun AboutScreen(app: App) {
             onClick = ::rateApp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Dimens.spacingXl),
+                .padding(top = if (adFree || price == null || removeAdsOffer.pending) Dimens.spacingXl else Dimens.spacingMd),
         )
         OutlinedModernButton(
             text = stringResource(R.string.privacy_policy),

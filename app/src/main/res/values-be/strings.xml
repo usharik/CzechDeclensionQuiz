@@ -236,4 +236,5 @@
     <string name="support_offer_buy">Прыбраць рэкламу · %1$s</string>
     <string name="support_offer_later">Не зараз</string>
     <string name="support_offer_never">Больш не паказваць</string>
+    <string name="remove_ads_loading">Правяраем Google Play…</string>
 </resources>

@@ -216,4 +216,5 @@
     <string name="support_offer_buy">Werbung entfernen · %1$s</string>
     <string name="support_offer_later">Nicht jetzt</string>
     <string name="support_offer_never">Nicht mehr anzeigen</string>
+    <string name="remove_ads_loading">Google Play wird geprüft…</string>
 </resources>
