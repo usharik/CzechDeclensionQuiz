@@ -31,6 +31,8 @@ data class RemoveAdsOffer(
     val formattedPrice: String? = null,
     /** A purchase was made but the payment has not cleared yet (e.g. cash at a store). */
     val pending: Boolean = false,
+    /** Play's purchase list has been read at least once since start, so the entitlement is current. */
+    val purchasesSynced: Boolean = false,
 )
 
 interface PurchaseManager {

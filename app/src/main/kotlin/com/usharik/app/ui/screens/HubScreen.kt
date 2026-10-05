@@ -1,5 +1,6 @@
 package com.usharik.app.ui.screens
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -40,14 +41,21 @@ import com.usharik.app.BuildConfig
 import com.usharik.app.PartOfSpeech
 import com.usharik.app.R
 import com.usharik.app.TestTags
+import com.usharik.app.billing.SupportOfferContext
+import com.usharik.app.billing.SupportOfferPolicy
+import com.usharik.app.billing.SupportOfferState
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.components.ProgressCard
+import com.usharik.app.ui.components.SupportOfferCard
+import com.usharik.app.ui.state.PracticeTotals
 import com.usharik.app.ui.state.ProgressOverview
+import com.usharik.app.ui.state.practiceTotals
 import com.usharik.app.ui.state.progressOverview
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
+import java.time.LocalDate
 
 /**
  * Quiz-mode selection hub: the progress card, the nouns / adjectives / verbs switch, three
@@ -70,7 +78,9 @@ fun HubScreen(
     val partOfSpeech by app.appState.partOfSpeechFlow.collectAsState()
     val wordsWithErrors by app.appState.wordsWithErrorsFlow.collectAsState()
     var overview by remember { mutableStateOf<ProgressOverview?>(null) }
+    var practice by remember { mutableStateOf<PracticeTotals?>(null) }
     LaunchedEffect(goalTarget, wordsWithErrors.size) {
+        practice = app.statsRepository.practiceTotals()
         overview = app.statsRepository.progressOverview(goalTarget, wordsWithErrors.size).also {
             app.analyticsService.logEvent("hub_progress_shown", Bundle().apply {
                 putInt("streak", it.streak.current)
@@ -78,6 +88,26 @@ fun HubScreen(
                 putInt("review_count", it.reviewCount)
             })
         }
+    }
+    val adFree by app.adFree.adFree.collectAsState()
+    val removeAdsOffer by app.purchaseManager.offer.collectAsState()
+    var offerState by remember { mutableStateOf(app.supportOfferStore.load()) }
+    val today = LocalDate.now()
+    val showOffer = practice?.let {
+        SupportOfferPolicy.shouldShow(
+            offerState,
+            SupportOfferContext(today, app.installDate, it.practiceDays, it.wordsCompleted, it.practicedToday, adFree, removeAdsOffer),
+        )
+    } == true
+    fun updateOffer(next: SupportOfferState) {
+        offerState = next
+        app.supportOfferStore.save(next)
+    }
+    LaunchedEffect(showOffer) {
+        val shown = if (showOffer) SupportOfferPolicy.onShown(offerState, today) else return@LaunchedEffect
+        if (shown == offerState) return@LaunchedEffect
+        updateOffer(shown)
+        app.analyticsService.logEvent("support_offer_impression", Bundle().apply { putInt("impression", shown.impressions) })
     }
     fun click(buttonName: String, action: () -> Unit) {
         HapticFeedback.light(context)
@@ -97,6 +127,22 @@ fun HubScreen(
         ) {
             overview?.let {
                 ProgressCard(it, onReview = { click("REVIEW", onStartReview) }, Modifier.padding(bottom = Dimens.spacingMdLarge))
+            }
+            val price = removeAdsOffer.formattedPrice
+            if (showOffer && price != null) {
+                SupportOfferCard(
+                    price = price,
+                    onBuy = {
+                        click("SUPPORT_OFFER_BUY") { (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) } }
+                    },
+                    onNotNow = {
+                        click("SUPPORT_OFFER_LATER") { updateOffer(SupportOfferPolicy.onNotNow(offerState, today)) }
+                    },
+                    onNeverShow = {
+                        click("SUPPORT_OFFER_NEVER") { updateOffer(SupportOfferPolicy.onNeverShow(offerState, today)) }
+                    },
+                    modifier = Modifier.padding(bottom = Dimens.spacingMdLarge),
+                )
             }
             Text(
                 stringResource(R.string.word_class_title),

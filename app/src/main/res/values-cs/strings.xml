@@ -231,4 +231,9 @@
     <string name="remove_ads_unavailable">Nákupy přes Google Play teď nejsou dostupné</string>
     <string name="remove_ads_pending">Platba čeká na potvrzení</string>
     <string name="ads_removed">Reklamy jsou vypnuté. Děkujeme za podporu aplikace!</string>
+    <string name="support_offer_title">Učte se bez reklam</string>
+    <string name="support_offer_body">Jednorázový nákup natrvalo odstraní reklamy a podpoří nezávislého vývojáře aplikace.</string>
+    <string name="support_offer_buy">Odstranit reklamy · %1$s</string>
+    <string name="support_offer_later">Teď ne</string>
+    <string name="support_offer_never">Už nezobrazovat</string>
 </resources>

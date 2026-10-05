@@ -24,3 +24,15 @@ suspend fun TrainingStatsRepository.progressOverview(goalTarget: Int, reviewCoun
         reviewCount = reviewCount,
     )
 }
+
+/** Lifetime practice figures the support offer waits for. */
+data class PracticeTotals(val practiceDays: Int, val wordsCompleted: Int, val practicedToday: Boolean)
+
+suspend fun TrainingStatsRepository.practiceTotals(today: LocalDate = LocalDate.now()): PracticeTotals {
+    val rows = allStats()
+    return PracticeTotals(
+        practiceDays = rows.count { Streak.isPracticeDay(it.score) },
+        wordsCompleted = rows.sumOf { it.wordsCompleted },
+        practicedToday = rows.any { it.date == today.toString() && Streak.isPracticeDay(it.score) },
+    )
+}

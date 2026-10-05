@@ -212,4 +212,9 @@
     <string name="remove_ads_unavailable">Purchases through Google Play are not available right now</string>
     <string name="remove_ads_pending">Payment is waiting for confirmation</string>
     <string name="ads_removed">Ads are removed. Thank you for supporting the app!</string>
+    <string name="support_offer_title">Learn without ads</string>
+    <string name="support_offer_body">A one-time purchase removes ads forever and supports the independent developer of this app.</string>
+    <string name="support_offer_buy">Remove ads · %1$s</string>
+    <string name="support_offer_later">Not now</string>
+    <string name="support_offer_never">Don\'t show again</string>
 </resources>

@@ -16,6 +16,10 @@ object TestTags {
     const val BTN_REMOVE_ADS = "btn_remove_ads"
     const val BTN_ABOUT = "btn_about"
     const val HUB_PROGRESS_CARD = "hub_progress_card"
+    const val HUB_SUPPORT_OFFER = "hub_support_offer"
+    const val HUB_SUPPORT_OFFER_BUY = "hub_support_offer_buy"
+    const val HUB_SUPPORT_OFFER_LATER = "hub_support_offer_later"
+    const val HUB_SUPPORT_OFFER_NEVER = "hub_support_offer_never"
     const val HUB_STREAK = "hub_streak"
     const val HUB_REVIEW = "hub_review"
     const val HUB_POS_PREFIX = "hub_pos_" // append the PartOfSpeech name in lower case

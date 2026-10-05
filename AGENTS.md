@@ -27,6 +27,9 @@ scripts/deploy-debug.sh [serial] # install the debug APK on a connected device
   [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for reading its reports.
 - Ads go through `AdsPolicy.areAdsEnabled()` (`app/src/main/kotlin/com/usharik/app/ads/Ads.kt`);
   instrumented tests replace the `AdManager` via `App.createAdManager()`.
+- The one-time Play product `remove_ads` (`app/.../billing/`) turns all ads off. The hub's
+  support-offer card follows `SupportOfferPolicy` (install age, practice, caps, back-off); keep purchase
+  prompts out of notifications (Play policy). Instrumented tests replace Play via `App.createPurchaseManager()`.
 
 ## Versioning
 

@@ -22,9 +22,14 @@ import kotlinx.coroutines.flow.update
 /**
  * Google Play Billing for the one-time [REMOVE_ADS_PRODUCT_ID] purchase. There is no backend, so the
  * entitlement follows Play's own purchase list: a full query grants or revokes it (refunds included),
- * a purchase update only grants it. Billing callbacks arrive on the main thread.
+ * a purchase update only grants it. Billing callbacks arrive on the main thread. [logEvent] receives
+ * the purchase funnel's analytics events.
  */
-class PlayPurchaseManager(context: Context, private val entitlement: AdFreeEntitlement) : PurchaseManager {
+class PlayPurchaseManager(
+    context: Context,
+    private val entitlement: AdFreeEntitlement,
+    private val logEvent: (String) -> Unit = {},
+) : PurchaseManager {
     private val state = MutableStateFlow(RemoveAdsOffer())
     override val offer: StateFlow<RemoveAdsOffer> = state.asStateFlow()
 
@@ -100,17 +105,30 @@ class PlayPurchaseManager(context: Context, private val entitlement: AdFreeEntit
                 Log.w(TAG, "Purchase query failed: ${result.describe()}")
                 return@queryPurchasesAsync
             }
-            apply(RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() }), fullList = true)
+            val status = RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() })
+            if (status.owned && !entitlement.isAdFree()) logEvent("remove_ads_restored")
+            apply(status, fullList = true)
+            state.update { it.copy(purchasesSynced = true) }
         }
     }
 
     private fun onPurchasesUpdated(result: BillingResult, purchases: List<Purchase>) {
         when (result.responseCode) {
-            BillingResponseCode.OK -> apply(RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() }), fullList = false)
+            BillingResponseCode.OK -> {
+                val status = RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() })
+                when {
+                    status.owned && !entitlement.isAdFree() -> logEvent("remove_ads_purchased")
+                    status.pending -> logEvent("remove_ads_pending")
+                }
+                apply(status, fullList = false)
+            }
             // Bought on another device or before a reinstall: the full query restores it.
             BillingResponseCode.ITEM_ALREADY_OWNED -> queryPurchases()
-            BillingResponseCode.USER_CANCELED -> Unit
-            else -> Log.w(TAG, "Purchase failed: ${result.describe()}")
+            BillingResponseCode.USER_CANCELED -> logEvent("remove_ads_cancelled")
+            else -> {
+                Log.w(TAG, "Purchase failed: ${result.describe()}")
+                logEvent("remove_ads_failed")
+            }
         }
     }
 

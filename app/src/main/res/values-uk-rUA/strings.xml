@@ -231,4 +231,9 @@
     <string name="remove_ads_unavailable">Покупки через Google Play зараз недоступні</string>
     <string name="remove_ads_pending">Платіж очікує підтвердження</string>
     <string name="ads_removed">Рекламу вимкнено. Дякуємо за підтримку застосунку!</string>
+    <string name="support_offer_title">Навчайтеся без реклами</string>
+    <string name="support_offer_body">Одноразова покупка назавжди прибирає рекламу й підтримує незалежного розробника застосунку.</string>
+    <string name="support_offer_buy">Прибрати рекламу · %1$s</string>
+    <string name="support_offer_later">Не зараз</string>
+    <string name="support_offer_never">Більше не показувати</string>
 </resources>

@@ -201,4 +201,9 @@
     <string name="remove_ads_unavailable">Hiện không thể mua qua Google Play</string>
     <string name="remove_ads_pending">Thanh toán đang chờ xác nhận</string>
     <string name="ads_removed">Đã gỡ quảng cáo. Cảm ơn bạn đã ủng hộ ứng dụng!</string>
+    <string name="support_offer_title">Học không quảng cáo</string>
+    <string name="support_offer_body">Mua một lần để gỡ quảng cáo vĩnh viễn và ủng hộ nhà phát triển độc lập của ứng dụng.</string>
+    <string name="support_offer_buy">Gỡ quảng cáo · %1$s</string>
+    <string name="support_offer_later">Để sau</string>
+    <string name="support_offer_never">Không hiện lại</string>
 </resources>

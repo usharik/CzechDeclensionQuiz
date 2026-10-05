@@ -19,6 +19,7 @@ import com.usharik.app.ads.ThreadLocalRandomProvider
 import com.usharik.app.billing.AdFreeEntitlement
 import com.usharik.app.billing.PlayPurchaseManager
 import com.usharik.app.billing.PurchaseManager
+import com.usharik.app.billing.SupportOfferStore
 import com.usharik.app.notification.DailyReminderWorker
 import com.usharik.app.notification.NotificationHelper
 import com.usharik.app.service.FirebaseAnalyticsService
@@ -33,6 +34,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 /** Application-owned dependency graph. It replaces the Dagger Android graph with explicit, typed wiring. */
@@ -47,6 +51,7 @@ open class App : Application() {
     lateinit var adPolicy: InterstitialAdPolicy; private set
     lateinit var adFree: AdFreeEntitlement; private set
     lateinit var purchaseManager: PurchaseManager; private set
+    lateinit var supportOfferStore: SupportOfferStore; private set
     lateinit var wordService: WordService; private set
     lateinit var lastWordStore: SharedPreferencesLastWordStore; private set
 
@@ -70,6 +75,7 @@ open class App : Application() {
         adManager = createAdManager()
         adPolicy = InterstitialAdPolicy(AdSessionState(), { !adFree.isAdFree() }, ThreadLocalRandomProvider())
         purchaseManager = createPurchaseManager()
+        supportOfferStore = SupportOfferStore(prefs)
         lastWordStore = SharedPreferencesLastWordStore(this)
         wordService = WordService(documentRepository, appState, analyticsService)
 
@@ -106,8 +112,14 @@ open class App : Application() {
     /** Overridable so instrumented tests can inject a fake that never shows a real interstitial. */
     open fun createAdManager(): AdManager = RealAdManager { !adFree.isAdFree() }
 
+    /** First install day; a reinstall starts the support-offer waiting period again. */
+    val installDate: LocalDate by lazy {
+        val installed = runCatching { packageManager.getPackageInfo(packageName, 0).firstInstallTime }.getOrDefault(System.currentTimeMillis())
+        Instant.ofEpochMilli(installed).atZone(ZoneId.systemDefault()).toLocalDate()
+    }
+
     /** Overridable so instrumented tests never talk to Google Play. */
-    open fun createPurchaseManager(): PurchaseManager = PlayPurchaseManager(this, adFree)
+    open fun createPurchaseManager(): PurchaseManager = PlayPurchaseManager(this, adFree) { analyticsService.logEvent(it) }
 
     private fun restorePreferences() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
