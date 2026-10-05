@@ -25,9 +25,9 @@ end
 
 platform :android do
 
-  desc "Run unit tests"
+  desc "Run unit tests (the root 'test' task would also start the Appium suite, which needs a device)"
   lane :test do
-    gradle(task: "test")
+    gradle(tasks: [":app:testDebugUnitTest", ":database:test", ":utils:test"])
   end
 
   desc "Build the signed release APK, exactly as the deploy workflow does. Option: version_suffix:-foo (versionName only)"
