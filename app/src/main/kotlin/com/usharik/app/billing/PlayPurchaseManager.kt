@@ -35,6 +35,8 @@ class PlayPurchaseManager(
 
     private var productDetails: ProductDetails? = null
     private var connecting = false
+    /** Bumped on every purchase update, so a purchase query started earlier cannot revoke a fresh purchase. */
+    private var purchaseUpdates = 0
 
     private val client: BillingClient = BillingClient.newBuilder(context.applicationContext)
         .setListener { result, purchases -> onPurchasesUpdated(result, purchases.orEmpty()) }
@@ -102,6 +104,7 @@ class PlayPurchaseManager(
 
     private fun queryPurchases() {
         val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build()
+        val updatesAtStart = purchaseUpdates
         client.queryPurchasesAsync(params) { result, purchases ->
             if (result.responseCode != BillingResponseCode.OK) {
                 Log.w(TAG, "Purchase query failed: ${result.describe()}")
@@ -109,12 +112,13 @@ class PlayPurchaseManager(
             }
             val status = RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() })
             if (status.owned && !entitlement.isAdFree()) logEvent("remove_ads_restored")
-            apply(status, fullList = true)
+            apply(status, fullList = updatesAtStart == purchaseUpdates)
             state.update { it.copy(purchasesSynced = true) }
         }
     }
 
     private fun onPurchasesUpdated(result: BillingResult, purchases: List<Purchase>) {
+        purchaseUpdates++
         when (result.responseCode) {
             BillingResponseCode.OK -> {
                 val status = RemoveAdsPurchases.evaluate(purchases.map { it.snapshot() })

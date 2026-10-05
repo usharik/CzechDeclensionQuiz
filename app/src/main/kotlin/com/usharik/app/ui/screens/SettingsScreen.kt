@@ -1,6 +1,5 @@
 package com.usharik.app.ui.screens
 
-import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +37,7 @@ import androidx.compose.ui.semantics.Role
 import com.usharik.app.App
 import com.usharik.app.Gender
 import com.usharik.app.R
+import com.usharik.app.billing.launchRemoveAdsPurchase
 import com.usharik.app.TestTags
 import com.usharik.app.UiLanguageManager
 import com.usharik.app.ui.state.DailyGoal
@@ -91,7 +91,7 @@ fun SettingsScreen(app: App) {
                         .testTag(TestTags.BTN_REMOVE_ADS)
                         .clickable(enabled = price != null && !removeAdsOffer.pending, role = Role.Button) {
                             app.analyticsService.logButtonClick("SETTINGS_BUTTON_CLICK", "REMOVE_ADS")
-                            (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) }
+                            app.purchaseManager.launchRemoveAdsPurchase(context)
                         }
                         .padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingSmLarge),
                     verticalAlignment = Alignment.CenterVertically,

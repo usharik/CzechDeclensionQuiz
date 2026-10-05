@@ -1,6 +1,10 @@
 package com.usharik.app.billing
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.widget.Toast
+import com.usharik.app.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,4 +74,17 @@ object RemoveAdsPurchases {
             tokensToAcknowledge = owned.filterNot { it.acknowledged }.map { it.token },
         )
     }
+}
+
+/** The hosting activity of a Compose [Context], which may be wrapped (e.g. by a theme or locale wrapper). */
+tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
+/** Opens the purchase sheet from any screen, telling the player when Play cannot start it. */
+fun PurchaseManager.launchRemoveAdsPurchase(context: Context) {
+    val started = context.findActivity()?.let { launchRemoveAdsPurchase(it) } == true
+    if (!started) Toast.makeText(context, R.string.remove_ads_unavailable, Toast.LENGTH_SHORT).show()
 }

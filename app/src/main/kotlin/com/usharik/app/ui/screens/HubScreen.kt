@@ -1,6 +1,5 @@
 package com.usharik.app.ui.screens
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +39,8 @@ import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.PartOfSpeech
 import com.usharik.app.R
+import com.usharik.app.billing.findActivity
+import com.usharik.app.billing.launchRemoveAdsPurchase
 import com.usharik.app.TestTags
 import com.usharik.app.billing.SupportOfferContext
 import com.usharik.app.billing.SupportOfferPolicy
@@ -113,13 +114,15 @@ fun HubScreen(
         app.analyticsService.logEvent("support_offer_impression", Bundle().apply { putInt("impression", shown.impressions) })
     }
     // Play's review sheet, at most at a happy moment: back on the hub with today's goal reached.
-    LaunchedEffect(overview, practice, showOffer) {
+    LaunchedEffect(overview, practice, showOffer, removeAdsOffer) {
+        // Decide only once Play has answered, so the support card cannot appear right after the sheet.
+        if (!removeAdsOffer.billingChecked || (removeAdsOffer.formattedPrice != null && !removeAdsOffer.purchasesSynced)) return@LaunchedEffect
         val goalReached = overview?.goal?.isReached ?: return@LaunchedEffect
         val totals = practice ?: return@LaunchedEffect
         val reviewState = app.reviewPromptStore.load()
         val reviewContext = ReviewPromptContext(today, app.installDate, totals.practiceDays, goalReached, showOffer || offerState.lastShownDay == today.toEpochDay())
         if (!ReviewPromptPolicy.shouldRequest(reviewState, reviewContext)) return@LaunchedEffect
-        val activity = context as? Activity ?: return@LaunchedEffect
+        val activity = context.findActivity() ?: return@LaunchedEffect
         delay(REVIEW_PROMPT_DELAY_MS) // let the hub settle so the sheet does not cover the transition
         app.reviewPromptStore.save(ReviewPromptPolicy.onRequested(reviewState, today))
         app.analyticsService.logEvent("review_prompt_requested", Bundle().apply { putInt("request", reviewState.requests + 1) })
@@ -149,7 +152,7 @@ fun HubScreen(
                 SupportOfferCard(
                     price = price,
                     onBuy = {
-                        click("SUPPORT_OFFER_BUY") { (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) } }
+                        click("SUPPORT_OFFER_BUY") { app.purchaseManager.launchRemoveAdsPurchase(context) }
                     },
                     onNotNow = {
                         click("SUPPORT_OFFER_LATER") { updateOffer(SupportOfferPolicy.onNotNow(offerState, today)) }

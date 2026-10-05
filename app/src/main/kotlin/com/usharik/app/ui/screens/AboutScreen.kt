@@ -1,6 +1,5 @@
 package com.usharik.app.ui.screens
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -30,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import com.usharik.app.App
 import com.usharik.app.BuildConfig
 import com.usharik.app.R
+import com.usharik.app.billing.launchRemoveAdsPurchase
 import com.usharik.app.TestTags
 import com.usharik.app.notification.ReminderPlanner
 import com.usharik.app.ui.components.GradientButton
@@ -114,7 +114,7 @@ fun AboutScreen(app: App) {
                 onClick = {
                     HapticFeedback.light(context)
                     app.analyticsService.logButtonClick("ABOUT_BUTTON_CLICK", "REMOVE_ADS")
-                    (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) }
+                    app.purchaseManager.launchRemoveAdsPurchase(context)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
