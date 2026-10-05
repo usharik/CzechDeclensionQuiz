@@ -195,4 +195,10 @@
     <string name="next_form">Dạng tiếp theo</string>
     <string name="quiz_mode_full_table_desc_phrases">Biến cách cả cụm như “mladý muž”: xếp 14 dạng</string>
     <string name="quiz_mode_one_case_desc_phrases">Chọn cụm từ đúng sau bez, ke, vidím, o, s</string>
+    <string name="remove_ads_section">Quảng cáo</string>
+    <string name="remove_ads">Gỡ quảng cáo</string>
+    <string name="remove_ads_price">Mua một lần, %1$s</string>
+    <string name="remove_ads_unavailable">Hiện không thể mua qua Google Play</string>
+    <string name="remove_ads_pending">Thanh toán đang chờ xác nhận</string>
+    <string name="ads_removed">Đã gỡ quảng cáo. Cảm ơn bạn đã ủng hộ ứng dụng!</string>
 </resources>

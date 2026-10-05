@@ -1,5 +1,6 @@
 package com.usharik.app.ui.screens
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.testTag
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,13 +38,15 @@ import androidx.compose.ui.semantics.Role
 import com.usharik.app.App
 import com.usharik.app.Gender
 import com.usharik.app.R
+import com.usharik.app.TestTags
 import com.usharik.app.UiLanguageManager
 import com.usharik.app.ui.state.DailyGoal
 import com.usharik.app.ui.theme.Dimens
 
 /**
  * Settings page: daily goal, the gender word filter, the app language (single-choice dialog) and
- * the "turn off animation" switch. Changes are persisted to SharedPreferences immediately.
+ * the "turn off animation" switch, plus the one-time "remove ads" purchase. Changes are persisted
+ * to SharedPreferences immediately.
  */
 @Composable
 fun SettingsScreen(app: App) {
@@ -50,6 +54,8 @@ fun SettingsScreen(app: App) {
     val genderFilter by app.appState.genderFilterFlow.collectAsState()
     val switchOffAnimation by app.appState.switchOffAnimationFlow.collectAsState()
     val dailyGoal by app.appState.dailyGoalFlow.collectAsState()
+    val adFree by app.adFree.adFree.collectAsState()
+    val removeAdsOffer by app.purchaseManager.offer.collectAsState()
     var languageLabel by remember { mutableStateOf(UiLanguageManager.getSelectedLanguageLabel(context)) }
     var showLanguageDialog by remember { mutableStateOf(false) }
 
@@ -69,6 +75,42 @@ fun SettingsScreen(app: App) {
             .padding(top = Dimens.spacingXs, bottom = Dimens.spacingMd),
         verticalArrangement = Arrangement.spacedBy(Dimens.spacingSm),
     ) {
+        SettingsSection(stringResource(R.string.remove_ads_section)) {
+            if (adFree) {
+                Text(
+                    stringResource(R.string.ads_removed),
+                    Modifier.padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingSmLarge),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            } else {
+                val price = removeAdsOffer.formattedPrice
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag(TestTags.BTN_REMOVE_ADS)
+                        .clickable(enabled = price != null && !removeAdsOffer.pending, role = Role.Button) {
+                            (context as? Activity)?.let { app.purchaseManager.launchRemoveAdsPurchase(it) }
+                        }
+                        .padding(horizontal = Dimens.spacingMd, vertical = Dimens.spacingSmLarge),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(stringResource(R.string.remove_ads), color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            when {
+                                removeAdsOffer.pending -> stringResource(R.string.remove_ads_pending)
+                                price != null -> stringResource(R.string.remove_ads_price, price)
+                                else -> stringResource(R.string.remove_ads_unavailable)
+                            },
+                            color = if (price != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    if (price != null) Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
         SettingsSection(stringResource(R.string.daily_goal)) {
             listOf(
                 DailyGoal.Level.LIGHT to R.string.daily_goal_light,

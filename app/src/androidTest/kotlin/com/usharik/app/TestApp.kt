@@ -5,6 +5,10 @@ import android.app.LocaleManager
 import android.os.Build
 import android.os.LocaleList
 import com.usharik.app.ads.AdManager
+import com.usharik.app.billing.PurchaseManager
+import com.usharik.app.billing.RemoveAdsOffer
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * [App] variant used by instrumented tests. It injects a fake [AdManager] that never shows a real
@@ -24,6 +28,7 @@ class TestApp : App() {
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
             .putString(UiLanguageManager.UI_LANGUAGE_KEY, UiLanguage.ENGLISH.preferenceValue())
             .putString(PREF_PART_OF_SPEECH, PartOfSpeech.NOUN.name)
+            .putBoolean(PREF_AD_FREE, false)
             .commit()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             getSystemService(LocaleManager::class.java).applicationLocales = LocaleList.forLanguageTags(UiLanguage.ENGLISH.languageTags())
@@ -32,6 +37,15 @@ class TestApp : App() {
     }
 
     override fun createAdManager(): AdManager = FakeAdManager()
+
+    override fun createPurchaseManager(): PurchaseManager = FakePurchaseManager()
+}
+
+/** Never contacts Google Play; the ad-free entitlement keeps whatever the test preferences hold. */
+private class FakePurchaseManager : PurchaseManager {
+    override val offer: StateFlow<RemoveAdsOffer> = MutableStateFlow(RemoveAdsOffer())
+    override fun refresh() = Unit
+    override fun launchRemoveAdsPurchase(activity: Activity) = false
 }
 
 private class FakeAdManager : AdManager {

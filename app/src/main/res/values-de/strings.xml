@@ -205,4 +205,10 @@
     <string name="next_form">Nächste Form</string>
     <string name="quiz_mode_full_table_desc_phrases">Ganze Phrasen wie „mladý muž“ deklinieren: 14 Formen einsetzen</string>
     <string name="quiz_mode_one_case_desc_phrases">Die richtige Phrase nach bez, ke, vidím, o, s wählen</string>
+    <string name="remove_ads_section">Werbung</string>
+    <string name="remove_ads">Werbung entfernen</string>
+    <string name="remove_ads_price">Einmaliger Kauf, %1$s</string>
+    <string name="remove_ads_unavailable">Käufe über Google Play sind gerade nicht verfügbar</string>
+    <string name="remove_ads_pending">Die Zahlung wartet auf Bestätigung</string>
+    <string name="ads_removed">Die Werbung ist entfernt. Danke für deine Unterstützung!</string>
 </resources>

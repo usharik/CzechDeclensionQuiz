@@ -112,6 +112,7 @@ dependencies {
 
     // Google Services
     implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    implementation 'com.android.billingclient:billing:9.1.0'
     implementation 'com.google.code.gson:gson:2.14.0'
 
     // Database

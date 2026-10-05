@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Picks up purchases made elsewhere, refunds and pending payments that cleared meanwhile.
+        (application as App).purchaseManager.refresh()
         // Keep the full-quiz interstitial warm before the player can reach either its error or
         // timeout boundary. AdManager deduplicates cached and in-flight loads.
         (application as App).adManager.loadAd(this, BuildConfig.ADMOB_INTERSTITIAL_AD_UNIT_ID)

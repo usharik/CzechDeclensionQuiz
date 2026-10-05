@@ -225,4 +225,10 @@
     <string name="next_form">Наступная форма</string>
     <string name="quiz_mode_full_table_desc_phrases">Праскланяйце цэлыя словазлучэнні кшталту «mladý muž»: 14 форм</string>
     <string name="quiz_mode_one_case_desc_phrases">Абярыце правільнае словазлучэнне пасля bez, ke, vidím, o, s</string>
+    <string name="remove_ads_section">Рэклама</string>
+    <string name="remove_ads">Адключыць рэкламу</string>
+    <string name="remove_ads_price">Аднаразовая пакупка, %1$s</string>
+    <string name="remove_ads_unavailable">Пакупкі праз Google Play зараз недаступныя</string>
+    <string name="remove_ads_pending">Плацёж чакае пацвярджэння</string>
+    <string name="ads_removed">Рэклама адключана. Дзякуй за падтрымку праграмы!</string>
 </resources>

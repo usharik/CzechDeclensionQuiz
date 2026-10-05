@@ -225,4 +225,10 @@
     <string name="next_form">Další tvar</string>
     <string name="quiz_mode_full_table_desc_phrases">Skloňujte celá spojení jako „mladý muž“: 14 tvarů</string>
     <string name="quiz_mode_one_case_desc_phrases">Vyberte správné spojení po bez, ke, vidím, o, s</string>
+    <string name="remove_ads_section">Reklamy</string>
+    <string name="remove_ads">Odstranit reklamy</string>
+    <string name="remove_ads_price">Jednorázový nákup, %1$s</string>
+    <string name="remove_ads_unavailable">Nákupy přes Google Play teď nejsou dostupné</string>
+    <string name="remove_ads_pending">Platba čeká na potvrzení</string>
+    <string name="ads_removed">Reklamy jsou vypnuté. Děkujeme za podporu aplikace!</string>
 </resources>

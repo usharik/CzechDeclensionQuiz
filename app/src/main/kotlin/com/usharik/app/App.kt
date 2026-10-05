@@ -16,6 +16,9 @@ import com.usharik.app.ads.AdSessionState
 import com.usharik.app.ads.InterstitialAdPolicy
 import com.usharik.app.ads.RealAdManager
 import com.usharik.app.ads.ThreadLocalRandomProvider
+import com.usharik.app.billing.AdFreeEntitlement
+import com.usharik.app.billing.PlayPurchaseManager
+import com.usharik.app.billing.PurchaseManager
 import com.usharik.app.notification.DailyReminderWorker
 import com.usharik.app.notification.NotificationHelper
 import com.usharik.app.service.FirebaseAnalyticsService
@@ -42,6 +45,8 @@ open class App : Application() {
     lateinit var notificationHelper: NotificationHelper; private set
     lateinit var adManager: AdManager; private set
     lateinit var adPolicy: InterstitialAdPolicy; private set
+    lateinit var adFree: AdFreeEntitlement; private set
+    lateinit var purchaseManager: PurchaseManager; private set
     lateinit var wordService: WordService; private set
     lateinit var lastWordStore: SharedPreferencesLastWordStore; private set
 
@@ -60,14 +65,18 @@ open class App : Application() {
         statsRepository = TrainingStatsRepository(database)
         analyticsService = FirebaseAnalyticsService(FirebaseAnalytics.getInstance(this))
         notificationHelper = NotificationHelper(analyticsService)
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        adFree = AdFreeEntitlement(prefs.getBoolean(PREF_AD_FREE, false)) { prefs.edit().putBoolean(PREF_AD_FREE, it).apply() }
         adManager = createAdManager()
-        adPolicy = InterstitialAdPolicy(AdSessionState(), ThreadLocalRandomProvider())
+        adPolicy = InterstitialAdPolicy(AdSessionState(), { !adFree.isAdFree() }, ThreadLocalRandomProvider())
+        purchaseManager = createPurchaseManager()
         lastWordStore = SharedPreferencesLastWordStore(this)
         wordService = WordService(documentRepository, appState, analyticsService)
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
         analyticsService.setCollectionEnabled(!BuildConfig.DEBUG)
-        MobileAds.initialize(this) { Log.i("App", "Mobile Ads initialized") }
+        if (!adFree.isAdFree()) MobileAds.initialize(this) { Log.i("App", "Mobile Ads initialized") }
+        purchaseManager.refresh()
         notificationHelper.createChannel(this)
         scheduleDailyReminderWorker()
         // The import runs off the main thread so a first launch renders immediately;
@@ -95,7 +104,10 @@ open class App : Application() {
     }
 
     /** Overridable so instrumented tests can inject a fake that never shows a real interstitial. */
-    open fun createAdManager(): AdManager = RealAdManager()
+    open fun createAdManager(): AdManager = RealAdManager { !adFree.isAdFree() }
+
+    /** Overridable so instrumented tests never talk to Google Play. */
+    open fun createPurchaseManager(): PurchaseManager = PlayPurchaseManager(this, adFree)
 
     private fun restorePreferences() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -142,6 +154,7 @@ open class App : Application() {
         const val PREF_DAILY_GOAL = "dailyGoalPoints"
         const val PREF_PART_OF_SPEECH = "partOfSpeech"
         const val PREF_DICTIONARY_VERSION = "dictionaryVersion"
+        const val PREF_AD_FREE = "adFree"
         /** Bump whenever the bundled JSONL dictionaries change so existing installs re-import them. */
         const val DICTIONARY_VERSION = 1
         private const val LEGACY_DAILY_REMINDER_WORK = "daily_reminder"

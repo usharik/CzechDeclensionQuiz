@@ -225,4 +225,10 @@
     <string name="next_form">Наступна форма</string>
     <string name="quiz_mode_full_table_desc_phrases">Провідмінюйте цілі словосполучення на кшталт «mladý muž»: 14 форм</string>
     <string name="quiz_mode_one_case_desc_phrases">Оберіть правильне словосполучення після bez, ke, vidím, o, s</string>
+    <string name="remove_ads_section">Реклама</string>
+    <string name="remove_ads">Вимкнути рекламу</string>
+    <string name="remove_ads_price">Одноразова покупка, %1$s</string>
+    <string name="remove_ads_unavailable">Покупки через Google Play зараз недоступні</string>
+    <string name="remove_ads_pending">Платіж очікує підтвердження</string>
+    <string name="ads_removed">Рекламу вимкнено. Дякуємо за підтримку застосунку!</string>
 </resources>

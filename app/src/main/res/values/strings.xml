@@ -206,4 +206,10 @@
     <string name="tip_verb_nese">-e group: -u, -eš, -e, -eme, -ete, -ou. The stem often changes: číst → čtu, psát → píšu, péct → peču. Imperative: čti!, piš!, peč!</string>
     <string name="tip_verb_irregular">Learn these one by one: být (jsem, jsi, je…), mít (mám), jít (jdu, past šel/šla), chtít (chci), vědět (vím), jíst (jím), moct (můžu).</string>
     <string name="tip_past_tense">Past tense = participle + jsem/jsi/jsme/jste; the 3rd person has no auxiliary: dělal jsem, dělala jsi, dělali jsme, dělal. Watch the plural: oni dělali, ony dělaly.</string>
+    <string name="remove_ads_section">Ads</string>
+    <string name="remove_ads">Remove ads</string>
+    <string name="remove_ads_price">One-time purchase, %1$s</string>
+    <string name="remove_ads_unavailable">Purchases through Google Play are not available right now</string>
+    <string name="remove_ads_pending">Payment is waiting for confirmation</string>
+    <string name="ads_removed">Ads are removed. Thank you for supporting the app!</string>
 </resources>

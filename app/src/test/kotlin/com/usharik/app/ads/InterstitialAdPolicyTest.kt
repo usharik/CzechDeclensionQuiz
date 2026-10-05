@@ -22,4 +22,14 @@ class InterstitialAdPolicyTest {
         assertTrue(policy.onDeclensionErrorLimitReached())
         assertTrue(policy.onDeclensionTimeout())
     }
+
+    @Test fun adFreePlayerNeverGetsAnInterstitial() {
+        val policy = InterstitialAdPolicy(AdSessionState(), { false }) { 0.0 }
+
+        assertFalse(policy.areAdsEnabled())
+        repeat(InterstitialAdPolicy.WORDS_PER_AD * 2) { assertFalse(policy.onDeclensionWordCompleted()) }
+        repeat(InterstitialAdPolicy.NAVIGATIONS_PER_AD_ATTEMPT * 2) { assertFalse(policy.onSingleCaseNavigation()) }
+        assertFalse(policy.onDeclensionErrorLimitReached())
+        assertFalse(policy.onDeclensionTimeout())
+    }
 }

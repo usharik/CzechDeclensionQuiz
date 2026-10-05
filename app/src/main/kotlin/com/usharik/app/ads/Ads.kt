@@ -27,8 +27,12 @@ class AdSessionState {
     fun resetNavigations() = navigations.set(0)
 }
 
-open class InterstitialAdPolicy(private val state: AdSessionState, private val random: RandomProvider) : AdsPolicy {
-    override fun areAdsEnabled() = true
+open class InterstitialAdPolicy(
+    private val state: AdSessionState,
+    private val adsEnabled: () -> Boolean = { true },
+    private val random: RandomProvider,
+) : AdsPolicy {
+    override fun areAdsEnabled() = adsEnabled()
 
     fun onDeclensionWordCompleted(): Boolean {
         if (!areAdsEnabled()) return false
@@ -68,14 +72,15 @@ interface AdManager {
     fun showAdIfNeeded(condition: Boolean, activity: Activity, unitId: String, action: () -> Unit)
 }
 
-class RealAdManager : AdManager {
+/** [adsEnabled] turns loading off once the player has bought the ad-free version. */
+class RealAdManager(private val adsEnabled: () -> Boolean = { true }) : AdManager {
     private val ads = mutableMapOf<String, InterstitialAd>()
     // Tracks unit IDs with a load already in flight so a rapid succession of loadAd() calls
     // (e.g. re-entering a quiz screen) doesn't fire redundant concurrent network requests.
     private val loading = mutableSetOf<String>()
 
     override fun loadAd(activity: Activity, unitId: String) {
-        if (unitId.isBlank() || ads.containsKey(unitId) || !loading.add(unitId)) return
+        if (!adsEnabled() || unitId.isBlank() || ads.containsKey(unitId) || !loading.add(unitId)) return
         InterstitialAd.load(
             activity,
             unitId,
