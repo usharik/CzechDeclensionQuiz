@@ -21,6 +21,9 @@ import com.usharik.app.billing.PlayPurchaseManager
 import com.usharik.app.billing.PurchaseManager
 import com.usharik.app.billing.SupportOfferStore
 import com.usharik.app.notification.DailyReminderWorker
+import com.usharik.app.review.PlayReviewPrompter
+import com.usharik.app.review.ReviewPromptStore
+import com.usharik.app.review.ReviewPrompter
 import com.usharik.app.notification.NotificationHelper
 import com.usharik.app.service.FirebaseAnalyticsService
 import com.usharik.app.service.SharedPreferencesLastWordStore
@@ -52,6 +55,8 @@ open class App : Application() {
     lateinit var adFree: AdFreeEntitlement; private set
     lateinit var purchaseManager: PurchaseManager; private set
     lateinit var supportOfferStore: SupportOfferStore; private set
+    lateinit var reviewPrompter: ReviewPrompter; private set
+    lateinit var reviewPromptStore: ReviewPromptStore; private set
     lateinit var wordService: WordService; private set
     lateinit var lastWordStore: SharedPreferencesLastWordStore; private set
 
@@ -76,6 +81,8 @@ open class App : Application() {
         adPolicy = InterstitialAdPolicy(AdSessionState(), { !adFree.isAdFree() }, ThreadLocalRandomProvider())
         purchaseManager = createPurchaseManager()
         supportOfferStore = SupportOfferStore(prefs)
+        reviewPrompter = createReviewPrompter()
+        reviewPromptStore = ReviewPromptStore(prefs)
         lastWordStore = SharedPreferencesLastWordStore(this)
         wordService = WordService(documentRepository, appState, analyticsService)
 
@@ -117,6 +124,9 @@ open class App : Application() {
         val installed = runCatching { packageManager.getPackageInfo(packageName, 0).firstInstallTime }.getOrDefault(System.currentTimeMillis())
         Instant.ofEpochMilli(installed).atZone(ZoneId.systemDefault()).toLocalDate()
     }
+
+    /** Overridable so instrumented tests never open Play's review sheet. */
+    open fun createReviewPrompter(): ReviewPrompter = PlayReviewPrompter(this)
 
     /** Overridable so instrumented tests never talk to Google Play. */
     open fun createPurchaseManager(): PurchaseManager = PlayPurchaseManager(this, adFree) { analyticsService.logEvent(it) }

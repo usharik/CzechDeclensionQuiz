@@ -7,6 +7,7 @@ import android.os.LocaleList
 import com.usharik.app.ads.AdManager
 import com.usharik.app.billing.PurchaseManager
 import com.usharik.app.billing.RemoveAdsOffer
+import com.usharik.app.review.ReviewPrompter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -39,6 +40,8 @@ class TestApp : App() {
     override fun createAdManager(): AdManager = FakeAdManager()
 
     override fun createPurchaseManager(): PurchaseManager = FakePurchaseManager()
+
+    override fun createReviewPrompter(): ReviewPrompter = ReviewPrompter { }
 }
 
 /** Never contacts Google Play; the ad-free entitlement keeps whatever the test preferences hold. */

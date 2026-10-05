@@ -44,6 +44,8 @@ import com.usharik.app.TestTags
 import com.usharik.app.billing.SupportOfferContext
 import com.usharik.app.billing.SupportOfferPolicy
 import com.usharik.app.billing.SupportOfferState
+import com.usharik.app.review.ReviewPromptContext
+import com.usharik.app.review.ReviewPromptPolicy
 import com.usharik.app.ui.components.BannerAd
 import com.usharik.app.ui.components.GradientButton
 import com.usharik.app.ui.components.ProgressCard
@@ -55,6 +57,7 @@ import com.usharik.app.ui.state.progressOverview
 import com.usharik.app.ui.theme.AppColors
 import com.usharik.app.ui.theme.Dimens
 import com.usharik.app.utils.HapticFeedback
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 
 /**
@@ -108,6 +111,19 @@ fun HubScreen(
         if (shown == offerState) return@LaunchedEffect
         updateOffer(shown)
         app.analyticsService.logEvent("support_offer_impression", Bundle().apply { putInt("impression", shown.impressions) })
+    }
+    // Play's review sheet, at most at a happy moment: back on the hub with today's goal reached.
+    LaunchedEffect(overview, practice, showOffer) {
+        val goalReached = overview?.goal?.isReached ?: return@LaunchedEffect
+        val totals = practice ?: return@LaunchedEffect
+        val reviewState = app.reviewPromptStore.load()
+        val reviewContext = ReviewPromptContext(today, app.installDate, totals.practiceDays, goalReached, showOffer || offerState.lastShownDay == today.toEpochDay())
+        if (!ReviewPromptPolicy.shouldRequest(reviewState, reviewContext)) return@LaunchedEffect
+        val activity = context as? Activity ?: return@LaunchedEffect
+        delay(REVIEW_PROMPT_DELAY_MS) // let the hub settle so the sheet does not cover the transition
+        app.reviewPromptStore.save(ReviewPromptPolicy.onRequested(reviewState, today))
+        app.analyticsService.logEvent("review_prompt_requested", Bundle().apply { putInt("request", reviewState.requests + 1) })
+        app.reviewPrompter.request(activity)
     }
     fun click(buttonName: String, action: () -> Unit) {
         HapticFeedback.light(context)
@@ -231,6 +247,8 @@ fun HubScreen(
         )
     }
 }
+
+private const val REVIEW_PROMPT_DELAY_MS = 1_200L
 
 /** The quiz-mode title for a word class: verbs are conjugated, everything else is declined. */
 fun quizTitleRes(partOfSpeech: PartOfSpeech, full: Boolean): Int = when {
