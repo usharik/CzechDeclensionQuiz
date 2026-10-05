@@ -132,6 +132,26 @@ git push origin v1.0.1
 - Automated deployment
 - GitHub release creation
 
+### Method 3: Local Fastlane (alternative to GitHub Actions)
+
+`fastlane/Fastfile` builds and uploads the same signed release APK as `deploy.yml`, using
+`distribution/whatsnew/*` as release notes. It needs, all gitignored:
+
+- `pc-api-key.json` — the Play service-account key (shared with MySongbook, symlinked from
+  `~/src/MySongbook/pc-api-key.json`; or set `PLAY_STORE_JSON_KEY_PATH`);
+- `signing.storeFile|storePassword|keyAlias|keyPassword` in `local.properties`
+  (or `SIGNING_STOREFILE`, `SIGNING_STOREPASSWORD`, `SIGNING_KEYALIAS`, `SIGNING_KEYPASSWORD`);
+- `app/google-services.json`.
+
+```bash
+fastlane build_release                            # signed APK only
+fastlane deploy                                   # unit tests + build + upload to internal
+fastlane deploy track:production skip_tests:true  # any of internal/alpha/beta/production
+```
+
+`deploy` stops if the `VERSION` code is not higher than every version code already on Play, so bump
+`VERSION` first when the CI bump has not happened yet.
+
 ## Release Tracks
 
 | Track | Purpose | Rollout | Audience |

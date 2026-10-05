@@ -1,10 +1,100 @@
 default_platform(:android)
 
+# Local alternative to .github/workflows/deploy.yml. Needs the Play service-account key at
+# pc-api-key.json (see Appfile) and signing.* entries in local.properties.
+PACKAGE_NAME = "com.usharik.app"
+RELEASE_APK = "app/build/outputs/apk/release/app-release.apk"
+TRACKS = %w[internal alpha beta production].freeze
+
+def root_path(*parts)
+  File.expand_path(File.join("..", *parts), __dir__)
+end
+
+def local_property(key)
+  File.readlines(root_path("local.properties"), chomp: true)
+      .map { |line| line.split("=", 2) }
+      .find { |name, _| name.to_s.strip == key }
+      &.last&.strip
+end
+
+def version_info(suffix = nil)
+  number = File.read(root_path("VERSION")).strip
+  major, minor = number.split(".").map { |part| Integer(part, 10) }
+  { name: "#{number}#{suffix}", code: major * 100 + minor }
+end
+
 platform :android do
 
   desc "Run unit tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  desc "Build the signed release APK, exactly as the deploy workflow does. Option: version_suffix:-foo (versionName only)"
+  lane :build_release do |options|
+    signing = %w[storeFile storePassword keyAlias keyPassword].to_h do |key|
+      value = ENV["SIGNING_#{key.upcase}"] || local_property("signing.#{key}")
+      UI.user_error!("signing.#{key} missing from local.properties") if value.to_s.empty?
+      [key, value]
+    end
+    UI.user_error!("app/google-services.json is missing") unless File.exist?(root_path("app", "google-services.json"))
+    gradle(
+      task: ":app:assembleRelease",
+      properties: {
+        "android.injected.signing.store.file" => File.expand_path(signing["storeFile"]),
+        "android.injected.signing.store.password" => signing["storePassword"],
+        "android.injected.signing.key.alias" => signing["keyAlias"],
+        "android.injected.signing.key.password" => signing["keyPassword"],
+        "versionNameSuffix" => options[:version_suffix].to_s,
+      },
+      print_command: false,
+    )
+  end
+
+  desc "Build and upload a release. Options: track:internal|alpha|beta|production (default internal), " \
+       "version_suffix:-foo (versionName and Play release name), skip_tests:true"
+  lane :deploy do |options|
+    track = (options[:track] || "internal").to_s
+    UI.user_error!("Unknown track '#{track}', expected one of #{TRACKS.join(', ')}") unless TRACKS.include?(track)
+
+    # Play rejects reused version codes; the VERSION bump normally happens in build.yml on push to main.
+    version = version_info(options[:version_suffix])
+    published = TRACKS.flat_map do |name|
+      google_play_track_version_codes(track: name)
+    rescue StandardError
+      []
+    end
+    if (published.max || 0) >= version[:code]
+      UI.user_error!("VERSION #{version[:name]} (code #{version[:code]}) is not above the highest published code " \
+                     "#{published.max}; bump VERSION first")
+    end
+
+    test unless options[:skip_tests]
+    build_release(version_suffix: options[:version_suffix])
+
+    # Stage distribution/whatsnew/* (also used by the CI workflow) as supply changelogs for this version code.
+    metadata_path = root_path("build", "fastlane", "metadata")
+    FileUtils.rm_rf(metadata_path)
+    Dir[root_path("distribution", "whatsnew", "whatsnew-*")].each do |file|
+      dir = File.join(metadata_path, File.basename(file).delete_prefix("whatsnew-"), "changelogs")
+      FileUtils.mkdir_p(dir)
+      FileUtils.cp(file, File.join(dir, "#{version[:code]}.txt"))
+    end
+
+    upload_to_play_store(
+      package_name: PACKAGE_NAME,
+      track: track,
+      release_status: "completed",
+      version_name: version[:name],
+      apk: root_path(RELEASE_APK),
+      in_app_update_priority: 2,
+      metadata_path: metadata_path,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+    UI.success("Uploaded #{version[:name]} (code #{version[:code]}) to the #{track} track")
   end
 
   desc "Upload store listing: texts, icon, feature graphic and screenshots (no binary, no release notes)"

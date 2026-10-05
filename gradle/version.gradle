@@ -1,6 +1,7 @@
 // Reads the project version from the root VERSION file.
 // Format: MAJOR.MINOR (e.g. "3.55")
 // versionCode is computed as MAJOR * 100 + MINOR.
+// An optional -PversionNameSuffix=-foo marks a special build in versionName only (e.g. "3.134-adfree").
 def getVersionInfo = { ->
     def versionFile = rootProject.file('VERSION')
     if (!versionFile.exists()) {
@@ -14,7 +15,8 @@ def getVersionInfo = { ->
     try {
         def major = parts[0].toInteger()
         def minor = parts[1].toInteger()
-        return [code: major * 100 + minor, name: versionStr]
+        def suffix = project.findProperty('versionNameSuffix') ?: ''
+        return [code: major * 100 + minor, name: versionStr + suffix]
     } catch (NumberFormatException e) {
         throw new GradleException("Invalid VERSION file content '${versionStr}'. MAJOR and MINOR must be integers.")
     }
