@@ -112,6 +112,9 @@ dependencies {
 
     // Google Services
     implementation 'com.google.android.gms:play-services-ads:25.5.0'
+    // play-services-ads pulls hsdp 2.0.1, whose HsdpShimActivity crashes on an intent without extras
+    // ("targetPackageName is null"); 2.2.0 finishes the activity instead.
+    implementation 'com.google.android.play:hsdp:2.2.0'
     implementation 'com.android.billingclient:billing:9.1.0'
     implementation 'com.google.android.play:review:2.0.2'
     implementation 'com.google.code.gson:gson:2.14.0'
