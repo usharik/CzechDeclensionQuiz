@@ -106,7 +106,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:23.2.0'
+    implementation 'com.google.firebase:firebase-analytics:24.0.0'
     implementation 'com.google.firebase:firebase-crashlytics:21.0.0'
     implementation 'com.google.firebase:firebase-crashlytics-ndk:21.0.0'
 
