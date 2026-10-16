@@ -19,10 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.ScreenOrientation;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +53,8 @@ import static com.usharik.app.UiConstants.TAG_SC_WORD;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.remote.AppiumWebElement;
+import io.appium.java_client.support.ui.FluentWait;
 
 /**
  * Appium smoke tests for the Compose UI. Functional coverage (drag-and-drop,
@@ -65,7 +67,7 @@ public class UiTests {
     private static final Logger logger = LoggerFactory.getLogger(UiTests.class);
 
     private static AndroidDriver driver;
-    private WebDriverWait wait;
+    private FluentWait<AndroidDriver> wait;
 
     @BeforeAll
     public static void setupClass() {
@@ -98,7 +100,7 @@ public class UiTests {
     @BeforeEach
     public void setupTest(TestInfo testInfo) {
         logger.info("Starting test: {}", testInfo.getDisplayName());
-        wait = new WebDriverWait(driver, DEFAULT_TIMEOUT);
+        wait = waitFor(DEFAULT_TIMEOUT);
         ensureHubScreen();
     }
 
@@ -233,7 +235,7 @@ public class UiTests {
         if (scrollables.isEmpty()) {
             return;
         }
-        String id = ((org.openqa.selenium.remote.RemoteWebElement) scrollables.get(0)).getId();
+        String id = ((AppiumWebElement) scrollables.get(0)).getId();
         while (Boolean.TRUE.equals(driver.executeScript("mobile: scrollGesture",
                 Map.of("elementId", id, "direction", "down", "percent", 1.0)))) {
             waitForUiUpdate();
@@ -256,7 +258,7 @@ public class UiTests {
             scrollToBottom();
         }
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(label));
+            wait.until(d -> d.findElement(label));
         } catch (org.openqa.selenium.TimeoutException e) {
             String source = driver.getPageSource();
             int at = source.indexOf(tag);
@@ -278,15 +280,26 @@ public class UiTests {
         return AppiumBy.xpath("//*[starts-with(@resource-id, '" + tagPrefix + "')]");
     }
 
+    /** Polls like Selenium's WebDriverWait: missing and stale elements are retried, not failed. */
+    private FluentWait<AndroidDriver> waitFor(Duration timeout) {
+        return new FluentWait<>(driver)
+                .withTimeout(timeout)
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(NotFoundException.class, StaleElementReferenceException.class);
+    }
+
+    private WebElement visibleElement(AndroidDriver d, String tag) {
+        WebElement element = d.findElement(byTag(tag));
+        return element.isDisplayed() ? element : null;
+    }
+
     private WebElement waitForVisibleElement(String tag) {
-        return wait.until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOfElementLocated(byTag(tag))));
+        return wait.until(d -> visibleElement(d, tag));
     }
 
     private boolean isElementVisible(String tag, Duration timeout) {
         try {
-            return new WebDriverWait(driver, timeout)
-                    .until(ExpectedConditions.visibilityOfElementLocated(byTag(tag)))
-                    .isDisplayed();
+            return waitFor(timeout).until(d -> visibleElement(d, tag)).isDisplayed();
         } catch (Exception ignored) {
             return false;
         }
